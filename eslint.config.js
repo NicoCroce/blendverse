@@ -15,7 +15,11 @@ const ignores = {
 
 /** @type {import('eslint').Linter.FlatConfig[]} */
 export default [
-  { languageOptions: { globals: globals.browser } },
+  {
+    languageOptions: {
+      globals: { ...globals.node, ...globals.browser, ...globals.es2021 },
+    },
+  },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   ignores,

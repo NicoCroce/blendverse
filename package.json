@@ -1,5 +1,5 @@
 {
-  "name": "monorepo",
+  "name": "blendverse",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "app": "pnpm --filter app",
+    "common": "pnpm --filter common"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +22,7 @@
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
     "@eslint/js": "^9.3.0",
+    "dotenv": "^16.4.5",
     "eslint": "~9.3.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
@@ -27,6 +30,7 @@
     "husky": "^9.0.11",
     "lint-staged": "^15.2.5",
     "prettier": "^3.2.5",
+    "typescript": "^5.4.5",
     "typescript-eslint": "^7.11.0"
   },
   "lint-staged": {
@@ -34,5 +38,8 @@
       "eslint --fix"
     ],
     "**/*": "prettier --write --ignore-unknown"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
   }
 }
