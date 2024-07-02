@@ -2,25 +2,26 @@
   "name": "@blendverse/server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
-    "build": "npx tsc",
-    "dev": "ts-node-dev src/index.ts"
+    "build": "npx tsc && tsc-alias",
+    "dev": "node --watch -r ts-node/register -r tsconfig-paths/register src/index.ts",
+    "ts": "tsc -v"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@trpc/server": "11.0.0-rc.390",
+    "cors": "^2.8.5",
     "express": "^4.19.2"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/node": "^20.12.13",
-    "nodemon": "^3.1.2",
     "ts-node": "^10.9.2",
-    "ts-node-dev": "^2.0.0"
-  },
-  "engines": {
-    "node": ">=v21.5.0"
+    "tsc-alias": "^1.8.10",
+    "tsconfig-paths": "^4.2.0"
   }
 }
