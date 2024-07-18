@@ -13,7 +13,7 @@ export class UserRepositoryImplementation implements UserRepository {
 
   async save(user: User): Promise<User> {
     const { id, mail, name, password } = await this.Db.addUser(user.values);
-    return new User(id, name, mail, password);
+    return new User(id, mail, name, password);
   }
 
   async findUser(id: string): Promise<User | null> {
