@@ -3,14 +3,24 @@ import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css';
 import { Trpc } from './client';
+import { Outlet } from 'react-router-dom';
 
 export const App = () => {
   const [count, setCount] = useState(0);
+  const [userId, setUserId] = useState<string>('');
   const { data, isLoading } = Trpc.userList.useQuery();
+  const { data: userFounded, refetch: fetchUserById } = Trpc.userById.useQuery(
+    userId,
+    {
+      enabled: false,
+    },
+  );
+
+  //**  Accedo a los datos almacenados en tRPC. */
   const cacheUserList = Trpc.useUtils().userList;
 
   const addUser = Trpc.userCreate.useMutation({
-    onMutate: async ({ name }) => {
+    onMutate: async ({ name, mail, password }) => {
       cacheUserList.cancel();
       const preservedState = cacheUserList.getData();
 
@@ -19,7 +29,8 @@ export const App = () => {
         {
           id: String(state?.length),
           name,
-          password: '123',
+          mail,
+          password,
         },
       ];
 
@@ -61,9 +72,29 @@ export const App = () => {
         Click on the Vite and React logos to learn more
       </p>
       <h2>Estos son los usuarios</h2>
-      <button onClick={() => addUser.mutate({ name: crypto.randomUUID() })}>
+      <button
+        onClick={() =>
+          addUser.mutate({
+            name: crypto.randomUUID(),
+            mail: 'nicoc123@gmail.com',
+            password: '123456789',
+          })
+        }
+      >
         Agregar
       </button>
+      <div>
+        <input
+          type="text"
+          name="search"
+          id=""
+          onChange={({ target }) => setUserId(target.value)}
+        />
+        <button onClick={() => fetchUserById()}>Search</button>
+      </div>
+      <div>
+        <pre>{JSON.stringify(userFounded)}</pre>
+      </div>
       {isLoading ? (
         <p>Cargando...</p>
       ) : (
@@ -71,6 +102,7 @@ export const App = () => {
           {data?.map((user) => <li key={user.name}>{JSON.stringify(user)}</li>)}
         </ul>
       )}
+      <Outlet />
     </>
   );
 };

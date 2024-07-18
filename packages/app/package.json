@@ -11,21 +11,22 @@
   },
   "dependencies": {
     "@blendverse/server": "workspace:*",
-    "@tanstack/react-query": "^5.45.1",
+    "@tanstack/react-query": "^5.51.1",
     "@tanstack/react-query-devtools": "5.0.0-alpha.91",
     "@trpc/client": "11.0.0-rc.417",
     "@trpc/react-query": "11.0.0-rc.417",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.24.1"
   },
   "devDependencies": {
-    "@eslint/compat": "^1.1.0",
-    "@types/react": "^18.2.66",
-    "@types/react-dom": "^18.2.22",
-    "@vitejs/plugin-react": "^4.2.1",
+    "@eslint/compat": "^1.1.1",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
     "eslint-plugin-react": "^7.34.3",
     "eslint-plugin-react-hooks": "5.1.0-rc-c21bcd627b-20240624",
-    "globals": "^15.3.0",
-    "vite": "^5.2.0"
+    "globals": "^15.8.0",
+    "vite": "^5.3.3"
   }
 }

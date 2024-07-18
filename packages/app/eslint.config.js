@@ -31,6 +31,7 @@ export default [
       'import/no-unresolved': 0,
       'import/extensions': 0,
       'no-unused-expressions': ['error', { allowShortCircuit: true }],
+      'react/react-in-jsx-scope': 0,
     },
   },
 ];
