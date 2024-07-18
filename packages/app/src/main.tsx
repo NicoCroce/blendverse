@@ -4,13 +4,10 @@ import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-import './index.css';
-
 import { Router } from './Infrastructure';
-import {
-  UsersServices,
-  UsersServicesClient,
-} from './Domains/Users/Services/UserServices';
+import { TrpcApi, trpcClientApi } from './clientApi';
+
+import './index.css';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,14 +21,11 @@ export const queryClient = new QueryClient({
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <UsersServices.Provider
-      client={UsersServicesClient}
-      queryClient={queryClient}
-    >
+    <TrpcApi.Provider client={trpcClientApi} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={Router} />
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
-    </UsersServices.Provider>
+    </TrpcApi.Provider>
   </React.StrictMode>,
 );

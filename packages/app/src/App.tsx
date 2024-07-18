@@ -2,24 +2,22 @@ import { useEffect, useState } from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css';
-import { Trpc } from './client';
 import { Outlet } from 'react-router-dom';
+import { UsersServices } from './Domains/Users/Services/UserServices';
 
 export const App = () => {
   const [count, setCount] = useState(0);
   const [userId, setUserId] = useState<string>('');
-  const { data, isLoading } = Trpc.userList.useQuery();
-  const { data: userFounded, refetch: fetchUserById } = Trpc.userById.useQuery(
-    userId,
-    {
+  const { data, isLoading } = UsersServices.userList.useQuery();
+  const { data: userFounded, refetch: fetchUserById } =
+    UsersServices.userById.useQuery(userId, {
       enabled: false,
-    },
-  );
+    });
 
   //**  Accedo a los datos almacenados en tRPC. */
-  const cacheUserList = Trpc.useUtils().userList;
+  const cacheUserList = UsersServices.useUtils().userList;
 
-  const addUser = Trpc.userCreate.useMutation({
+  const addUser = UsersServices.userCreate.useMutation({
     onMutate: async ({ name, mail, password }) => {
       cacheUserList.cancel();
       const preservedState = cacheUserList.getData();
