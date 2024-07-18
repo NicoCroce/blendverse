@@ -6,6 +6,6 @@ export class GetAllUsers implements IUseCase<User[]> {
   constructor(private userRepository: UserRepository) {}
 
   async execute() {
-    return await this.userRepository?.getUsers();
+    return await this.userRepository.getUsers();
   }
 }

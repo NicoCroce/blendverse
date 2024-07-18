@@ -6,3 +6,12 @@ export const Users = [
     password: '123456789',
   },
 ];
+
+export const Products = [
+  {
+    id: '0',
+    name: 'Remera',
+    description: 'Remera de color negro',
+    stock: 10,
+  },
+];

@@ -12,7 +12,7 @@ export class RegisterUser implements IUseCase<User> {
   constructor(private userRepository: UserRepository) {}
 
   async execute({ mail, name, password }: IExecuteInput) {
-    const newUser = new User('123123', mail, name, password);
+    const newUser = new User('', mail, name, password);
     return await this.userRepository.save(newUser);
   }
 }
