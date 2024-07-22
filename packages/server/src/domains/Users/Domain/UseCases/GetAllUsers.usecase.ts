@@ -5,7 +5,7 @@ import { UserRepository } from '../User.repository';
 export class GetAllUsers implements IUseCase<User[]> {
   constructor(private userRepository: UserRepository) {}
 
-  async execute() {
+  async execute(): Promise<User[]> {
     return await this.userRepository.getUsers();
   }
 }

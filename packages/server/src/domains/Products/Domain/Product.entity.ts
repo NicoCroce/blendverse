@@ -17,7 +17,7 @@ export class Product {
 
   get values() {
     return {
-      id: this._stock,
+      id: this._id,
       name: this._name,
       description: this._description,
       stock: this._stock,

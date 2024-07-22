@@ -29,7 +29,7 @@ export class UserService {
     });
   }
 
-  async getUser(id: string) {
+  async getUser(id: string): Promise<User> {
     const getUser = new GetUser(this.userRepository);
     return await executeUseCase<User, string>(getUser, id);
   }
