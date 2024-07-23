@@ -1,3 +1,17 @@
+import { useGetUsers } from '../../Hooks';
+
 export const UsersList = () => {
-  return <div>Listamos los usuarios</div>;
+  const { data, isLoading } = useGetUsers();
+
+  return (
+    <>
+      {isLoading ? (
+        <p>Cargando...</p>
+      ) : (
+        <ul>
+          {data?.map((user) => <li key={user.name}>{JSON.stringify(user)}</li>)}
+        </ul>
+      )}
+    </>
+  );
 };
