@@ -1,10 +1,11 @@
+import { Button } from '@app/Aplication/Components/ui/button';
 import { useAddUser } from '../Hooks';
 
 export const NewUser = () => {
   const { mutate, isPending } = useAddUser();
 
   return (
-    <button
+    <Button
       onClick={() =>
         mutate({
           name: crypto.randomUUID(),
@@ -15,6 +16,6 @@ export const NewUser = () => {
       disabled={isPending}
     >
       Agregar
-    </button>
+    </Button>
   );
 };
