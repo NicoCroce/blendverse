@@ -2,5 +2,32 @@
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": ["source.fixAll.eslint"],
-  "eslint.validate": ["javascript", "javascriptreact", "typescript", "vue"]
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "vue"],
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true
+  },
+  "hide-files.files": ["node_modules", ".vscode", ".husky"],
+  "folder-scopes.scopes": {
+    "src-users-server": {
+      "Monorepo": {
+        "scopedFolderPath": "",
+        "excludedPaths": ["packages/app/node_modules"]
+      }
+    },
+    "Front - APP": {
+      "Monorepo": {
+        "scopedFolderPath": "packages/app/src"
+      }
+    },
+    "Server - SRC": {
+      "Monorepo": {
+        "scopedFolderPath": "packages/server/src"
+      }
+    }
+  }
 }

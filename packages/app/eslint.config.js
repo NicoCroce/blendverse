@@ -4,12 +4,17 @@ import { fixupConfigRules } from '@eslint/compat';
 import reactHooks from 'eslint-plugin-react-hooks';
 import BaseEslitConfig from '../../eslint.config.js';
 
+const ignores = {
+  ignores: ['tailwind.config.js'],
+};
+
 export default [
   { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
   { languageOptions: { parserOptions: { ecmaFeatures: { jsx: true } } } },
   { languageOptions: { globals: globals.browser } },
   ...BaseEslitConfig,
   ...fixupConfigRules(pluginReactConfig),
+  ignores,
   {
     plugins: {
       'react-hooks': reactHooks,
