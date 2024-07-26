@@ -8,6 +8,16 @@ export class ProductController {
   getProducts = () =>
     procedure.query(async () => await this.productService.getllProducts());
 
+  getProduct = () =>
+    procedure
+      .input(z.string().min(1, 'ID is required'))
+      .query(async ({ input }) => await this.productService.getProduct(input));
+
+  getStock = () =>
+    procedure
+      .input(z.string().min(1, 'ID id required'))
+      .query(async ({ input }) => await this.productService.getStock(input));
+
   createProduct = () =>
     procedure
       .input(

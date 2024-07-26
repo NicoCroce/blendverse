@@ -3,6 +3,8 @@ import {
   CreateProduct,
   DeleteProduct,
   GetAllProducts,
+  GetProduct,
+  GetStockProduct,
   ICreateProductInput,
   IUpdateStockInput,
   Product,
@@ -38,5 +40,15 @@ export class ProductsService {
   async updateStock({ id, stock }: IUpdateStockInput) {
     const _updateStock = new UpdateStock(this.productsRepository);
     return await executeUseCase(_updateStock, { id, stock });
+  }
+
+  async getStock(id: string): Promise<number | null> {
+    const _getStock = new GetStockProduct(this.productsRepository);
+    return await executeUseCase(_getStock, id);
+  }
+
+  async getProduct(id: string): Promise<Product | null> {
+    const _getProduct = new GetProduct(this.productsRepository);
+    return await executeUseCase(_getProduct, id);
   }
 }

@@ -5,4 +5,5 @@ export interface ProductsRepository {
   create(product: Product): Promise<Product>;
   updateStock(id: string, stock: number): Promise<Product>;
   delete(id: string): Promise<Product>;
+  getProduct(id: string): Promise<Product | null>;
 }

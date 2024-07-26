@@ -32,4 +32,11 @@ export class ProductsRepositoryImplementation implements ProductsRepository {
     const { name, description, stock } = await this.Db.deleteProduct(id);
     return new Product(id, name, description, stock);
   }
+
+  async getProduct(id: string): Promise<Product | null> {
+    const product = await this.Db.getProduct(id);
+    if (!product) return null;
+    const { name, description, stock } = product;
+    return new Product(id, name, description, stock);
+  }
 }

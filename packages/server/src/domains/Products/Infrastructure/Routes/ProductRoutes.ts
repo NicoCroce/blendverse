@@ -5,4 +5,6 @@ export const ProductRoutes = {
   createProduct: productController.createProduct(),
   deleteProduct: productController.deleteProduct(),
   updateStock: productController.updateStock(),
+  getProduct: productController.getProduct(),
+  getStock: productController.getStock(),
 };
