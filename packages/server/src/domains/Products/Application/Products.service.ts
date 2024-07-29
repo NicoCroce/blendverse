@@ -4,8 +4,10 @@ import {
   DeleteProduct,
   GetAllProducts,
   GetProduct,
+  GetSomeInfoProduct,
   GetStockProduct,
   ICreateProductInput,
+  IGetSomeInfoProductInput,
   IUpdateStockInput,
   Product,
   ProductsRepository,
@@ -50,5 +52,12 @@ export class ProductsService {
   async getProduct(id: string): Promise<Product | null> {
     const _getProduct = new GetProduct(this.productsRepository);
     return await executeUseCase(_getProduct, id);
+  }
+
+  async getSomeInfoProduct(
+    input: IGetSomeInfoProductInput,
+  ): Promise<Record<string, unknown> | null> {
+    const _getInfo = new GetSomeInfoProduct(this.productsRepository);
+    return await executeUseCase(_getInfo, input);
   }
 }

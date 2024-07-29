@@ -52,4 +52,32 @@ export class ProductsLocalDatabase {
     Products.splice(index, 1);
     return deletedProduct;
   };
+
+  getInfoProduct = async ({
+    productId,
+    params,
+  }: {
+    productId: string;
+    params: string | string[];
+  }): Promise<Record<string, unknown> | null> => {
+    await delay();
+    type TResponse = Record<string, unknown> | undefined;
+
+    const product: TResponse = Products.find((p) => p.id === productId);
+    const response: TResponse = {};
+
+    if (!product) return null;
+
+    if (typeof params === 'string') {
+      response[params] = product[params];
+    }
+
+    if (Array.isArray(params)) {
+      params.forEach((value) => {
+        response[value] = product[value];
+      });
+    }
+
+    return response;
+  };
 }

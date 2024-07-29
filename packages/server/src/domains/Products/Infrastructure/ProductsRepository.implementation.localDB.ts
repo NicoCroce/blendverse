@@ -39,4 +39,11 @@ export class ProductsRepositoryImplementation implements ProductsRepository {
     const { name, description, stock } = product;
     return new Product(id, name, description, stock);
   }
+
+  async getProductInfo(
+    productId: string,
+    params: string | string[],
+  ): Promise<Record<string, unknown> | null> {
+    return await this.Db.getInfoProduct({ productId, params });
+  }
 }

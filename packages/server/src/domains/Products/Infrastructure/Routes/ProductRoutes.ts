@@ -7,4 +7,5 @@ export const ProductRoutes = {
   updateStock: productController.updateStock(),
   getProduct: productController.getProduct(),
   getStock: productController.getStock(),
+  getInfo: productController.getSomeInfoProduct(),
 };

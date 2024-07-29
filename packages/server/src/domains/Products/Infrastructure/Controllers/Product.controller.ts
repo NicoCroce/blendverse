@@ -51,4 +51,17 @@ export class ProductController {
         async ({ input: { id, stock } }) =>
           await this.productService.updateStock({ id, stock }),
       );
+
+  getSomeInfoProduct = () =>
+    procedure
+      .input(
+        z.object({
+          productId: z.string().min(1, ''),
+          params: z.union([z.string(), z.array(z.string())]),
+        }),
+      )
+      .query(
+        async ({ input: { productId, params } }) =>
+          await this.productService.getSomeInfoProduct({ productId, params }),
+      );
 }
