@@ -3,11 +3,13 @@ import * as trpcExpress from '@trpc/server/adapters/express';
 
 // created for each request
 export const createContext = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   req,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   res,
-}: trpcExpress.CreateExpressContextOptions) => ({}); // no context
+}: trpcExpress.CreateExpressContextOptions) => {
+  console.log(`🟢 ${req.method} : ${req.path} => params: `, req.query);
+  return {};
+};
 
 type Context = Awaited<ReturnType<typeof createContext>>;
 
