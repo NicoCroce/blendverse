@@ -1,6 +1,12 @@
 import { useState } from 'react';
 import { useGetUser } from '../Hooks';
 import { Input } from '@app/Aplication/Components/ui/input';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+} from '@app/Aplication/Components/ui/card';
+import { Title } from '@app/Aplication/Components/Typography/Title';
 
 export const SearchUser = () => {
   const [userId, setUserId] = useState<string>('');
@@ -16,7 +22,14 @@ export const SearchUser = () => {
         className="max-w-[300px]"
       />
       <button onClick={() => refetch()}>Search</button>
-      <pre>{JSON.stringify(data)}</pre>
+      {data && (
+        <Card>
+          <CardHeader>
+            <Title variant="h3">Detalle de Usuario</Title>
+          </CardHeader>
+          <CardContent>{JSON.stringify(data)}</CardContent>
+        </Card>
+      )}
     </div>
   );
 };

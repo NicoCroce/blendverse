@@ -22,6 +22,7 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@tanstack/react-query": "^5.51.1",
     "@tanstack/react-query-devtools": "5.0.0-alpha.91",
+    "@tanstack/react-table": "^8.19.3",
     "@trpc/client": "11.0.0-rc.417",
     "@trpc/react-query": "11.0.0-rc.417",
     "class-variance-authority": "^0.7.0",

@@ -1,8 +1,8 @@
-import { Button } from '@app/Aplication/Components/ui/button';
+import { Button } from '@app/Aplication/Components';
 import { useAddUser } from '../Hooks';
 
 export const NewUser = () => {
-  const { mutate, isPending } = useAddUser();
+  const { mutate } = useAddUser();
 
   return (
     <Button
@@ -13,7 +13,6 @@ export const NewUser = () => {
           password: '123456789',
         })
       }
-      disabled={isPending}
     >
       Agregar
     </Button>

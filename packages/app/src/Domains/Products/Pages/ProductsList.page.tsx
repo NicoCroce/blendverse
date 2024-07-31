@@ -1,9 +1,10 @@
+import { Title } from '@app/Aplication/Components/Typography/Title';
 import { ListProducts } from '../Components';
 
 export const ProductsListPage = () => {
   return (
     <div>
-      <h1>Página de Productos</h1>
+      <Title variant="h1">Listado de productos</Title>
       <ListProducts />
     </div>
   );

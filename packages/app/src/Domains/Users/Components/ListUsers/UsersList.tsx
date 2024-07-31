@@ -1,4 +1,6 @@
 import { useGetUsers } from '../../Hooks';
+import { columns } from './ColumnsUsersTable';
+import { DataTable } from './DataTable';
 
 export const UsersList = () => {
   const { data, isLoading } = useGetUsers();
@@ -8,9 +10,9 @@ export const UsersList = () => {
       {isLoading ? (
         <p>Cargando...</p>
       ) : (
-        <ul>
-          {data?.map((user) => <li key={user.name}>{JSON.stringify(user)}</li>)}
-        </ul>
+        <div className="container mx-auto py-10">
+          <DataTable columns={columns} data={data || []} />
+        </div>
       )}
     </>
   );

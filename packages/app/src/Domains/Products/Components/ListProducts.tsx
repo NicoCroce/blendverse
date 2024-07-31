@@ -1,6 +1,7 @@
 import { Link, To } from 'react-router-dom';
 import { useDeleteProduct, useGetProducts } from '../Hooks';
 import { PRODUCTS_DETAIL_ROUTE } from '../ProductsRoutes';
+import { Button } from '@app/Aplication/Components/ui/button';
 
 export const ListProducts = () => {
   const { data, isLoading } = useGetProducts();
@@ -24,9 +25,13 @@ export const ListProducts = () => {
               {id}
               {name}
               {stock}
-              <button type="button" onClick={handleDelete(id)}>
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={handleDelete(id)}
+              >
                 Borrar
-              </button>
+              </Button>
               <Link to={detailPath(id)}>Detalles</Link>
             </li>
           ))}
