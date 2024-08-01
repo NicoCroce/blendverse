@@ -1,4 +1,4 @@
-import { IUseCase } from '@server/Application';
+import { AppError, IUseCase } from '@server/Application';
 import { ProductsRepository } from '../Products.repository';
 
 export interface IGetSomeInfoProductInput {
@@ -15,6 +15,15 @@ export class GetSomeInfoProduct
     productId,
     params,
   }: IGetSomeInfoProductInput): Promise<Record<string, unknown> | null> {
-    return await this.productsRepository.getProductInfo(productId, params);
+    const product = await this.productsRepository.getProductInfo(
+      productId,
+      params,
+    );
+
+    if (!product) {
+      throw new AppError('No se encontró el producto');
+    }
+
+    return product;
   }
 }
