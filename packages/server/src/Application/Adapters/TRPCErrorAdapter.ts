@@ -17,7 +17,7 @@ export class TRPCErrorAdapter implements IErrorAdapter<TRPCError> {
     console.error('🔴 Unhandled error:', error);
     return new TRPCError({
       code: 'INTERNAL_SERVER_ERROR',
-      message: 'An unexpected error occurred, nico',
+      message: 'An unexpected error occurred',
     });
   }
 
