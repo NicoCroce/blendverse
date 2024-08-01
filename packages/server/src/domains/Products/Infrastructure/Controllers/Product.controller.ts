@@ -25,11 +25,17 @@ export class ProductController {
           name: z.string(),
           description: z.string(),
           stock: z.number(),
+          price: z.number(),
         }),
       )
       .mutation(
-        async ({ input: { name, description, stock } }) =>
-          await this.productService.createProduct(name, description, stock),
+        async ({ input: { name, description, stock, price } }) =>
+          await this.productService.createProduct(
+            name,
+            description,
+            stock,
+            price,
+          ),
       );
 
   deleteProduct = () =>
@@ -56,12 +62,12 @@ export class ProductController {
     procedure
       .input(
         z.object({
-          productId: z.string().min(1, ''),
+          productId: z.string().min(1, 'ID Requerido de tipo string'),
           params: z.union([z.string(), z.array(z.string())]),
         }),
       )
       .query(
-        async ({ input: { productId, params } }) =>
-          await this.productService.getSomeInfoProduct({ productId, params }),
+        async ({ input }) =>
+          await this.productService.getSomeInfoProduct(input),
       );
 }

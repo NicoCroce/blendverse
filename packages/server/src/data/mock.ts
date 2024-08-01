@@ -13,5 +13,6 @@ export const Products = [
     name: 'Remera',
     description: 'Remera de color negro',
     stock: 10,
+    price: 100,
   },
 ];

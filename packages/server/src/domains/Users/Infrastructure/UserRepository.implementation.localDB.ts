@@ -6,14 +6,15 @@ export class UserRepositoryImplementation implements UserRepository {
 
   async getUsers(): Promise<User[]> {
     const users = await this.Db.getUsersList();
-    return users.map(
-      ({ id, name, mail, password }) => new User(id, mail, name, password),
-    );
+    return users.map(({ id, name, mail }) => new User(id, mail, name));
   }
 
   async save(user: User): Promise<User> {
-    const { id, mail, name, password } = await this.Db.addUser(user.values);
-    return new User(id, mail, name, password);
+    const { id, mail, name } = await this.Db.addUser({
+      ...user.values,
+      password: user.password || '',
+    });
+    return new User(id, mail, name);
   }
 
   async findUser(id: string): Promise<User | null> {
@@ -21,7 +22,7 @@ export class UserRepositoryImplementation implements UserRepository {
     if (!userFound) {
       return null;
     }
-    const { id: userId, mail, name, password } = userFound;
-    return new User(userId, mail, name, password);
+    const { id: userId, mail, name } = userFound;
+    return new User(userId, mail, name);
   }
 }

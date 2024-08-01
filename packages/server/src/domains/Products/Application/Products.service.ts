@@ -21,12 +21,14 @@ export class ProductsService {
     name: string,
     description: string,
     stock: number,
+    price: number,
   ): Promise<Product> {
     const _createProduct = new CreateProduct(this.productsRepository);
     return await executeUseCase<Product, ICreateProductInput>(_createProduct, {
       name,
       description,
       stock,
+      price,
     });
   }
 

@@ -16,10 +16,12 @@ export class ProductsLocalDatabase {
     name,
     description,
     stock,
+    price,
   }: {
     name: string;
     description: string;
     stock: number;
+    price: number;
   }) => {
     await delay();
 
@@ -28,6 +30,7 @@ export class ProductsLocalDatabase {
       name,
       description,
       stock,
+      price,
     };
 
     Products.push(newProduct);
