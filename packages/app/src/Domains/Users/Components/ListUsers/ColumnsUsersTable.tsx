@@ -1,5 +1,5 @@
 import { Badge } from '@app/Aplication/Components/ui/badge';
-import { faKey } from '@fortawesome/free-solid-svg-icons';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ColumnDef } from '@tanstack/react-table';
 
@@ -7,7 +7,6 @@ export type TUser = {
   id: string;
   mail: string;
   name: string;
-  password: string;
 };
 
 export const columns: ColumnDef<TUser>[] = [
@@ -21,19 +20,15 @@ export const columns: ColumnDef<TUser>[] = [
   },
   {
     accessorKey: 'name',
-    header: 'Nombre',
-  },
-  {
-    accessorKey: 'password',
     header: () => (
-      <div className="text-right flex justify-end items-center">
-        <FontAwesomeIcon icon={faKey} className="p-2 cursor-pointer" />
-        <span>Contraseña</span>
+      <div className="flex items-center justify-end">
+        <FontAwesomeIcon className="p-2" icon={faUser} />
+        <span>Nombre</span>
       </div>
     ),
     cell: ({ row }) => (
       <div className="text-right">
-        <Badge variant="destructive">{row.getValue('password')}</Badge>
+        <Badge>{row.getValue('name')}</Badge>
       </div>
     ),
   },

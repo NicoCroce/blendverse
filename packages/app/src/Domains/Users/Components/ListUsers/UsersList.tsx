@@ -1,6 +1,6 @@
 import { useGetUsers } from '../../Hooks';
 import { columns } from './ColumnsUsersTable';
-import { DataTable } from './DataTable';
+import { DataTable } from '../../../../Aplication/Components/DataTable';
 
 export const UsersList = () => {
   const { data, isLoading } = useGetUsers();
