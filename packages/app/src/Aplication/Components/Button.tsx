@@ -1,3 +1,3 @@
-import { Button as LibButton } from './ui/button';
+import { Button as LibButton, ButtonProps } from './ui/button';
 
-export const Button = ({ ...props }) => <LibButton {...props} />;
+export const Button = ({ ...props }: ButtonProps) => <LibButton {...props} />;
