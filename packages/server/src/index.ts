@@ -1,6 +1,6 @@
 //require('module-alias/register');
-import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
+import express, { Express, Request, Response } from 'express';
 import { initMiddlewares } from './Infrastructure/Middlewares';
 
 dotenv.config();
