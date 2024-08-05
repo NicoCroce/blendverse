@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Input } from '@app/Aplication/Components/ui/input';
-import { useMatch } from 'react-router-dom';
+import { useMatch, useNavigate } from 'react-router-dom';
 import { USERS_ROUTE, USERS_SEARCH_DETAIL_ROUTE } from '../UsersRoutes';
 import { Button } from '@app/Aplication/Components';
 import { OutletSheet } from '@app/Aplication/Components/OutletSheet';
@@ -12,8 +12,11 @@ export const SearchUser = () => {
     !!isInDetail || false,
   );
 
+  const navigate = useNavigate();
+
   const handleSearch = () => {
     if (userId) {
+      navigate(USERS_SEARCH_DETAIL_ROUTE.replace(':id', userId));
       setIsSheetOpen(true);
     }
   };
@@ -30,11 +33,12 @@ export const SearchUser = () => {
       />
 
       <Button onClick={handleSearch}>Search</Button>
+
       <OutletSheet
-        setIsSheetOpen={setIsSheetOpen}
         open={isSheetOpen}
+        setIsSheetOpen={setIsSheetOpen}
         navigateToOnClose={USERS_ROUTE}
-      />
+      ></OutletSheet>
     </div>
   );
 };

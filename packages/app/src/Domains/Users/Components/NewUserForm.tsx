@@ -49,6 +49,11 @@ export const NewUserForm = () => {
     navigate(USERS_ROUTE);
   };
 
+  const handleCancel = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    navigate(-1);
+  };
+
   const { formState } = form;
 
   return (
@@ -101,11 +106,7 @@ export const NewUserForm = () => {
           )}
         ></FormField>
         <div className="flex justify-stretch gap-4">
-          <Button
-            className="flex-1"
-            variant="outline"
-            onClick={() => navigate(-1)}
-          >
+          <Button className="flex-1" variant="outline" onClick={handleCancel}>
             Cancelar
           </Button>
           <Button type="submit" className="flex-1">
