@@ -1,4 +1,5 @@
 import { Variant, motion } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 
 type Props = {
   children: React.ReactNode;
@@ -19,7 +20,9 @@ const variants: TVariants = {
 };
 
 const AnimatedLayout = ({ children }: Props): React.JSX.Element => {
-  return <>{children}</>;
+  const { state } = useLocation();
+  console.log(state);
+  if (state === 'no-animate') return <>{children}</>;
   return (
     <motion.div
       initial="hidden"

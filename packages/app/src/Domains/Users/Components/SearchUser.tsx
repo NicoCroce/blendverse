@@ -16,7 +16,9 @@ export const SearchUser = () => {
 
   const handleSearch = () => {
     if (userId) {
-      navigate(USERS_SEARCH_DETAIL_ROUTE.replace(':id', userId));
+      navigate(USERS_SEARCH_DETAIL_ROUTE.replace(':id', userId), {
+        state: 'no-animate',
+      });
       setIsSheetOpen(true);
     }
   };

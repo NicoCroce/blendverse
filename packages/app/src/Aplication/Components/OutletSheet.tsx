@@ -17,7 +17,7 @@ export const OutletSheet = ({
   const handleCloseSheet = () => {
     setIsSheetOpen(false);
     if (!navigateToOnClose) return;
-    setTimeout(() => navigate(navigateToOnClose), 300);
+    setTimeout(() => navigate(navigateToOnClose, { state: 'no-animate' }), 300);
   };
 
   return (
