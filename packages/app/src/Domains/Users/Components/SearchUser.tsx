@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Input } from '@app/Aplication/Components/ui/input';
-import { useMatch, useNavigate } from 'react-router-dom';
+import { Link, useMatch } from 'react-router-dom';
 import { USERS_ROUTE, USERS_SEARCH_DETAIL_ROUTE } from '../UsersRoutes';
-import { Button } from '@app/Aplication/Components';
 import { OutletSheet } from '@app/Aplication/Components/OutletSheet';
+import { Button } from '@app/Aplication/Components';
 
 export const SearchUser = () => {
   const [userId, setUserId] = useState<string>('');
@@ -12,19 +12,10 @@ export const SearchUser = () => {
     !!isInDetail || false,
   );
 
-  const navigate = useNavigate();
-
-  const handleSearch = () => {
-    if (userId) {
-      navigate(USERS_SEARCH_DETAIL_ROUTE.replace(':id', userId), {
-        state: 'no-animate',
-      });
-      setIsSheetOpen(true);
-    }
-  };
+  const to = (userId && USERS_SEARCH_DETAIL_ROUTE.replace(':id', userId)) || '';
 
   return (
-    <div className="flex gap-4 items-stretch">
+    <div className="flex gap-4 items-stretch bg-white">
       <Input
         type="text"
         name="search"
@@ -32,15 +23,17 @@ export const SearchUser = () => {
         value={userId}
         onChange={({ target }) => setUserId(target.value)}
         className="max-w-[300px]"
+        placeholder="ID a buscar"
       />
-
-      <Button onClick={handleSearch}>Search</Button>
+      <Link to={to}>
+        <Button>Search</Button>
+      </Link>
 
       <OutletSheet
         open={isSheetOpen}
         setIsSheetOpen={setIsSheetOpen}
         navigateToOnClose={USERS_ROUTE}
-      ></OutletSheet>
+      />
     </div>
   );
 };

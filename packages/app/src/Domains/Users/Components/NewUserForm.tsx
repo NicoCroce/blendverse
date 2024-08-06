@@ -43,7 +43,6 @@ export const NewUserForm = () => {
   });
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
     mutate(values);
     toast.success('Usuario agregado');
     navigate(USERS_ROUTE);

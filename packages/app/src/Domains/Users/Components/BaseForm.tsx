@@ -39,7 +39,6 @@ export const BaseForm = <TScheme extends z.ZodType<any, any, any>>({
   });
 
   const handleSubmitInternal = (values: z.infer<TScheme>) => {
-    console.log('pasaaa');
     handleSubmit(values);
   };
 

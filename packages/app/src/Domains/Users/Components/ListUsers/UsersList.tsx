@@ -10,7 +10,7 @@ export const UsersList = () => {
       {isLoading ? (
         <p>Cargando...</p>
       ) : (
-        <div className="container mx-auto py-10">
+        <div className="w-full">
           <DataTable columns={columns} data={data || []} />
         </div>
       )}
