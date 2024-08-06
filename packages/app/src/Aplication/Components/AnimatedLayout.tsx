@@ -1,5 +1,4 @@
 import { Variant, motion } from 'framer-motion';
-import { useLocation } from 'react-router-dom';
 
 type Props = {
   children: React.ReactNode;
@@ -20,9 +19,7 @@ const variants: TVariants = {
 };
 
 const AnimatedLayout = ({ children }: Props): React.JSX.Element => {
-  const { state } = useLocation();
-  console.log(state);
-  if (state === 'no-animate') return <>{children}</>;
+  return <>{children}</>;
   return (
     <motion.div
       initial="hidden"
@@ -30,7 +27,6 @@ const AnimatedLayout = ({ children }: Props): React.JSX.Element => {
       exit="exit"
       variants={variants}
       transition={{ duration: 0.2, type: 'tween' }}
-      className="bg-white m-2 p-2 --tw-shadow-color: #f9fafb;"
     >
       {children}
     </motion.div>

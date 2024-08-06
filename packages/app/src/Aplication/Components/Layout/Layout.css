@@ -1,0 +1,22 @@
+.main {
+  grid-area: main;
+}
+
+.navbar {
+  grid-area: navbar;
+}
+
+.layout {
+  display: grid;
+  grid-template:
+    'navbar' auto
+    'main' 100%;
+}
+
+@media (width >= 600px) {
+  .layout {
+    grid-template:
+      'navbar main' auto /
+      250px auto;
+  }
+}

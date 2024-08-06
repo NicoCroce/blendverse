@@ -13,17 +13,15 @@ export const NavBar = () => {
   };
 
   return (
-    <header>
-      <nav className="flex gap-2 p-4">
-        <NavLink to={USERS_ROUTE} className={isActiveLink}>
-          <FontAwesomeIcon icon={faUser} />
-          Usuarios
-        </NavLink>
-        <NavLink to={PRODUCTS_ROUTE} className={isActiveLink}>
-          <FontAwesomeIcon icon={faFile} />
-          Productos
-        </NavLink>
-      </nav>
-    </header>
+    <nav className="navbar flex flex-col gap-2 p-4">
+      <NavLink to={USERS_ROUTE} className={isActiveLink}>
+        <FontAwesomeIcon icon={faUser} />
+        Usuarios
+      </NavLink>
+      <NavLink to={PRODUCTS_ROUTE} className={isActiveLink}>
+        <FontAwesomeIcon icon={faFile} />
+        Productos
+      </NavLink>
+    </nav>
   );
 };

@@ -1,0 +1,22 @@
+.page {
+  .page-title {
+    padding: 24px;
+    z-index: 1;
+    width: 100%;
+    background: white;
+  }
+
+  .page-content {
+    padding: 24px;
+    overflow: auto;
+    height: 100dvh;
+    padding-bottom: 150px;
+  }
+
+  @media (width <= 600px) {
+    .page-title {
+      text-align: right;
+      padding-left: 20%;
+    }
+  }
+}
