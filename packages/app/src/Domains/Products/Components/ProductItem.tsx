@@ -1,3 +1,4 @@
+import { Skeleton } from '@app/Aplication/Components/ui/skeleton';
 import { FocusEventHandler, useState } from 'react';
 
 interface ProductItemProps {
@@ -34,3 +35,7 @@ export const ProductItem = ({
     </ul>
   );
 };
+
+export const ProductItemSkeleton = () => (
+  <Skeleton className="h-[125px] w-[250px] rounded-xl" />
+);

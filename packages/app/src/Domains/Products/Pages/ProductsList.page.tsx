@@ -1,12 +1,13 @@
-import { Title } from '@app/Aplication/Components/Typography/Title';
 import { ListProducts } from '../Components';
 import AnimatedLayout from '@app/Aplication/Components/AnimatedLayout';
+import { Page } from '@app/Aplication/Components/Page/Page';
 
 export const ProductsListPage = () => {
   return (
-    <AnimatedLayout>
-      <Title variant="h1">Listado de productos</Title>
-      <ListProducts />
-    </AnimatedLayout>
+    <Page title="Listado de productos">
+      <AnimatedLayout>
+        <ListProducts />
+      </AnimatedLayout>
+    </Page>
   );
 };

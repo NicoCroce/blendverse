@@ -1,24 +1,42 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useGetProductDetail } from '../Hooks/useGetProductDetail';
-import { ProductItem } from '../Components/ProductItem';
+import { ProductItem, ProductItemSkeleton } from '../Components/ProductItem';
 import { useUpdateStock } from '../Hooks/useUpdateStock';
+import { Page } from '@app/Aplication/Components/Page/Page';
+import { toast } from 'sonner';
+import { PRODUCTS_ROUTE } from '../ProductsRoutes';
+import { useEffect } from 'react';
 
 export const ProductsDetailPage = () => {
-  const { id } = useParams();
-  const currentProduct = useGetProductDetail(id);
+  const { id = '' } = useParams();
+  const { currentProduct, isError, isLoading } = useGetProductDetail(id);
   const { handleStockChange } = useUpdateStock();
+  const navigate = useNavigate();
 
-  if (!currentProduct || !id) return <h2>Producto no encontrado</h2>;
+  useEffect(() => {
+    if (isError) {
+      toast.error('Producto no encontrado');
+      navigate(PRODUCTS_ROUTE);
+    }
+  }, [navigate, isError]);
 
-  const { name, description, stock } = currentProduct;
+  const RenderItem = () => {
+    if (!currentProduct) return null;
+    const { name, description, stock } = currentProduct;
+    return (
+      <ProductItem
+        id={id}
+        name={name}
+        description={description}
+        stock={stock}
+        handleStockChange={handleStockChange}
+      />
+    );
+  };
 
   return (
-    <ProductItem
-      id={id}
-      name={name}
-      description={description}
-      stock={stock}
-      handleStockChange={handleStockChange}
-    />
+    <Page title="Detalle de producto">
+      {isLoading ? <ProductItemSkeleton /> : <RenderItem />}
+    </Page>
   );
 };

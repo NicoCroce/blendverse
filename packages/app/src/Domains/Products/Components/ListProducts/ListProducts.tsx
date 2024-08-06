@@ -1,6 +1,7 @@
 import { useGetProducts } from '../../Hooks';
 import { DataTable } from '@app/Aplication/Components/DataTable';
 import { columns } from './ColumnsProductsTable';
+import { Skeleton } from '@app/Aplication/Components/ui/skeleton';
 
 export const ListProducts = () => {
   const { data, isLoading } = useGetProducts();
@@ -8,11 +9,9 @@ export const ListProducts = () => {
   return (
     <div>
       {isLoading ? (
-        <h3>Loading...</h3>
+        <Skeleton className="w-full h-[300px] rounded-xl" />
       ) : (
-        <div className="container mx-auto py-10">
-          <DataTable columns={columns} data={data || []} />
-        </div>
+        <DataTable columns={columns} data={data || []} />
       )}
     </div>
   );
