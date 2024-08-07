@@ -59,7 +59,7 @@ export const NewUserForm = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="space-y-8 w-[80%] m-auto"
+        className="space-y-8 m-auto"
       >
         <FormField
           name="name"

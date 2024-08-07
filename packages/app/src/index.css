@@ -67,3 +67,14 @@
     @apply bg-background text-foreground;
   }
 }
+
+:root {
+  --menu-width: 250px;
+  --menu-height: 56px;
+}
+
+@media (width <= 768px) {
+  :root {
+    --menu-width: 0px;
+  }
+}
