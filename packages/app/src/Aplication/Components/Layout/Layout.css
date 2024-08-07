@@ -1,22 +1,53 @@
 .main {
   grid-area: main;
+  height: calc(100% - var(--menu-height));
 }
 
 .navbar {
   grid-area: navbar;
+  padding-top: 56px;
+  &.is-desktop {
+    display: none;
+    position: fixed;
+    width: var(--menu-width);
+    height: 100%;
+    z-index: 11;
+    box-shadow: 1px 0px 3px #a3a3a3;
+  }
+}
+
+.header {
+  grid-area: header;
+  position: fixed;
+  z-index: 10;
+  right: 0;
+  left: var(--menu-width);
+  width: 100%;
+  height: var(--menu-height);
+  background-color: white;
 }
 
 .layout {
   display: grid;
   grid-template:
-    'navbar' auto
-    'main' 100%;
+    'header' var(--menu-height)
+    'main' 100% / auto;
 }
 
-@media (width >= 600px) {
+@media (width >= 768px) {
+  .navbar {
+    &.is-desktop {
+      display: block;
+    }
+  }
   .layout {
     grid-template:
-      'navbar main' auto /
-      250px auto;
+      'navbar header' var(--menu-height)
+      'navbar main' auto
+      /
+      var(--menu-width) auto;
+  }
+  .main {
+    height: 100%;
   }
 }
