@@ -2,12 +2,14 @@ import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import { TrpcApi, trpcClientApi } from './clientApi';
 
 import './index.css';
 import { Layout } from './Aplication/Components/Layout/Layout';
+import { registerEventViewport } from './Aplication/Helpers';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -18,6 +20,8 @@ export const queryClient = new QueryClient({
     },
   },
 });
+
+registerEventViewport(queryClient);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
