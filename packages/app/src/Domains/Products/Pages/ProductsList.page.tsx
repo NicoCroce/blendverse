@@ -1,6 +1,6 @@
-import { ListProducts } from '../Components';
 import AnimatedLayout from '@app/Aplication/Components/AnimatedLayout';
 import { Page } from '@app/Aplication/Components/Page/Page';
+import { ListProducts } from '../Components';
 
 export const ProductsListPage = () => {
   return (

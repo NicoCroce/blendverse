@@ -1,13 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { DeleteProduct } from './DeleteProduct';
-
-export type TProduct = {
-  id: string;
-  name: string;
-  description: string;
-  stock: number;
-  price: number;
-};
+import { ActionsProduct } from './ActionsProduct';
+import { TProduct } from '../../Entities/Product';
 
 export const columns: ColumnDef<TProduct>[] = [
   {
@@ -42,6 +35,6 @@ export const columns: ColumnDef<TProduct>[] = [
   {
     accessorKey: 'action',
     header: () => <div className="text-right">Acción</div>,
-    cell: DeleteProduct,
+    cell: ActionsProduct,
   },
 ];

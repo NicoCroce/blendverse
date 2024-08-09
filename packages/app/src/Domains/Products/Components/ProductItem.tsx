@@ -1,3 +1,12 @@
+import { Badge } from '@app/Aplication/Components/ui/badge';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@app/Aplication/Components/ui/card';
+import { Input } from '@app/Aplication/Components/ui/input';
 import { Skeleton } from '@app/Aplication/Components/ui/skeleton';
 import { FocusEventHandler, useState } from 'react';
 
@@ -19,23 +28,30 @@ export const ProductItem = ({
   const [newStock, setNewStock] = useState(stock);
 
   return (
-    <ul>
-      <li>ID: {id}</li>
-      <li>NAME: {name}</li>
-      <li>Description: {description}</li>
-      <input
-        type="number"
-        name="stock"
-        id="stock"
-        min={0}
-        value={newStock}
-        onChange={({ target: { value } }) => setNewStock(Number(value))}
-        onBlur={handleStockChange(id)}
-      />
-    </ul>
+    <Card>
+      <CardHeader>
+        <CardTitle>{name}</CardTitle>
+        <CardDescription>{description}</CardDescription>
+      </CardHeader>
+      <CardContent className="flex gap-4">
+        <Input
+          className="w-[50%]"
+          type="number"
+          name="stock"
+          id="stock"
+          min={0}
+          value={newStock}
+          onChange={({ target: { value } }) => setNewStock(Number(value))}
+          onBlur={handleStockChange(id)}
+        />
+        <Badge variant="secondary" className="w-[50%]">
+          ID: {id}
+        </Badge>
+      </CardContent>
+    </Card>
   );
 };
 
 export const ProductItemSkeleton = () => (
-  <Skeleton className="h-[125px] w-[250px] rounded-xl" />
+  <Skeleton className="h-[125px] w-[100%] rounded-xl" />
 );

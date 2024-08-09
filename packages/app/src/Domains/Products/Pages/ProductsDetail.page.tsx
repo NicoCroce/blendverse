@@ -35,7 +35,7 @@ export const ProductsDetailPage = () => {
   };
 
   return (
-    <Page title="Detalle de producto">
+    <Page title="Detalle de producto" size="small">
       {isLoading ? <ProductItemSkeleton /> : <RenderItem />}
     </Page>
   );

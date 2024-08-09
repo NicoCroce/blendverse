@@ -8,7 +8,7 @@ export const UsersList = () => {
   return (
     <>
       {isLoading ? (
-        <p>Cargando...</p>
+        <DataTable.Skeleton />
       ) : (
         <div className="w-full">
           <DataTable columns={columns} data={data || []} />

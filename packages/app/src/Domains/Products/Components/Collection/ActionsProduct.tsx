@@ -4,11 +4,11 @@ import { Link, To } from 'react-router-dom';
 import { useDeleteProduct } from '../../Hooks';
 import { PRODUCTS_DETAIL_ROUTE } from '../../ProductsRoutes';
 import { Row } from '@tanstack/react-table';
-import { TProduct } from './ColumnsProductsTable';
 import { AlertDialogTrigger } from '@app/Aplication/Components/ui/alert-dialog';
 import { AlertDialogCancelConfirm } from '@app/Aplication/Components/AlertDialog';
+import { TProduct } from '../../Entities/Product';
 
-export const DeleteProduct = ({ row }: { row: Row<TProduct> }) => {
+export const ActionsProduct = ({ row }: { row: Row<TProduct> }) => {
   const { mutate } = useDeleteProduct();
   const handleDelete = (id: string) => mutate(id);
   const detailPath = (id: string): To =>
