@@ -12,6 +12,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { Skeleton } from './ui/skeleton';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -75,3 +76,11 @@ export const DataTable = <TData, TValue>({
     </div>
   );
 };
+
+export type TDataTable = typeof DataTable;
+
+const SkeletonTable = () => (
+  <Skeleton className="w-full h-[400px] rounded-xl" />
+);
+
+DataTable.Skeleton = SkeletonTable;
