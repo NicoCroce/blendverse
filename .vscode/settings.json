@@ -9,7 +9,9 @@
     "**/.hg": true,
     "**/CVS": true,
     "**/.DS_Store": true,
-    "**/Thumbs.db": true
+    "**/Thumbs.db": true,
+    "{p,[!p]*,pa,p[!a]*,pac,pa[!c]*,pack,pac[!k]*,packa,pack[!a]*,packag,packa[!g]*,package,packag[!e]*,package[!s]*,packages?*}": true,
+    "packages/{a,[!a]*,ap,a[!p]*,ap[!p]*,app?*}": true
   },
   "hide-files.files": ["node_modules", ".vscode", ".husky"],
   "folder-scopes.scopes": {
@@ -21,13 +23,16 @@
     },
     "Front - APP": {
       "Monorepo": {
-        "scopedFolderPath": "packages/app/src"
+        "scopedFolderPath": "packages/app"
       }
     },
     "Server - SRC": {
       "Monorepo": {
-        "scopedFolderPath": "packages/server/src"
+        "scopedFolderPath": "packages/server"
       }
     }
-  }
+  },
+  "tailwindCSS.experimental.classRegex": [
+    ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  ]
 }
