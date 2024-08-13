@@ -12,7 +12,7 @@ interface PageProps {
 }
 
 export const Page = ({ children, title, size = 'full' }: PageProps) => {
-  const classContainer = clsx('w-full', {
+  const classContainer = clsx('w-full flex flex-col gap-4 md:gap-6', {
     'max-w-[600px] mx-auto': size === 'small',
   });
 
