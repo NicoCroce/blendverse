@@ -1,7 +1,7 @@
 import { App } from '@app/App';
-import { NavBar } from '../NavBar/NavBar';
+import { NavBar } from '../NavBar';
 import './Layout.css';
-import { Header } from '../Header/Header';
+import { Header } from '../Header';
 
 export const Layout = () => {
   return (

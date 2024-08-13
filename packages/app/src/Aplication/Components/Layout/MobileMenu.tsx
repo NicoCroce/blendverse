@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { NavBar } from '../NavBar/NavBar';
+import { NavBar } from '../Layout/NavBar';
 import {
   Sheet,
   SheetContent,
@@ -9,7 +9,7 @@ import {
   SheetTitle,
 } from '../ui/sheet';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
-import { Button } from '../Button';
+import { Button } from '../ui/button';
 
 export const MobileMenu = () => {
   const [isOpen, setOpen] = useState(false);

@@ -1,8 +1,8 @@
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button } from '../Button';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { MobileMenu } from '../MobileMenu/MobileMenu';
+import { MobileMenu } from './MobileMenu';
+import { Button } from '../ui/button';
 
 export const Header = () => {
   const { pathname } = useLocation();

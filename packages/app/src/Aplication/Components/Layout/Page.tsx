@@ -1,5 +1,9 @@
+/**
+ * This component is used to create page structures. All "Pages" must be contained within this component.
+ */
+
 import clsx from 'clsx';
-import { Title } from '../Typography/Title';
+import { Title } from '../Molecules/Title';
 
 interface PageProps {
   children: React.ReactNode;

@@ -1,5 +1,10 @@
+/**
+ * This component is used to load a sheet via navigation, so it uses an Outlet as children.
+ * Este componente es utilizado para cargar un sheet mediante navegación, por eso utiliza un Outlet como children.
+ */
+
 import { Outlet, useNavigate } from 'react-router-dom';
-import { Sheet } from './ui/sheet';
+import { Sheet } from '../ui/sheet';
 
 interface OutletSheetProps {
   open: boolean;

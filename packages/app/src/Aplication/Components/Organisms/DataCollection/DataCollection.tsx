@@ -1,4 +1,4 @@
-import { useGlobalStore } from '../Hooks';
+import { useGlobalStore } from '@app/Aplication/Hooks';
 import { DataList } from './DataList';
 import { DataTable } from './DataTable';
 

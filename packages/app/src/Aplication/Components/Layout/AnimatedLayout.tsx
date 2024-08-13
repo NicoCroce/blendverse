@@ -18,7 +18,7 @@ const variants: TVariants = {
   exit: { opacity: 0.3, translateY: 5, scale: 0.96 },
 };
 
-const AnimatedLayout = ({ children }: Props): React.JSX.Element => {
+export const AnimatedLayout = ({ children }: Props): React.JSX.Element => {
   return <>{children}</>;
   return (
     <motion.div
@@ -32,5 +32,3 @@ const AnimatedLayout = ({ children }: Props): React.JSX.Element => {
     </motion.div>
   );
 };
-
-export default AnimatedLayout;
