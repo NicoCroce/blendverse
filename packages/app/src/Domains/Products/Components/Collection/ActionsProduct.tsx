@@ -1,11 +1,11 @@
-import { faEye, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, To } from 'react-router-dom';
+import { Row } from '@tanstack/react-table';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { AlertDialogCancelConfirm } from '@app/Aplication/Components';
+import { AlertDialogTrigger } from '@app/Aplication/Components/ui/alert-dialog';
 import { useDeleteProduct } from '../../Hooks';
 import { PRODUCTS_DETAIL_ROUTE } from '../../ProductsRoutes';
-import { Row } from '@tanstack/react-table';
-import { AlertDialogTrigger } from '@app/Aplication/Components/ui/alert-dialog';
-import { AlertDialogCancelConfirm } from '@app/Aplication/Components/AlertDialog';
 import { TProduct } from '../../Entities/Product';
 
 export const ActionsProduct = ({ row }: { row: Row<TProduct> }) => {

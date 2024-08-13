@@ -1,6 +1,6 @@
+import { DataTable } from '@app/Aplication/Components/Organisms/DataCollection/DataTable';
 import { useGetUsers } from '../../Hooks';
 import { columns } from './ColumnsUsersTable';
-import { DataTable } from '../../../../Aplication/Components/DataTable';
 
 export const UsersList = () => {
   const { data, isLoading } = useGetUsers();

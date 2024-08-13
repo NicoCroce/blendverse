@@ -1,11 +1,12 @@
-import { useNavigate, useParams } from 'react-router-dom';
-import { useGetProductDetail } from '../Hooks/useGetProductDetail';
-import { ProductItem, ProductItemSkeleton } from '../Components/ProductItem';
-import { useUpdateStock } from '../Hooks/useUpdateStock';
-import { Page } from '@app/Aplication/Components/Page/Page';
-import { toast } from 'sonner';
-import { PRODUCTS_ROUTE } from '../ProductsRoutes';
 import { useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+
+import { Page } from '@app/Aplication/Components';
+import { toast } from 'sonner';
+
+import { useUpdateStock, useGetProductDetail } from '../Hooks';
+import { PRODUCTS_ROUTE } from '../ProductsRoutes';
+import { ProductItem, ProductItemSkeleton } from '../Components/ProductItem';
 
 export const ProductsDetailPage = () => {
   const { id = '' } = useParams();

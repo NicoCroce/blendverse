@@ -4,7 +4,7 @@ export const useCreateProduct = () => {
   const cacheProductsList = ProductsServices.useUtils().getProducts;
 
   return ProductsServices.createProduct.useMutation({
-    onMutate: async ({ name, stock, description }) => {
+    onMutate: async ({ name, stock, description, price }) => {
       cacheProductsList.cancel();
       const preservedState = cacheProductsList.getData();
       type TData = typeof preservedState;
@@ -16,6 +16,7 @@ export const useCreateProduct = () => {
           name,
           stock,
           description,
+          price,
         },
       ];
 

@@ -5,7 +5,7 @@ export const useAddUser = () => {
   const cacheUserList = UsersServices.useUtils().userList;
 
   return UsersServices.userCreate.useMutation({
-    onMutate: async ({ name, mail, password }) => {
+    onMutate: async ({ name, mail }) => {
       cacheUserList.cancel();
       const preservedState = cacheUserList.getData();
       type TData = typeof preservedState;
@@ -16,7 +16,6 @@ export const useAddUser = () => {
           id: String(state?.length),
           name,
           mail,
-          password,
         },
       ];
 

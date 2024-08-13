@@ -1,3 +1,5 @@
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import { useAddUser } from '../Hooks';
 import { z } from 'zod';
 import {
@@ -9,12 +11,11 @@ import {
   FormLabel,
   FormMessage,
 } from '@app/Aplication/Components/ui/form';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@app/Aplication/Components/ui/input';
 import { Button } from '@app/Aplication/Components';
 import { toast } from 'sonner';
-import { useNavigate } from 'react-router-dom';
+
 import { USERS_ROUTE } from '../UsersRoutes';
 
 const formSchema = z.object({

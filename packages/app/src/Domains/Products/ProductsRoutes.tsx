@@ -1,6 +1,5 @@
 import { Route } from 'react-router-dom';
-import { ProductsListPage } from './Pages';
-import { ProductsDetailPage } from './Pages/ProductsDetail.page';
+import { ProductsDetailPage, ProductsListPage } from './Pages';
 
 export const PRODUCTS_ROUTE = '/products';
 export const PRODUCTS_DETAIL_ROUTE = `${PRODUCTS_ROUTE}/:id`;

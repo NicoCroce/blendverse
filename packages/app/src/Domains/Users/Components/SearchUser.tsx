@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Input } from '@app/Aplication/Components/ui/input';
 import { Link, useMatch } from 'react-router-dom';
-import { USERS_ROUTE, USERS_SEARCH_DETAIL_ROUTE } from '../UsersRoutes';
-import { OutletSheet } from '@app/Aplication/Components/OutletSheet';
+import { OutletSheet } from '@app/Aplication/Components';
 import { Button } from '@app/Aplication/Components';
+
+import { USERS_ROUTE, USERS_SEARCH_DETAIL_ROUTE } from '../UsersRoutes';
 
 export const SearchUser = () => {
   const [userId, setUserId] = useState<string>('');

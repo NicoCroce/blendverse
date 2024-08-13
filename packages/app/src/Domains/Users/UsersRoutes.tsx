@@ -1,7 +1,6 @@
 import { Route } from 'react-router-dom';
-import { UsersListPage } from './Pages/UsersList.page';
-import { UsersNewPage } from './Pages/UsersNewPage';
-import { UsersDetailSearch } from './Components/UsersDetailSearch';
+import { UsersListPage, UsersNewPage } from './Pages';
+import { UsersDetailSearch } from './Components';
 
 export const USERS_ROUTE = '/users';
 export const USERS_NEW_ROUTE = `${USERS_ROUTE}/new`;

@@ -5,11 +5,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-import { TrpcApi, trpcClientApi } from './clientApi';
-
 import './index.css';
-import { Layout } from './Aplication/Components/Layout/Layout';
+import { Layout } from './Aplication/Components/Layout/AppLayout/Layout';
 import { registerEventViewport } from './Aplication/Helpers';
+import { TrpcApi, trpcClientApi } from './Infrastructure/Services/clientApi';
 
 export const queryClient = new QueryClient({
   defaultOptions: {

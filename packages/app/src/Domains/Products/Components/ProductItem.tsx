@@ -1,3 +1,4 @@
+import { FocusEventHandler, useState } from 'react';
 import { Badge } from '@app/Aplication/Components/ui/badge';
 import {
   Card,
@@ -8,7 +9,6 @@ import {
 } from '@app/Aplication/Components/ui/card';
 import { Input } from '@app/Aplication/Components/ui/input';
 import { Skeleton } from '@app/Aplication/Components/ui/skeleton';
-import { FocusEventHandler, useState } from 'react';
 
 interface ProductItemProps {
   id: string;

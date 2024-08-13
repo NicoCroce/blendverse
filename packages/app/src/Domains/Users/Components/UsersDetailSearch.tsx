@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Card } from '@app/Aplication/Components/ui/card';
 import {
   SheetContent,
@@ -10,7 +11,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useGetUser } from '../Hooks';
 import { USERS_ROUTE } from '../UsersRoutes';
 import { toast } from 'sonner';
-import { useEffect } from 'react';
 
 export const UsersDetailSearch = () => {
   const { id = '' } = useParams();
