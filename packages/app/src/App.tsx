@@ -2,8 +2,10 @@ import { Routes, useLocation } from 'react-router-dom';
 import { Toaster } from './Aplication/Components/ui/sonner';
 import { AnimatePresence } from 'framer-motion';
 
-import './App.css';
 import { AllRoutes } from './Infrastructure';
+
+import './App.css';
+
 export const App = () => {
   const location = useLocation();
   return (

@@ -1,6 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { ActionsProduct } from './ActionsProduct';
 import { TProduct } from '../../Entities/Product';
+import { format } from '@app/Aplication';
 
 export const columns: ColumnDef<TProduct>[] = [
   {
@@ -23,13 +24,12 @@ export const columns: ColumnDef<TProduct>[] = [
     accessorKey: 'price',
     header: () => <div className="text-right">Precio</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue('price'));
-      const formatted = new Intl.NumberFormat('es-AR', {
-        style: 'currency',
-        currency: 'ARS',
-      }).format(amount);
-
-      return <div className="text-right font-medium">{formatted}</div>;
+      const amount: string = row.getValue('price');
+      return (
+        <div className="text-right font-medium">
+          {format.toCurrency(0, amount)}
+        </div>
+      );
     },
   },
   {

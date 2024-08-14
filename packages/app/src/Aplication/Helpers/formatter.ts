@@ -6,7 +6,7 @@ const CURRENCY_MAP = {
 type TCurrencyMap = typeof CURRENCY_MAP;
 
 /** 0 = AR / 1 = US */
-type TCurrencyKey = keyof typeof CURRENCY_MAP;
+type TCurrencyKey = keyof TCurrencyMap;
 /** "ARS" | "USD" */
 type TCurrency = TCurrencyMap[TCurrencyKey]['currency'];
 /** "es-AR" */
