@@ -103,105 +103,31 @@ Este proyecto sigue estos principios para asegurar un desarrollo sostenible, fle
      - **Definición:** Las entidades son objetos de negocio que tienen atributos y comportamientos. Representan los datos centrales del sistema y su lógica asociada.
      - **Uso:** Definir modelos de datos que son fundamentales para la lógica de negocio. Ejemplo: `User.ts`.
 
-     ```tsx
-     // src/domain/entities/User.ts
-     import { UserEmail, UserId, UserName, UserPassword } from './ValueObjects';
-
-     export class User {
-       private readonly _id: UserId;
-       private readonly _mail: UserEmail;
-       private readonly _name: UserName;
-       private readonly _password: UserPassword;
-
-       constructor(id: string, mail: string, name: string, password: string) {
-         this._id = new UserId(id);
-         this._mail = new UserEmail(mail);
-         this._name = new UserName(name);
-         this._password = new UserPassword(password);
-       }
-
-       toJSON() {
-         return this.values;
-       }
-
-       get values() {
-         return {
-           id: this._id.value,
-           mail: this._mail.value,
-           name: this._name.value,
-           password: this._password.value,
-         };
-       }
-     }
-     ```
+     https://github.com/NicoCroce/blendverse/blob/34d3e42d74c321e9cb6c71103a20adaec242c4b1/packages/server/src/domains/Users/Domain/User.entity.ts#L1-L31
 
      Dentro de dominio se definen las **entidades**, pero son las entidades de los objetos que necesita el área de producto. Es decir, lo que se va a estar representando en la aplicación y/o los datos requeridos por la gente de producto.
      Ej: _Un usuario tiene **name, email, id, etc** pero no necesita el token, los roles, etc. Eso es otra entidad que los puede relacionar._
 
    - **1.2 Value Object**
+     Como se puede observar en el código anterior `private readonly _mail: UserEmail;` es de tipo `UserEmail`y eso es un ValueObject.
      Mapea los datos que van a ser representación de la Entidad. La entidad en sí es una interfaz, que hace referencia a lo que vamos a guardar, mientras que ValueObject es un middleware que hace un mapeo y valida.
      Esta clase/función recibe los datos que envían los casos de uso. Es decir que desde acá defino la estructura de lo que tiene que hacer. En los value objects voy a definir las reglas de negocio, como por ejemplo en el mail, la regex que valide el formato.
 
-     ```tsx
-     import { AppError } from '@server/Application';
-
-     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-     export class UserEmail {
-       constructor(readonly value: string) {
-         this.ensureValueIsDefined();
-         this.ensureEmailFormat();
-       }
-
-       private ensureValueIsDefined(): void {
-         if (!this.value && typeof this.value !== 'string') {
-           throw new AppError('Email must be definend');
-         }
-       }
-
-       private ensureEmailFormat(): void {
-         if (!emailRegex.test(this.value)) {
-           throw new AppError('Email format invalid');
-         }
-       }
-     }
-     ```
+     https://github.com/NicoCroce/blendverse/blob/34d3e42d74c321e9cb6c71103a20adaec242c4b1/packages/server/src/domains/Users/Domain/ValueObjects/UserEmail.value.ts#L1-L21
 
    - **1.3 Repositorios (Repositories):**
 
      - **Definición:** Las interfaces de repositorios definen los métodos para interactuar con la capa de persistencia de datos (base de datos). No contienen implementación concreta.
-     - **Uso:** Proveer abstracciones para operaciones CRUD y otras interacciones con los datos. Ejemplo: `UserRepository.ts`.
+     - **Uso:** Proveer abstracciones para operaciones CRUD y otras interacciones con los datos. Ejemplo: `User.repository.ts`.
 
-     ```tsx
-     // src/domain/repositories/UserRepository.ts
-     import { User } from '../entities/User';
-
-     export interface UserRepository {
-       save(user: User): Promise<void>;
-       findById(id: string): Promise<User | null>;
-     }
-     ```
+     https://github.com/NicoCroce/blendverse/blob/34d3e42d74c321e9cb6c71103a20adaec242c4b1/packages/server/src/domains/Users/Domain/User.repository.ts#L1-L7
 
    - **1.4 Casos de Uso (Use Cases):**
 
      - **Definición:** Los casos de uso (o interacciones) contienen la lógica de aplicación que no pertenece a una entidad en particular. Representan acciones que pueden ser realizadas en el sistema.
-     - **Uso:** Implementar la lógica que orquesta las entidades y repositorios para cumplir con un requisito de negocio específico. Ejemplo: `CreateUser.ts`.
+     - **Uso:** Implementar la lógica que orquesta las entidades y repositorios para cumplir con un requisito de negocio específico. Ejemplo: `GetAllUsers.usecase.ts`.
 
-     ```tsx
-     // src/domain/use-cases/CreateUser.ts
-     import { User } from '../entities/User';
-     import { UserRepository } from '../repositories/UserRepository';
-
-     export class CreateUser {
-       constructor(private userRepository: UserRepository) {}
-
-       async execute(name: string, email: string): Promise<User> {
-         const user = new User(Date.now().toString(), name, email);
-         await this.userRepository.save(user);
-         return user;
-       }
-     }
-     ```
+     https://github.com/NicoCroce/blendverse/blob/34d3e42d74c321e9cb6c71103a20adaec242c4b1/packages/server/src/domains/Users/Domain/UseCases/GetAllUsers.usecase.ts#L1-L11
 
    ### 2. Aplicación (Application)
 
