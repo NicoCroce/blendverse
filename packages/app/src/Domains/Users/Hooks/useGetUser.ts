@@ -1,4 +1,4 @@
-import { UsersServices } from '../Services';
+import { UsersService } from '../UserService';
 
 export const useGetUser = (userId: string) =>
-  UsersServices.userById.useQuery(userId);
+  UsersService.userById.useQuery(userId);

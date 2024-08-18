@@ -1,3 +1,3 @@
-import { UsersServices } from '../Services';
+import { UsersService } from '../UserService';
 
-export const useGetUsers = () => UsersServices.userList.useQuery();
+export const useGetUsers = () => UsersService.userList.useQuery();

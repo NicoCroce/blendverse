@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ProductsServices } from '../Services';
+import { ProductsService } from '../ProductsService';
 
 type TProduct = {
   id: string;
@@ -11,13 +11,13 @@ type TProduct = {
 
 export const useGetProductDetail = (id: string) => {
   const [currentProduct, setCurrentProduct] = useState<TProduct | null>(null);
-  const queryProductDetail = ProductsServices.getProduct.useQuery(id, {
+  const queryProductDetail = ProductsService.getProduct.useQuery(id, {
     enabled: false,
   });
 
   const { isFetched, isFetching, refetch } = queryProductDetail;
 
-  const cacheProductsList = ProductsServices.useUtils().getProducts;
+  const cacheProductsList = ProductsService.useUtils().getProducts;
 
   useEffect(() => {
     // Extraemos los datos de la caché una vez al inicio del useEffect

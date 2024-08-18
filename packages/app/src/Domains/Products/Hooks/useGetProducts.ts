@@ -1,3 +1,3 @@
-import { ProductsServices } from '../Services';
+import { ProductsService } from '../ProductsService';
 
-export const useGetProducts = () => ProductsServices.getProducts.useQuery();
+export const useGetProducts = () => ProductsService.getProducts.useQuery();

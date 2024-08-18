@@ -1,9 +1,9 @@
-import { ProductsServices } from '../Services';
+import { ProductsService } from '../ProductsService';
 
 export const useCreateProduct = () => {
-  const cacheProductsList = ProductsServices.useUtils().getProducts;
+  const cacheProductsList = ProductsService.useUtils().getProducts;
 
-  return ProductsServices.createProduct.useMutation({
+  return ProductsService.createProduct.useMutation({
     onMutate: async ({ name, stock, description, price }) => {
       cacheProductsList.cancel();
       const preservedState = cacheProductsList.getData();
