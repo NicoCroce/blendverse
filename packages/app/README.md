@@ -2,16 +2,17 @@
 
 # Tabla de contenidos
 
-1. [Responsabilidades de cada Capa](https://www.notion.so/APP-9ddbed5d9a9443179a7aba09572e8d44?pvs=21)
-2. [Estructura dentro del dominio](https://www.notion.so/APP-9ddbed5d9a9443179a7aba09572e8d44?pvs=21)
-3. [Ejemplo aplicado a un dominio](https://www.notion.so/APP-9ddbed5d9a9443179a7aba09572e8d44?pvs=21)
-    1. [Definición de Rutas](https://www.notion.so/APP-9ddbed5d9a9443179a7aba09572e8d44?pvs=21)
-    2. [Definición de Páginas](https://www.notion.so/APP-9ddbed5d9a9443179a7aba09572e8d44?pvs=21)
-    3. [Definición de Componentes](https://www.notion.so/APP-9ddbed5d9a9443179a7aba09572e8d44?pvs=21)
-    4. [Definición de Hooks](https://www.notion.so/APP-9ddbed5d9a9443179a7aba09572e8d44?pvs=21)
-    5. [Definición del Servicio](https://www.notion.so/APP-9ddbed5d9a9443179a7aba09572e8d44?pvs=21)
-4. [Estado global](https://www.notion.so/APP-9ddbed5d9a9443179a7aba09572e8d44?pvs=21)
-5. [Tecnologías y libs](https://www.notion.so/APP-9ddbed5d9a9443179a7aba09572e8d44?pvs=21)
+1. [Responsabilidades de cada Capa](https://github.com/NicoCroce/blendverse/tree/main/packages/app#responsabilidades-de-cada-capa)
+2. [Estructura dentro del dominio](https://github.com/NicoCroce/blendverse/tree/main/packages/app#estructura-dentro-del-dominio)
+3. [Ejemplo aplicado a un dominio](https://github.com/NicoCroce/blendverse/tree/main/packages/app#estructura-dentro-del-dominio)
+    1. [Definición de Rutas](https://github.com/NicoCroce/blendverse/tree/main/packages/app#1-definici%C3%B3n-de-rutas)
+    2. [Definición de Páginas](https://github.com/NicoCroce/blendverse/tree/main/packages/app#2-definici%C3%B3n-de-p%C3%A1ginas)
+    3. [Definición de Componentes](https://github.com/NicoCroce/blendverse/tree/main/packages/app#3-definici%C3%B3n-de-componentes)
+    4. [Definición de Hooks](https://github.com/NicoCroce/blendverse/tree/main/packages/app#4-definici%C3%B3n-de-hooks)
+    5. [Definición del Servicio](https://github.com/NicoCroce/blendverse/tree/main/packages/app#5-definici%C3%B3n-del-servicio)
+4. [Estado global](https://github.com/NicoCroce/blendverse/tree/main/packages/app#estado-global)
+5. [Helpers](https://github.com/NicoCroce/blendverse/tree/main/packages/app#helpers)
+6. [Tecnologías y libs](https://github.com/NicoCroce/blendverse/tree/main/packages/app#tecnolog%C3%ADas-y-libs)
 
 # Responsabilidades de cada Capa
 
