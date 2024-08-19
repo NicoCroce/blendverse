@@ -8,8 +8,9 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "prepare": "husky",
-    "app": "pnpm --filter app",
-    "common": "pnpm --filter common"
+    "app:dev": "pnpm --filter app dev",
+    "server:dev": "pnpm --filter server dev",
+    "tsc": "tsc --noEmit ./**/src/**/*.ts"
   },
   "keywords": [],
   "author": "",
@@ -44,6 +45,6 @@
     "**/*": "prettier --write --ignore-unknown"
   },
   "engines": {
-    "node": ">=v21.5.0"
+    "node": ">=v22.6.0"
   }
 }
