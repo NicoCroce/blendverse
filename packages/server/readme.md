@@ -2,13 +2,13 @@
 
 # Tabla de contenidos
 
-1. [¿Qué es Clean Architecture y cuáles son sus ventajas?](https://www.notion.so/Server-d28dfa1a1548425f9de53f858acbc91e?pvs=21)
-2. [Responsabilidades de cada Capa](https://www.notion.so/Server-d28dfa1a1548425f9de53f858acbc91e?pvs=21)
-3. [Ejemplo aplicado a un Dominio](https://www.notion.so/Server-d28dfa1a1548425f9de53f858acbc91e?pvs=21)
-    1. [Domain](https://www.notion.so/Server-d28dfa1a1548425f9de53f858acbc91e?pvs=21)
-    2. [Application](https://www.notion.so/Server-d28dfa1a1548425f9de53f858acbc91e?pvs=21)
-    3. [Infrastructure](https://www.notion.so/Server-d28dfa1a1548425f9de53f858acbc91e?pvs=21)
-4. [Tecnologías y libs](https://www.notion.so/Server-d28dfa1a1548425f9de53f858acbc91e?pvs=21)
+1. [¿Qué es Clean Architecture y cuáles son sus ventajas?](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#clean-architecture)
+2. [Responsabilidades de cada Capa](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#responsabilidades-de-cada-capa)
+3. [Ejemplo aplicado a un Dominio](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#ejemplo-aplicado-a-users)
+    1. [Domain](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#1-dominio-domain)
+    2. [Application](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#2-aplicaci%C3%B3n-application)
+    3. [Infrastructure](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#3-infraestructura-infrastructure)
+4. [Tecnologías y libs](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#tecnolog%C3%ADas-y-libs)
 
 # Clean Architecture
 
