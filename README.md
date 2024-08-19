@@ -11,9 +11,11 @@ En este caso, "Blendverse" sugiere un entorno en el que se unen tanto el backend
 
 # Tabla de contenidos
 
-1. [Contexto](https://www.notion.so/Blendverse-35cd39c8bd204e19afcbbc14e4dde2e8?pvs=21)
-2. [Tecnologías utilizadas](https://www.notion.so/Blendverse-35cd39c8bd204e19afcbbc14e4dde2e8?pvs=21)
-3. [Primeros pasos](https://www.notion.so/Blendverse-35cd39c8bd204e19afcbbc14e4dde2e8?pvs=21)
+1. [Contexto](https://github.com/NicoCroce/blendverse?tab=readme-ov-file#contexto)
+2. [Tecnologías utilizadas](https://github.com/NicoCroce/blendverse?tab=readme-ov-file#tecnolog%C3%ADas-utilizadas)
+3. [Primeros pasos](https://github.com/NicoCroce/blendverse?tab=readme-ov-file#primeros-pasos)
+4. [Aplicación](https://github.com/NicoCroce/blendverse/tree/main/packages/app#readme)
+5. [Servidor](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md)
 
 # Contexto
 
