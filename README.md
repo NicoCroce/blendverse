@@ -4,18 +4,18 @@
   <img src="https://github.com/user-attachments/assets/d6558622-7fa0-485e-9f75-2a0fe9c0aae8" width="512">
 </p>
 
-
 "Blendverse" captura la idea de un proyecto que integra diferentes tecnologías y frameworks de una manera armónica y fluida. El nombre es una combinación de "Blend," que significa mezclar o fusionar, y "Verse," derivado de "universe," que hace referencia a un espacio o entorno cohesivo.
 
-En este caso, "Blendverse" sugiere un entorno en el que se unen tanto el backend (con tRPC, Node.js, Typescript, Express) como el frontend (con React, Typescript, React Router DOM, TanstackQuery y shadcn). Esta fusión de tecnologías crea un universo propio donde todo se conecta de manera eficiente, enfatizando la integración y la interoperabilidad entre todas las partes del proyecto. 
+En este caso, "Blendverse" sugiere un entorno en el que se unen tanto el backend (con tRPC, Node.js, Typescript, Express) como el frontend (con React, Typescript, React Router DOM, TanstackQuery y shadcn). Esta fusión de tecnologías crea un universo propio donde todo se conecta de manera eficiente, enfatizando la integración y la interoperabilidad entre todas las partes del proyecto.
 
 # Tabla de contenidos
 
 1. [Contexto](https://github.com/NicoCroce/blendverse?tab=readme-ov-file#contexto)
 2. [Tecnologías utilizadas](https://github.com/NicoCroce/blendverse?tab=readme-ov-file#tecnolog%C3%ADas-utilizadas)
 3. [Primeros pasos](https://github.com/NicoCroce/blendverse?tab=readme-ov-file#primeros-pasos)
-4. [Aplicación](https://github.com/NicoCroce/blendverse/tree/main/packages/app#readme)
-5. [Servidor](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md)
+4. [Repositorios de Blendverse](https://github.com/NicoCroce/blendverse?tab=readme-ov-file#repositorios-de-blendverse)
+   1. [Server](https://github.com/NicoCroce/blendverse?tab=readme-ov-file#server)
+   2. [App](https://github.com/NicoCroce/blendverse?tab=readme-ov-file#app)
 
 # Contexto
 
@@ -34,19 +34,49 @@ Un **monorepo** es un único repositorio que alberga el código fuente de múlti
 
 En resumen, un monorepo puede mejorar la productividad, la coherencia del código y la coordinación entre equipos, especialmente en proyectos grandes y complejos que involucran múltiples servicios o módulos.
 
+# Repositorios de Blendverse
+
+## Server
+
+Este repositorio contiene una aplicación construida con **Node.js**, **Express**, **TypeScript**, y **tRPC**, siguiendo los principios de **Arquitectura Limpia**. El objetivo de este proyecto es crear una base escalable y mantenible para desarrollar servicios backend que interactúan de manera eficiente y segura con clientes frontend.
+
+### Características
+
+- **Node.js + Express**: Servidor backend robusto y ligero.
+- **TypeScript**: Tipado estático para un desarrollo más seguro y escalable.
+- **tRPC**: Comunicación tipo-safe entre el servidor y los clientes, eliminando la necesidad de definir contratos API manualmente.
+- **Arquitectura Limpia**: Separación clara de preocupaciones con capas de Dominio, Aplicación e Infraestructura, promoviendo un código mantenible y testeable.
+
+> Continuar leyendo la documentación en el [repositorio](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md)
+
+## App
+
+Este repositorio contiene una aplicación frontend moderna construida con **React**, **TypeScript**, **React Router DOM**, **TanStack Query**, **tRPC**, **Tailwind CSS**, y **shadcn**. Este stack tecnológico ofrece una solución robusta y escalable para desarrollar interfaces de usuario ricas, con una experiencia de desarrollo optimizada y un estilo moderno y adaptable.
+
+### Características
+
+- **React + TypeScript**: Desarrollo de interfaces de usuario dinámicas y tipadas, mejorando la mantenibilidad y la detección de errores en tiempo de desarrollo.
+- **React Router DOM**: Gestión de rutas y navegación en la aplicación, permitiendo transiciones fluidas entre vistas.
+- **TanStack Query**: Gestión eficiente del estado asincrónico, facilitando el manejo de datos remotos con cache, sincronización y optimización de solicitudes.
+- **tRPC**: Integración segura y tipo-safe entre el frontend y el backend, eliminando la necesidad de contratos API manuales.
+- **Tailwind CSS**: Framework de utilidades CSS que permite un diseño rápido y adaptable directamente desde el HTML.
+- **shadcn**: Conjunto de componentes UI estilizados y listos para usar, integrados con Tailwind CSS, para construir interfaces consistentes y modernas.
+
+> Continuar leyendo la documentación en el [repositorio](https://github.com/NicoCroce/blendverse/blob/main/packages/app/README.md)
+
 ## Tecnologías utilizadas
 
-## Arquitectura del proyecto
+### Arquitectura del proyecto
 
-**PNPM** 
+**PNPM**
 
 Es un gestor de paquetes para JavaScript que es más rápido y eficiente en el uso del espacio que otros gestores como npm o Yarn. PNPM utiliza un enfoque basado en enlaces simbólicos para compartir dependencias entre proyectos, lo que reduce significativamente el espacio en disco y mejora los tiempos de instalación.
 
 [Fast, disk space efficient package manager | pnpm](https://pnpm.io/es/)
 
-## Tecnologías y librerías en el server
+### Tecnologías y librerías en el server
 
-**Node.js** 
+**Node.js**
 
 Es un entorno de ejecución de JavaScript en el servidor. Permite ejecutar código JavaScript fuera del navegador, utilizando un modelo de E/S no bloqueante y orientado a eventos, ideal para aplicaciones escalables y de alto rendimiento.
 
@@ -58,7 +88,7 @@ Es un framework web minimalista y flexible para Node.js, que simplifica el manej
 
 [Express - Infraestructura de aplicaciones web Node.js](https://expressjs.com/es/)
 
-## Tecnologías y librerías en el front
+### Tecnologías y librerías en el front
 
 **React**
 
@@ -84,7 +114,7 @@ Es una biblioteca para gestionar la navegación en aplicaciones React. Proporcio
 
 [shadcn/ui](https://ui.shadcn.com/)
 
-## Tecnologías y librerías en el server y en el front
+### Tecnologías y librerías en el server y en el front
 
 **TypeScript**: Es un superset de JavaScript desarrollado por Microsoft que añade tipos estáticos al lenguaje. Esto permite detectar errores en tiempo de desarrollo, mejorar la autocompletación, y facilita el mantenimiento y escalabilidad de aplicaciones grandes. TypeScript se compila a JavaScript puro, lo que lo hace compatible con cualquier entorno donde JavaScript se ejecute, como navegadores y Node.js.
 
@@ -96,21 +126,20 @@ Es una biblioteca para gestionar la navegación en aplicaciones React. Proporcio
 
 # Primeros pasos
 
-1. Tener instalado [nodejs](https://nodejs.org/en/learn/getting-started/how-to-install-nodejs) `>=v22.6.0` 
-2. Instalar [PNPM](https://pnpm.io/es/installation) 
-3. Instalar las dependencias de `server` y `app` 
-    
-    ```bash
-    > pnpm install
-    ```
-    
+1. Tener instalado [nodejs](https://nodejs.org/en/learn/getting-started/how-to-install-nodejs) `>=v22.6.0`
+2. Instalar [PNPM](https://pnpm.io/es/installation)
+3. Instalar las dependencias de `server` y `app`
+
+   ```bash
+   > pnpm install
+   ```
+
 4. En el root del proyecto ejecutar
-    
-    ```bash
-    > pnpm server:dev
-    > pnpm app:dev
-    ```
-    
+
+   ```bash
+   > pnpm server:dev
+   > pnpm app:dev
+   ```
 
 > estos comandos se deben ejecutar en terminales aisladas
 

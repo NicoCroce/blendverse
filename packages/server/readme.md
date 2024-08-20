@@ -1,13 +1,15 @@
 # Server
 
+Este repositorio contiene una aplicación construida con **Node.js**, **Express**, **TypeScript**, y **tRPC**, siguiendo los principios de **Arquitectura Limpia**. El objetivo de este proyecto es crear una base escalable y mantenible para desarrollar servicios backend que interactúan de manera eficiente y segura con clientes frontend.
+
 # Tabla de contenidos
 
 1. [¿Qué es Clean Architecture y cuáles son sus ventajas?](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#clean-architecture)
 2. [Responsabilidades de cada Capa](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#responsabilidades-de-cada-capa)
 3. [Ejemplo aplicado a un Dominio](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#ejemplo-aplicado-a-users)
-    1. [Domain](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#1-dominio-domain)
-    2. [Application](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#2-aplicaci%C3%B3n-application)
-    3. [Infrastructure](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#3-infraestructura-infrastructure)
+   1. [Domain](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#1-dominio-domain)
+   2. [Application](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#2-aplicaci%C3%B3n-application)
+   3. [Infrastructure](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#3-infraestructura-infrastructure)
 4. [Tecnologías y libs](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#tecnolog%C3%ADas-y-libs)
 
 # Clean Architecture
@@ -26,7 +28,6 @@ El principio central es la "dependencia hacia adentro", donde las capas externas
 
 <img width="952" alt="image" src="https://github.com/user-attachments/assets/c321e2bd-5171-4067-a5f9-da0a825ebb24">
 
-
 ## ¿Cómo quedan vinculadas las capas pero continuan desacopladas?
 
 Esto se logra por medio de **Inyección de dependencias**
@@ -35,39 +36,39 @@ Esto se logra por medio de **Inyección de dependencias**
 
 ![proceso](https://github.com/user-attachments/assets/de5f790d-894a-4312-865d-dd0326260077)
 
-
 ### Responsabilidades de cada Capa
 
 1. **Domain (Dominio)**
-    - **Responsabilidad:** Contiene las entidades de negocio y las interfaces de los repositorios, así como los casos de uso.
-    - **Ejemplo:** Definición de un modelo de usuario y las operaciones que se pueden realizar con ese usuario.
+   - **Responsabilidad:** Contiene las entidades de negocio y las interfaces de los repositorios, así como los casos de uso.
+   - **Ejemplo:** Definición de un modelo de usuario y las operaciones que se pueden realizar con ese usuario.
 2. **Application (Aplicación)**
-    - **Responsabilidad:** Contiene los adaptadores y comunica a otros dominios. Esta capa interactúa con el dominio y la infraestructura.
-    - **Ejemplo:** Implementación de adaptadores para bases de datos y otros servicios externos.
+   - **Responsabilidad:** Contiene los adaptadores y comunica a otros dominios. Esta capa interactúa con el dominio y la infraestructura.
+   - **Ejemplo:** Implementación de adaptadores para bases de datos y otros servicios externos.
 3. **Infrastructure (Infraestructura)**
-    - **Responsabilidad:** Contiene la implementación concreta de los adaptadores y cualquier infraestructura necesaria (como controladores, configuraciones de bases de datos, etc.).
-    - **Ejemplo:** Controladores que manejan las solicitudes HTTP y las conexiones a la base de datos.
+   - **Responsabilidad:** Contiene la implementación concreta de los adaptadores y cualquier infraestructura necesaria (como controladores, configuraciones de bases de datos, etc.).
+   - **Ejemplo:** Controladores que manejan las solicitudes HTTP y las conexiones a la base de datos.
 4. **Config (Configuración)**
+
 - **Responsabilidad:** Contiene la configuración global de la aplicación.
 - **Ejemplo:** Configuración de conexión a bases de datos, variables de entorno, etc.
 
 ## Aclaraciones antes de comenzar
 
-El proyecto se encuentra segmentado por las capas mencionadas y al mismo tiempo posee una carpeta que contiene la misma estructura de Clean Architecture definida para cada dominio. 
+El proyecto se encuentra segmentado por las capas mencionadas y al mismo tiempo posee una carpeta que contiene la misma estructura de Clean Architecture definida para cada dominio.
 
-`domains` es una carpeta que contiene cada **dominio / feature / entidad / vertical /  sección** o como pueda identificarse. Es decir puede ser cada parte de la aplicación como ser *Users, Products, Orders, Payments, Auth, etc.* 
+`domains` es una carpeta que contiene cada **dominio / feature / entidad / vertical / sección** o como pueda identificarse. Es decir puede ser cada parte de la aplicación como ser _Users, Products, Orders, Payments, Auth, etc._
 
-`Application` define  Adaptadores, Interfaces, Entidades que sean globales a la aplicación y no correspondan a un dominio en particular. 
+`Application` define Adaptadores, Interfaces, Entidades que sean globales a la aplicación y no correspondan a un dominio en particular.
 
 `Insfrastructure` define la conexión global a BD, Auth, Routes, tRPC, middlewares, etc.
 
-`utils` librerías y helpers que no pertenecen a un dominio en particular y pueden ser utilizado entre todos. 
+`utils` librerías y helpers que no pertenecen a un dominio en particular y pueden ser utilizado entre todos.
 
 `data` es la carpeta que contiene los mocks de ejemplo.
 
 <img width="293" alt="root" src="https://github.com/user-attachments/assets/fe5b0294-881e-4409-919c-1b9b49c07614">
 
-Para entenderlo con más claridad, veamos un ejemplo dentro de `domains` 
+Para entenderlo con más claridad, veamos un ejemplo dentro de `domains`
 
 ## Ejemplo aplicado a Users
 
@@ -82,8 +83,7 @@ Para entenderlo con más claridad, veamos un ejemplo dentro de `domains`
 
 Dentro de dominio se definen las **entidades**, pero son las entidades de los objetos que necesita el área de producto. Es decir, lo que se va a estar representando en la aplicación y/o los datos requeridos por la gente de producto.
 
-> *Ej: Un usuario tiene **name, email, id, etc** pero no necesita el token, los roles, etc. Eso es otra entidad que los puede relacionar.*
-> 
+> _Ej: Un usuario tiene **name, email, id, etc** pero no necesita el token, los roles, etc. Eso es otra entidad que los puede relacionar._
 
 **1.2 Value Object**
 
@@ -112,12 +112,11 @@ Esta clase/función recibe los datos que envían los casos de uso. Es decir que 
 
 [https://github.com/NicoCroce/blendverse/blob/34d3e42d74c321e9cb6c71103a20adaec242c4b1/packages/server/src/domains/Users/Domain/UseCases/GetAllUsers.usecase.ts#L1-L11](https://github.com/NicoCroce/blendverse/blob/34d3e42d74c321e9cb6c71103a20adaec242c4b1/packages/server/src/domains/Users/Domain/UseCases/GetAllUsers.usecase.ts#L1-L11)
 
-Como se puede observar en este caso `userRepository`  es recibido por inyección de dependencia y utilizado dentro del caso de uso.
+Como se puede observar en este caso `userRepository` es recibido por inyección de dependencia y utilizado dentro del caso de uso.
 
 Cada caso de uso tiene solo un método `execute` que contiene la lógica a ejecutar.
 
 > Si bien en esta instancia se está almacenando el nuevo usuario en la base de datos, por el momento `se desconoce su implementación, solo se conoce su definición`, es decir que posee un método save pero no se conoce qué tipo de base de datos será ni su lenguaje.
-> 
 
 ### 2. Aplicación (Application)
 
@@ -128,8 +127,7 @@ Cada caso de uso tiene solo un método `execute` que contiene la lógica a ejecu
 
 [https://github.com/NicoCroce/blendverse/blob/043df19bb3d3e3a12ae14de9807e060eb70c9646/packages/server/src/domains/Users/Application/User.service.ts#L1-L36](https://github.com/NicoCroce/blendverse/blob/043df19bb3d3e3a12ae14de9807e060eb70c9646/packages/server/src/domains/Users/Application/User.service.ts#L1-L36)
 
-> En este caso esta clase contiene un método llamado  createUser  y recibe los datos que enviará al caso de uso. En este ejemplo no agrega una lógica adicional, solo ejecuta el caso de uso y nada más. En ejemplos más complejos esta capa resolverá validaciones o mapeos entre la capa de Infraestructura y la capa de Dominio.
-> 
+> En este caso esta clase contiene un método llamado createUser y recibe los datos que enviará al caso de uso. En este ejemplo no agrega una lógica adicional, solo ejecuta el caso de uso y nada más. En ejemplos más complejos esta capa resolverá validaciones o mapeos entre la capa de Infraestructura y la capa de Dominio.
 
 Continuando con el ejemplo, executeUseCase es un adaptador dentro de la misma capa, que permite ejecutar el caso de uso y así mismo validar su ejecución por medio de try catch.
 
@@ -145,7 +143,6 @@ Continuando con el ejemplo, executeUseCase es un adaptador dentro de la misma ca
 [https://github.com/NicoCroce/blendverse/blob/0f0f08f1a5830291a025ee665fd5ed5295a3f47b/packages/server/src/domains/Users/Infrastructure/Controllers/Users.controller.ts#L1-L29](https://github.com/NicoCroce/blendverse/blob/0f0f08f1a5830291a025ee665fd5ed5295a3f47b/packages/server/src/domains/Users/Infrastructure/Controllers/Users.controller.ts#L1-L29)
 
 > Como se puede observar en el ejempo, se utiliza tRPC. En esta capa se puede utilizar por ejemplo express.
-> 
 
 **3.2 Base de Datos (DB):**
 
@@ -163,7 +160,6 @@ En el siguiente código, podemos ver la implementación de la Interface previame
 [https://github.com/NicoCroce/blendverse/blob/0f0f08f1a5830291a025ee665fd5ed5295a3f47b/packages/server/src/domains/Users/Infrastructure/Database/UserRepository.implementation.localDB.ts#L1-L28](https://github.com/NicoCroce/blendverse/blob/0f0f08f1a5830291a025ee665fd5ed5295a3f47b/packages/server/src/domains/Users/Infrastructure/Database/UserRepository.implementation.localDB.ts#L1-L28)
 
 > Si utilizamos moongose por ejemplo para insertar un elemento en una colección, en este archivo deberemos ejecutar los métodos `create` o `save` propios del modelo definido en el paso anterior.
-> 
 
 **3.3 Rutas:**
 
@@ -175,7 +171,6 @@ En el siguiente código, podemos ver la implementación de la Interface previame
 [https://github.com/NicoCroce/blendverse/blob/0f0f08f1a5830291a025ee665fd5ed5295a3f47b/packages/server/src/domains/Users/Infrastructure/Routes/UserRoutes.ts#L1-L7](https://github.com/NicoCroce/blendverse/blob/0f0f08f1a5830291a025ee665fd5ed5295a3f47b/packages/server/src/domains/Users/Infrastructure/Routes/UserRoutes.ts#L1-L7)
 
 > En este código se encuentra la definición de un objeto, donde la `key` es la `ruta` y el `value` es el `controller`.
-> 
 
 **Exportar rutas**
 
@@ -185,7 +180,7 @@ Otro archivo importante es Router, ya que establece las rutas en tRPC y genera u
 
 **Implementar Rutas**
 
-Por último para tener todas las rutas funcionales, es necesario agregar en el archivo Router principal, las nuevas rutas creadas. 
+Por último para tener todas las rutas funcionales, es necesario agregar en el archivo Router principal, las nuevas rutas creadas.
 
 [https://github.com/NicoCroce/blendverse/blob/0f0f08f1a5830291a025ee665fd5ed5295a3f47b/packages/server/src/Infrastructure/Routes/Router.ts#L6](https://github.com/NicoCroce/blendverse/blob/0f0f08f1a5830291a025ee665fd5ed5295a3f47b/packages/server/src/Infrastructure/Routes/Router.ts#L6)
 
@@ -199,18 +194,17 @@ Definir las rutas en la capa de infraestructura mantiene la lógica de enrutamie
 
 **3.4 User.app (archivo init del dominio)**
 
-Una vez definido todo, se debe: 
+Una vez definido todo, se debe:
 
 1. Instanciar la implementación del repositorio.
 2. Instanciar el service, inyectado la instancia del repositorio.
-3. Instanciar el controlador, inyectando la instancia del service. 
+3. Instanciar el controlador, inyectando la instancia del service.
 
 > De esta forma se vinculan todas las capas por medio de la inyección de dependencias.
-> 
 
 [https://github.com/NicoCroce/blendverse/blob/0f0f08f1a5830291a025ee665fd5ed5295a3f47b/packages/server/src/domains/Users/user.app.ts#L5-L7](https://github.com/NicoCroce/blendverse/blob/0f0f08f1a5830291a025ee665fd5ed5295a3f47b/packages/server/src/domains/Users/user.app.ts#L5-L7)
 
-*Como* *puede observarse, el archivo `*.app` se encuentra en el `root` de cada `dominio`.* 
+_Como_ _puede observarse, el archivo `_.app`se encuentra en el`root`de cada`dominio`.\*
 
 ### Archivo Principal (index.ts)
 
@@ -225,7 +219,7 @@ Cada subcarpeta y archivo en esta estructura de Arquitectura Limpia tiene una re
 
 # Consideraciones
 
-Dentro de `domain` se puede comunicar cualquier capa igual por más que se encuentren en diferentes dominios. Es decir, por ejemplo, es posible comunicar la capa `Application` de productos y de usuarios. 
+Dentro de `domain` se puede comunicar cualquier capa igual por más que se encuentren en diferentes dominios. Es decir, por ejemplo, es posible comunicar la capa `Application` de productos y de usuarios.
 
 > También es posible comunicar cada capa con la que se encuentra dentro de root.
 
@@ -233,7 +227,7 @@ Dentro de `domain` se puede comunicar cualquier capa igual por más que se encue
 
 # Tecnologías y libs
 
-**Node.js** 
+**Node.js**
 
 Es un entorno de ejecución de JavaScript en el servidor. Permite ejecutar código JavaScript fuera del navegador, utilizando un modelo de E/S no bloqueante y orientado a eventos, ideal para aplicaciones escalables y de alto rendimiento.
 
