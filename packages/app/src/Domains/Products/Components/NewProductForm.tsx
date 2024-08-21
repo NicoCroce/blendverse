@@ -12,7 +12,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useCreateProduct } from '../Hooks';
-import { Button } from '@app/Aplication/Components';
+import { Button, Container } from '@app/Aplication/Components';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { PRODUCTS_ROUTE } from '../ProductsRoutes';
@@ -109,7 +109,7 @@ export const NewProductForm = () => {
             </FormItem>
           )}
         />
-        <div className="flex gap-4">
+        <Container row>
           <FormField
             name="stock"
             control={form.control}
@@ -136,15 +136,11 @@ export const NewProductForm = () => {
               </FormItem>
             )}
           />
-        </div>
-        <div className="flex gap-4">
-          <Button className="flex-1" variant="outline" onClick={handleCancel}>
-            Cancelar
-          </Button>
-          <Button type="submit" className="flex-1">
-            Guardar
-          </Button>
-        </div>
+        </Container>
+        <Container row justify="end">
+          <Button variant="cancel" onClick={handleCancel} />
+          <Button type="submit" variant="save" />
+        </Container>
       </form>
     </Form>
   );

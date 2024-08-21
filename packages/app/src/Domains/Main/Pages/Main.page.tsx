@@ -3,17 +3,17 @@ import { Page, Title, Text, Link, Container, List } from '@app/Aplication';
 export const MainPage = () => {
   return (
     <Page title="Blendverse" size="small">
-      <div className="mx-auto">
+      <Container row justify="center">
         <img
           src="https://github.com/user-attachments/assets/d6558622-7fa0-485e-9f75-2a0fe9c0aae8"
           width="512"
         />
-      </div>
+      </Container>
       <Text>
         <Text.Code>Blendverse</Text.Code> captura la idea de un proyecto que
         integra diferentes tecnologías y frameworks de una manera armónica y
-        fluida. El nombre es una combinación de <Text.Code>Blend,</Text.Code>{' '}
-        que significa mezclar o fusionar, y <Text.Code>Verse,</Text.Code>{' '}
+        fluida. El nombre es una combinación de <Text.Code>Blend,</Text.Code>
+        que significa mezclar o fusionar, y <Text.Code>Verse,</Text.Code>
         derivado de <Text.Code>universe,</Text.Code> que hace referencia a un
         espacio o entorno cohesivo. En este caso,
         <Text.Code>Blendverse</Text.Code> sugiere un entorno en el que se unen
@@ -23,6 +23,7 @@ export const MainPage = () => {
         se conecta de manera eficiente, enfatizando la integración y la
         interoperabilidad entre todas las partes del proyecto.
       </Text>
+
       <Container>
         <Title variant="h2">Tabla de contenidos</Title>
         <List variant="ordered">

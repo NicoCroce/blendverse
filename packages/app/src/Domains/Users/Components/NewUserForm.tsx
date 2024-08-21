@@ -13,7 +13,7 @@ import {
 } from '@app/Aplication/Components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@app/Aplication/Components/ui/input';
-import { Button } from '@app/Aplication/Components';
+import { Button, Container } from '@app/Aplication/Components';
 import { toast } from 'sonner';
 
 import { USERS_ROUTE } from '../UsersRoutes';
@@ -105,14 +105,12 @@ export const NewUserForm = () => {
             </FormItem>
           )}
         ></FormField>
-        <div className="flex justify-stretch gap-4">
-          <Button className="flex-1" variant="outline" onClick={handleCancel}>
+        <Container row justify="end">
+          <Button variant="cancel" onClick={handleCancel}>
             Cancelar
           </Button>
-          <Button type="submit" className="flex-1">
-            Guardar
-          </Button>
-        </div>
+          <Button type="submit" variant="save" />
+        </Container>
       </form>
     </Form>
   );
