@@ -1,30 +1,11 @@
 import React from 'react';
 
-/* type TVariant =
-  | 'text'
-  | 'blockquote'
-  | 'span'
-  | 'code'
-  | 'lead'
-  | 'small'
-  | 'muted'; */
-
 interface TextProps {
   children: React.ReactNode;
 }
 
-/* const headingClasses = {
-  'text': "leading-7 [&:not(:first-child)]:mt-6",
-  'blockquote': "mt-6 border-l-2 pl-6 italic",
-  'span': 
-  'code': 
-  'lead': 
-  'small': 
-  'muted';: 
-}; */
-
 export const Text = ({ children }: TextProps) => (
-  <p className="leading-7 [&:not(:first-child)]:mt-6">{children}</p>
+  <p className="leading-7">{children}</p>
 );
 
 const TextBlockquote = ({ children }: TextProps) => (
