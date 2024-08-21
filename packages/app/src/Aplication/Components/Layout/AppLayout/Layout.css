@@ -37,7 +37,7 @@
 @media (width >= 768px) {
   .navbar {
     &.is-desktop {
-      display: block;
+      display: flex;
     }
   }
   .layout {
