@@ -2,7 +2,7 @@
 
 Este repositorio contiene una aplicación frontend moderna construida con **React**, **TypeScript**, **React Router DOM**, **TanStack Query**, **tRPC**, **Tailwind CSS**, y **shadcn**. Este stack tecnológico ofrece una solución robusta y escalable para desarrollar interfaces de usuario ricas, con una experiencia de desarrollo optimizada y un estilo moderno y adaptable.
 
-# Tabla de contenidos
+# Tabla de contenido
 
 1. [Responsabilidades de cada Capa](https://github.com/NicoCroce/blendverse/tree/main/packages/app#responsabilidades-de-cada-capa)
 2. [Estructura dentro del dominio](https://github.com/NicoCroce/blendverse/tree/main/packages/app#estructura-dentro-del-dominio)

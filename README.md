@@ -8,7 +8,7 @@
 
 En este caso, "Blendverse" sugiere un entorno en el que se unen tanto el backend (con tRPC, Node.js, Typescript, Express) como el frontend (con React, Typescript, React Router DOM, TanstackQuery y shadcn). Esta fusión de tecnologías crea un universo propio donde todo se conecta de manera eficiente, enfatizando la integración y la interoperabilidad entre todas las partes del proyecto.
 
-# Tabla de contenidos
+# Tabla de contenido
 
 1. [Contexto](https://github.com/NicoCroce/blendverse?tab=readme-ov-file#contexto)
 2. [Tecnologías utilizadas](https://github.com/NicoCroce/blendverse?tab=readme-ov-file#tecnolog%C3%ADas-utilizadas)
@@ -16,6 +16,8 @@ En este caso, "Blendverse" sugiere un entorno en el que se unen tanto el backend
 4. [Repositorios de Blendverse](https://github.com/NicoCroce/blendverse?tab=readme-ov-file#repositorios-de-blendverse)
    1. [Server](https://github.com/NicoCroce/blendverse?tab=readme-ov-file#server)
    2. [App](https://github.com/NicoCroce/blendverse?tab=readme-ov-file#app)
+5. [Conceptos de Clean architecture en Backend](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#clean-architecture)
+6. [Conceptos de Clean architecture en Frontend](https://github.com/NicoCroce/blendverse/blob/main/packages/app/README.md#responsabilidades-de-cada-capa)
 
 # Contexto
 

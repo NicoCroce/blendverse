@@ -2,7 +2,7 @@
 
 Este repositorio contiene una aplicación construida con **Node.js**, **Express**, **TypeScript**, y **tRPC**, siguiendo los principios de **Arquitectura Limpia**. El objetivo de este proyecto es crear una base escalable y mantenible para desarrollar servicios backend que interactúan de manera eficiente y segura con clientes frontend.
 
-# Tabla de contenidos
+# Tabla de contenido
 
 1. [¿Qué es Clean Architecture y cuáles son sus ventajas?](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#clean-architecture)
 2. [Responsabilidades de cada Capa](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#responsabilidades-de-cada-capa)
