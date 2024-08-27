@@ -104,10 +104,10 @@ export const NewUserForm = () => {
           )}
         ></FormField>
         <Container row justify="end">
-          <Button variant="cancel" onClick={handleCancel}>
+          <Button appearance="cancel" onClick={handleCancel}>
             Cancelar
           </Button>
-          <Button type="submit" variant="save" />
+          <Button type="submit" appearance="save" />
         </Container>
       </form>
     </Form>

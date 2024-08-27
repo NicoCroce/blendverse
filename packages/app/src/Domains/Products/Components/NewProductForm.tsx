@@ -138,8 +138,8 @@ export const NewProductForm = () => {
           />
         </Container>
         <Container row justify="end">
-          <Button variant="cancel" onClick={handleCancel} />
-          <Button type="submit" variant="save" />
+          <Button appearance="cancel" onClick={handleCancel} />
+          <Button type="submit" appearance="save" />
         </Container>
       </form>
     </Form>
