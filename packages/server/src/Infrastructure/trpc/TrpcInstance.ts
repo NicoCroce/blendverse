@@ -4,8 +4,6 @@ import * as trpcExpress from '@trpc/server/adapters/express';
 // created for each request
 export const createContext = ({
   req,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  res,
 }: trpcExpress.CreateExpressContextOptions) => {
   console.log(`🟢 ${req.method} : ${req.path} => params: `, req.query);
   return {};
