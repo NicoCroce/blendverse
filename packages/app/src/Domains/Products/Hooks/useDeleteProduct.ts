@@ -1,10 +1,11 @@
 import { ProductsService } from '../ProductsService';
+import { useCacheProducts } from './useCacheProducts';
 
 export const useDeleteProduct = () => {
   //**  Accedo a los datos almacenados en tRPC. */
-  const cacheProductsList = ProductsService.useUtils().getProducts;
+  const cacheProductsList = useCacheProducts();
 
-  return ProductsService.deleteProduct.useMutation({
+  return ProductsService.delete.useMutation({
     onMutate: async (id) => {
       cacheProductsList.cancel();
       const preservedState = cacheProductsList.getData();

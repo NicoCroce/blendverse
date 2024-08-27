@@ -1,8 +1,8 @@
 import { ProductsService } from '../ProductsService';
+import { useCacheProducts } from './useCacheProducts';
 
 export const useUpdateStock = () => {
-  //**  Accedo a los datos almacenados en tRPC. */
-  const cacheProductsList = ProductsService.useUtils().getProducts;
+  const cacheProductsList = useCacheProducts();
 
   const mutationStock = ProductsService.updateStock.useMutation({
     onMutate: async ({ id, stock }) => {

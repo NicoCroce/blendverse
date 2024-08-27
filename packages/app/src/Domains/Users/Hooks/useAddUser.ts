@@ -1,10 +1,11 @@
 import { UsersService } from '../UserService';
+import { useCacheUsers } from './useCacheUsers';
 
 export const useAddUser = () => {
   //**  Accedo a los datos almacenados en tRPC. */
-  const cacheUserList = UsersService.useUtils().userList;
+  const cacheUserList = useCacheUsers();
 
-  return UsersService.userCreate.useMutation({
+  return UsersService.create.useMutation({
     onMutate: async ({ name, mail }) => {
       cacheUserList.cancel();
       const preservedState = cacheUserList.getData();
