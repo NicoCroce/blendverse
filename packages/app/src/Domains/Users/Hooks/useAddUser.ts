@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { UsersService } from '../UserService';
 import { useCacheUsers } from './useCacheUsers';
 
@@ -24,8 +25,12 @@ export const useAddUser = () => {
       return { preservedState };
     },
     onError: (_err, _variables, context) => {
+      toast.error('Usuario no agregado');
       cacheUserList.setData(undefined, context?.preservedState);
     },
-    onSuccess: () => cacheUserList.invalidate(),
+    onSuccess: () => {
+      toast.success('Usuario agregado');
+      cacheUserList.invalidate();
+    },
   });
 };

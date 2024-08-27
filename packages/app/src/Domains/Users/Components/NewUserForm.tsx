@@ -14,7 +14,6 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@app/Aplication/Components/ui/input';
 import { Button, Container } from '@app/Aplication/Components';
-import { toast } from 'sonner';
 
 import { USERS_ROUTE } from '../UsersRoutes';
 
@@ -45,7 +44,6 @@ export const NewUserForm = () => {
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
     mutate(values);
-    toast.success('Usuario agregado');
     navigate(USERS_ROUTE);
   };
 
