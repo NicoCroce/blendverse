@@ -1,11 +1,23 @@
 import { productController } from '../../product.app';
 
+const {
+  getProducts,
+  createProduct,
+  deleteProduct,
+  updateStock,
+  getProduct,
+  getStock,
+  getSomeInfoProduct,
+} = productController;
+
 export const ProductRoutes = {
-  getProducts: productController.getProducts(),
-  createProduct: productController.createProduct(),
-  deleteProduct: productController.deleteProduct(),
-  updateStock: productController.updateStock(),
-  getProduct: productController.getProduct(),
-  getStock: productController.getStock(),
-  getInfo: productController.getSomeInfoProduct(),
+  products: {
+    getAll: getProducts,
+    create: createProduct,
+    delete: deleteProduct,
+    updateStock: updateStock,
+    get: getProduct,
+    getStock: getStock,
+    getInfo: getSomeInfoProduct,
+  },
 };

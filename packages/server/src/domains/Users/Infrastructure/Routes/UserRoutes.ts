@@ -1,7 +1,11 @@
 import { userController } from '../../user.app';
 
+const { getAllUsers, getUser, registerUser } = userController;
+
 export const UserRoutes = {
-  userList: userController.getAllUsers(),
-  userCreate: userController.registerUser(),
-  userById: userController.getUser(),
+  users: {
+    getAll: getAllUsers,
+    create: registerUser,
+    get: getUser,
+  },
 };
