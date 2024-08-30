@@ -1,9 +1,29 @@
-import { protectedProcedure } from '@server/Infrastructure';
+import { procedure } from '@server/Infrastructure';
+import { AuthService } from '../../Application';
+import z from 'zod';
 
 export class AuthController {
-  constructor() {}
+  constructor(private readonly authService: AuthService) {}
 
-  login = protectedProcedure.query(async () => {
-    console.log('OK');
-  });
+  login = procedure
+    .input(
+      z.object({
+        username: z.string(),
+        password: z.string(),
+      }),
+    )
+    .mutation(async ({ input: { username, password } }) =>
+      this.authService.login(username, password),
+    );
+
+  register = procedure
+    .input(
+      z.object({
+        username: z.string(),
+        password: z.string(),
+      }),
+    )
+    .mutation(async ({ input: { username, password } }) =>
+      this.authService.register(username, password),
+    );
 }

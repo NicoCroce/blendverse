@@ -1,9 +1,10 @@
-import { AuthController } from '../Controllers';
+import { authController } from '../../auth.app';
 
-const authController = new AuthController();
+const { login, register } = authController;
 
 export const AuthRoutes = {
   auth: {
-    login: authController.login,
+    login: login,
+    register: register,
   },
 };
