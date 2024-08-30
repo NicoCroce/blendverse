@@ -1,11 +1,11 @@
-import { procedure } from '@server/Infrastructure';
+import { procedure, protectedProcedure } from '@server/Infrastructure';
 import { ProductsService } from '../../Application';
 import z from 'zod';
 
 export class ProductController {
   constructor(private productService: ProductsService) {}
 
-  getProducts = procedure.query(
+  getProducts = protectedProcedure.query(
     async () => await this.productService.getllProducts(),
   );
 
