@@ -1,9 +1,10 @@
 //require('module-alias/register');
 import dotenv from 'dotenv';
+dotenv.config();
+
 import express, { Express, Request, Response } from 'express';
 import { initMiddlewares } from './Infrastructure/Middlewares';
 
-dotenv.config();
 const app: Express = express();
 const port = process.env.PORT || 5500;
 
