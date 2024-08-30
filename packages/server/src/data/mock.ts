@@ -7,6 +7,14 @@ export const Users = [
   },
 ];
 
+export const Auth = [
+  {
+    id: '0',
+    username: 'nico@nico.com',
+    password: '123456789',
+  },
+];
+
 export const Products = [
   {
     id: '0',
