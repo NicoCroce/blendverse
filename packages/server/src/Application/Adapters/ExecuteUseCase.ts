@@ -2,7 +2,7 @@ import { IUseCase } from '../Interfaces/IUSeCase';
 import { TRPCErrorAdapter } from './TRPCErrorAdapter';
 
 export const executeUseCase = async <TOutput = void, TInput = unknown>(
-  useCase: IUseCase<TOutput>,
+  useCase: IUseCase<TOutput, TInput>,
   input?: TInput,
 ) => {
   const errorAdapter = new TRPCErrorAdapter();

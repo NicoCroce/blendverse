@@ -1,3 +1,3 @@
-export interface IUseCase<TOutput = void> {
-  execute(input: unknown): Promise<TOutput>;
+export interface IUseCase<TOutput = void, TInput = unknown> {
+  execute(input?: TInput): Promise<TOutput>;
 }
