@@ -1,6 +1,7 @@
 import { initTRPC, TRPCError } from '@trpc/server';
 import * as trpcExpress from '@trpc/server/adapters/express';
-import { verifyToken } from '../Auth/Auth';
+import { verifyTokenInHeader } from '../Auth/Auth';
+import { verifyToken } from '@server/utils/JWT';
 
 // created for each request
 export const createContext = ({
@@ -36,8 +37,7 @@ const t = initTRPC.context<Context>().create({
 
 const protectedProcedure = t.procedure.use(async function isAuthed(opts) {
   const { ctx } = opts;
-  // `ctx.user` is nullable
-  const token = verifyToken(ctx.headers);
+  const token = verifyTokenInHeader(ctx.headers);
   if (!token) {
     throw new TRPCError({
       message: 'Token not provided',
@@ -45,7 +45,18 @@ const protectedProcedure = t.procedure.use(async function isAuthed(opts) {
     });
   }
 
-  console.log('✅ TOKEN:', token);
+  let dataToken;
+
+  try {
+    dataToken = await verifyToken(token);
+  } catch {
+    throw new TRPCError({
+      message: 'Token error',
+      code: 'UNAUTHORIZED',
+    });
+  }
+
+  console.log('dataToken', dataToken);
 
   return opts.next({
     ctx: {
