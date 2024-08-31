@@ -48,7 +48,7 @@ const protectedProcedure = t.procedure.use(async function isAuthed(opts) {
   let dataToken;
 
   try {
-    dataToken = await verifyToken(token);
+    dataToken = (await verifyToken(token)) as { id: string };
   } catch {
     throw new TRPCError({
       message: 'Token error',
