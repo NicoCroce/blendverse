@@ -66,4 +66,16 @@ export class ProductsService {
     const _getInfo = new GetSomeInfoProduct(this.productsRepository);
     return await executeUseCase(_getInfo, input);
   }
+
+  async sobrecarga(input: string): Promise<{ body: string; userId: string }> {
+    console.log('---------------');
+    console.log('Body: ', input);
+    console.log('userID:', this.userId.userIdSored);
+    console.log('---------------');
+
+    return {
+      body: input,
+      userId: this.userId.userIdSored as string,
+    };
+  }
 }

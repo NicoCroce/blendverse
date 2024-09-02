@@ -65,13 +65,14 @@ const protectedProcedure = t.procedure.use(async function isAuthed(opts) {
     });
   }
 
-  console.log('dataToken', dataToken);
+  // console.log('dataToken', dataToken);
 
   //const a = Math.random() * 10000;
 
   console.log('nuevo valor: ', dataToken.id);
+  const nico = ctx.headers['nico'] as string | '';
 
-  container.resolve<Data>('userId').setUserId(dataToken.id);
+  container.resolve<Data>('userId').setUserId(nico);
 
   return opts.next({
     ctx: {
