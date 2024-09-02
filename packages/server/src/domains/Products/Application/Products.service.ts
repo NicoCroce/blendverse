@@ -13,9 +13,12 @@ import {
   ProductsRepository,
   UpdateStock,
 } from '../Domain';
-
+import { Data } from '../product.app';
 export class ProductsService {
-  constructor(private readonly productsRepository: ProductsRepository) {}
+  constructor(
+    private readonly productsRepository: ProductsRepository,
+    private readonly userId: Data,
+  ) {}
 
   async createProduct(
     name: string,
@@ -37,6 +40,7 @@ export class ProductsService {
     return await executeUseCase<Product, string>(_deleteProduct, id);
   }
   async getAllProducts(): Promise<Product[]> {
+    console.log('🔵🔵🔵', this.userId.userIdSored);
     const _getAllProducts = new GetAllProducts(this.productsRepository);
     return await executeUseCase<Product[]>(_getAllProducts);
   }
