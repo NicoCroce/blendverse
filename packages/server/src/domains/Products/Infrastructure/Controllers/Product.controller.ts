@@ -3,19 +3,19 @@ import { ProductsService } from '../../Application';
 import z from 'zod';
 
 export class ProductController {
-  constructor(private productService: ProductsService) {}
+  constructor(private productsService: ProductsService) {}
 
   getProducts = protectedProcedure.query(
-    async () => await this.productService.getllProducts(),
+    async () => await this.productsService.getAllProducts(),
   );
 
   getProduct = procedure
     .input(z.string().min(1, 'ID is required'))
-    .query(async ({ input }) => await this.productService.getProduct(input));
+    .query(async ({ input }) => await this.productsService.getProduct(input));
 
   getStock = procedure
     .input(z.string().min(1, 'ID id required'))
-    .query(async ({ input }) => await this.productService.getStock(input));
+    .query(async ({ input }) => await this.productsService.getStock(input));
 
   createProduct = procedure
     .input(
@@ -28,7 +28,7 @@ export class ProductController {
     )
     .mutation(
       async ({ input: { name, description, stock, price } }) =>
-        await this.productService.createProduct(
+        await this.productsService.createProduct(
           name,
           description,
           stock,
@@ -39,7 +39,7 @@ export class ProductController {
   deleteProduct = procedure
     .input(z.string())
     .mutation(
-      async ({ input: id }) => await this.productService.deleteProduct(id),
+      async ({ input: id }) => await this.productsService.deleteProduct(id),
     );
 
   updateStock = procedure
@@ -51,7 +51,7 @@ export class ProductController {
     )
     .mutation(
       async ({ input: { id, stock } }) =>
-        await this.productService.updateStock({ id, stock }),
+        await this.productsService.updateStock({ id, stock }),
     );
 
   getSomeInfoProduct = procedure
@@ -62,6 +62,6 @@ export class ProductController {
       }),
     )
     .query(
-      async ({ input }) => await this.productService.getSomeInfoProduct(input),
+      async ({ input }) => await this.productsService.getSomeInfoProduct(input),
     );
 }

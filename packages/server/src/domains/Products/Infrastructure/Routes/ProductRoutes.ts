@@ -1,4 +1,8 @@
-import { productController } from '../../product.app';
+import { container } from '../../product.app';
+import { ProductController } from '../Controllers/Product.controller';
+
+const productController =
+  container.resolve<ProductController>('productController');
 
 const {
   getProducts,

@@ -36,7 +36,7 @@ export class ProductsService {
     const _deleteProduct = new DeleteProduct(this.productsRepository);
     return await executeUseCase<Product, string>(_deleteProduct, id);
   }
-  async getllProducts(): Promise<Product[]> {
+  async getAllProducts(): Promise<Product[]> {
     const _getAllProducts = new GetAllProducts(this.productsRepository);
     return await executeUseCase<Product[]>(_getAllProducts);
   }

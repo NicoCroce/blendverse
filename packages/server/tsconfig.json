@@ -16,6 +16,7 @@
     "experimentalDecorators": true,
     "types": ["reflect-metadata"],
     "lib": ["es6"],
+    "emitDecoratorMetadata": true,
     //"allowImportingTsExtensions": true,
     //"emitDeclarationOnly": true,
     "paths": {

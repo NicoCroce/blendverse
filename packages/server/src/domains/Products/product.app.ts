@@ -1,7 +1,17 @@
+import { asClass, createContainer, InjectionMode } from 'awilix';
+import { ProductsRepositoryImplementation } from './Infrastructure';
 import { ProductsService } from './Application';
 import { ProductController } from './Infrastructure/Controllers/Product.controller';
-import { ProductsRepositoryImplementation } from './Infrastructure/ProductsRepository.implementation.localDB';
 
-const productRepository = new ProductsRepositoryImplementation();
-const productsService = new ProductsService(productRepository);
-export const productController = new ProductController(productsService);
+const container = createContainer({
+  injectionMode: InjectionMode.CLASSIC,
+  strict: true,
+});
+
+container.register({
+  productsRepository: asClass(ProductsRepositoryImplementation).scoped(),
+  productsService: asClass(ProductsService).scoped(),
+  productController: asClass(ProductController).scoped(),
+});
+
+export { container };
