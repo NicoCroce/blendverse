@@ -69,19 +69,10 @@ export class ProductsService {
   }
 
   async sobrecarga(input: string): Promise<{ body: string; userId: string }> {
-    console.log('---------------');
-    console.log('Body: ', input);
-    console.log('userID:', this.requestContext.userId);
-    console.log('---------------');
-
-    await retornaProductos(input, this.requestContext.userId as string);
-
-    const res2 = await retornaProductos(
-      input,
-      this.requestContext.userId as string,
-    );
-
-    return res2;
+    const userId = this.requestContext.userId;
+    console.log(userId);
+    await retornaProductos(input, userId);
+    return await retornaProductos(input, userId);
   }
 }
 

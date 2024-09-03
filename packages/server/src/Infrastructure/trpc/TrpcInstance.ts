@@ -58,9 +58,7 @@ const protectedProcedure = t.procedure.use(async function isAuthed(opts) {
     });
   }
 
-  // console.log('dataToken', dataToken);
-
-  //const a = Math.random() * 10000;
+  console.log('dataToken', dataToken);
 
   console.log('nuevo valor: ', dataToken.id);
 

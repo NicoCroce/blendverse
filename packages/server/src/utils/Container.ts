@@ -10,4 +10,6 @@ container.register({
   requestContext: asClass(RequestContext).scoped(),
 });
 
-export { container };
+const createScope = () => container.createScope();
+
+export { container, createScope };
