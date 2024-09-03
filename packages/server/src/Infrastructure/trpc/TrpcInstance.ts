@@ -2,15 +2,8 @@ import { initTRPC, TRPCError } from '@trpc/server';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { verifyTokenInHeader } from '../Auth/Auth';
 import { verifyToken } from '@server/utils/JWT';
-import { createContainer, InjectionMode } from 'awilix';
-import { Data } from '@server/domains/Products';
-
-export const container = createContainer({
-  injectionMode: InjectionMode.CLASSIC,
-  strict: true,
-});
-
-console.log('🔴🔴🔴🔴 Registra el container: => ', container);
+import { RequestContext } from '@server/Application/Entities';
+import { container } from '@server/utils/Container';
 
 // created for each request
 export const createContext = ({
@@ -70,9 +63,10 @@ const protectedProcedure = t.procedure.use(async function isAuthed(opts) {
   //const a = Math.random() * 10000;
 
   console.log('nuevo valor: ', dataToken.id);
+
   const nico = ctx.headers['nico'] as string | '';
 
-  container.resolve<Data>('userId').setUserId(nico);
+  container.resolve<RequestContext>('requestContext').userId = nico;
 
   return opts.next({
     ctx: {

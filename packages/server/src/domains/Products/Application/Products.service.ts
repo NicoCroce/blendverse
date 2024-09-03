@@ -1,4 +1,4 @@
-import { executeUseCase } from '@server/Application';
+import { executeUseCase, RequestContext } from '@server/Application';
 import {
   CreateProduct,
   DeleteProduct,
@@ -13,11 +13,12 @@ import {
   ProductsRepository,
   UpdateStock,
 } from '../Domain';
-import { Data } from '../product.app';
+import { delay } from '@server/utils/Utils';
+
 export class ProductsService {
   constructor(
     private readonly productsRepository: ProductsRepository,
-    private readonly userId: Data,
+    private readonly requestContext: RequestContext,
   ) {}
 
   async createProduct(
@@ -40,7 +41,7 @@ export class ProductsService {
     return await executeUseCase<Product, string>(_deleteProduct, id);
   }
   async getAllProducts(): Promise<Product[]> {
-    console.log('🔵🔵🔵', this.userId.userIdSored);
+    console.log('🔵🔵🔵', this.requestContext.userId);
     const _getAllProducts = new GetAllProducts(this.productsRepository);
     return await executeUseCase<Product[]>(_getAllProducts);
   }
@@ -70,12 +71,25 @@ export class ProductsService {
   async sobrecarga(input: string): Promise<{ body: string; userId: string }> {
     console.log('---------------');
     console.log('Body: ', input);
-    console.log('userID:', this.userId.userIdSored);
+    console.log('userID:', this.requestContext.userId);
     console.log('---------------');
 
-    return {
-      body: input,
-      userId: this.userId.userIdSored as string,
-    };
+    await retornaProductos(input, this.requestContext.userId as string);
+
+    const res2 = await retornaProductos(
+      input,
+      this.requestContext.userId as string,
+    );
+
+    return res2;
   }
 }
+
+const retornaProductos = async (input: string, userId: string) => {
+  await delay();
+
+  return {
+    body: input,
+    userId: userId,
+  };
+};
