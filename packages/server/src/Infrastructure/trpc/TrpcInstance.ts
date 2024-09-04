@@ -4,6 +4,7 @@ import { verifyTokenInHeader } from '../Auth/Auth';
 import { verifyToken } from '@server/utils/JWT';
 import { RequestContext } from '@server/Application/Entities';
 import { container } from '@server/utils/Container';
+import { v4 as uuidv4 } from 'uuid';
 
 // created for each request
 export const createContext = ({
@@ -60,18 +61,25 @@ const protectedProcedure = t.procedure.use(async function isAuthed(opts) {
 
   console.log('dataToken', dataToken);
 
-  console.log('nuevo valor: ', dataToken.id);
+  const userId = ctx.headers['user-id'] as string;
+  const requestId = uuidv4();
 
-  const nico = ctx.headers['nico'] as string | '';
+  const requestContext = container.resolve<RequestContext>('requestContext');
+  requestContext.setValues(userId, requestId);
 
-  container.resolve<RequestContext>('requestContext').userId = nico;
+  /*   const scope = container.createScope();
+
+  scope.register({
+    requestContext: asClass(RequestContext)
+      .scoped()
+      .inject(() => ({ userId, requestId })),
+    nico: asValue('nico'),
+  }); */
 
   return opts.next({
     ctx: {
-      // ✅ user value is known to be non-null now
-      //user: ctx.user,
       headers: ctx.headers,
-      // ^?
+      requestContext: { userId, requestId },
     },
   });
 });
