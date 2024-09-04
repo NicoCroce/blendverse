@@ -26,6 +26,7 @@ export class ProductsService {
   constructor(
     private readonly productsRepository: ProductsRepository,
     private readonly requestContext: RequestContext,
+    private readonly getSobrecarga: GetSobrecarga,
   ) {}
 
   async createProduct(
@@ -71,7 +72,7 @@ export class ProductsService {
     input: IGetSomeInfoProductInput,
   ): Promise<Record<string, unknown> | null> {
     const _getInfo = new GetSomeInfoProduct(this.productsRepository);
-    return await executeUseCase(_getInfo, input);
+    return await executeUseCase(_getInfo, input, this.requestContext.values);
   }
 
   async sobrecargaClean(input: string): Promise<{
@@ -79,13 +80,11 @@ export class ProductsService {
     userId: string;
     input: string;
   }> {
-    const requestContext = this.requestContext.values;
-    const _sobrecarga = new GetSobrecarga(
-      this.productsRepository,
-      requestContext,
+    return await executeUseCase(
+      this.getSobrecarga,
+      input,
+      this.requestContext.values,
     );
-    await delay(1000);
-    return await executeUseCase(_sobrecarga, input);
   }
 
   async sobrecarga(input: string): Promise<{
@@ -93,16 +92,18 @@ export class ProductsService {
     userId: string;
     input: string;
   }> {
-    const requestContext = this.requestContext.values;
-    const userId = this.requestContext.values.userId;
-    const requestId = this.requestContext.values.requestId;
-    const _sobrecarga = new GetSobrecarga(
-      this.productsRepository,
-      requestContext,
+    delay();
+    logReqId('Service', {
+      requestId: this.requestContext.values.requestId,
+      userId: this.requestContext.values.userId,
+      input,
+    });
+    delay();
+    return executeUseCase(
+      this.getSobrecarga,
+      input,
+      this.requestContext.values,
     );
-    await delay(1000);
-    logReqId('Service', { requestId, userId, input });
-    return await executeUseCase(_sobrecarga, input);
   }
 
   async sobrecargaParams(

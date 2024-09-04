@@ -10,14 +10,14 @@ interface ExecuteReturn {
 }
 
 export class GetSobrecarga implements IUseCase<ExecuteReturn> {
-  constructor(
-    private readonly productRepository: ProductsRepository,
-    private readonly requestContext: TRequestContext,
-  ) {}
+  constructor(private readonly productsRepository: ProductsRepository) {}
 
-  async execute(input: string): Promise<ExecuteReturn> {
-    const userId = this.requestContext.userId;
-    const requestId = this.requestContext.requestId;
+  async execute(
+    input: string,
+    requestContext: TRequestContext,
+  ): Promise<ExecuteReturn> {
+    const userId = requestContext.userId;
+    const requestId = requestContext.requestId;
     logReqId('UseCase', { requestId, userId, input });
     await delay(3000);
     return {
