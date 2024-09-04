@@ -1,8 +1,4 @@
-import {
-  executeUseCase,
-  RequestContext,
-  TRequestContext,
-} from '@server/Application';
+import { executeUseCase, RequestContext } from '@server/Application';
 import {
   CreateProduct,
   DeleteProduct,
@@ -10,23 +6,22 @@ import {
   GetProduct,
   GetSomeInfoProduct,
   GetStockProduct,
-  ICreateProductInput,
   IGetSomeInfoProductInput,
   IUpdateStockInput,
   Product,
-  ProductsRepository,
   UpdateStock,
 } from '../Domain';
-import { delay } from '@server/utils/Utils';
-import { logReqId } from '@server/utils/logReqId';
-import { GetSobrecarga } from '../Domain/UseCases/GetSobrecarga';
-import { GetSobrecargaParams } from '../Domain/UseCases/GetSobrecargaParams';
 
 export class ProductsService {
   constructor(
-    private readonly productsRepository: ProductsRepository,
     private readonly requestContext: RequestContext,
-    private readonly getSobrecarga: GetSobrecarga,
+    private readonly _createProduct: CreateProduct,
+    private readonly _deleteProduct: DeleteProduct,
+    private readonly _getAllProducts: GetAllProducts,
+    private readonly _updateStock: UpdateStock,
+    private readonly _getStock: GetStockProduct,
+    private readonly _getProduct: GetProduct,
+    private readonly _getInfo: GetSomeInfoProduct,
   ) {}
 
   async createProduct(
@@ -35,96 +30,53 @@ export class ProductsService {
     stock: number,
     price: number,
   ): Promise<Product> {
-    const _createProduct = new CreateProduct(this.productsRepository);
-    return await executeUseCase<Product, ICreateProductInput>(_createProduct, {
-      name,
-      description,
-      stock,
-      price,
-    });
+    return executeUseCase(
+      this._createProduct,
+      {
+        name,
+        description,
+        stock,
+        price,
+      },
+      this.requestContext.values,
+    );
   }
 
   async deleteProduct(id: string): Promise<Product> {
-    const _deleteProduct = new DeleteProduct(this.productsRepository);
-    return await executeUseCase<Product, string>(_deleteProduct, id);
+    return executeUseCase(this._deleteProduct, id, this.requestContext.values);
   }
+
   async getAllProducts(): Promise<Product[]> {
-    const _getAllProducts = new GetAllProducts(this.productsRepository);
-    return await executeUseCase<Product[]>(_getAllProducts);
+    return executeUseCase(this._getAllProducts, this.requestContext.values);
   }
 
   async updateStock({ id, stock }: IUpdateStockInput) {
-    const _updateStock = new UpdateStock(this.productsRepository);
-    return await executeUseCase(_updateStock, { id, stock });
+    return await executeUseCase(
+      this._updateStock,
+      { id, stock },
+      this.requestContext.values,
+    );
   }
 
   async getStock(id: string): Promise<number | null> {
-    const _getStock = new GetStockProduct(this.productsRepository);
-    return await executeUseCase(_getStock, id);
+    return await executeUseCase(this._getStock, id, this.requestContext.values);
   }
 
   async getProduct(id: string): Promise<Product | null> {
-    const _getProduct = new GetProduct(this.productsRepository);
-    return await executeUseCase(_getProduct, id);
+    return await executeUseCase(
+      this._getProduct,
+      id,
+      this.requestContext.values,
+    );
   }
 
   async getSomeInfoProduct(
     input: IGetSomeInfoProductInput,
   ): Promise<Record<string, unknown> | null> {
-    const _getInfo = new GetSomeInfoProduct(this.productsRepository);
-    return await executeUseCase(_getInfo, input, this.requestContext.values);
-  }
-
-  async sobrecargaClean(input: string): Promise<{
-    requestId: string;
-    userId: string;
-    input: string;
-  }> {
     return await executeUseCase(
-      this.getSobrecarga,
+      this._getInfo,
       input,
       this.requestContext.values,
     );
-  }
-
-  async sobrecarga(input: string): Promise<{
-    requestId: string;
-    userId: string;
-    input: string;
-  }> {
-    delay();
-    logReqId('Service', {
-      requestId: this.requestContext.values.requestId,
-      userId: this.requestContext.values.userId,
-      input,
-    });
-    delay();
-    return executeUseCase(
-      this.getSobrecarga,
-      input,
-      this.requestContext.values,
-    );
-  }
-
-  async sobrecargaParams(
-    input: string,
-    requestContext: TRequestContext,
-  ): Promise<{
-    requestId: string;
-    userId: string;
-    input: string;
-  }> {
-    await delay(1000);
-    const _sobrecarga = new GetSobrecargaParams(this.productsRepository);
-    logReqId('Service', {
-      requestId: requestContext.requestId,
-      userId: requestContext.userId,
-      input,
-    });
-    return await executeUseCase(_sobrecarga, {
-      requestId: requestContext.requestId,
-      userId: requestContext.userId,
-      input,
-    });
   }
 }

@@ -8,8 +8,6 @@ const {
   getProduct,
   getStock,
   getSomeInfoProduct,
-  sobrecarga,
-  sobrecargaParams,
 } = productController;
 
 export const ProductRoutes = {
@@ -21,7 +19,5 @@ export const ProductRoutes = {
     get: getProduct,
     getStock: getStock,
     getInfo: getSomeInfoProduct,
-    sobrecarga: sobrecarga,
-    sobrecargaParams,
   },
 };

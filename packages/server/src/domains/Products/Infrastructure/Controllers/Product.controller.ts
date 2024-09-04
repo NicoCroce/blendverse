@@ -64,17 +64,4 @@ export class ProductController {
     .query(
       async ({ input }) => await this.productsService.getSomeInfoProduct(input),
     );
-
-  sobrecarga = protectedProcedure
-    .input(z.string())
-    .mutation(
-      async ({ input }) => await this.productsService.sobrecarga(input),
-    );
-
-  sobrecargaParams = protectedProcedure
-    .input(z.string())
-    .mutation(
-      async ({ ctx, input }) =>
-        await this.productsService.sobrecargaParams(input, ctx.requestContext),
-    );
 }
