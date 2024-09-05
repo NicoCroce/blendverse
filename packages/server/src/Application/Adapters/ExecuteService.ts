@@ -19,3 +19,25 @@ export const executeService =
   async ({ ctx, input }: IRequest<TInput>) => {
     return await service(input, ctx.requestContext);
   };
+
+/** Service alone */
+
+interface IRequestAlone {
+  ctx: {
+    headers: IncomingHttpHeaders;
+    requestContext: TRequestContext;
+  };
+  input: undefined;
+}
+
+type TexecuteServiceAlone<TService> = (
+  requestContext: TRequestContext,
+) => TService;
+
+export const executeServiceAlone = <TService>(
+  service: TexecuteServiceAlone<TService>,
+) => {
+  return async function ({ ctx }: IRequestAlone) {
+    return await service(ctx.requestContext);
+  };
+};
