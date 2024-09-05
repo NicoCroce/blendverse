@@ -8,10 +8,14 @@ import { v4 as uuidv4 } from 'uuid';
 export const createContext = ({
   req,
 }: trpcExpress.CreateExpressContextOptions) => {
+  const userId = '';
+  const requestId = uuidv4();
+
   console.log(`🟢 ${req.method} : ${req.path} => params: `, req.query);
 
   return {
     headers: req.headers,
+    requestContext: { userId, requestId },
   };
 };
 
@@ -59,8 +63,8 @@ const protectedProcedure = t.procedure.use(async function isAuthed(opts) {
 
   console.log('dataToken', dataToken);
 
-  const userId = ctx.headers['user-id'] as string;
-  const requestId = uuidv4();
+  const userId = dataToken.id;
+  const requestId = ctx.requestContext.requestId;
 
   return opts.next({
     ctx: {
