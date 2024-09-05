@@ -1,23 +1,24 @@
-import { procedure, protectedProcedure } from '@server/Infrastructure';
+import { protectedProcedure } from '@server/Infrastructure';
 import { ProductsService } from '../../Application';
+import { executeService } from '@server/Application';
 import z from 'zod';
 
 export class ProductController {
   constructor(private productsService: ProductsService) {}
 
   getProducts = protectedProcedure.query(
-    async () => await this.productsService.getAllProducts(),
+    executeService(this.productsService.getAllProducts),
   );
 
-  getProduct = procedure
+  getProduct = protectedProcedure
     .input(z.string().min(1, 'ID is required'))
-    .query(async ({ input }) => await this.productsService.getProduct(input));
+    .query(executeService(this.productsService.getProduct));
 
-  getStock = procedure
+  getStock = protectedProcedure
     .input(z.string().min(1, 'ID id required'))
-    .query(async ({ input }) => await this.productsService.getStock(input));
+    .query(executeService(this.productsService.getStock));
 
-  createProduct = procedure
+  createProduct = protectedProcedure
     .input(
       z.object({
         name: z.string(),
@@ -26,42 +27,31 @@ export class ProductController {
         price: z.number(),
       }),
     )
-    .mutation(
-      async ({ input: { name, description, stock, price } }) =>
-        await this.productsService.createProduct(
-          name,
-          description,
-          stock,
-          price,
-        ),
-    );
+    .mutation(executeService(this.productsService.createProduct));
 
-  deleteProduct = procedure
+  deleteProduct = protectedProcedure
     .input(z.string())
-    .mutation(
-      async ({ input: id }) => await this.productsService.deleteProduct(id),
-    );
+    .mutation(executeService(this.productsService.deleteProduct));
 
-  updateStock = procedure
+  updateStock = protectedProcedure
     .input(
       z.object({
         id: z.string().min(1, 'ID Is required'),
         stock: z.number().gte(0, 'Stock must be at least 0'),
       }),
     )
-    .mutation(
-      async ({ input: { id, stock } }) =>
-        await this.productsService.updateStock({ id, stock }),
-    );
+    .mutation(executeService(this.productsService.updateStock));
 
-  getSomeInfoProduct = procedure
+  getSomeInfoProduct = protectedProcedure
     .input(
       z.object({
         productId: z.string().min(1, 'ID Requerido de tipo string'),
         params: z.union([z.string(), z.array(z.string())]),
       }),
     )
-    .query(
-      async ({ input }) => await this.productsService.getSomeInfoProduct(input),
-    );
+    .query(executeService(this.productsService.getSomeInfoProduct));
+
+  getTest = protectedProcedure
+    .input(z.string())
+    .mutation(executeService(this.productsService.getTest));
 }

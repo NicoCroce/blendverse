@@ -1,4 +1,8 @@
-import { executeUseCase, RequestContext } from '@server/Application';
+import {
+  executeUseCase,
+  RequestContext,
+  TRequestContext,
+} from '@server/Application';
 import {
   CreateProduct,
   DeleteProduct,
@@ -11,6 +15,14 @@ import {
   Product,
   UpdateStock,
 } from '../Domain';
+import { delay } from '@server/utils/Utils';
+
+interface ICreateProduct {
+  name: string;
+  description: string;
+  stock: number;
+  price: number;
+}
 
 export class ProductsService {
   constructor(
@@ -25,58 +37,57 @@ export class ProductsService {
   ) {}
 
   async createProduct(
-    name: string,
-    description: string,
-    stock: number,
-    price: number,
+    input: ICreateProduct,
+    requestContext: TRequestContext,
   ): Promise<Product> {
-    return executeUseCase(
-      this._createProduct,
-      {
-        name,
-        description,
-        stock,
-        price,
-      },
-      this.requestContext.values,
-    );
+    return executeUseCase(this._createProduct, input, requestContext);
   }
 
-  async deleteProduct(id: string): Promise<Product> {
-    return executeUseCase(this._deleteProduct, id, this.requestContext.values);
+  async deleteProduct(
+    id: string,
+    requestContext: TRequestContext,
+  ): Promise<Product> {
+    return executeUseCase(this._deleteProduct, id, requestContext);
   }
 
   async getAllProducts(): Promise<Product[]> {
     return executeUseCase(this._getAllProducts, this.requestContext.values);
   }
 
-  async updateStock({ id, stock }: IUpdateStockInput) {
-    return await executeUseCase(
-      this._updateStock,
-      { id, stock },
-      this.requestContext.values,
-    );
+  async updateStock(
+    { id, stock }: IUpdateStockInput,
+    requestContext: TRequestContext,
+  ) {
+    return executeUseCase(this._updateStock, { id, stock }, requestContext);
   }
 
-  async getStock(id: string): Promise<number | null> {
-    return await executeUseCase(this._getStock, id, this.requestContext.values);
+  async getStock(
+    id: string,
+    requestContext: TRequestContext,
+  ): Promise<number | null> {
+    return executeUseCase(this._getStock, id, requestContext);
   }
 
-  async getProduct(id: string): Promise<Product | null> {
-    return await executeUseCase(
-      this._getProduct,
-      id,
-      this.requestContext.values,
-    );
+  async getProduct(
+    id: string,
+    requestContext: TRequestContext,
+  ): Promise<Product | null> {
+    return executeUseCase(this._getProduct, id, requestContext);
   }
 
   async getSomeInfoProduct(
     input: IGetSomeInfoProductInput,
+    requestContext: TRequestContext,
   ): Promise<Record<string, unknown> | null> {
-    return await executeUseCase(
-      this._getInfo,
-      input,
-      this.requestContext.values,
-    );
+    return executeUseCase(this._getInfo, input, requestContext);
+  }
+
+  async getTest(
+    input: string,
+    requestContext: TRequestContext,
+  ): Promise<TRequestContext> {
+    console.log('Llega al service', requestContext);
+    await delay();
+    return requestContext;
   }
 }
