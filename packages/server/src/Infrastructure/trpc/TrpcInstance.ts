@@ -2,8 +2,6 @@ import { initTRPC, TRPCError } from '@trpc/server';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { verifyTokenInHeader } from '../Auth/Auth';
 import { verifyToken } from '@server/utils/JWT';
-import { RequestContext } from '@server/Application/Entities';
-import { container } from '@server/utils/Container';
 import { v4 as uuidv4 } from 'uuid';
 
 // created for each request
@@ -63,18 +61,6 @@ const protectedProcedure = t.procedure.use(async function isAuthed(opts) {
 
   const userId = ctx.headers['user-id'] as string;
   const requestId = uuidv4();
-
-  const requestContext = container.resolve<RequestContext>('requestContext');
-  requestContext.setValues(userId, requestId);
-
-  /*   const scope = container.createScope();
-
-  scope.register({
-    requestContext: asClass(RequestContext)
-      .scoped()
-      .inject(() => ({ userId, requestId })),
-    nico: asValue('nico'),
-  }); */
 
   return opts.next({
     ctx: {
