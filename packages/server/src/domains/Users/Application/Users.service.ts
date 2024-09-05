@@ -16,8 +16,6 @@ export class UsersService {
   ) {}
 
   async getAllUsers(requestContext: TRequestContext): Promise<User[]> {
-    console.log('LLEGA');
-    console.log('this._getAllUsers', this._getAllUsers);
     return await executeUseCase(this._getAllUsers, requestContext);
   }
 
