@@ -1,4 +1,3 @@
-import { IncomingHttpHeaders } from 'http';
 import { TRequestContext } from '../Entities';
 
 type IexecuteService<TInput, TService> = (
@@ -8,7 +7,6 @@ type IexecuteService<TInput, TService> = (
 
 interface IRequest<TInput> {
   ctx: {
-    headers: IncomingHttpHeaders;
     requestContext: TRequestContext;
   };
   input: TInput;
@@ -24,7 +22,6 @@ export const executeService =
 
 interface IRequestAlone {
   ctx: {
-    headers: IncomingHttpHeaders;
     requestContext: TRequestContext;
   };
   input: undefined;
