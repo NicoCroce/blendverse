@@ -9,10 +9,10 @@ export interface IExecuteInput {
 }
 
 export class RegisterUser implements IUseCase<User> {
-  constructor(private userRepository: UserRepository) {}
+  constructor(private usersRepository: UserRepository) {}
 
   async execute({ mail, name, password }: IExecuteInput) {
     const newUser = new User('', mail, name, password);
-    return await this.userRepository.save(newUser);
+    return await this.usersRepository.save(newUser);
   }
 }

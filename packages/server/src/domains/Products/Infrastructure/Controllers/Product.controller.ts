@@ -1,22 +1,30 @@
 import { protectedProcedure } from '@server/Infrastructure';
 import { ProductsService } from '../../Application';
-import { executeService } from '@server/Application';
+import { executeService, executeServiceAlone } from '@server/Application';
 import z from 'zod';
 
-export class ProductController {
+export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
   getProducts = protectedProcedure.query(
-    executeService(this.productsService.getAllProducts),
+    executeServiceAlone(
+      this.productsService.getAllProducts.bind(this.productsService),
+    ),
   );
 
   getProduct = protectedProcedure
     .input(z.string().min(1, 'ID is required'))
-    .query(executeService(this.productsService.getProduct));
+    .query(
+      executeService(
+        this.productsService.getProduct.bind(this.productsService),
+      ),
+    );
 
   getStock = protectedProcedure
     .input(z.string().min(1, 'ID id required'))
-    .query(executeService(this.productsService.getStock));
+    .query(
+      executeService(this.productsService.getStock.bind(this.productsService)),
+    );
 
   createProduct = protectedProcedure
     .input(
@@ -27,11 +35,19 @@ export class ProductController {
         price: z.number(),
       }),
     )
-    .mutation(executeService(this.productsService.createProduct));
+    .mutation(
+      executeService(
+        this.productsService.createProduct.bind(this.productsService),
+      ),
+    );
 
   deleteProduct = protectedProcedure
     .input(z.string())
-    .mutation(executeService(this.productsService.deleteProduct));
+    .mutation(
+      executeService(
+        this.productsService.deleteProduct.bind(this.productsService),
+      ),
+    );
 
   updateStock = protectedProcedure
     .input(
@@ -40,7 +56,11 @@ export class ProductController {
         stock: z.number().gte(0, 'Stock must be at least 0'),
       }),
     )
-    .mutation(executeService(this.productsService.updateStock));
+    .mutation(
+      executeService(
+        this.productsService.updateStock.bind(this.productsService),
+      ),
+    );
 
   getSomeInfoProduct = protectedProcedure
     .input(
@@ -49,9 +69,9 @@ export class ProductController {
         params: z.union([z.string(), z.array(z.string())]),
       }),
     )
-    .query(executeService(this.productsService.getSomeInfoProduct));
-
-  getTest = protectedProcedure
-    .input(z.string())
-    .mutation(executeService(this.productsService.getTest));
+    .query(
+      executeService(
+        this.productsService.getSomeInfoProduct.bind(this.productsService),
+      ),
+    );
 }

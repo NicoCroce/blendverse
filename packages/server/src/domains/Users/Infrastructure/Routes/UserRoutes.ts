@@ -1,6 +1,6 @@
-import { userController } from '../../user.app';
+import { usersController } from '../../user.app';
 
-const { getAllUsers, getUser, registerUser } = userController;
+const { getAllUsers, getUser, registerUser } = usersController;
 
 export const UserRoutes = {
   users: {
