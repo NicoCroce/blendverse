@@ -1,5 +1,6 @@
 import { procedure } from '@server/Infrastructure';
 import { AuthService } from '../../Application';
+import { executeService } from '@server/Application';
 import z from 'zod';
 
 export class AuthController {
@@ -12,9 +13,7 @@ export class AuthController {
         password: z.string(),
       }),
     )
-    .mutation(async ({ input: { username, password } }) =>
-      this.authService.login(username, password),
-    );
+    .mutation(executeService(this.authService.login.bind(this.authService)));
 
   register = procedure
     .input(
@@ -23,7 +22,5 @@ export class AuthController {
         password: z.string(),
       }),
     )
-    .mutation(async ({ input: { username, password } }) =>
-      this.authService.register(username, password),
-    );
+    .mutation(executeService(this.authService.register.bind(this.authService)));
 }
