@@ -1,7 +1,7 @@
 import { User, UserRepository } from '../Domain';
 import { LocalDatabase } from './Database';
 
-export class UserRepositoryImplementation implements UserRepository {
+export class UsersRepositoryImplementation implements UserRepository {
   private Db = new LocalDatabase();
 
   async getUsers(): Promise<User[]> {

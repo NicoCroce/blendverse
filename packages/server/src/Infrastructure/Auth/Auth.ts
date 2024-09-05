@@ -1,29 +1,15 @@
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+//import jwt from 'jsonwebtoken';
 
-const secretKey = process.env.SECRET_KEY || '';
-if (!secretKey) throw new Error('You must specify SECRET_KEY in dev file');
+import { IncomingHttpHeaders } from 'http';
 
-export const verifyToken = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const header = req.header('Authorization') || '';
-  const token = header.split(' ')[1];
+export const verifyTokenInHeader = (headers: IncomingHttpHeaders) => {
+  const token =
+    (headers['authorization'] as string)?.replace('Bearer ', '') || '';
 
   if (!token) {
-    return res.status(401).json({ message: 'Token not provied' });
+    console.log('🔴 Token not provided');
+    return undefined;
   }
-  try {
-    const payload = jwt.verify(token, secretKey);
-    console.log(payload);
-    //req.username = payload.username;
-    next();
-  } catch (error) {
-    return res.status(403).json({ message: 'Token not valid' });
-  }
-};
 
-export const generateToken = (data, expire = '30D') =>
-  jwt.sign(data, secretKey, { expiresIn: expire });
+  return token;
+};

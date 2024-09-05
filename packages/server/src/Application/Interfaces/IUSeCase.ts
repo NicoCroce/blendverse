@@ -1,3 +1,5 @@
-export interface IUseCase<TOutput = void> {
-  execute(input: unknown): Promise<TOutput>;
+import { TRequestContext } from '../Entities';
+
+export interface IUseCase<TOutput = void, TInput = unknown> {
+  execute(input?: TInput, requestContext?: TRequestContext): Promise<TOutput>;
 }

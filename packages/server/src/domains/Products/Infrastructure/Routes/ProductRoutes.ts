@@ -1,4 +1,4 @@
-import { productController } from '../../product.app';
+import { productsController } from '../../product.app';
 
 const {
   getProducts,
@@ -8,7 +8,7 @@ const {
   getProduct,
   getStock,
   getSomeInfoProduct,
-} = productController;
+} = productsController;
 
 export const ProductRoutes = {
   products: {

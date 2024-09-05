@@ -10,7 +10,7 @@ export interface ICreateProductInput {
 }
 
 export class CreateProduct implements IUseCase<Product> {
-  constructor(private readonly productRepository: ProductsRepository) {}
+  constructor(private readonly productsRepository: ProductsRepository) {}
 
   async execute({
     name,
@@ -19,6 +19,6 @@ export class CreateProduct implements IUseCase<Product> {
     price,
   }: ICreateProductInput): Promise<Product> {
     const newProduct = new Product('', name, description, stock, price);
-    return await this.productRepository.create(newProduct);
+    return await this.productsRepository.create(newProduct);
   }
 }

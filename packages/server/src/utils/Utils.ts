@@ -1,2 +1,4 @@
-export const delay = (time: number = 2000) =>
-  new Promise((resolve) => setTimeout(resolve, time));
+export const delay = (time: number = 10) => {
+  const randomDelay = Math.floor(Math.random() * 3) + 1;
+  return new Promise((resolve) => setTimeout(resolve, randomDelay * time));
+};

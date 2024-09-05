@@ -1,23 +1,32 @@
-import { procedure } from '@server/Infrastructure';
+import { protectedProcedure } from '@server/Infrastructure';
 import { ProductsService } from '../../Application';
+import { executeService, executeServiceAlone } from '@server/Application';
 import z from 'zod';
 
-export class ProductController {
-  constructor(private productService: ProductsService) {}
+export class ProductsController {
+  constructor(private productsService: ProductsService) {}
 
-  getProducts = procedure.query(
-    async () => await this.productService.getllProducts(),
+  getProducts = protectedProcedure.query(
+    executeServiceAlone(
+      this.productsService.getAllProducts.bind(this.productsService),
+    ),
   );
 
-  getProduct = procedure
+  getProduct = protectedProcedure
     .input(z.string().min(1, 'ID is required'))
-    .query(async ({ input }) => await this.productService.getProduct(input));
+    .query(
+      executeService(
+        this.productsService.getProduct.bind(this.productsService),
+      ),
+    );
 
-  getStock = procedure
+  getStock = protectedProcedure
     .input(z.string().min(1, 'ID id required'))
-    .query(async ({ input }) => await this.productService.getStock(input));
+    .query(
+      executeService(this.productsService.getStock.bind(this.productsService)),
+    );
 
-  createProduct = procedure
+  createProduct = protectedProcedure
     .input(
       z.object({
         name: z.string(),
@@ -27,22 +36,20 @@ export class ProductController {
       }),
     )
     .mutation(
-      async ({ input: { name, description, stock, price } }) =>
-        await this.productService.createProduct(
-          name,
-          description,
-          stock,
-          price,
-        ),
+      executeService(
+        this.productsService.createProduct.bind(this.productsService),
+      ),
     );
 
-  deleteProduct = procedure
+  deleteProduct = protectedProcedure
     .input(z.string())
     .mutation(
-      async ({ input: id }) => await this.productService.deleteProduct(id),
+      executeService(
+        this.productsService.deleteProduct.bind(this.productsService),
+      ),
     );
 
-  updateStock = procedure
+  updateStock = protectedProcedure
     .input(
       z.object({
         id: z.string().min(1, 'ID Is required'),
@@ -50,11 +57,12 @@ export class ProductController {
       }),
     )
     .mutation(
-      async ({ input: { id, stock } }) =>
-        await this.productService.updateStock({ id, stock }),
+      executeService(
+        this.productsService.updateStock.bind(this.productsService),
+      ),
     );
 
-  getSomeInfoProduct = procedure
+  getSomeInfoProduct = protectedProcedure
     .input(
       z.object({
         productId: z.string().min(1, 'ID Requerido de tipo string'),
@@ -62,6 +70,8 @@ export class ProductController {
       }),
     )
     .query(
-      async ({ input }) => await this.productService.getSomeInfoProduct(input),
+      executeService(
+        this.productsService.getSomeInfoProduct.bind(this.productsService),
+      ),
     );
 }
