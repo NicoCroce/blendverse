@@ -1,13 +1,8 @@
-import { asClass, createContainer, InjectionMode } from 'awilix';
-import { RequestContext } from '../Application/Entities/RequestContext';
+import { createContainer, InjectionMode } from 'awilix';
 
 const container = createContainer({
   injectionMode: InjectionMode.CLASSIC,
   strict: true,
-});
-
-container.register({
-  requestContext: asClass(RequestContext).scoped(),
 });
 
 export { container };

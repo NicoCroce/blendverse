@@ -1,8 +1,4 @@
-import {
-  executeUseCase,
-  RequestContext,
-  TRequestContext,
-} from '@server/Application';
+import { executeUseCase, TRequestContext } from '@server/Application';
 import {
   CreateProduct,
   DeleteProduct,
@@ -26,7 +22,6 @@ interface ICreateProduct {
 
 export class ProductsService {
   constructor(
-    private readonly requestContext: RequestContext,
     private readonly _createProduct: CreateProduct,
     private readonly _deleteProduct: DeleteProduct,
     private readonly _getAllProducts: GetAllProducts,
@@ -50,8 +45,8 @@ export class ProductsService {
     return executeUseCase(this._deleteProduct, id, requestContext);
   }
 
-  async getAllProducts(): Promise<Product[]> {
-    return executeUseCase(this._getAllProducts, this.requestContext.values);
+  async getAllProducts(requestContext: TRequestContext): Promise<Product[]> {
+    return executeUseCase(this._getAllProducts, requestContext);
   }
 
   async updateStock(
@@ -86,7 +81,6 @@ export class ProductsService {
     input: string,
     requestContext: TRequestContext,
   ): Promise<TRequestContext> {
-    console.log('Llega al service', requestContext);
     await delay();
     return requestContext;
   }
