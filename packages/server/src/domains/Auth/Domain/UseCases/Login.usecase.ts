@@ -1,6 +1,8 @@
 import { AppError, IUseCase } from '@server/Application';
 import { AuthRepository } from '../Auth.repository';
 import { AuthService } from '../../Application';
+import { generateToken } from '@server/utils/JWT';
+import { comparePassword } from '@server/utils/bcrypt';
 
 interface IExecuteInput {
   username: string;
@@ -21,14 +23,11 @@ export class Login implements IUseCase<IExecuteResponse> {
     username,
     password,
   }: IExecuteInput): Promise<IExecuteResponse> {
-    const user = await this.authRepository.login(username);
+    const user = await this.authRepository.validateUser(username);
     if (!user) {
       throw new AppError('User not found', 404);
     }
-    const isAuthenticated = await this.authService.comparePassword(
-      password,
-      user.values.authPassword,
-    );
+    const isAuthenticated = comparePassword(password, user.values.authPassword);
 
     if (!isAuthenticated) {
       throw new AppError('Wrong password', 401);
@@ -39,7 +38,7 @@ export class Login implements IUseCase<IExecuteResponse> {
       user: user.values.authName,
     };
 
-    const token = await this.authService.getToken(data);
+    const token = generateToken(data);
 
     return { token };
   }
