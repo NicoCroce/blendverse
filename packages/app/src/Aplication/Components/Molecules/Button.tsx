@@ -27,6 +27,7 @@ interface CustomlButtonNewProps extends ButtonProps {
   children?: React.ReactNode;
   type?: 'submit' | 'reset' | 'button' | undefined;
   variant?: ButtonProps['variant'];
+  disabled?: boolean;
 }
 
 export const Button = ({
@@ -38,6 +39,7 @@ export const Button = ({
   children,
   type = 'button',
   variant = 'default',
+  disabled = false,
   ...props
 }: CustomlButtonNewProps) => {
   const { variant: _variant, icon, text } = CustomButtonOptions[appearance];
@@ -47,7 +49,7 @@ export const Button = ({
       onClick={onClick}
       variant={_variant ? _variant : variant}
       className="flex gap-2"
-      disabled={isLoading}
+      disabled={disabled || isLoading}
       type={type}
     >
       {showIcon && !isLoading && icon && <FontAwesomeIcon icon={icon} />}
