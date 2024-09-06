@@ -12,10 +12,10 @@ export class AuthRepositoryImplementation implements AuthRepository {
 
     console.log(await this.Db.getAuthList());
 
-    return 'OK';
+    return 'Usuario creado';
   }
 
-  async login(username: string): Promise<Auth | null> {
+  async validateUser(username: string): Promise<Auth | null> {
     const user = await this.Db.getAuth(username);
     if (!user) return null;
     const { id, username: _username, password } = user;
@@ -26,35 +26,4 @@ export class AuthRepositoryImplementation implements AuthRepository {
   restorePassword(username: string, password: string): Promise<string> {
     throw new Error('Method not implemented.');
   }
-
-  validatePassword(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    username: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    password: string,
-  ): Promise<string | null> {
-    throw new Error('Method not implemented.');
-  }
-
-  /* async getUsers(): Promise<User[]> {
-    const users = await this.Db.getUsersList();
-    return users.map(({ id, name, mail }) => new User(id, mail, name));
-  }
-
-  async save(user: User): Promise<User> {
-    const { id, mail, name } = await this.Db.addUser({
-      ...user.values,
-      password: user.password || '',
-    });
-    return new User(id, mail, name);
-  }
-
-  async findUser(id: string): Promise<User | null> {
-    const userFound = await this.Db.getUser(id);
-    if (!userFound) {
-      return null;
-    }
-    const { id: userId, mail, name } = userFound;
-    return new User(userId, mail, name);
-  } */
 }

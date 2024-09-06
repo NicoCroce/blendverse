@@ -5,12 +5,11 @@ import {
   Login,
   RegisterUser,
 } from '../Domain';
-import bcrypt from 'bcryptjs';
-import { generateToken } from '@server/utils/JWT';
 
 interface IServiceInput {
   username: string;
   password: string;
+  rePassword: string;
 }
 
 export class AuthService {
@@ -20,7 +19,7 @@ export class AuthService {
   ) {}
 
   async login(
-    input: IServiceInput,
+    input: Omit<IServiceInput, 'rePassword'>,
     requestContext: TRequestContext,
   ): Promise<IExecuteResponse> {
     const _login = new Login(this.authRepository, this);
@@ -28,28 +27,9 @@ export class AuthService {
   }
 
   async register(
-    { username, password }: IServiceInput,
+    input: IServiceInput,
     requestContext: TRequestContext,
   ): Promise<string> {
-    const cryptedPassword = bcrypt.hashSync(password, 10);
-    return executeUseCase(
-      this._register,
-      {
-        username,
-        password: cryptedPassword,
-      },
-      requestContext,
-    );
-  }
-
-  async comparePassword(
-    rawPassword: string,
-    hashedPassword: string,
-  ): Promise<boolean> {
-    return await bcrypt.compare(rawPassword, hashedPassword);
-  }
-
-  async getToken(data: object): Promise<string> {
-    return generateToken(data);
+    return executeUseCase(this._register, input, requestContext);
   }
 }
