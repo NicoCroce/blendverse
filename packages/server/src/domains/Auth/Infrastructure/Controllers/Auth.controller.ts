@@ -20,6 +20,7 @@ export class AuthController {
       z.object({
         username: z.string(),
         password: z.string(),
+        rePassword: z.string(),
       }),
     )
     .mutation(executeService(this.authService.register.bind(this.authService)));
