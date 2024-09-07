@@ -51,7 +51,7 @@ export const LoginForm = () => {
       },
       {
         message: 'Las contraseñas no coinciden',
-        path: ['rePassword', 'password'],
+        path: ['rePassword'],
       },
     );
 
@@ -70,6 +70,7 @@ export const LoginForm = () => {
   };
 
   const handleSecondary = () => {
+    form.setValue('rePassword', '');
     setRegistrationMode((prevState) => !prevState);
   };
 
