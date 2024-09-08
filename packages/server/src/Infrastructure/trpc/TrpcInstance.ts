@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 // created for each request
 export const createContext = ({
   req,
+  res,
 }: trpcExpress.CreateExpressContextOptions) => {
   const userId = '';
   const requestId = uuidv4();
@@ -14,7 +15,8 @@ export const createContext = ({
   console.log(`🟢 ${req.method} : ${req.path} => params: `, req.query);
 
   return {
-    headers: req.headers,
+    cookies: req.cookies,
+    res,
     requestContext: { userId, requestId },
   };
 };
@@ -42,7 +44,7 @@ const t = initTRPC.context<Context>().create({
 
 const protectedProcedure = t.procedure.use(async function isAuthed(opts) {
   const { ctx } = opts;
-  const token = verifyTokenInHeader(ctx.headers);
+  const token = verifyTokenInHeader(ctx.cookies) as string;
   if (!token) {
     throw new TRPCError({
       message: 'Token not provided',
@@ -68,7 +70,7 @@ const protectedProcedure = t.procedure.use(async function isAuthed(opts) {
 
   return opts.next({
     ctx: {
-      headers: ctx.headers,
+      res: ctx.res,
       requestContext: { userId, requestId },
     },
   });
