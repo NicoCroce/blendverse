@@ -22,6 +22,7 @@
     "inversify-binding-decorators": "^4.0.0",
     "jsonwebtoken": "^9.0.2",
     "pino": "^9.4.0",
+    "pino-http": "^10.3.0",
     "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {

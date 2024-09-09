@@ -232,6 +232,9 @@ importers:
       pino:
         specifier: ^9.4.0
         version: 9.4.0
+      pino-http:
+        specifier: ^10.3.0
+        version: 10.3.0
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -2755,6 +2758,9 @@ packages:
 
   pino-abstract-transport@1.2.0:
     resolution: {integrity: sha512-Guhh8EZfPCfH+PMXAb6rKOjGQEoy0xlAIn+irODG5kgfYV+BQ0rGYYWTIel3P5mmyXqkYkPmdIkywsn6QKUR1Q==}
+
+  pino-http@10.3.0:
+    resolution: {integrity: sha512-kaHQqt1i5S9LXWmyuw6aPPqYW/TjoDPizPs4PnDW4hSpajz2Uo/oisNliLf7We1xzpiLacdntmw8yaZiEkppQQ==}
 
   pino-std-serializers@7.0.0:
     resolution: {integrity: sha512-e906FRY0+tV27iq4juKzSYPbUj2do2X2JX4EzSca1631EB2QJQUqGbDuERal7LCtOpxl6x3+nvo9NPZcmjkiFA==}
@@ -6063,6 +6069,13 @@ snapshots:
     dependencies:
       readable-stream: 4.5.2
       split2: 4.2.0
+
+  pino-http@10.3.0:
+    dependencies:
+      get-caller-file: 2.0.5
+      pino: 9.4.0
+      pino-std-serializers: 7.0.0
+      process-warning: 4.0.0
 
   pino-std-serializers@7.0.0: {}
 
