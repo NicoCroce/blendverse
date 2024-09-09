@@ -1,8 +1,8 @@
 import { toast } from 'sonner';
-import { AuthService } from '../AuthService';
+import { UsersService } from '@app/Domains/Users';
 
 export const useRegisterUser = () => {
-  return AuthService.register.useMutation({
+  return UsersService.create.useMutation({
     onError(error) {
       toast.error(error.message);
     },

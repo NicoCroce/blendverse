@@ -30,9 +30,12 @@ export const LoginForm = () => {
 
   const formSchema = z
     .object({
-      username: z.string().min(1, { message: 'Enter an email' }).email({
+      mail: z.string().min(1, { message: 'Enter an email' }).email({
         message: 'Enter a correct format email',
       }),
+      name: registrationMode
+        ? z.string().min(1, { message: 'Ingrese un nombre válido' })
+        : z.string(),
       password: z.string().min(8, {
         message: 'La contraseña debe ser mayor a 8 caracteres',
       }),
@@ -58,7 +61,8 @@ export const LoginForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: 'nico@123456.com',
+      mail: 'nico@123456.com',
+      name: '',
       password: '12313123asd',
       rePassword: '',
     },
@@ -81,11 +85,11 @@ export const LoginForm = () => {
         className="space-y-8 my-16 w-full"
       >
         <FormField
-          name="username"
+          name="mail"
           control={form.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email o nombre de usuario</FormLabel>
+              <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -93,6 +97,21 @@ export const LoginForm = () => {
             </FormItem>
           )}
         />
+        {registrationMode && (
+          <FormField
+            name="name"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nombre de usuario</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         <FormField
           name="password"
           control={form.control}
