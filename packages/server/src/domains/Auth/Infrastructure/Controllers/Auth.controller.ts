@@ -1,6 +1,5 @@
 import { procedure } from '@server/Infrastructure';
 import { AuthService } from '../../Application';
-import { executeService } from '@server/Application';
 import z from 'zod';
 
 export class AuthController {
@@ -9,7 +8,7 @@ export class AuthController {
   login = procedure
     .input(
       z.object({
-        username: z.string(),
+        mail: z.string(),
         password: z.string(),
       }),
     )
@@ -25,13 +24,8 @@ export class AuthController {
       return { success: true };
     });
 
-  register = procedure
-    .input(
-      z.object({
-        username: z.string(),
-        password: z.string(),
-        rePassword: z.string(),
-      }),
-    )
-    .mutation(executeService(this.authService.register.bind(this.authService)));
+  logout = procedure.mutation(async ({ ctx }) => {
+    ctx.res.clearCookie('auth_token');
+    return { message: 'Logged out successfully' };
+  });
 }

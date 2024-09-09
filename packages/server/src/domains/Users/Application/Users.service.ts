@@ -6,6 +6,7 @@ interface IregisterUser {
   mail: string;
   name: string;
   password: string;
+  rePassword: string;
 }
 
 export class UsersService {

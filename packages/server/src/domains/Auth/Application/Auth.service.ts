@@ -1,35 +1,18 @@
 import { executeUseCase, TRequestContext } from '@server/Application';
-import {
-  AuthRepository,
-  IExecuteResponse,
-  Login,
-  RegisterUser,
-} from '../Domain';
+import { IExecuteResponse, Login } from '../Domain';
 
 interface IServiceInput {
-  username: string;
+  mail: string;
   password: string;
-  rePassword: string;
 }
 
 export class AuthService {
-  constructor(
-    private readonly _register: RegisterUser,
-    private readonly authRepository: AuthRepository,
-  ) {}
+  constructor(private readonly _login: Login) {}
 
   async login(
     input: Omit<IServiceInput, 'rePassword'>,
     requestContext: TRequestContext,
   ): Promise<IExecuteResponse> {
-    const _login = new Login(this.authRepository, this);
-    return executeUseCase(_login, input, requestContext);
-  }
-
-  async register(
-    input: IServiceInput,
-    requestContext: TRequestContext,
-  ): Promise<string> {
-    return executeUseCase(this._register, input, requestContext);
+    return executeUseCase(this._login, input, requestContext);
   }
 }

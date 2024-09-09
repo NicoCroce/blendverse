@@ -12,6 +12,11 @@ export class LocalDatabase {
     return Users.find((user) => user.id === id);
   };
 
+  validateUser = async (mail: string) => {
+    await delay();
+    return Users.find((u) => u.mail === mail);
+  };
+
   addUser = async ({
     name,
     mail,

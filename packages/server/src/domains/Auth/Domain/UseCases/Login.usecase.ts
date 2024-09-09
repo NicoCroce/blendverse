@@ -1,11 +1,10 @@
 import { AppError, IUseCase } from '@server/Application';
-import { AuthRepository } from '../Auth.repository';
-import { AuthService } from '../../Application';
 import { generateToken } from '@server/utils/JWT';
 import { comparePassword } from '@server/utils/bcrypt';
+import { UserRepository } from '../../../Users/Domain/User.repository';
 
-interface IExecuteInput {
-  username: string;
+export interface IExecuteInput {
+  mail: string;
   password: string;
 }
 
@@ -14,20 +13,14 @@ export interface IExecuteResponse {
 }
 
 export class Login implements IUseCase<IExecuteResponse> {
-  constructor(
-    private readonly authRepository: AuthRepository,
-    private readonly authService: AuthService,
-  ) {}
+  constructor(private readonly usersRepository: UserRepository) {}
 
-  async execute({
-    username,
-    password,
-  }: IExecuteInput): Promise<IExecuteResponse> {
-    const user = await this.authRepository.validateUser(username);
+  async execute({ mail, password }: IExecuteInput): Promise<IExecuteResponse> {
+    const user = await this.usersRepository.validateUser(mail);
     if (!user) {
       throw new AppError('User not found', 404);
     }
-    const isAuthenticated = comparePassword(password, user.values.authPassword);
+    const isAuthenticated = comparePassword(password, user?.password || '');
 
     if (!isAuthenticated) {
       throw new AppError('Wrong password', 401);
@@ -35,7 +28,7 @@ export class Login implements IUseCase<IExecuteResponse> {
 
     const data = {
       id: user.values.id,
-      user: user.values.authName,
+      user: user.values.name,
     };
 
     const token = generateToken(data);
