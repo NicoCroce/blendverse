@@ -1,6 +1,5 @@
 import { procedure } from '@server/Infrastructure';
 import { AuthService } from '../../Application';
-import { executeService } from '@server/Application';
 import z from 'zod';
 
 export class AuthController {
@@ -9,18 +8,24 @@ export class AuthController {
   login = procedure
     .input(
       z.object({
-        username: z.string(),
+        mail: z.string(),
         password: z.string(),
       }),
     )
-    .mutation(executeService(this.authService.login.bind(this.authService)));
+    .mutation(async ({ ctx, input }) => {
+      const token = await this.authService.login(input, ctx.requestContext);
 
-  register = procedure
-    .input(
-      z.object({
-        username: z.string(),
-        password: z.string(),
-      }),
-    )
-    .mutation(executeService(this.authService.register.bind(this.authService)));
+      ctx.res.cookie('auth_token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
+      });
+
+      return { success: true };
+    });
+
+  logout = procedure.mutation(async ({ ctx }) => {
+    ctx.res.clearCookie('auth_token');
+    return { message: 'Logged out successfully' };
+  });
 }

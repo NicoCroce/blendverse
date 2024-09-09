@@ -1,4 +1,4 @@
-import { protectedProcedure } from '@server/Infrastructure/trpc';
+import { procedure, protectedProcedure } from '@server/Infrastructure/trpc';
 import { UsersService } from '../../Application';
 import { executeService, executeServiceAlone } from '@server/Application';
 import z from 'zod';
@@ -14,12 +14,13 @@ export class UsersController {
     .input(z.string())
     .query(executeService(this.usersService.getUser.bind(this.usersService)));
 
-  registerUser = protectedProcedure
+  registerUser = procedure
     .input(
       z.object({
         name: z.string(),
         mail: z.string(),
         password: z.string(),
+        rePassword: z.string(),
       }),
     )
     .mutation(

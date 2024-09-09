@@ -1,15 +1,12 @@
-//import jwt from 'jsonwebtoken';
+type TAuth_token = { token: string } | null;
 
-import { IncomingHttpHeaders } from 'http';
+export const verifyTokenInHeader = (cookies: Record<string, unknown>) => {
+  const auth_token = cookies.auth_token as TAuth_token;
 
-export const verifyTokenInHeader = (headers: IncomingHttpHeaders) => {
-  const token =
-    (headers['authorization'] as string)?.replace('Bearer ', '') || '';
-
-  if (!token) {
+  if (!auth_token) {
     console.log('🔴 Token not provided');
     return undefined;
   }
 
-  return token;
+  return auth_token.token || '';
 };

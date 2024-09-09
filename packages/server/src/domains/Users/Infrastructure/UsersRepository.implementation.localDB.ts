@@ -25,4 +25,11 @@ export class UsersRepositoryImplementation implements UserRepository {
     const { id: userId, mail, name } = userFound;
     return new User(userId, mail, name);
   }
+
+  async validateUser(mail: string): Promise<User | null> {
+    const user = await this.Db.validateUser(mail);
+    if (!user) return null;
+    const { id, mail: _mail, name, password } = user;
+    return new User(id, _mail, name, password);
+  }
 }

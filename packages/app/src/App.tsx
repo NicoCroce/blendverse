@@ -1,4 +1,4 @@
-import { Routes, useLocation } from 'react-router-dom';
+import { Routes } from 'react-router-dom';
 import { Toaster } from './Aplication/Components/ui/sonner';
 import { AnimatePresence } from 'framer-motion';
 
@@ -7,7 +7,6 @@ import { AllRoutes } from './Infrastructure';
 import './App.css';
 
 export const App = () => {
-  const location = useLocation();
   return (
     <>
       <AnimatePresence mode="wait">

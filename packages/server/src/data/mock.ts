@@ -5,13 +5,19 @@ export const Users = [
     mail: 'nicoc123@gmail.com',
     password: '123456789',
   },
+  {
+    id: '1',
+    name: 'nico123',
+    mail: 'prueba@gmail.com',
+    password: '123456789',
+  },
 ];
 
 export const Auth = [
   {
     id: '0',
     username: 'nico@nico.com',
-    password: '123456789',
+    password: '$2a$10$sLHM7Dn82oNAwmdpO5hniusMru.kwm86HpAiOSyvCOKCR.XDtGEBO',
   },
 ];
 

@@ -6,6 +6,10 @@
 .navbar {
   grid-area: navbar;
   padding-top: 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
   &.is-desktop {
     display: none;
     position: fixed;
@@ -46,6 +50,11 @@
       'navbar main' auto
       /
       var(--menu-width) auto;
+    &.login-page {
+      grid-template:
+        'header' var(--menu-height)
+        'main' 100% / auto;
+    }
   }
   .main {
     height: 100%;

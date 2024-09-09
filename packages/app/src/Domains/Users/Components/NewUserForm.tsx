@@ -17,17 +17,30 @@ import { Button, Container } from '@app/Aplication/Components';
 
 import { USERS_ROUTE } from '../UsersRoutes';
 
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
-  }),
-  mail: z.string().min(1, { message: 'Enter an email' }).email({
-    message: 'Enter a correct format email',
-  }),
-  password: z.string().min(8, {
-    message: 'Password must be at least 8 characters',
-  }),
-});
+const formSchema = z
+  .object({
+    name: z.string().min(2, {
+      message: 'Username must be at least 2 characters.',
+    }),
+    mail: z.string().min(1, { message: 'Enter an email' }).email({
+      message: 'Enter a correct format email',
+    }),
+    password: z.string().min(8, {
+      message: 'Password must be at least 8 characters',
+    }),
+    rePassword: z.string().min(8, {
+      message: 'Password must be at least 8 characters',
+    }),
+  })
+  .refine(
+    (data) => {
+      return data.password === data.rePassword;
+    },
+    {
+      message: 'Las contraseñas no coinciden',
+      path: ['rePassword'],
+    },
+  );
 
 export const NewUserForm = () => {
   const { mutate } = useAddUser();
@@ -39,6 +52,7 @@ export const NewUserForm = () => {
       name: '',
       mail: '',
       password: '',
+      rePassword: '',
     },
   });
 
@@ -102,7 +116,22 @@ export const NewUserForm = () => {
               <FormMessage />
             </FormItem>
           )}
-        ></FormField>
+        />
+        <FormField
+          name="rePassword"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Ingresse nuevamente la contraseña de Usuario
+              </FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Container row justify="end">
           <Button appearance="cancel" onClick={handleCancel}>
             Cancelar
