@@ -14,14 +14,15 @@
     "declaration": true,
     "resolveJsonModule": true,
     "experimentalDecorators": true,
-    "types": ["reflect-metadata"],
+    "types": ["node", "express"],
     "lib": ["es6"],
     "emitDecoratorMetadata": true,
     //"allowImportingTsExtensions": true,
     //"emitDeclarationOnly": true,
     "paths": {
       "@server/*": ["src/*"]
-    }
+    },
+    "typeRoots": ["./node_modules/@types"]
   },
   "ts-node": {
     "esm": true,

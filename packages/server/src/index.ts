@@ -1,9 +1,9 @@
 //require('module-alias/register');
 import dotenv from 'dotenv';
 dotenv.config();
-
-import express, { Express, Request, Response } from 'express';
+import express, { Request, Express, Response } from 'express';
 import { initMiddlewares } from './Infrastructure/Middlewares';
+import { logger } from './utils/pino';
 
 const app: Express = express();
 const port = process.env.PORT || 5500;
@@ -15,5 +15,5 @@ app.get('/', (_req: Request, res: Response) => {
 });
 
 app.listen(port, () => {
-  console.log(`[server]: Server is running at http://localhost:${port}`);
+  logger.info(`[server]: Server is running at http://localhost:${port}`);
 });

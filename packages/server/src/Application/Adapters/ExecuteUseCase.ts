@@ -11,7 +11,6 @@ export const executeUseCase = async <TOutput = void, TInput = unknown>(
   try {
     return await useCase.execute(input, requestContext);
   } catch (error) {
-    console.log(error);
     throw errorAdapter.adapt(error);
   }
 };

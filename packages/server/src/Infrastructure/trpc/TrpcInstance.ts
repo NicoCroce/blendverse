@@ -2,22 +2,19 @@ import { initTRPC, TRPCError } from '@trpc/server';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { verifyTokenInHeader } from '../Auth/Auth';
 import { verifyToken } from '@server/utils/JWT';
-import { v4 as uuidv4 } from 'uuid';
 
 // created for each request
 export const createContext = ({
   req,
   res,
 }: trpcExpress.CreateExpressContextOptions) => {
-  const userId = '';
-  const requestId = uuidv4();
-
-  console.log(`🟢 ${req.method} : ${req.path} => params: `, req.query);
-
   return {
     cookies: req.cookies,
     res,
-    requestContext: { userId, requestId },
+    requestContext: {
+      userId: res.getHeader('userId') as string,
+      requestId: res.getHeader('requestId') as string,
+    },
   };
 };
 

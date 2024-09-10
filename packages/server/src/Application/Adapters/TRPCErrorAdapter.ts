@@ -5,7 +5,6 @@ import { AppError } from '../Entities';
 export class TRPCErrorAdapter implements IErrorAdapter<TRPCError> {
   adapt(error: unknown): TRPCError {
     if (error instanceof AppError) {
-      console.error('🟡 Error:', error);
       return new TRPCError({
         code: this.mapHttpStatusToTRPCCode(error.statusCode),
         message: error.message,
@@ -14,7 +13,6 @@ export class TRPCErrorAdapter implements IErrorAdapter<TRPCError> {
     }
 
     // Para errores no manejados
-    console.error('🔴 Unhandled error:', error);
     return new TRPCError({
       code: 'INTERNAL_SERVER_ERROR',
       message: 'An unexpected error occurred',
