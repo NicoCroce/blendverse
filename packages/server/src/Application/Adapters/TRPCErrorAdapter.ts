@@ -1,11 +1,17 @@
 import { TRPCError } from '@trpc/server';
 import { IErrorAdapter } from '../Interfaces/';
-import { AppError } from '../Entities';
+import { AppError, TRequestContext } from '../Entities';
+import { logger, loggerContext } from '@server/utils/pino';
 
 export class TRPCErrorAdapter implements IErrorAdapter<TRPCError> {
-  adapt(error: unknown): TRPCError {
+  adapt(error: unknown, requestContext?: TRequestContext): TRPCError {
+    if (requestContext) {
+      loggerContext(requestContext).error(error);
+    } else {
+      logger.error(error);
+    }
+
     if (error instanceof AppError) {
-      console.error('🟡 Error:', error);
       return new TRPCError({
         code: this.mapHttpStatusToTRPCCode(error.statusCode),
         message: error.message,
@@ -14,7 +20,6 @@ export class TRPCErrorAdapter implements IErrorAdapter<TRPCError> {
     }
 
     // Para errores no manejados
-    console.error('🔴 Unhandled error:', error);
     return new TRPCError({
       code: 'INTERNAL_SERVER_ERROR',
       message: 'An unexpected error occurred',

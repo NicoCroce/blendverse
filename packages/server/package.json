@@ -18,10 +18,10 @@
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^4.19.2",
-    "inversify": "^6.0.2",
-    "inversify-binding-decorators": "^4.0.0",
     "jsonwebtoken": "^9.0.2",
-    "reflect-metadata": "^0.2.2"
+    "pino": "^9.4.0",
+    "pino-http": "^10.3.0",
+    "pino-pretty": "^11.2.2"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

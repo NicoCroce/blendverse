@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { logger } from './pino';
 
 const secretKey = process.env.SECRET_KEY || '';
 
@@ -13,7 +14,7 @@ export const verifyToken = (
   new Promise((resolve, reject) => {
     jwt.verify(token, secretKey, (err, decoded) => {
       if (err) {
-        console.log('🔴  Error Token: ', err);
+        logger.error(`Token not provided ${err}}`);
         return reject(err);
       }
       resolve(decoded);
