@@ -11,7 +11,6 @@ import {
   Product,
   UpdateStock,
 } from '../Domain';
-import { delay } from '@server/utils/Utils';
 
 interface ICreateProduct {
   name: string;
@@ -75,13 +74,5 @@ export class ProductsService {
     requestContext: TRequestContext,
   ): Promise<Record<string, unknown> | null> {
     return executeUseCase(this._getInfo, input, requestContext);
-  }
-
-  async getTest(
-    input: string,
-    requestContext: TRequestContext,
-  ): Promise<TRequestContext> {
-    await delay();
-    return requestContext;
   }
 }
