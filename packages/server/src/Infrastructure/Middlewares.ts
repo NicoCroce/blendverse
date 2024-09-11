@@ -16,7 +16,7 @@ export const initMiddlewares = (app: Express) => {
 
   app.use(cookieParser());
 
-  app.use((req, res, next) => {
+  app.use((_req, res, next) => {
     res.setHeader('requestId', uuidv4());
     res.setHeader('userId', '');
     next();
@@ -40,7 +40,7 @@ export const initMiddlewares = (app: Express) => {
           return `[${requestId}] => ${req.method} - ${decodeURIComponent(req.url)} - ${res.statusCode}`;
         }
       },
-      customErrorMessage: function (req, res, err) {
+      customErrorMessage: function (req, _res, err) {
         return `Exception: ${req.method} ${decodeURIComponent(req.url)} - ${err.message}`;
       },
       /* serializers: {

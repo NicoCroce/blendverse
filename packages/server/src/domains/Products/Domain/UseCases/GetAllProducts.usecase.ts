@@ -7,6 +7,6 @@ export class GetAllProducts implements IUseCase<Product[]> {
 
   async execute(requestContext: TRequestContext): Promise<Product[]> {
     console.log('use the context', requestContext);
-    return await this.productsRepository.getProducts();
+    return this.productsRepository.getProducts();
   }
 }
