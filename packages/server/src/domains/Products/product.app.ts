@@ -14,16 +14,16 @@ import {
 } from './Domain';
 
 container.register({
-  productsRepository: asClass(ProductsRepositoryImplementation).scoped(),
-  productsService: asClass(ProductsService).scoped(),
-  productsController: asClass(ProductsController).scoped(),
-  _createProduct: asClass(CreateProduct).scoped(),
-  _deleteProduct: asClass(DeleteProduct).scoped(),
-  _getAllProducts: asClass(GetAllProducts).scoped(),
-  _updateStock: asClass(UpdateStock).scoped(),
-  _getStock: asClass(GetStockProduct).scoped(),
-  _getProduct: asClass(GetProduct).scoped(),
-  _getInfo: asClass(GetSomeInfoProduct).scoped(),
+  productsRepository: asClass(ProductsRepositoryImplementation),
+  productsService: asClass(ProductsService),
+  productsController: asClass(ProductsController),
+  _createProduct: asClass(CreateProduct),
+  _deleteProduct: asClass(DeleteProduct),
+  _getAllProducts: asClass(GetAllProducts),
+  _updateStock: asClass(UpdateStock),
+  _getStock: asClass(GetStockProduct),
+  _getProduct: asClass(GetProduct),
+  _getInfo: asClass(GetSomeInfoProduct),
 });
 
 export const productsController =

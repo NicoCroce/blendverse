@@ -5,9 +5,9 @@ import { asClass } from 'awilix';
 import { Login } from './Domain';
 
 container.register({
-  authService: asClass(AuthService).scoped(),
-  authController: asClass(AuthController).scoped(),
-  _login: asClass(Login).scoped(),
+  authService: asClass(AuthService),
+  authController: asClass(AuthController),
+  _login: asClass(Login),
 });
 
 export const authController =
