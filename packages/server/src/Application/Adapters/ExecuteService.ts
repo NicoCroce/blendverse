@@ -4,7 +4,7 @@ import { TRequestContext } from '../Entities';
 type IexecuteService<TInput, TService> = (
   input: TInput,
   requestContext: TRequestContext,
-) => TService;
+) => Promise<TService>;
 
 interface IRequest<TInput> {
   ctx: {
@@ -48,7 +48,7 @@ interface IRequestAlone {
 
 type TexecuteServiceAlone<TService> = (
   requestContext: TRequestContext,
-) => TService;
+) => Promise<TService>;
 
 /**
  * Description placeholder
