@@ -2,7 +2,7 @@ import { initTRPC, TRPCError } from '@trpc/server';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { verifyTokenInHeader } from '../Auth/Auth';
 import { verifyToken } from '@server/utils/JWT';
-import { loggerContext } from '@server/utils/pino';
+import { logger, loggerContext } from '@server/utils/pino';
 
 // created for each request
 export const createContext = ({
@@ -14,7 +14,7 @@ export const createContext = ({
     requestId: res.getHeader('requestId') as string,
   };
 
-  console.log('\n\n=================================\n');
+  logger.info('\n\n=================================\n');
   loggerContext(requestContext).info(
     `START REQUEST[${requestContext.requestId}] => ${req.method} - ${decodeURIComponent(req.url)}`,
   );
