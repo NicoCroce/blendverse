@@ -31,26 +31,23 @@ export const initMiddlewares = (app: Express) => {
         if (err) return 'error';
         return 'info';
       },
-      /* customReceivedMessage: function (req, res) {
-        return 'request received: ' + req.method;
-      }, */
       customSuccessMessage: function (req, res) {
         const requestId = res.getHeader('requestId') as string;
         const statusCode = res.statusCode || res?.statusCode;
         if (statusCode && statusCode >= 400) {
-          return `[${requestId}] => ${req.method} - ${req.url} - ${res.statusCode}`;
+          return `[${requestId}] => ${req.method} - ${decodeURIComponent(req.url)} - ${res.statusCode}`;
         } else {
-          return `[${requestId}] => ${req.method} - ${req.url} - ${res.statusCode}`;
+          return `[${requestId}] => ${req.method} - ${decodeURIComponent(req.url)} - ${res.statusCode}`;
         }
       },
       customErrorMessage: function (req, res, err) {
-        return `Exception: ${req.method} ${req.url} - ${err.message}`;
+        return `Exception: ${req.method} ${decodeURIComponent(req.url)} - ${err.message}`;
       },
-      serializers: {
+      /* serializers: {
         // Dejar vacío para no incluir 'req' y 'res' en el log
         req: () => undefined,
         res: () => undefined,
-      },
+      }, */
     }),
   );
 

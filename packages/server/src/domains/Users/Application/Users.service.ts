@@ -24,7 +24,10 @@ export class UsersService {
     input: IregisterUser,
     requestContext: TRequestContext,
   ): Promise<User> {
-    return await executeUseCase(this._registerUser, input, requestContext);
+    return await executeUseCase(this._registerUser, input, requestContext, {
+      mail: input.mail,
+      name: input.name,
+    });
   }
 
   async getUser(id: string, requestContext: TRequestContext): Promise<User> {

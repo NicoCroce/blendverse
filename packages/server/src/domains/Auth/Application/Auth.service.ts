@@ -13,6 +13,8 @@ export class AuthService {
     input: Omit<IServiceInput, 'rePassword'>,
     requestContext: TRequestContext,
   ): Promise<IExecuteResponse> {
-    return executeUseCase(this._login, input, requestContext);
+    return executeUseCase(this._login, input, requestContext, {
+      mail: input.mail,
+    });
   }
 }

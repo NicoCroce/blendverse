@@ -2,19 +2,27 @@ import { initTRPC, TRPCError } from '@trpc/server';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { verifyTokenInHeader } from '../Auth/Auth';
 import { verifyToken } from '@server/utils/JWT';
+import { loggerContext } from '@server/utils/pino';
 
 // created for each request
 export const createContext = ({
   req,
   res,
 }: trpcExpress.CreateExpressContextOptions) => {
+  const requestContext = {
+    userId: res.getHeader('userId') as string,
+    requestId: res.getHeader('requestId') as string,
+  };
+
+  console.log('\n\n=================================\n');
+  loggerContext(requestContext).info(
+    `START REQUEST[${requestContext.requestId}] => ${req.method} - ${decodeURIComponent(req.url)}`,
+  );
+
   return {
     cookies: req.cookies,
     res,
-    requestContext: {
-      userId: res.getHeader('userId') as string,
-      requestId: res.getHeader('requestId') as string,
-    },
+    requestContext,
   };
 };
 
@@ -59,8 +67,6 @@ const protectedProcedure = t.procedure.use(async function isAuthed(opts) {
       code: 'UNAUTHORIZED',
     });
   }
-
-  console.log('dataToken', dataToken);
 
   const userId = dataToken.id;
   const requestId = ctx.requestContext.requestId;
