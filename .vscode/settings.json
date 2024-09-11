@@ -3,16 +3,7 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": ["source.fixAll.eslint"],
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "vue"],
-  "files.exclude": {
-    "**/.git": true,
-    "**/.svn": true,
-    "**/.hg": true,
-    "**/CVS": true,
-    "**/.DS_Store": true,
-    "**/Thumbs.db": true,
-    "{p,[!p]*,pa,p[!a]*,pac,pa[!c]*,pack,pac[!k]*,packa,pack[!a]*,packag,packa[!g]*,package,packag[!e]*,package[!s]*,packages?*}": true,
-    "packages/{a,[!a]*,ap,a[!p]*,ap[!p]*,app?*}": true
-  },
+  "files.exclude": {},
   "hide-files.files": ["node_modules", ".vscode", ".husky"],
   "folder-scopes.scopes": {
     "src-users-server": {
