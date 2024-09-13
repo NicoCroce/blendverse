@@ -1,4 +1,4 @@
-import { TRequestContext } from '@server/Application';
+import { RequestContext } from '@server/Application';
 import pino, { Bindings } from 'pino';
 
 const PINO_LEVEL = process.env.PINO_LEVEL || 'error';
@@ -30,7 +30,7 @@ export const loggerContext = (context: Bindings | undefined) =>
   context ? logger.child(context) : logger;
 
 export const loggerContextInput = (
-  requestContext: TRequestContext,
+  requestContext: typeof RequestContext | object,
   input: unknown,
 ) => {
   return loggerContext({

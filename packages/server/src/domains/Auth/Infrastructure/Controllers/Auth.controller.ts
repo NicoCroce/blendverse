@@ -18,7 +18,9 @@ export class AuthController {
         'Execute Service',
       );
 
-      const token = await this.authService.login(input, ctx.requestContext);
+      const requestContext = ctx.requestContext;
+
+      const token = await this.authService.login(input, requestContext);
 
       loggerContextInput(ctx.requestContext, { mail: input.mail }).info(
         'Service response => ',

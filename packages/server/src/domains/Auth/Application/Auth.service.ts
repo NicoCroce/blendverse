@@ -1,4 +1,4 @@
-import { executeUseCase, TRequestContext } from '@server/Application';
+import { executeUseCase, RequestContext } from '@server/Application';
 import { IExecuteResponse, Login } from '../Domain';
 
 interface IServiceInput {
@@ -11,7 +11,7 @@ export class AuthService {
 
   async login(
     input: Omit<IServiceInput, 'rePassword'>,
-    requestContext: TRequestContext,
+    requestContext: RequestContext,
   ): Promise<IExecuteResponse> {
     return executeUseCase(this._login, input, requestContext, {
       mail: input.mail,

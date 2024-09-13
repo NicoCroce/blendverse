@@ -1,4 +1,4 @@
-import { executeUseCase, TRequestContext } from '@server/Application';
+import { executeUseCase, RequestContext } from '@server/Application';
 import {
   CreateProduct,
   DeleteProduct,
@@ -32,46 +32,46 @@ export class ProductsService {
 
   async createProduct(
     input: ICreateProduct,
-    requestContext: TRequestContext,
+    requestContext: RequestContext,
   ): Promise<Product> {
     return executeUseCase(this._createProduct, input, requestContext);
   }
 
   async deleteProduct(
     id: string,
-    requestContext: TRequestContext,
+    requestContext: RequestContext,
   ): Promise<Product> {
     return executeUseCase(this._deleteProduct, id, requestContext);
   }
 
-  async getAllProducts(requestContext: TRequestContext): Promise<Product[]> {
+  async getAllProducts(requestContext: RequestContext): Promise<Product[]> {
     return executeUseCase(this._getAllProducts, requestContext);
   }
 
   async updateStock(
     { id, stock }: IUpdateStockInput,
-    requestContext: TRequestContext,
+    requestContext: RequestContext,
   ) {
     return executeUseCase(this._updateStock, { id, stock }, requestContext);
   }
 
   async getStock(
     id: string,
-    requestContext: TRequestContext,
+    requestContext: RequestContext,
   ): Promise<number | null> {
     return executeUseCase(this._getStock, id, requestContext);
   }
 
   async getProduct(
     id: string,
-    requestContext: TRequestContext,
+    requestContext: RequestContext,
   ): Promise<Product | null> {
     return executeUseCase(this._getProduct, id, requestContext);
   }
 
   async getSomeInfoProduct(
     input: IGetSomeInfoProductInput,
-    requestContext: TRequestContext,
+    requestContext: RequestContext,
   ): Promise<Record<string, unknown> | null> {
     return executeUseCase(this._getInfo, input, requestContext);
   }
