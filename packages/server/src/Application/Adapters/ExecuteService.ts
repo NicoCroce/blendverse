@@ -1,14 +1,14 @@
 import { loggerContext } from '@server/utils/pino';
-import { TRequestContext } from '../Entities';
+import { RequestContext } from '../Entities';
 
 type IexecuteService<TInput, TService> = (
   input: TInput,
-  requestContext: TRequestContext,
+  requestContext: RequestContext,
 ) => Promise<TService>;
 
 interface IRequest<TInput> {
   ctx: {
-    requestContext: TRequestContext;
+    requestContext: RequestContext;
   };
   input: TInput;
 }
@@ -41,13 +41,13 @@ export const executeService =
 
 interface IRequestAlone {
   ctx: {
-    requestContext: TRequestContext;
+    requestContext: RequestContext;
   };
   input: undefined;
 }
 
 type TexecuteServiceAlone<TService> = (
-  requestContext: TRequestContext,
+  requestContext: RequestContext,
 ) => Promise<TService>;
 
 /**

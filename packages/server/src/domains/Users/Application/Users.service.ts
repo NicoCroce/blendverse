@@ -1,6 +1,6 @@
 import { executeUseCase } from '@server/Application/Adapters/ExecuteUseCase';
 import { GetAllUsers, GetUser, RegisterUser, User } from '../Domain';
-import { TRequestContext } from '@server/Application';
+import { RequestContext } from '@server/Application';
 
 interface IregisterUser {
   mail: string;
@@ -16,13 +16,13 @@ export class UsersService {
     private readonly _registerUser: RegisterUser,
   ) {}
 
-  async getAllUsers(requestContext: TRequestContext): Promise<User[]> {
+  async getAllUsers(requestContext: RequestContext): Promise<User[]> {
     return await executeUseCase(this._getAllUsers, requestContext);
   }
 
   async registerUser(
     input: IregisterUser,
-    requestContext: TRequestContext,
+    requestContext: RequestContext,
   ): Promise<User> {
     return await executeUseCase(this._registerUser, input, requestContext, {
       mail: input.mail,
@@ -30,7 +30,7 @@ export class UsersService {
     });
   }
 
-  async getUser(id: string, requestContext: TRequestContext): Promise<User> {
+  async getUser(id: string, requestContext: RequestContext): Promise<User> {
     return await executeUseCase(this._getUser, id, requestContext);
   }
 }
