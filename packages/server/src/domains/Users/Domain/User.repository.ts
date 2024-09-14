@@ -1,20 +1,26 @@
 import { IRequestContext } from '@server/Application';
 import { User } from './User.entity';
 
-interface IGetUsers extends IRequestContext {}
-interface IRegisterUser extends IRequestContext {
+export interface IGetUsersRepository extends IRequestContext {}
+export interface IRegisterUserRepository extends IRequestContext {
   user: User;
 }
-interface IGetUser extends IRequestContext {
+export interface IGetUserRepository extends IRequestContext {
   id: string;
 }
-interface IValidateUser extends IRequestContext {
+export interface IValidateUserRepository extends IRequestContext {
   mail: string;
 }
 
 export interface UserRepository {
-  getUsers({ requestContext }: IGetUsers): Promise<User[]>;
-  registerUser({ user, requestContext }: IRegisterUser): Promise<User>;
-  getUser({ id, requestContext }: IGetUser): Promise<User | null>;
-  validateUser({ mail }: IValidateUser): Promise<User | null>;
+  getUsers({ requestContext }: IGetUsersRepository): Promise<User[]>;
+  registerUser({
+    user,
+    requestContext,
+  }: IRegisterUserRepository): Promise<User>;
+  getUser({ id, requestContext }: IGetUserRepository): Promise<User | null>;
+  validateUser({
+    mail,
+    requestContext,
+  }: IValidateUserRepository): Promise<User | null>;
 }
