@@ -1,6 +1,6 @@
 import { IUseCase } from '@server/Application';
 import { Product } from '../Product.entity';
-import { ProductsRepository } from '../Products.repository';
+import { ProductsRepository } from '../Product.repository';
 
 export interface IUpdateStockInput {
   id: string;

@@ -1,5 +1,5 @@
 import { IUseCase } from '@server/Application';
-import { ProductsRepository } from '../Products.repository';
+import { ProductsRepository } from '../Product.repository';
 
 export class GetStockProduct implements IUseCase<number | null> {
   constructor(private readonly productsRepository: ProductsRepository) {}

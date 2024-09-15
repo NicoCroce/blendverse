@@ -1,5 +1,5 @@
 import { AppError, IUseCase } from '@server/Application';
-import { ProductsRepository } from '../Products.repository';
+import { ProductsRepository } from '../Product.repository';
 
 export interface IGetSomeInfoProductInput {
   productId: string;

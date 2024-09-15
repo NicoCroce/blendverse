@@ -1,3 +1,3 @@
 export * from './Product.entity';
-export * from './Products.repository';
+export * from './Product.repository';
 export * from './UseCases';

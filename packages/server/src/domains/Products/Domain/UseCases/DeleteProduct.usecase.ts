@@ -1,6 +1,6 @@
 import { IUseCase } from '@server/Application';
 import { Product } from '../Product.entity';
-import { ProductsRepository } from '../Products.repository';
+import { ProductsRepository } from '../Product.repository';
 
 export class DeleteProduct implements IUseCase<Product> {
   constructor(private readonly productsRepository: ProductsRepository) {}
