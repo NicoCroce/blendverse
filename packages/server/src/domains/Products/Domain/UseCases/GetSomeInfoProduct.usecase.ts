@@ -1,24 +1,14 @@
 import { AppError, IUseCase } from '@server/Application';
 import { ProductsRepository } from '../Product.repository';
-
-export interface IGetSomeInfoProductInput {
-  productId: string;
-  params: string | string[];
-}
+import { IGetInfo } from '../../Product.interfaces';
 
 export class GetSomeInfoProduct
   implements IUseCase<Record<string, unknown> | null>
 {
   constructor(private readonly productsRepository: ProductsRepository) {}
 
-  async execute({
-    productId,
-    params,
-  }: IGetSomeInfoProductInput): Promise<Record<string, unknown> | null> {
-    const product = await this.productsRepository.getProductInfo(
-      productId,
-      params,
-    );
+  async execute(input: IGetInfo): Promise<Record<string, unknown> | null> {
+    const product = await this.productsRepository.getProductInfo(input);
 
     if (!product) {
       throw new AppError('No se encontró el producto');

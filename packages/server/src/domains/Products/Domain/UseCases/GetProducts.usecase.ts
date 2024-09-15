@@ -1,12 +1,12 @@
 import { IUseCase } from '@server/Application';
 import { Product } from '../Product.entity';
 import { ProductsRepository } from '../Product.repository';
-import { IDeleteProduct } from '../../Product.interfaces';
+import { IGetProducts } from '../../Product.interfaces';
 
-export class DeleteProduct implements IUseCase<Product> {
+export class GetProducts implements IUseCase<Product[]> {
   constructor(private readonly productsRepository: ProductsRepository) {}
 
-  async execute(input: IDeleteProduct): Promise<Product> {
-    return this.productsRepository.deleteProduct(input);
+  async execute(input: IGetProducts): Promise<Product[]> {
+    return this.productsRepository.getProducts(input);
   }
 }
