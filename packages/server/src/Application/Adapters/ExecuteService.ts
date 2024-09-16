@@ -1,9 +1,16 @@
 import { loggerContext } from '@server/utils/pino';
 import { RequestContext } from '../Entities';
+import { IRequestContext } from '../Interfaces';
 
+// Definimos un tipo auxiliar para el parámetro de IexecuteService
+interface ServiceParams<TInput> {
+  input: TInput;
+  requestContext: RequestContext;
+}
+
+// Usamos el tipo auxiliar en IexecuteService
 type IexecuteService<TInput, TService> = (
-  input: TInput,
-  requestContext: RequestContext,
+  params: ServiceParams<TInput>,
 ) => Promise<TService>;
 
 interface IRequest<TInput> {
@@ -30,7 +37,10 @@ export const executeService =
     loggerContext({ ...ctx.requestContext, input: JSON.stringify(input) }).info(
       'Service Input',
     );
-    const response = await service(input, ctx.requestContext);
+    const response = await service({
+      input,
+      requestContext: ctx.requestContext,
+    });
     loggerContext(ctx.requestContext).info(
       'Service Response => ' + JSON.stringify(response),
     );
@@ -46,9 +56,9 @@ interface IRequestAlone {
   input: undefined;
 }
 
-type TexecuteServiceAlone<TService> = (
-  requestContext: RequestContext,
-) => Promise<TService>;
+type TexecuteServiceAlone<TService> = ({
+  requestContext,
+}: IRequestContext) => Promise<TService>;
 
 /**
  * Description placeholder
@@ -64,7 +74,7 @@ export const executeServiceAlone = <TService>(
   service: TexecuteServiceAlone<TService>,
 ) => {
   return async function ({ ctx }: IRequestAlone) {
-    const response = await service(ctx.requestContext);
+    const response = await service({ requestContext: ctx.requestContext });
     loggerContext(ctx.requestContext).info(
       'Service response => ' + JSON.stringify(response),
     );
