@@ -2,21 +2,19 @@ import { AppError, IUseCase } from '@server/Application';
 import { generateToken } from '@server/utils/JWT';
 import { comparePassword } from '@server/utils/bcrypt';
 import { UserRepository } from '../../../Users/Domain/User.repository';
-
-export interface IExecuteInput {
-  mail: string;
-  password: string;
-}
-
-export interface IExecuteResponse {
-  token: string;
-}
+import { IExecuteResponse, Ilogin } from '../auth.interfaces';
 
 export class Login implements IUseCase<IExecuteResponse> {
   constructor(private readonly usersRepository: UserRepository) {}
 
-  async execute({ mail, password }: IExecuteInput): Promise<IExecuteResponse> {
-    const user = await this.usersRepository.validateUser(mail);
+  async execute({
+    input: { mail, password },
+    requestContext,
+  }: Ilogin): Promise<IExecuteResponse> {
+    const user = await this.usersRepository.validateUser({
+      mail,
+      requestContext,
+    });
     if (!user) {
       throw new AppError('User not found', 404);
     }

@@ -20,7 +20,7 @@ export class AuthController {
 
       const requestContext = ctx.requestContext;
 
-      const token = await this.authService.login(input, requestContext);
+      const token = await this.authService.login({ input, requestContext });
 
       loggerContextInput(ctx.requestContext, { mail: input.mail }).info(
         'Service response => ',
