@@ -8,8 +8,8 @@ import {
   IUpdateStockRepository,
   Product,
   ProductsRepository,
-} from '../Domain';
-import { ProductsLocalDatabase } from './Database/ProductsLocal.database';
+} from '../../Domain';
+import { ProductsLocalDatabase } from './ProductsLocal.database';
 
 export class ProductsRepositoryImplementation implements ProductsRepository {
   private Db = new ProductsLocalDatabase();
