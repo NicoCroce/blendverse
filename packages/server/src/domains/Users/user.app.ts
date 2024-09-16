@@ -9,7 +9,7 @@ container.register({
   usersRepository: asClass(UsersRepositoryImplementation),
   usersService: asClass(UsersService),
   usersController: asClass(UsersController),
-  _getAllUsers: asClass(GetUsers),
+  _getUsers: asClass(GetUsers),
   _getUser: asClass(GetUser),
   _registerUser: asClass(RegisterUser),
 });
