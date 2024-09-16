@@ -13,14 +13,8 @@ export interface IValidateUserRepository extends IRequestContext {
 }
 
 export interface UserRepository {
-  getUsers({ requestContext }: IGetUsersRepository): Promise<User[]>;
-  registerUser({
-    user,
-    requestContext,
-  }: IRegisterUserRepository): Promise<User>;
-  getUser({ id, requestContext }: IGetUserRepository): Promise<User | null>;
-  validateUser({
-    mail,
-    requestContext,
-  }: IValidateUserRepository): Promise<User | null>;
+  getUsers(params: IGetUsersRepository): Promise<User[]>;
+  registerUser(params: IRegisterUserRepository): Promise<User>;
+  getUser(params: IGetUserRepository): Promise<User | null>;
+  validateUser(params: IValidateUserRepository): Promise<User | null>;
 }
