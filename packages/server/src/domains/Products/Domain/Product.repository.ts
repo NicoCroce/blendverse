@@ -16,25 +16,17 @@ export interface IGetProductRepository extends IRequestContext {
   id: string;
 }
 export interface IGetProductInfoRepository extends IRequestContext {
-  productId: string;
+  id: string;
   params: string | string[];
 }
 
 export interface ProductsRepository {
-  getProducts({ requestContext }: IGetProductsRepository): Promise<Product[]>;
-  createProduct({
-    product,
-    requestContext,
-  }: ICreateProductRepository): Promise<Product>;
-  updateStock({
-    id,
-    stock,
-    requestContext,
-  }: IUpdateStockRepository): Promise<Product>;
-  deleteProduct({ id }: IDeleteProductRepository): Promise<Product>;
-  getProduct({ id }: IGetProductRepository): Promise<Product | null>;
-  getProductInfo({
-    productId,
-    params,
-  }: IGetProductInfoRepository): Promise<Record<string, unknown> | null>;
+  getProducts(params: IGetProductsRepository): Promise<Product[]>;
+  createProduct(params: ICreateProductRepository): Promise<Product>;
+  updateStock(params: IUpdateStockRepository): Promise<Product>;
+  deleteProduct(params: IDeleteProductRepository): Promise<Product>;
+  getProduct(params: IGetProductRepository): Promise<Product | null>;
+  getProductInfo(
+    params: IGetProductInfoRepository,
+  ): Promise<Record<string, unknown> | null>;
 }

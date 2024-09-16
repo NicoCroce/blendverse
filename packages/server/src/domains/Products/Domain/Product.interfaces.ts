@@ -2,25 +2,20 @@ import { IRequestContext } from '@server/Application';
 
 export interface IGetProducts extends IRequestContext {}
 export interface ICreateProduct extends IRequestContext {
-  name: string;
-  description: string;
-  stock: number;
-  price: number;
+  input: { name: string; description: string; stock: number; price: number };
 }
 export interface IDeleteProduct extends IRequestContext {
-  id: string;
+  input: string; // id
 }
 export interface IUpdateStock extends IRequestContext {
-  id: string;
-  stock: number;
+  input: { id: string; stock: number };
 }
 export interface IGetStock extends IRequestContext {
-  id: string;
+  input: string; // id
 }
 export interface IGetProduct extends IRequestContext {
-  id: string;
+  input: string; // id
 }
-export interface IGetInfo extends IRequestContext {
-  productId: string;
-  params: string | string[];
+export interface IGetSomeInfoProduct extends IRequestContext {
+  input: { id: string; params: string | string[] };
 }
