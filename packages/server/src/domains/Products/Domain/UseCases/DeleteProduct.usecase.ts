@@ -1,11 +1,15 @@
 import { IUseCase } from '@server/Application';
 import { Product } from '../Product.entity';
-import { ProductsRepository } from '../Products.repository';
+import { ProductsRepository } from '../Product.repository';
+import { IDeleteProduct } from '../Product.interfaces';
 
 export class DeleteProduct implements IUseCase<Product> {
   constructor(private readonly productsRepository: ProductsRepository) {}
 
-  async execute(id: string): Promise<Product> {
-    return await this.productsRepository.delete(id);
+  async execute({
+    input: id,
+    requestContext,
+  }: IDeleteProduct): Promise<Product> {
+    return this.productsRepository.deleteProduct({ id, requestContext });
   }
 }

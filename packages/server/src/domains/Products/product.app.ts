@@ -6,7 +6,7 @@ import { container } from '@server/utils/Container';
 import {
   CreateProduct,
   DeleteProduct,
-  GetAllProducts,
+  GetProducts,
   GetProduct,
   GetSomeInfoProduct,
   GetStockProduct,
@@ -19,7 +19,7 @@ container.register({
   productsController: asClass(ProductsController),
   _createProduct: asClass(CreateProduct),
   _deleteProduct: asClass(DeleteProduct),
-  _getAllProducts: asClass(GetAllProducts),
+  _getAllProducts: asClass(GetProducts),
   _updateStock: asClass(UpdateStock),
   _getStock: asClass(GetStockProduct),
   _getProduct: asClass(GetProduct),

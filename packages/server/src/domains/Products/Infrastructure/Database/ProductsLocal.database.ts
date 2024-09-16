@@ -57,16 +57,16 @@ export class ProductsLocalDatabase {
   };
 
   getInfoProduct = async ({
-    productId,
+    id,
     params,
   }: {
-    productId: string;
+    id: string;
     params: string | string[];
   }): Promise<Record<string, unknown> | null> => {
     await delay();
     type TResponse = Record<string, unknown> | undefined;
 
-    const product: TResponse = Products.find((p) => p.id === productId);
+    const product: TResponse = Products.find((p) => p.id === id);
     const response: TResponse = {};
 
     if (!product) return null;

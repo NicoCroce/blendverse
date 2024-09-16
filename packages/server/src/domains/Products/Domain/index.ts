@@ -1,3 +1,4 @@
 export * from './Product.entity';
-export * from './Products.repository';
+export * from './Product.interfaces';
+export * from './Product.repository';
 export * from './UseCases';

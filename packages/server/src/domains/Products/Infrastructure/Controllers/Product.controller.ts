@@ -8,7 +8,7 @@ export class ProductsController {
 
   getProducts = protectedProcedure.query(
     executeServiceAlone(
-      this.productsService.getAllProducts.bind(this.productsService),
+      this.productsService.getProducts.bind(this.productsService),
     ),
   );
 
@@ -65,7 +65,7 @@ export class ProductsController {
   getSomeInfoProduct = protectedProcedure
     .input(
       z.object({
-        productId: z.string().min(1, 'ID Requerido de tipo string'),
+        id: z.string().min(1, 'ID Requerido de tipo string'),
         params: z.union([z.string(), z.array(z.string())]),
       }),
     )

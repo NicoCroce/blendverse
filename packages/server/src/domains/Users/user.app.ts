@@ -3,13 +3,13 @@ import { UsersService } from './Application';
 import { UsersController } from './Infrastructure/Controllers/Users.controller';
 import { UsersRepositoryImplementation } from './Infrastructure/UsersRepository.implementation.localDB';
 import { asClass } from 'awilix';
-import { GetAllUsers, GetUser, RegisterUser } from './Domain';
+import { GetUsers, GetUser, RegisterUser } from './Domain';
 
 container.register({
   usersRepository: asClass(UsersRepositoryImplementation),
   usersService: asClass(UsersService),
   usersController: asClass(UsersController),
-  _getAllUsers: asClass(GetAllUsers),
+  _getUsers: asClass(GetUsers),
   _getUser: asClass(GetUser),
   _registerUser: asClass(RegisterUser),
 });

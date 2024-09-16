@@ -1,16 +1,15 @@
 import { IUseCase } from '@server/Application';
 import { Product } from '../Product.entity';
-import { ProductsRepository } from '../Products.repository';
-
-export interface IUpdateStockInput {
-  id: string;
-  stock: number;
-}
+import { ProductsRepository } from '../Product.repository';
+import { IUpdateStock } from '../Product.interfaces';
 
 export class UpdateStock implements IUseCase<Product> {
   constructor(private readonly productsRepository: ProductsRepository) {}
 
-  async execute({ id, stock }: IUpdateStockInput): Promise<Product> {
-    return await this.productsRepository.updateStock(id, stock);
+  async execute({
+    input: { id, stock },
+    requestContext,
+  }: IUpdateStock): Promise<Product> {
+    return this.productsRepository.updateStock({ id, stock, requestContext });
   }
 }

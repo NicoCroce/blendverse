@@ -28,4 +28,8 @@ export class User {
   get password() {
     return this._password?.value || null;
   }
+
+  get mail() {
+    return this._mail.value;
+  }
 }

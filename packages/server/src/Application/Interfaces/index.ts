@@ -1,2 +1,3 @@
 export * from './IErrorAdapter';
-export * from './IUSeCase';
+export * from './IRequestContext';
+export * from './IUseCase';
