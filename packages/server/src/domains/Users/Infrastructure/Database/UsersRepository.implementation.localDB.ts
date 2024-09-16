@@ -5,8 +5,8 @@ import {
   IValidateUserRepository,
   User,
   UserRepository,
-} from '../Domain';
-import { LocalDatabase } from './Database';
+} from '../../Domain';
+import { LocalDatabase } from '.';
 
 export class UsersRepositoryImplementation implements UserRepository {
   private Db = new LocalDatabase();

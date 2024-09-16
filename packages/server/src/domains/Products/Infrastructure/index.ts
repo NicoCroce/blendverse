@@ -1,3 +1,3 @@
+export * from './Controllers';
 export * from './Database';
-export * from './ProductsRepository.implementation.localDB';
 export * from './Routes';

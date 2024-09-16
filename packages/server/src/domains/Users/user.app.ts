@@ -1,8 +1,10 @@
 import { container } from '@server/utils/Container';
 import { UsersService } from './Application';
-import { UsersController } from './Infrastructure/Controllers/Users.controller';
-import { UsersRepositoryImplementation } from './Infrastructure/UsersRepository.implementation.localDB';
 import { asClass } from 'awilix';
+import {
+  UsersController,
+  UsersRepositoryImplementation,
+} from './Infrastructure';
 import { GetUsers, GetUser, RegisterUser } from './Domain';
 
 container.register({

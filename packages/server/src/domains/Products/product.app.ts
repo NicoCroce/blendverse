@@ -1,7 +1,9 @@
 import { asClass } from 'awilix';
-import { ProductsRepositoryImplementation } from './Infrastructure';
 import { ProductsService } from './Application';
-import { ProductsController } from './Infrastructure/Controllers/Product.controller';
+import {
+  ProductsController,
+  ProductsRepositoryImplementation,
+} from './Infrastructure';
 import { container } from '@server/utils/Container';
 import {
   CreateProduct,
