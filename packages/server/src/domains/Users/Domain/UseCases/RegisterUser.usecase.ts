@@ -8,10 +8,7 @@ export class RegisterUser implements IUseCase<User> {
   constructor(private readonly usersRepository: UserRepository) {}
 
   async execute({
-    mail,
-    name,
-    password,
-    rePassword,
+    input: { mail, name, password, rePassword },
     requestContext,
   }: IRegisterUser): Promise<User> {
     if (password !== rePassword) {

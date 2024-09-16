@@ -8,7 +8,7 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   getAllUsers = protectedProcedure.query(
-    executeServiceAlone(this.usersService.getAllUsers.bind(this.usersService)),
+    executeServiceAlone(this.usersService.getUsers.bind(this.usersService)),
   );
 
   getUser = protectedProcedure
@@ -32,10 +32,10 @@ export class UsersController {
 
       loggerContextInput(ctx.requestContext, dataLog).info('Execute Service');
 
-      const response = await this.usersService.registerUser(
+      const response = await this.usersService.registerUser({
         input,
-        ctx.requestContext,
-      );
+        requestContext: ctx.requestContext,
+      });
 
       loggerContextInput(ctx.requestContext, dataLog).info(
         'Service response => ',

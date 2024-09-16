@@ -10,8 +10,8 @@ export interface IRegisterUser extends IRequestContext {
   };
 }
 export interface IGetUser extends IRequestContext {
-  id: string;
+  input: string; // user id
 }
 export interface IValidateUser extends IRequestContext {
-  mail: string;
+  input: string; // user mail
 }

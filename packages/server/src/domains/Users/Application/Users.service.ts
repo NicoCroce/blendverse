@@ -1,13 +1,6 @@
 import { executeUseCase } from '@server/Application/Adapters/ExecuteUseCase';
 import { GetUsers, GetUser, RegisterUser, User } from '../Domain';
-import { RequestContext } from '@server/Application';
-
-interface IregisterUser {
-  mail: string;
-  name: string;
-  password: string;
-  rePassword: string;
-}
+import { IGetUser, IGetUsers, IRegisterUser } from '../Domain/User.interfaces';
 
 export class UsersService {
   constructor(
@@ -16,15 +9,12 @@ export class UsersService {
     private readonly _registerUser: RegisterUser,
   ) {}
 
-  async getAllUsers(requestContext: RequestContext): Promise<User[]> {
-    return await executeUseCase({ useCase: this._getUsers, requestContext });
+  async getUsers({ requestContext }: IGetUsers): Promise<User[]> {
+    return executeUseCase({ useCase: this._getUsers, requestContext });
   }
 
-  async registerUser(
-    input: IregisterUser,
-    requestContext: RequestContext,
-  ): Promise<User> {
-    return await executeUseCase({
+  async registerUser({ input, requestContext }: IRegisterUser): Promise<User> {
+    return executeUseCase({
       useCase: this._registerUser,
       input,
       requestContext,
@@ -35,8 +25,8 @@ export class UsersService {
     });
   }
 
-  async getUser(input: string, requestContext: RequestContext): Promise<User> {
-    return await executeUseCase({
+  async getUser({ input, requestContext }: IGetUser): Promise<User> {
+    return executeUseCase({
       useCase: this._getUser,
       input,
       requestContext,
