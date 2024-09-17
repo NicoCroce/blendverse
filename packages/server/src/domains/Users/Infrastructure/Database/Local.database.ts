@@ -50,7 +50,7 @@ export class LocalDatabase {
     mail: string;
   }) => {
     const userIndex = Users.findIndex((user) => user.id === id);
-    if (!userIndex) return null;
+    if (userIndex === -1) return null;
     Users[userIndex] = {
       ...Users[userIndex],
       id,
