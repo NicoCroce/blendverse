@@ -5,7 +5,13 @@ import {
   UsersController,
   UsersRepositoryImplementation,
 } from './Infrastructure';
-import { GetUsers, GetUser, RegisterUser } from './Domain';
+import {
+  GetUsers,
+  GetUser,
+  RegisterUser,
+  DeleteUser,
+  UpdateUser,
+} from './Domain';
 
 container.register({
   usersRepository: asClass(UsersRepositoryImplementation),
@@ -14,6 +20,8 @@ container.register({
   _getUsers: asClass(GetUsers),
   _getUser: asClass(GetUser),
   _registerUser: asClass(RegisterUser),
+  _deleteUser: asClass(DeleteUser),
+  _updateUser: asClass(UpdateUser),
 });
 
 export const usersController =

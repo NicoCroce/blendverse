@@ -39,4 +39,34 @@ export class LocalDatabase {
 
     return newUser;
   };
+
+  updateUser = async ({
+    id,
+    name,
+    mail,
+  }: {
+    id: string;
+    name: string;
+    mail: string;
+  }) => {
+    const userIndex = Users.findIndex((user) => user.id === id);
+    if (!userIndex) return null;
+    Users[userIndex] = {
+      ...Users[userIndex],
+      id,
+      name,
+      mail,
+    };
+
+    return Users[userIndex];
+  };
+
+  deleteUser = async (id: string) => {
+    const userIndex = Users.findIndex((user) => user.id === id);
+    if (!userIndex) return null;
+    const response = Users[userIndex];
+    Users.splice(userIndex, 1);
+
+    return response;
+  };
 }
