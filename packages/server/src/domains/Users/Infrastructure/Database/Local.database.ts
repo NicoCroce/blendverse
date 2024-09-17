@@ -63,7 +63,7 @@ export class LocalDatabase {
 
   deleteUser = async (id: string) => {
     const userIndex = Users.findIndex((user) => user.id === id);
-    if (!userIndex) return null;
+    if (userIndex === -1) return null;
     const response = Users[userIndex];
     Users.splice(userIndex, 1);
 
