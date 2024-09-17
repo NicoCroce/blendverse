@@ -1,8 +1,6 @@
-import { PRODUCTS_ROUTE } from '@app/Domains/Products/ProductsRoutes';
 import { USERS_ROUTE } from '@app/Domains/Users/UsersRoutes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faFile,
   faUser,
   faArrowRightFromBracket,
 } from '@fortawesome/free-solid-svg-icons';
@@ -23,10 +21,6 @@ export const NavBar = ({ className = '' }: { className?: string }) => {
         <NavLink to={USERS_ROUTE} className={isActiveLink}>
           <FontAwesomeIcon icon={faUser} />
           Usuarios
-        </NavLink>
-        <NavLink to={PRODUCTS_ROUTE} className={isActiveLink}>
-          <FontAwesomeIcon icon={faFile} />
-          Productos
         </NavLink>
       </Container>
       <Container className="flex flex-col gap-2 md:p-4">
