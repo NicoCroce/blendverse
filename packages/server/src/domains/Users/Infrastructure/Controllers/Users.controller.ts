@@ -42,4 +42,22 @@ export class UsersController {
       );
       return response;
     });
+
+  deleteUser = protectedProcedure
+    .input(z.string())
+    .mutation(
+      executeService(this.usersService.deleteUser.bind(this.usersService)),
+    );
+
+  updateUser = protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        mail: z.string(),
+      }),
+    )
+    .mutation(
+      executeService(this.usersService.updateUser.bind(this.usersService)),
+    );
 }

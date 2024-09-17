@@ -1,7 +1,9 @@
 import {
+  IDeleteUserRepository,
   IGetUserRepository,
   IGetUsersRepository,
   IRegisterUserRepository,
+  IUpdateUserRepository,
   IValidateUserRepository,
   User,
   UserRepository,
@@ -55,5 +57,33 @@ export class UsersRepositoryImplementation implements UserRepository {
     if (!user) return null;
     const { id, mail: _mail, name, password } = user;
     return new User(id, _mail, name, password);
+  }
+
+  async updateUser({
+    user,
+    requestContext,
+  }: IUpdateUserRepository): Promise<User | null> {
+    // TODO: use requestContext to execte db
+    console.log(requestContext);
+    const { id, mail, name } = user.values;
+    const userUpdated = await this.Db.updateUser({
+      id,
+      mail,
+      name,
+    });
+
+    if (!userUpdated) return null;
+    return new User(id, mail, name);
+  }
+
+  async deleteUser({
+    id,
+    requestContext,
+  }: IDeleteUserRepository): Promise<User | null> {
+    // TODO: use requestContext to execte db
+    console.log(requestContext);
+    const userDeleted = await this.Db.deleteUser(id);
+    if (!userDeleted) return null;
+    return new User(userDeleted.id, userDeleted.mail, userDeleted.name);
   }
 }

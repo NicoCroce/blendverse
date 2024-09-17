@@ -1,30 +1,25 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ProductsService } from '../ProductsService';
 import { useCacheProducts } from './useCacheProducts';
-
-type TProduct = {
-  id: string;
-  name: string;
-  description: string;
-  stock: number;
-  price: number;
-};
+import { TProduct } from '../Product.entity';
 
 export const useGetProductDetail = (id: string) => {
   const [currentProduct, setCurrentProduct] = useState<TProduct | null>(null);
   const queryProductDetail = ProductsService.get.useQuery(id, {
     enabled: false,
   });
-
+  const cacheProductsList = useCacheProducts();
   const { isFetched, isFetching, refetch } = queryProductDetail;
 
-  const cacheProductsList = useCacheProducts();
+  // Extraemos los datos de la caché si es que existe.
+  const cachedProduct = useMemo(
+    () =>
+      cacheProductsList.getData()?.find((product) => product.id === id) || null,
+    [cacheProductsList, id],
+  );
 
   useEffect(() => {
-    // Extraemos los datos de la caché una vez al inicio del useEffect
-    const cachedProduct =
-      cacheProductsList.getData()?.find((product) => product.id === id) || null;
-
+    // Si el producto está en caché, lo usamos, de lo contrario, hacemos fetch
     if (cachedProduct) {
       setCurrentProduct(cachedProduct);
     } else if (!isFetching && !isFetched) {
@@ -32,7 +27,7 @@ export const useGetProductDetail = (id: string) => {
         setCurrentProduct(res.data || null);
       });
     }
-  }, [id, cacheProductsList, isFetching, isFetched, refetch]);
+  }, [id, isFetching, isFetched, refetch, cachedProduct]);
 
   return {
     currentProduct,

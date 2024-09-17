@@ -61,9 +61,9 @@ export const LoginForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      mail: 'nico@123456.com',
+      mail: 'admin@admin.com',
       name: '',
-      password: '12313123asd',
+      password: '12345678',
       rePassword: '',
     },
   });

@@ -2,12 +2,8 @@ import { Badge } from '@app/Aplication/Components/ui/badge';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ColumnDef } from '@tanstack/react-table';
-
-export type TUser = {
-  id: string;
-  mail: string;
-  name: string;
-};
+import { ActionsUsers } from './ActionUsers';
+import { TUser } from '../../User.entity';
 
 export const columns: ColumnDef<TUser>[] = [
   {
@@ -31,5 +27,10 @@ export const columns: ColumnDef<TUser>[] = [
         <Badge>{row.getValue('name')}</Badge>
       </div>
     ),
+  },
+  {
+    accessorKey: 'actions',
+    header: () => <div className="text-end">Acción</div>,
+    cell: ActionsUsers,
   },
 ];

@@ -1,23 +1,15 @@
 export const Users = [
   {
     id: '0',
-    name: 'nico',
-    mail: 'nicoc123@gmail.com',
-    password: '123456789',
+    name: 'admin',
+    mail: 'admin@admin.com',
+    password: '$2a$10$pxMW7.kXzU9YTOTVj4YSh.rN/ijGSOA8T6vbbSXR/Eu3wGa55aVUm',
   },
   {
     id: '1',
     name: 'nico123',
     mail: 'prueba@gmail.com',
-    password: '123456789',
-  },
-];
-
-export const Auth = [
-  {
-    id: '0',
-    username: 'nico@nico.com',
-    password: '$2a$10$sLHM7Dn82oNAwmdpO5hniusMru.kwm86HpAiOSyvCOKCR.XDtGEBO',
+    password: '$2a$10$pxMW7.kXzU9YTOTVj4YSh.rN/ijGSOA8T6vbbSXR/Eu3wGa55aVUm',
   },
 ];
 

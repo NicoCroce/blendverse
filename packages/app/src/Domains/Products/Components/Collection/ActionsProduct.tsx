@@ -6,7 +6,7 @@ import { AlertDialogCancelConfirm } from '@app/Aplication/Components';
 import { AlertDialogTrigger } from '@app/Aplication/Components/ui/alert-dialog';
 import { useDeleteProduct } from '../../Hooks';
 import { PRODUCTS_DETAIL_ROUTE } from '../../ProductsRoutes';
-import { TProduct } from '../../Entities/Product';
+import { TProduct } from '../../Product.entity';
 
 export const ActionsProduct = ({ row }: { row: Row<TProduct> }) => {
   const { mutate } = useDeleteProduct();
