@@ -1,6 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { ActionsProduct } from './ActionsProduct';
-import { TProduct } from '../../Entities/Product';
+import { TProduct } from '../../Product.entity';
 import { format } from '@app/Aplication';
 
 export const columns: ColumnDef<TProduct>[] = [

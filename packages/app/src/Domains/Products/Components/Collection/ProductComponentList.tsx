@@ -7,11 +7,11 @@ import {
   CardHeader,
   CardTitle,
 } from '@app/Aplication/Components/ui/card';
-import { TProduct } from '@app/Domains/Products/Entities/Product';
 import { PRODUCTS_DETAIL_ROUTE } from '@app/Domains/Products/ProductsRoutes';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
+import { TProduct } from '../../Product.entity';
 
 export const ProductComponentList = ({ data }: { data: TProduct }) => {
   const { id, name, description, price, stock } = data;
