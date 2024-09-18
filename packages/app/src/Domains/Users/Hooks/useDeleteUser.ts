@@ -1,5 +1,5 @@
 import { toast } from 'sonner';
-import { UsersService } from '../UserService';
+import { UsersService } from '../Users.service';
 import { useCacheUsers } from './useCacheUsers';
 
 export const useDeleteUser = () => {

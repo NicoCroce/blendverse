@@ -15,7 +15,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@app/Aplication/Components/ui/input';
 import { Button, Container } from '@app/Aplication/Components';
 
-import { USERS_ROUTE } from '../UsersRoutes';
+import { USERS_ROUTE } from '../Users.routes';
 import { useEffect } from 'react';
 import { TUser } from '../User.entity';
 

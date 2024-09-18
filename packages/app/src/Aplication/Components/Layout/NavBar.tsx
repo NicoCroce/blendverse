@@ -1,4 +1,4 @@
-import { USERS_ROUTE } from '@app/Domains/Users/UsersRoutes';
+import { USERS_ROUTE } from '@app/Domains/Users/Users.routes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faUser,

@@ -4,7 +4,7 @@ import { UserForm } from '../Components';
 import { useGetUser } from '../Hooks';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
-import { USERS_ROUTE } from '../UsersRoutes';
+import { USERS_ROUTE } from '../Users.routes';
 import { toast } from 'sonner';
 
 export const UserUpdatePage = () => {

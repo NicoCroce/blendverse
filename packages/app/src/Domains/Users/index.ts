@@ -2,5 +2,5 @@ export * from './Components';
 export * from './Hooks';
 export * from './Pages';
 export * from './User.entity';
-export * from './UserService';
-export * from './UsersRoutes';
+export * from './Users.service';
+export * from './Users.routes';

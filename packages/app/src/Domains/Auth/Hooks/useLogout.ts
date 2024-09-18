@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { AuthService } from '../AuthService';
+import { AuthService } from '../Auth.service';
 import { isLogged } from '@app/Aplication/Helpers/isLogged';
 
 export const useLogout = () => {

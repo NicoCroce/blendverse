@@ -4,7 +4,7 @@ import { Link, useMatch } from 'react-router-dom';
 import { OutletSheet } from '@app/Aplication/Components';
 import { Button } from '@app/Aplication/Components';
 
-import { USERS_ROUTE, USERS_SEARCH_DETAIL_ROUTE } from '../UsersRoutes';
+import { USERS_ROUTE, USERS_SEARCH_DETAIL_ROUTE } from '../Users.routes';
 
 export const SearchUser = () => {
   const [userId, setUserId] = useState<string>('');

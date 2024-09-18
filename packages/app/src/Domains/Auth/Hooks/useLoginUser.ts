@@ -1,8 +1,8 @@
 import { toast } from 'sonner';
-import { AuthService } from '../AuthService';
+import { AuthService } from '../Auth.service';
 import { useNavigate } from 'react-router-dom';
-import { MAIN_ROUTE } from '@app/Domains/Main/MainRoutes';
 import { setLogged } from '@app/Aplication/Helpers/isLogged';
+import { MAIN_ROUTE } from '@app/Domains/Main';
 
 export const useLoginUser = () => {
   const navigate = useNavigate();

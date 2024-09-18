@@ -1,5 +1,5 @@
-import { MainRouter } from '@app/Domains/Main/MainRoutes';
-import { UsersRouter } from '@app/Domains/Users/UsersRoutes';
-import { AuthRoutes } from '@app/Domains/Auth';
+import { AuthRouter } from '@app/Domains/Auth';
+import { MainRouter } from '@app/Domains/Main';
+import { UsersRouter } from '@app/Domains/Users';
 
-export const AllRoutes = [MainRouter, AuthRoutes, UsersRouter];
+export const AllRoutes = [MainRouter, AuthRouter, UsersRouter];

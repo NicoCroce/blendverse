@@ -9,7 +9,7 @@ import {
 import { Skeleton } from '@app/Aplication/Components/ui/skeleton';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetUser } from '../Hooks';
-import { USERS_ROUTE } from '../UsersRoutes';
+import { USERS_ROUTE } from '../Users.routes';
 import { toast } from 'sonner';
 
 export const UsersDetailSearch = () => {

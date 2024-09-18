@@ -1,6 +1,6 @@
 import { Row } from '@tanstack/react-table';
 import { Link, To } from 'react-router-dom';
-import { USERS_UPDATE } from '../../UsersRoutes';
+import { USERS_UPDATE } from '../../Users.routes';
 import { useDeleteUser } from '../../Hooks';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AlertDialogCancelConfirm } from '@app/Aplication';

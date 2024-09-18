@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { UsersService } from '../UserService';
+import { UsersService } from '../Users.service';
 import { TUser } from '../User.entity';
 import { useCacheUsers } from './useCacheUsers';
 
