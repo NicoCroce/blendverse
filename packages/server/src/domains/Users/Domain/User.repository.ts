@@ -1,7 +1,11 @@
 import { IRequestContext } from '@server/Application';
 import { User } from './User.entity';
 
-export interface IGetUsersRepository extends IRequestContext {}
+export interface IGetUsersRepository extends IRequestContext {
+  filters?: {
+    name?: string;
+  };
+}
 export interface IRegisterUserRepository extends IRequestContext {
   user: User;
 }

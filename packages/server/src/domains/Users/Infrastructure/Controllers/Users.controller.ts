@@ -1,15 +1,21 @@
 import { procedure, protectedProcedure } from '@server/Infrastructure/trpc';
 import { UsersService } from '../../Application';
-import { executeService, executeServiceAlone } from '@server/Application';
+import { executeService } from '@server/Application';
 import z from 'zod';
 import { loggerContextInput } from '@server/utils/pino';
 
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  getAllUsers = protectedProcedure.query(
-    executeServiceAlone(this.usersService.getUsers.bind(this.usersService)),
-  );
+  getUsers = protectedProcedure
+    .input(
+      z
+        .object({
+          name: z.string(),
+        })
+        .optional(),
+    )
+    .query(executeService(this.usersService.getUsers.bind(this.usersService)));
 
   getUser = protectedProcedure
     .input(z.string())

@@ -6,7 +6,10 @@ import { IGetUsers } from '../User.interfaces';
 export class GetUsers implements IUseCase<User[]> {
   constructor(private usersRepository: UserRepository) {}
 
-  async execute({ requestContext }: IGetUsers): Promise<User[]> {
-    return await this.usersRepository.getUsers({ requestContext });
+  async execute({ input, requestContext }: IGetUsers): Promise<User[]> {
+    return await this.usersRepository.getUsers({
+      filters: input,
+      requestContext,
+    });
   }
 }

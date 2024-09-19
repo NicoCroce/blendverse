@@ -24,8 +24,8 @@ export class UsersService {
     private readonly _updateUser: UpdateUser,
   ) {}
 
-  async getUsers({ requestContext }: IGetUsers): Promise<User[]> {
-    return executeUseCase({ useCase: this._getUsers, requestContext });
+  async getUsers({ input, requestContext }: IGetUsers): Promise<User[]> {
+    return executeUseCase({ useCase: this._getUsers, input, requestContext });
   }
 
   async registerUser({ input, requestContext }: IRegisterUser): Promise<User> {
