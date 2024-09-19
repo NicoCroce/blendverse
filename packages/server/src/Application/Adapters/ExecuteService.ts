@@ -67,7 +67,7 @@ type TexecuteServiceAlone<TService> = ({
  * @param {TexecuteServiceAlone<TService>} service
  * @returns {({ ctx }: IRequestAlone) => unknown}
  * @this bind remember bind the service.
- * @example executeServiceAlone(this.usersService.getAllUsers.bind(this.usersService))
+ * @example executeServiceAlone(this.usersService.getUsers.bind(this.usersService))
  */
 
 export const executeServiceAlone = <TService>(

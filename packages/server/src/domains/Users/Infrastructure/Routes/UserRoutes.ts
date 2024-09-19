@@ -1,11 +1,11 @@
 import { usersController } from '../../user.app';
 
-const { getAllUsers, getUser, registerUser, deleteUser, updateUser } =
+const { getUsers, getUser, registerUser, deleteUser, updateUser } =
   usersController;
 
 export const UserRoutes = {
   users: {
-    getAll: getAllUsers,
+    getAll: getUsers,
     create: registerUser,
     get: getUser,
     delete: deleteUser,
