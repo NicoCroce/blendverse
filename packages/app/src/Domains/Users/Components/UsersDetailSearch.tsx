@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 
 export const UsersDetailSearch = () => {
   const { id = '' } = useParams();
-  const { data, isError } = useGetUser(id);
+  const { currentUser, isError } = useGetUser(id);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,17 +32,17 @@ export const UsersDetailSearch = () => {
         <SheetTitle>Detalles de Usuario</SheetTitle>
         <SheetDescription>Solo puedes ver el detalle.</SheetDescription>
       </SheetHeader>
-      {data ? (
+      {currentUser ? (
         <Card className="p-4">
           <ul>
             <li>
-              <span>ID: </span> <span>{data.id}</span>
+              <span>ID: </span> <span>{currentUser.id}</span>
             </li>
             <li>
-              <span>Nombre: </span> <span>{data.name}</span>
+              <span>Nombre: </span> <span>{currentUser.name}</span>
             </li>
             <li>
-              <span>Mail: </span> <span>{data.mail}</span>
+              <span>Mail: </span> <span>{currentUser.mail}</span>
             </li>
           </ul>
         </Card>
