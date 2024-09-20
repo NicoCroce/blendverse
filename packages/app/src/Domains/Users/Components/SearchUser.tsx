@@ -17,9 +17,7 @@ export const SearchUser = () => {
   // Initialize URL update params.
   const { searchParams, updateDebouncedParams } =
     useURLParams<TUserSearch>(USERS_ROUTE);
-  const [filterSearch, setFilterSearch] = useState(
-    () => searchParams?.name || '',
-  );
+  const [filterSearch, setFilterSearch] = useState(searchParams?.name || '');
 
   const to = (userId && USERS_SEARCH_DETAIL_ROUTE.replace(':id', userId)) || '';
 
