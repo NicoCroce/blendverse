@@ -13,10 +13,13 @@ import { LocalDatabase } from '.';
 export class UsersRepositoryImplementation implements UserRepository {
   private Db = new LocalDatabase();
 
-  async getUsers({ requestContext }: IGetUsersRepository): Promise<User[]> {
+  async getUsers({
+    filters,
+    requestContext,
+  }: IGetUsersRepository): Promise<User[]> {
     // TODO: use requestContext to execte db
     console.log(requestContext);
-    const users = await this.Db.getUsersList();
+    const users = await this.Db.getUsersList(filters);
     return users.map(({ id, name, mail }) => new User(id, mail, name));
   }
 

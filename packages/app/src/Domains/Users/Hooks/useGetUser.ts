@@ -5,32 +5,31 @@ import { useCacheUsers } from './useCacheUsers';
 
 export const useGetUser = (id: string) => {
   const [currentUser, setCurrentUser] = useState<TUser | null>(null);
-  const queryProductDetail = UsersService.get.useQuery(id, {
+  const queryUserDetail = UsersService.get.useQuery(id, {
     enabled: false,
   });
   const cacheUsersList = useCacheUsers();
-  const { isFetched, isFetching, refetch } = queryProductDetail;
+  const { isFetched, isFetching, refetch } = queryUserDetail;
 
   // Extraemos los datos de la caché si es que existe.
-  const cachedProduct = useMemo(
-    () =>
-      cacheUsersList.getData()?.find((product) => product.id === id) || null,
+  const cachedUsers = useMemo(
+    () => cacheUsersList.getData()?.find((user) => user.id === id) || null,
     [cacheUsersList, id],
   );
 
   useEffect(() => {
-    // Si el producto está en caché, lo usamos, de lo contrario, hacemos fetch
-    if (cachedProduct) {
-      setCurrentUser(cachedProduct);
+    // Si el usuario está en caché, lo usamos, de lo contrario, hacemos fetch
+    if (cachedUsers) {
+      setCurrentUser(cachedUsers);
     } else if (!isFetching && !isFetched) {
       refetch().then((res) => {
         setCurrentUser(res.data || null);
       });
     }
-  }, [id, isFetching, isFetched, refetch, cachedProduct]);
+  }, [id, isFetching, isFetched, refetch, cachedUsers]);
 
   return {
     currentUser,
-    ...queryProductDetail,
+    ...queryUserDetail,
   };
 };

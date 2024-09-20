@@ -3,3 +3,7 @@ export type TUser = {
   mail: string;
   name: string;
 };
+
+export type TUserSearch = {
+  name: string;
+};

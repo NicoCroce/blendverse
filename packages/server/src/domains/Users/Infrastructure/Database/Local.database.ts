@@ -1,10 +1,17 @@
 import { Users } from '@server/data';
 import { delay } from '@server/utils/Utils';
 
+type TGetUsersList = {
+  name?: string;
+};
+
 export class LocalDatabase {
-  getUsersList = async () => {
+  getUsersList = async (filters?: TGetUsersList) => {
     await delay();
-    return Users;
+    if (!filters?.name) return Users;
+    return Users.filter((user) =>
+      user.name.includes(filters?.name?.toLowerCase() || ''),
+    );
   };
 
   getUser = async (id: string) => {

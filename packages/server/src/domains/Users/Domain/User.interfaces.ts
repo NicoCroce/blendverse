@@ -1,6 +1,10 @@
 import { IRequestContext } from '@server/Application';
 
-export interface IGetUsers extends IRequestContext {}
+export interface IGetUsers extends IRequestContext {
+  input?: {
+    name?: string;
+  };
+}
 export interface IRegisterUser extends IRequestContext {
   input: {
     mail: string;
