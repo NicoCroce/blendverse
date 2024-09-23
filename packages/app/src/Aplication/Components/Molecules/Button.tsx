@@ -40,6 +40,7 @@ export const Button = ({
   type = 'button',
   variant = 'default',
   disabled = false,
+  className,
   ...props
 }: CustomlButtonNewProps) => {
   const { variant: _variant, icon, text } = CustomButtonOptions[appearance];
@@ -48,7 +49,7 @@ export const Button = ({
       {...props}
       onClick={onClick}
       variant={_variant ? _variant : variant}
-      className="flex gap-2"
+      className={`flex gap-2 ${className}`}
       disabled={disabled || isLoading}
       type={type}
     >
