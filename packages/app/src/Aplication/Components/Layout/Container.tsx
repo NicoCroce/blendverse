@@ -8,7 +8,14 @@ interface ContainerProps {
   className?: string;
   align?: AlignValues;
   justify?: AlignValues | 'between' | 'evenly' | 'around';
+  space?: 'small' | 'medium' | 'large';
 }
+
+const SPACE = {
+  small: 'gap-2',
+  medium: 'gap-4',
+  large: 'gap-6',
+} as const;
 
 export const Container = ({
   children,
@@ -16,10 +23,11 @@ export const Container = ({
   row = false,
   align = 'strech',
   justify = 'start',
+  space = 'medium',
 }: ContainerProps) => {
   const _className = clsx(
-    'flex gap-4',
-    `items-${align} justify-${justify}`,
+    'flex',
+    `items-${align} justify-${justify} ${SPACE[space]}`,
     className,
     {
       'flex-row': row,
