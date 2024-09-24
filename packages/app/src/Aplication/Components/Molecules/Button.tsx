@@ -61,9 +61,9 @@ export const Button = ({
       type={type}
     >
       {showIcon && !isLoading && (icon || iconPreset) && (
-        <FontAwesomeIcon icon={icon || iconPreset!} />
+        <FontAwesomeIcon icon={icon || iconPreset!} size="lg" />
       )}
-      {isLoading && <FontAwesomeIcon icon={faSpinner} spin />}
+      {isLoading && <FontAwesomeIcon icon={faSpinner} spin size="lg" />}
       {appearance === 'default' && children
         ? children
         : (showLabel && text) || ''}
