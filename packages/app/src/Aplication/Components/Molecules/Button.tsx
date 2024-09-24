@@ -6,6 +6,7 @@ import {
   faFloppyDisk,
   faTrashCan,
   faSpinner,
+  IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
 
 const CustomButtonOptions = {
@@ -28,6 +29,7 @@ interface CustomlButtonNewProps extends ButtonProps {
   type?: 'submit' | 'reset' | 'button' | undefined;
   variant?: ButtonProps['variant'];
   disabled?: boolean;
+  icon?: IconDefinition;
 }
 
 export const Button = ({
@@ -41,9 +43,14 @@ export const Button = ({
   variant = 'default',
   disabled = false,
   className,
+  icon,
   ...props
 }: CustomlButtonNewProps) => {
-  const { variant: _variant, icon, text } = CustomButtonOptions[appearance];
+  const {
+    variant: _variant,
+    icon: iconPreset,
+    text,
+  } = CustomButtonOptions[appearance];
   return (
     <LibButton
       {...props}
@@ -53,7 +60,9 @@ export const Button = ({
       disabled={disabled || isLoading}
       type={type}
     >
-      {showIcon && !isLoading && icon && <FontAwesomeIcon icon={icon} />}
+      {showIcon && !isLoading && (icon || iconPreset) && (
+        <FontAwesomeIcon icon={icon || iconPreset!} />
+      )}
       {isLoading && <FontAwesomeIcon icon={faSpinner} spin />}
       {appearance === 'default' && children
         ? children
