@@ -19,6 +19,10 @@ export class TRPCErrorAdapter implements IErrorAdapter<TRPCError> {
       });
     }
 
+    if (error instanceof TRPCError) {
+      return error;
+    }
+
     // Para errores no manejados
     return new TRPCError({
       code: 'INTERNAL_SERVER_ERROR',
