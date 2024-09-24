@@ -13,7 +13,8 @@ export interface IGetUserRepository extends IRequestContext {
   id: string;
 }
 export interface IValidateUserRepository extends IRequestContext {
-  mail: string;
+  mail?: string;
+  id?: string;
 }
 
 export interface IUpdateUserRepository extends IRequestContext {

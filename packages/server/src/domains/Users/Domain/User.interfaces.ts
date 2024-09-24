@@ -17,7 +17,10 @@ export interface IGetUser extends IRequestContext {
   input: string; // user id
 }
 export interface IValidateUser extends IRequestContext {
-  input: string; // user mail
+  input: {
+    id?: string;
+    mail?: string;
+  };
 }
 
 export interface IUpdateUser extends IRequestContext {

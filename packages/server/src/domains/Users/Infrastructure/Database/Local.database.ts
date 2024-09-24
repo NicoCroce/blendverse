@@ -19,7 +19,12 @@ export class LocalDatabase {
     return Users.find((user) => user.id === id);
   };
 
-  validateUser = async (mail: string) => {
+  validateUserById = async (id: string) => {
+    await delay();
+    return Users.find((u) => u.id === id);
+  };
+
+  validateUserByMail = async (mail: string) => {
     await delay();
     return Users.find((u) => u.mail === mail);
   };

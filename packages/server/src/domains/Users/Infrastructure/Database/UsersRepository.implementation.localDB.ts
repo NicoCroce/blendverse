@@ -53,13 +53,20 @@ export class UsersRepositoryImplementation implements UserRepository {
   async validateUser({
     mail,
     requestContext,
+    id,
   }: IValidateUserRepository): Promise<User | null> {
     // TODO: use requestContext to execte db
     console.log(requestContext);
-    const user = await this.Db.validateUser(mail);
+
+    const user = id
+      ? await this.Db.validateUserById(id)
+      : mail
+        ? await this.Db.validateUserByMail(mail)
+        : null;
+
     if (!user) return null;
-    const { id, mail: _mail, name, password } = user;
-    return new User(id, _mail, name, password);
+    const { id: userID, mail: _mail, name, password } = user;
+    return new User(userID, _mail, name, password);
   }
 
   async updateUser({

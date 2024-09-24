@@ -7,6 +7,14 @@ export interface Ilogin extends IRequestContext {
   };
 }
 
+export interface IValidateUserPassword extends IRequestContext {
+  input: {
+    mail?: string;
+    id?: string;
+    password: string;
+  };
+}
+
 export interface IExecuteResponse {
   token: string;
 }
