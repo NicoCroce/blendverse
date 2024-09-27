@@ -4,10 +4,10 @@ import { TUser, TUserSearch } from '../User.entity';
 import { useCacheUsers } from './useCacheUsers';
 import { useURLParams } from '@app/Aplication/Hooks/useURLParams';
 
-export const useGetUser = (id: string) => {
+export const useGetUser = (id?: number) => {
   const { searchParams } = useURLParams<TUserSearch>();
   const [currentUser, setCurrentUser] = useState<TUser | null>(null);
-  const queryUserDetail = UsersService.get.useQuery(id, {
+  const queryUserDetail = UsersService.get.useQuery(id || 0, {
     enabled: false,
   });
   const cacheUsersList = useCacheUsers();

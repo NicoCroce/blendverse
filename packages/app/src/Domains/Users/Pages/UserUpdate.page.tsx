@@ -8,8 +8,8 @@ import { USERS_ROUTE } from '../Users.routes';
 import { toast } from 'sonner';
 
 export const UserUpdatePage = () => {
-  const { id = '' } = useParams();
-  const { currentUser, isError, isLoading } = useGetUser(id);
+  const { id } = useParams();
+  const { currentUser, isError, isLoading } = useGetUser(Number(id));
   const navigate = useNavigate();
 
   useEffect(() => {
