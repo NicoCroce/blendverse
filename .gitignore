@@ -3,3 +3,4 @@ dist
 
 .env
 packages/server/logs/pino/server.log
+.DS_Store
