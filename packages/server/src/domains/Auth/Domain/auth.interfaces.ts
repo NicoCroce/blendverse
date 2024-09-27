@@ -10,7 +10,7 @@ export interface Ilogin extends IRequestContext {
 export interface IValidateUserPassword extends IRequestContext {
   input: {
     mail?: string;
-    id?: string;
+    id?: number;
     password: string;
   };
 }

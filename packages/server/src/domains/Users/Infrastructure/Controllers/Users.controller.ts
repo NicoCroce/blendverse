@@ -1,8 +1,8 @@
 import { procedure, protectedProcedure } from '@server/Infrastructure/trpc';
 import { UsersService } from '../../Application';
 import { executeService } from '@server/Application';
-import z from 'zod';
 import { loggerContextInput } from '@server/utils/pino';
+import z from 'zod';
 
 export class UsersController {
   constructor(private usersService: UsersService) {}
@@ -18,7 +18,7 @@ export class UsersController {
     .query(executeService(this.usersService.getUsers.bind(this.usersService)));
 
   getUser = protectedProcedure
-    .input(z.string())
+    .input(z.number())
     .query(executeService(this.usersService.getUser.bind(this.usersService)));
 
   registerUser = procedure
@@ -50,7 +50,7 @@ export class UsersController {
     });
 
   deleteUser = protectedProcedure
-    .input(z.string())
+    .input(z.number())
     .mutation(
       executeService(this.usersService.deleteUser.bind(this.usersService)),
     );
@@ -58,7 +58,7 @@ export class UsersController {
   updateUser = protectedProcedure
     .input(
       z.object({
-        id: z.string(),
+        id: z.number(),
         name: z.string(),
         mail: z.string(),
       }),

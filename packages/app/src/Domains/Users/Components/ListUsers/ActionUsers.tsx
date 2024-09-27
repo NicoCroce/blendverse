@@ -10,7 +10,7 @@ import { TUser } from '../../User.entity';
 
 export const ActionsUsers = ({ row }: { row: Row<TUser> }) => {
   const { mutate } = useDeleteUser();
-  const handleDelete = (id: string) => mutate(id);
+  const handleDelete = (id: number) => mutate(Number(id));
   const detailPath = (id: string): To => USERS_UPDATE.replace(':id', id);
 
   return (

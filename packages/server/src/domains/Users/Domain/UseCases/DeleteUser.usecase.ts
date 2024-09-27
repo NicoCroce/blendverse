@@ -2,10 +2,10 @@ import { AppError, IUseCase } from '@server/Application';
 import { UserRepository } from '../User.repository';
 import { IDeleteUser } from '../User.interfaces';
 
-export class DeleteUser implements IUseCase<string> {
+export class DeleteUser implements IUseCase<number> {
   constructor(private readonly usersRepository: UserRepository) {}
 
-  async execute({ input: id, requestContext }: IDeleteUser): Promise<string> {
+  async execute({ input: id, requestContext }: IDeleteUser): Promise<number> {
     const response = await this.usersRepository.deleteUser({
       id,
       requestContext,

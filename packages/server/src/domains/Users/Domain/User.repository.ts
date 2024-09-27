@@ -10,18 +10,18 @@ export interface IRegisterUserRepository extends IRequestContext {
   user: User;
 }
 export interface IGetUserRepository extends IRequestContext {
-  id: string;
+  id: number;
 }
 export interface IValidateUserRepository extends IRequestContext {
   mail?: string;
-  id?: string;
+  id?: number;
 }
 
 export interface IUpdateUserRepository extends IRequestContext {
   user: User;
 }
 export interface IDeleteUserRepository extends IRequestContext {
-  id: string;
+  id: number;
 }
 
 export interface UserRepository {
@@ -29,6 +29,6 @@ export interface UserRepository {
   registerUser(params: IRegisterUserRepository): Promise<User>;
   getUser(params: IGetUserRepository): Promise<User | null>;
   validateUser(params: IValidateUserRepository): Promise<User | null>;
-  updateUser(params: IUpdateUserRepository): Promise<string | null>;
-  deleteUser(params: IDeleteUserRepository): Promise<string | null>;
+  updateUser(params: IUpdateUserRepository): Promise<number | null>;
+  deleteUser(params: IDeleteUserRepository): Promise<number | null>;
 }
