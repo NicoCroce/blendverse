@@ -14,7 +14,7 @@ const ignores = {
 
 const customRules = {
   rules: {
-    'linebreak-style': 'off', // Desactiva la regla linebreak-style
+    'prettier/prettier': 0,
   },
 };
 
