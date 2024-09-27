@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 
 export const UsersDetailSearch = () => {
   const { id = '' } = useParams();
-  const { currentUser, isError } = useGetUser(id);
+  const { currentUser, isError } = useGetUser(Number(id));
   const navigate = useNavigate();
 
   useEffect(() => {

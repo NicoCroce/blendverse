@@ -15,7 +15,7 @@ export const useAddUser = () => {
       const setState = (state: TData): TData => [
         ...(state || []),
         {
-          id: String(state?.length),
+          id: state?.length,
           name,
           mail,
         },

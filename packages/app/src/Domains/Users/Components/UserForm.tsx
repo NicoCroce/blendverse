@@ -80,7 +80,7 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
     if (editData) {
       mutateUpdate({
-        id: editData.id,
+        id: editData.id!,
         mail: values.mail,
         name: values.name,
       });
