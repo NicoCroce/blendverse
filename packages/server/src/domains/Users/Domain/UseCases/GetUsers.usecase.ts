@@ -7,7 +7,7 @@ export class GetUsers implements IUseCase<User[]> {
   constructor(private usersRepository: UserRepository) {}
 
   async execute({ input, requestContext }: IGetUsers): Promise<User[]> {
-    return await this.usersRepository.getUsers({
+    return this.usersRepository.getUsers({
       filters: input,
       requestContext,
     });
