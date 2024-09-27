@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { UsersService } from '../Users.service';
-import { TUser } from '../User.entity';
+import { TUser, TUserSearch } from '../User.entity';
 import { useCacheUsers } from './useCacheUsers';
+import { useURLParams } from '@app/Aplication/Hooks/useURLParams';
 
 export const useGetUser = (id: string) => {
+  const { searchParams } = useURLParams<TUserSearch>();
   const [currentUser, setCurrentUser] = useState<TUser | null>(null);
   const queryUserDetail = UsersService.get.useQuery(id, {
     enabled: false,
@@ -13,8 +15,10 @@ export const useGetUser = (id: string) => {
 
   // Extraemos los datos de la caché si es que existe.
   const cachedUsers = useMemo(
-    () => cacheUsersList.getData()?.find((user) => user.id === id) || null,
-    [cacheUsersList, id],
+    () =>
+      cacheUsersList.getData(searchParams)?.find((user) => user.id === id) ||
+      null,
+    [cacheUsersList, id, searchParams],
   );
 
   useEffect(() => {

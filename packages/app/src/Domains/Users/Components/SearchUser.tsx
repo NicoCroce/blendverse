@@ -30,7 +30,7 @@ export const SearchUser = () => {
   };
 
   return (
-    <div className="flex flex-auto gap-4 items-stretch bg-white">
+    <div className="flex w-full gap-4 items-stretch bg-white">
       <Input
         type="text"
         name="search"
@@ -44,7 +44,7 @@ export const SearchUser = () => {
         <Button>Search</Button>
       </Link>
       <Input
-        className="flex-auto"
+        className="flex-auto w-full"
         type="text"
         name="filterName"
         onChange={handleFilter}

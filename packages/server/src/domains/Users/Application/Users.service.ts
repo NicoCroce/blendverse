@@ -48,7 +48,7 @@ export class UsersService {
     });
   }
 
-  async deleteUser({ input, requestContext }: IDeleteUser): Promise<User> {
+  async deleteUser({ input, requestContext }: IDeleteUser): Promise<string> {
     return executeUseCase({
       useCase: this._deleteUser,
       input,
@@ -56,7 +56,7 @@ export class UsersService {
     });
   }
 
-  async updateUser({ input, requestContext }: IUpdateUser): Promise<User> {
+  async updateUser({ input, requestContext }: IUpdateUser): Promise<string> {
     return executeUseCase({
       useCase: this._updateUser,
       input,

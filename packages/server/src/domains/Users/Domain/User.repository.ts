@@ -29,6 +29,6 @@ export interface UserRepository {
   registerUser(params: IRegisterUserRepository): Promise<User>;
   getUser(params: IGetUserRepository): Promise<User | null>;
   validateUser(params: IValidateUserRepository): Promise<User | null>;
-  updateUser(params: IUpdateUserRepository): Promise<User | null>;
-  deleteUser(params: IDeleteUserRepository): Promise<User | null>;
+  updateUser(params: IUpdateUserRepository): Promise<string | null>;
+  deleteUser(params: IDeleteUserRepository): Promise<string | null>;
 }
