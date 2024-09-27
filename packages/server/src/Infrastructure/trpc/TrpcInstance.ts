@@ -11,7 +11,7 @@ export const createContext = ({
   res,
 }: trpcExpress.CreateExpressContextOptions) => {
   const _requestContext = {
-    userId: res.getHeader('userId') as string,
+    userId: res.getHeader('userId') as number,
     requestId: res.getHeader('requestId') as string,
   };
 
@@ -66,7 +66,7 @@ const protectedProcedure = t.procedure.use(async function isAuthed(opts) {
   let dataToken;
 
   try {
-    dataToken = (await verifyToken(token)) as { id: string };
+    dataToken = (await verifyToken(token)) as { id: number };
   } catch {
     throw new TRPCError({
       message: 'Token error',

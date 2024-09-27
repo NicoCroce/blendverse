@@ -1,10 +1,10 @@
 export class RequestContext {
   constructor(
-    private userId: string,
+    private userId: number,
     private readonly requestId: string,
   ) {}
 
-  setUserId(userId: string) {
+  setUserId(userId: number) {
     this.userId = userId;
   }
 
