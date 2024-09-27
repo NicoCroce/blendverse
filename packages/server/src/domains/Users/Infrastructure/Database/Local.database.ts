@@ -14,12 +14,12 @@ export class LocalDatabase {
     );
   };
 
-  getUser = async (id: string) => {
+  getUser = async (id: number) => {
     await delay();
     return Users.find((user) => user.id === id);
   };
 
-  validateUserById = async (id: string) => {
+  validateUserById = async (id: number) => {
     await delay();
     return Users.find((u) => u.id === id);
   };
@@ -41,7 +41,7 @@ export class LocalDatabase {
     await delay();
 
     const newUser = {
-      id: String(Users.length),
+      id: Users.length + 1,
       mail,
       name,
       password,
@@ -57,7 +57,7 @@ export class LocalDatabase {
     name,
     mail,
   }: {
-    id: string;
+    id: number;
     name: string;
     mail: string;
   }) => {
@@ -73,7 +73,7 @@ export class LocalDatabase {
     return Users[userIndex];
   };
 
-  deleteUser = async (id: string) => {
+  deleteUser = async (id: number) => {
     const userIndex = Users.findIndex((user) => user.id === id);
     if (userIndex === -1) return null;
     const response = Users[userIndex];

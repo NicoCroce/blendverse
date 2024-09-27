@@ -1,3 +1,3 @@
 export class UserId {
-  constructor(readonly value: string) {}
+  constructor(readonly value: number) {}
 }

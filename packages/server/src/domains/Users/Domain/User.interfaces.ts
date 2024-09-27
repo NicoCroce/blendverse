@@ -14,22 +14,29 @@ export interface IRegisterUser extends IRequestContext {
   };
 }
 export interface IGetUser extends IRequestContext {
-  input: string; // user id
+  input: number; // user id
 }
 export interface IValidateUser extends IRequestContext {
   input: {
-    id?: string;
+    id?: number;
     mail?: string;
   };
 }
 
 export interface IUpdateUser extends IRequestContext {
   input: {
-    id: string;
+    id: number;
     mail: string;
     name: string;
   };
 }
 export interface IDeleteUser extends IRequestContext {
-  input: string; // User Id
+  input: number; // User Id
+}
+
+export interface IUser {
+  id?: number;
+  mail: string;
+  name: string;
+  password?: string;
 }

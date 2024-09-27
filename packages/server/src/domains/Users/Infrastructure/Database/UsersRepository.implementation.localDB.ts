@@ -20,7 +20,11 @@ export class UsersRepositoryImplementation implements UserRepository {
     // TODO: use requestContext to execte db
     console.log(requestContext);
     const users = await this.Db.getUsersList(filters);
-    return users.map(({ id, name, mail }) => new User(id, mail, name));
+    const response = users.map(({ id, name, mail }) => {
+      console.log(id, name, mail);
+      return new User({ id, mail, name });
+    });
+    return response;
   }
 
   async registerUser({
@@ -33,7 +37,7 @@ export class UsersRepositoryImplementation implements UserRepository {
       ...user.values,
       password: user.password || '',
     });
-    return new User(id, mail, name);
+    return new User({ id, mail, name });
   }
 
   async getUser({
@@ -46,8 +50,8 @@ export class UsersRepositoryImplementation implements UserRepository {
     if (!userFound) {
       return null;
     }
-    const { id: userId, mail, name } = userFound;
-    return new User(userId, mail, name);
+    const { mail, name } = userFound;
+    return new User({ id, mail, name });
   }
 
   async validateUser({
@@ -66,30 +70,30 @@ export class UsersRepositoryImplementation implements UserRepository {
 
     if (!user) return null;
     const { id: userID, mail: _mail, name, password } = user;
-    return new User(userID, _mail, name, password);
+    return new User({ id: userID, mail: _mail, name, password });
   }
 
   async updateUser({
     user,
     requestContext,
-  }: IUpdateUserRepository): Promise<string | null> {
+  }: IUpdateUserRepository): Promise<number | null> {
     // TODO: use requestContext to execte db
     console.log(requestContext);
-    const { id, mail, name } = user.values;
+    const { mail, name } = user.values;
     const userUpdated = await this.Db.updateUser({
-      id,
+      id: user.id!,
       mail,
       name,
     });
 
     if (!userUpdated) return null;
-    return id;
+    return user.id!;
   }
 
   async deleteUser({
     id,
     requestContext,
-  }: IDeleteUserRepository): Promise<string | null> {
+  }: IDeleteUserRepository): Promise<number | null> {
     // TODO: use requestContext to execte db
     console.log(requestContext);
     const userDeleted = await this.Db.deleteUser(id);

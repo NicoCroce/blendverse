@@ -1,12 +1,12 @@
 export const Users = [
   {
-    id: '0',
+    id: 1,
     name: 'admin',
     mail: 'admin@admin.com',
     password: '$2a$10$pxMW7.kXzU9YTOTVj4YSh.rN/ijGSOA8T6vbbSXR/Eu3wGa55aVUm',
   },
   {
-    id: '1',
+    id: 2,
     name: 'nico123',
     mail: 'prueba@gmail.com',
     password: '$2a$10$pxMW7.kXzU9YTOTVj4YSh.rN/ijGSOA8T6vbbSXR/Eu3wGa55aVUm',
