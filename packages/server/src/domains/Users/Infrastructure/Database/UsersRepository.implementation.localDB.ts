@@ -72,7 +72,7 @@ export class UsersRepositoryImplementation implements UserRepository {
   async updateUser({
     user,
     requestContext,
-  }: IUpdateUserRepository): Promise<User | null> {
+  }: IUpdateUserRepository): Promise<string | null> {
     // TODO: use requestContext to execte db
     console.log(requestContext);
     const { id, mail, name } = user.values;
@@ -83,17 +83,17 @@ export class UsersRepositoryImplementation implements UserRepository {
     });
 
     if (!userUpdated) return null;
-    return new User(id, mail, name);
+    return id;
   }
 
   async deleteUser({
     id,
     requestContext,
-  }: IDeleteUserRepository): Promise<User | null> {
+  }: IDeleteUserRepository): Promise<string | null> {
     // TODO: use requestContext to execte db
     console.log(requestContext);
     const userDeleted = await this.Db.deleteUser(id);
     if (!userDeleted) return null;
-    return new User(userDeleted.id, userDeleted.mail, userDeleted.name);
+    return id;
   }
 }

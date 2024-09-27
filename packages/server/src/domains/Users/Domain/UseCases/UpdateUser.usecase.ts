@@ -3,13 +3,13 @@ import { User } from '../User.entity';
 import { UserRepository } from '../User.repository';
 import { IUpdateUser } from '../User.interfaces';
 
-export class UpdateUser implements IUseCase<User> {
+export class UpdateUser implements IUseCase<string> {
   constructor(private readonly usersRepository: UserRepository) {}
 
   async execute({
     input: { id, mail, name },
     requestContext,
-  }: IUpdateUser): Promise<User> {
+  }: IUpdateUser): Promise<string> {
     const user = new User(id, mail, name);
     const response = await this.usersRepository.updateUser({
       user,
