@@ -12,9 +12,16 @@ const ignores = {
   ],
 };
 
+const customRules = {
+  rules: {
+    'linebreak-style': 'off', // Desactiva la regla linebreak-style
+  },
+};
+
 export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   ignores,
   eslintPluginPrettierRecommended,
+  customRules,
 );
