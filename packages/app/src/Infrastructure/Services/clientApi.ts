@@ -18,11 +18,19 @@ export const trpcClientApi = TrpcApi.createClient({
             credentials: 'include', // Incluye cookies
           });
 
-          if (response.status === 401 && window.location.pathname !== '/') {
-            // Redirige a la página de login si el error es 401
-            window.location.href = '/';
-            // Asegúrate de que siempre devuelvas una respuesta
-            return new Response(null, { status: 401 });
+          if (!response.ok) {
+            const responseJson = await response.json();
+
+            if (
+              response.status === 401 &&
+              window.location.pathname !== '/' &&
+              responseJson.error.message === 'Token not provided'
+            ) {
+              // Redirige a la página de login si el error es 401
+              window.location.href = '/';
+              // Asegura de que siempre devuelvas una respuesta
+              return new Response(null, { status: 401 });
+            }
           }
 
           return response;
