@@ -26,7 +26,7 @@ export class RegisterUser implements IUseCase<User> {
 
     password = getCryptedPassword(password);
 
-    const user = new User({ mail, name, password });
+    const user = User.create({ mail, name, password });
 
     return this.usersRepository.registerUser({ user, requestContext });
   }

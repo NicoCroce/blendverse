@@ -10,7 +10,7 @@ import {
 } from '../../Domain';
 import { LocalDatabase } from '.';
 
-export class UsersRepositoryImplementation implements UserRepository {
+export class UsersRepositoryImplementationLocal implements UserRepository {
   private Db = new LocalDatabase();
 
   async getUsers({
@@ -22,7 +22,7 @@ export class UsersRepositoryImplementation implements UserRepository {
     const users = await this.Db.getUsersList(filters);
     const response = users.map(({ id, name, mail }) => {
       console.log(id, name, mail);
-      return new User({ id, mail, name });
+      return User.create({ id, mail, name });
     });
     return response;
   }
@@ -37,7 +37,7 @@ export class UsersRepositoryImplementation implements UserRepository {
       ...user.values,
       password: user.password || '',
     });
-    return new User({ id, mail, name });
+    return User.create({ id, mail, name });
   }
 
   async getUser({
@@ -51,7 +51,7 @@ export class UsersRepositoryImplementation implements UserRepository {
       return null;
     }
     const { mail, name } = userFound;
-    return new User({ id, mail, name });
+    return User.create({ id, mail, name });
   }
 
   async validateUser({
@@ -70,7 +70,7 @@ export class UsersRepositoryImplementation implements UserRepository {
 
     if (!user) return null;
     const { id: userID, mail: _mail, name, password } = user;
-    return new User({ id: userID, mail: _mail, name, password });
+    return User.create({ id: userID, mail: _mail, name, password });
   }
 
   async updateUser({

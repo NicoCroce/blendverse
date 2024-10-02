@@ -2,16 +2,22 @@ import { UserEmail, UserId, UserName, UserPassword } from './ValueObjects';
 import { IUser } from './User.interfaces';
 
 export class User {
-  private readonly _id?: UserId;
-  private readonly _mail: UserEmail;
-  private readonly _name: UserName;
-  private readonly _password?: UserPassword;
+  constructor(
+    private readonly _mail: UserEmail,
+    private readonly _name: UserName,
+    private readonly _id?: UserId,
+    private readonly _password?: UserPassword,
+  ) {}
 
-  constructor({ id, mail, name, password }: IUser) {
-    if (id) this._id = new UserId(id);
-    this._mail = new UserEmail(mail);
-    this._name = new UserName(name);
-    if (password) this._password = new UserPassword(password);
+  static create({ id, mail, name, password }: IUser) {
+    const userId = id ? new UserId(id) : undefined;
+    const userPassword = password ? new UserPassword(password) : undefined;
+    return new User(
+      new UserEmail(mail),
+      new UserName(name),
+      userId,
+      userPassword,
+    );
   }
 
   toJSON() {
