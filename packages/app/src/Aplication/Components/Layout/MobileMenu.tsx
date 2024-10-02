@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { NavBar } from '../Layout/NavBar';
 import {
@@ -10,9 +10,15 @@ import {
 } from '../ui/sheet';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '../ui/button';
+import { useLocation } from 'react-router-dom';
 
 export const MobileMenu = () => {
   const [isOpen, setOpen] = useState(false);
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
 
   return (
     <Sheet open={isOpen} onOpenChange={() => setOpen(false)}>
