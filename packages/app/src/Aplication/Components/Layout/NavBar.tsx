@@ -27,7 +27,7 @@ export const NavBar = ({ className = '' }: { className?: string }) => {
             src={dataUser?.userImage}
             className="rounded-full w-14 h-14 border-2 border-primary"
           />
-          <Container space="small" className="gap-0">
+          <Container space="none">
             <Title variant="h3">
               <span className="capitalize">{dataUser?.name}</span>
             </Title>
