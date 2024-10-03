@@ -4,12 +4,22 @@ export const Users = [
     name: 'admin',
     mail: 'admin@admin.com',
     password: '$2a$10$pxMW7.kXzU9YTOTVj4YSh.rN/ijGSOA8T6vbbSXR/Eu3wGa55aVUm',
+    userImage:
+      'https://media.licdn.com/media/AAYQAQSOAAgAAQAAAAAAAB-zrMZEDXI2T62PSuT6kpB6qg.png',
+    companyLogo:
+      'https://media.licdn.com/dms/image/v2/C560EAQFi2OGWfxI4qA/rightRail-logo-shrink_200_200/rightRail-logo-shrink_200_200/0/1630998002580?e=1728522000&v=beta&t=SlHmEK_Z3rKJWOcqgW_aH2BPuj_c33yarTSrjr6gu6s',
+    companyName: 'LinkedIn',
   },
   {
     id: 2,
     name: 'nico123',
     mail: 'prueba@gmail.com',
     password: '$2a$10$pxMW7.kXzU9YTOTVj4YSh.rN/ijGSOA8T6vbbSXR/Eu3wGa55aVUm',
+    userImage:
+      'https://media.licdn.com/media/AAYQAQSOAAgAAQAAAAAAAB-zrMZEDXI2T62PSuT6kpB6qg.png',
+    companyLogo:
+      'https://media.licdn.com/dms/image/v2/C560EAQFi2OGWfxI4qA/rightRail-logo-shrink_200_200/rightRail-logo-shrink_200_200/0/1630998002580?e=1728522000&v=beta&t=SlHmEK_Z3rKJWOcqgW_aH2BPuj_c33yarTSrjr6gu6s',
+    companyName: 'LinkedIn',
   },
 ];
 
