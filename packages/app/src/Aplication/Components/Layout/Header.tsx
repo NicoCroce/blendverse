@@ -19,7 +19,7 @@ export const Header = () => {
           </Button>
         )}
       </span>
-      {!backButtonIsVisible && <MobileMenu />}
+      {!backButtonIsVisible && pathname !== '/' && <MobileMenu />}
     </header>
   );
 };

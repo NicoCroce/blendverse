@@ -2,6 +2,7 @@ import { executeUseCase, IUseCase } from '@server/Application';
 import { generateToken } from '@server/utils/JWT';
 import { IExecuteResponse, Ilogin } from '../auth.interfaces';
 import { ValidateUserPassword } from './ValidateUserPassword.usecase';
+import { User } from '@server/domains/Users';
 
 export class Login implements IUseCase<IExecuteResponse> {
   constructor(private readonly _validateUserPassword: ValidateUserPassword) {}
@@ -13,13 +14,25 @@ export class Login implements IUseCase<IExecuteResponse> {
       requestContext,
     });
 
+    const { id, name, mail, userImage, companyLogo, companyName } = user.values;
+
     const data = {
-      id: user.values.id,
-      user: user.values.name,
+      id: id,
+      user: name,
     };
 
     const token = generateToken(data);
 
-    return { token };
+    return {
+      token,
+      user: User.create({
+        id,
+        name,
+        mail,
+        userImage,
+        companyLogo,
+        companyName,
+      }),
+    };
   }
 }

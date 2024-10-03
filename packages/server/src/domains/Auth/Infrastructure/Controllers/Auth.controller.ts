@@ -20,7 +20,10 @@ export class AuthController {
 
       const requestContext = ctx.requestContext;
 
-      const token = await this.authService.login({ input, requestContext });
+      const { token, user } = await this.authService.login({
+        input,
+        requestContext,
+      });
 
       loggerContextInput(ctx.requestContext, { mail: input.mail }).info(
         'Service response => ',
@@ -32,7 +35,7 @@ export class AuthController {
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
       });
 
-      return { success: true };
+      return { data: user };
     });
 
   logout = procedure.mutation(async ({ ctx }) => {

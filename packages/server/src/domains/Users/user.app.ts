@@ -3,7 +3,7 @@ import { UsersService } from './Application';
 import { asClass } from 'awilix';
 import {
   UsersController,
-  UsersRepositoryImplementation,
+  UsersRepositoryImplementationLocal,
 } from './Infrastructure';
 import {
   GetUsers,
@@ -14,7 +14,7 @@ import {
 } from './Domain';
 
 container.register({
-  usersRepository: asClass(UsersRepositoryImplementation),
+  usersRepository: asClass(UsersRepositoryImplementationLocal),
   usersService: asClass(UsersService),
   usersController: asClass(UsersController),
   _getUsers: asClass(GetUsers),
