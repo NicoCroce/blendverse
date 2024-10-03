@@ -1,4 +1,5 @@
 import { IRequestContext } from '@server/Application';
+import { User } from '@server/domains/Users';
 
 export interface Ilogin extends IRequestContext {
   input: {
@@ -17,4 +18,5 @@ export interface IValidateUserPassword extends IRequestContext {
 
 export interface IExecuteResponse {
   token: string;
+  user: User;
 }

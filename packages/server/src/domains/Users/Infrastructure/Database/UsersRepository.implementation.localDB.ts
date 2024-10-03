@@ -69,8 +69,24 @@ export class UsersRepositoryImplementationLocal implements UserRepository {
         : null;
 
     if (!user) return null;
-    const { id: userID, mail: _mail, name, password } = user;
-    return User.create({ id: userID, mail: _mail, name, password });
+    const {
+      id: userID,
+      mail: _mail,
+      name,
+      password,
+      companyLogo,
+      companyName,
+      userImage,
+    } = user;
+    return User.create({
+      id: userID,
+      mail: _mail,
+      name,
+      password,
+      companyLogo,
+      companyName,
+      userImage,
+    });
   }
 
   async updateUser({

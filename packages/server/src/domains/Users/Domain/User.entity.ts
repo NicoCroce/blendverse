@@ -7,9 +7,20 @@ export class User {
     private readonly _name: UserName,
     private readonly _id?: UserId,
     private readonly _password?: UserPassword,
+    private readonly _userImage?: string,
+    private readonly _companyLogo?: string,
+    private readonly _companyName?: string,
   ) {}
 
-  static create({ id, mail, name, password }: IUser) {
+  static create({
+    id,
+    mail,
+    name,
+    password,
+    userImage,
+    companyLogo,
+    companyName,
+  }: IUser) {
     const userId = id ? new UserId(id) : undefined;
     const userPassword = password ? new UserPassword(password) : undefined;
     return new User(
@@ -17,6 +28,9 @@ export class User {
       new UserName(name),
       userId,
       userPassword,
+      userImage,
+      companyLogo,
+      companyName,
     );
   }
 
@@ -29,6 +43,9 @@ export class User {
       id: this._id?.value,
       mail: this._mail.value,
       name: this._name.value,
+      userImage: this._userImage,
+      companyLogo: this._companyLogo,
+      companyName: this._companyName,
     };
   }
 
