@@ -31,7 +31,15 @@ export const NavBar = ({ className = '' }: { className?: string }) => {
             <Title variant="h3">
               <span className="capitalize">{dataUser?.name}</span>
             </Title>
-            <Text.Small>{dataUser?.companyName}</Text.Small>
+            <Container row space="small" align="end">
+              <img
+                src={dataUser?.companyLogo}
+                className="aspect-square h-6 w-6"
+              />
+              <Text.Muted className="leading-none">
+                {dataUser?.companyName}
+              </Text.Muted>
+            </Container>
           </Container>
         </Container>
       </header>
