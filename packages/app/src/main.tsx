@@ -7,7 +7,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import './index.css';
 import { Layout } from './Aplication/Components/Layout/AppLayout/Layout';
-import { registerEventViewport } from './Aplication/Helpers';
+import { registerEventViewport, setUserStore } from './Aplication/Helpers';
 import { TrpcApi, trpcClientApi } from './Infrastructure/Services/clientApi';
 
 export const queryClient = new QueryClient({
@@ -21,6 +21,7 @@ export const queryClient = new QueryClient({
 });
 
 registerEventViewport(queryClient);
+setUserStore(queryClient);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
