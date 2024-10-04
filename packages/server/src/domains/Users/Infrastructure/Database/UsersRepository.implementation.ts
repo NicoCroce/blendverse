@@ -11,6 +11,7 @@ import {
 } from '../../Domain';
 
 import { UserScheme } from './Users.scheme';
+import { CompaniesModel } from '@server/domains/Companies/Infrastructure';
 
 export class UsersRepositoryImplementation implements UserRepository {
   async getUsers({ filters }: IGetUsersRepository): Promise<User[]> {
@@ -56,17 +57,26 @@ export class UsersRepositoryImplementation implements UserRepository {
     mail,
     id,
   }: IValidateUserRepository): Promise<User | null> {
-    const newUser = await UserScheme.findOne({
+    const user = await UserScheme.findOne<UserScheme>({
       where: mail ? { email: mail } : { id },
+      include: [
+        {
+          model: CompaniesModel,
+          attributes: ['denominacion', 'logo'],
+        },
+      ],
     });
 
-    if (!newUser) return null;
+    if (!user) return null;
 
     return User.create({
-      id: newUser.id,
-      mail: newUser.email,
-      name: newUser.nombre,
-      password: newUser.clave,
+      id: user.id,
+      mail: user.email,
+      name: user.nombre,
+      password: user.clave,
+      userImage: user.imagen,
+      companyLogo: user.CompaniesModel.logo,
+      companyName: user.CompaniesModel.denominacion,
     });
   }
 

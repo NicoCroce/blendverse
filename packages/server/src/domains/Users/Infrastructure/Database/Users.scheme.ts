@@ -1,3 +1,4 @@
+import { CompaniesModel } from '@server/domains/Companies/Infrastructure';
 import { sequelize } from '@server/Infrastructure';
 import {
   DataTypes,
@@ -5,6 +6,7 @@ import {
   InferCreationAttributes,
   Model,
   CreationOptional,
+  NonAttribute,
 } from 'sequelize';
 export class UserScheme extends Model<
   InferAttributes<UserScheme>,
@@ -21,6 +23,10 @@ export class UserScheme extends Model<
   declare localidad?: CreationOptional<string>;
   declare fecha_nac?: CreationOptional<string>;
   declare id_propietario?: CreationOptional<number>;
+
+  declare readonly CompaniesModel: NonAttribute<
+    InferAttributes<CompaniesModel>
+  >;
 
   declare createdAt: CreationOptional<Date>;
   declare updatedAt?: CreationOptional<Date>;
