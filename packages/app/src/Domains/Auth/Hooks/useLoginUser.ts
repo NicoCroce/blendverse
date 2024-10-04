@@ -14,7 +14,7 @@ export const useLoginUser = () => {
     onError(error) {
       toast.error(error.message);
     },
-    onSuccess: ({ data }) => {
+    onSuccess: (data) => {
       setLogged();
       setLoggedUser(data);
       setQueryData(data);

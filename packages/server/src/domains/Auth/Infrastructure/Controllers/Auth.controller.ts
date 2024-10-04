@@ -35,7 +35,7 @@ export class AuthController {
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
       });
 
-      return { data: user };
+      return user;
     });
 
   logout = procedure.mutation(async ({ ctx }) => {
