@@ -5,7 +5,6 @@
 
 .navbar {
   grid-area: navbar;
-  padding-top: 56px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
