@@ -20,9 +20,9 @@ export const NavBar = ({ className = '' }: { className?: string }) => {
   const { data: dataUser } = useGlobalStore<TUser>('dataUser');
 
   return (
-    <aside className={`navbar ${className}`}>
+    <aside className={`navbar pt-6 md:pt-14 ${className}`}>
       <header>
-        <Container row className="px-4">
+        <Container row className="md:px-4">
           <img
             src={dataUser?.userImage}
             className="rounded-full w-14 h-14 border-2 border-primary"
@@ -32,13 +32,17 @@ export const NavBar = ({ className = '' }: { className?: string }) => {
               <span className="capitalize">{dataUser?.name}</span>
             </Title>
             <Container row space="small" align="end">
-              <img
-                src={dataUser?.companyLogo}
-                className="aspect-square h-6 w-6"
-              />
-              <Text.Muted className="leading-none">
-                {dataUser?.companyName}
-              </Text.Muted>
+              {dataUser?.companyLogo ? (
+                <img
+                  alt={dataUser?.companyName}
+                  src={dataUser?.companyLogo}
+                  className="h-6"
+                />
+              ) : (
+                <Text.Muted className="leading-none">
+                  {dataUser?.companyName}
+                </Text.Muted>
+              )}
             </Container>
           </Container>
         </Container>
