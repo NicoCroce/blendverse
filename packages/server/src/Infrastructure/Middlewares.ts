@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 export const initMiddlewares = (app: Express) => {
   app.use(
     cors({
-      origin: 'http://localhost:5173',
+      origin: process.env.URL_CLIENT || 'http://localhost:5173',
       credentials: true,
     }),
   );
