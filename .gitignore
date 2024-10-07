@@ -2,5 +2,6 @@ node_modules
 dist
 
 .env
+.env.*
 packages/server/logs/pino/server.log
 .DS_Store
