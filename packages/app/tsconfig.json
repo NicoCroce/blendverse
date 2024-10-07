@@ -24,8 +24,9 @@
       "@server/*": ["./../server/src/*"],
       "@app/*": ["src/*"],
       "@/*": ["./src/*"]
-    }
+    },
+    "types": ["vite/client"]
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "./env.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
