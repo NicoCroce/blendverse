@@ -18,6 +18,9 @@ export const useAddUser = () => {
           id: state?.length,
           name,
           mail,
+          companyLogo: undefined,
+          companyName: undefined,
+          userImage: undefined,
         },
       ];
 
