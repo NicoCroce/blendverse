@@ -24,7 +24,8 @@
       "@server/*": ["./../server/src/*"],
       "@app/*": ["src/*"],
       "@/*": ["./src/*"]
-    }
+    },
+    "types": ["vite-plugin-pwa/client"]
   },
   "include": ["src/**/*"],
   "references": [{ "path": "./tsconfig.node.json" }]
