@@ -19,7 +19,7 @@ export const trpcClientApi = TrpcApi.createClient({
           });
 
           if (!response.ok) {
-            const responseJson = await response.json();
+            const responseJson = await response.clone().json();
 
             if (
               response.status === 401 &&
