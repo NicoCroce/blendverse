@@ -49,11 +49,6 @@
       'navbar main' auto
       /
       var(--menu-width) auto;
-    &.login-page {
-      grid-template:
-        'header' var(--menu-height)
-        'main' 100% / auto;
-    }
   }
   .main {
     height: 100%;
