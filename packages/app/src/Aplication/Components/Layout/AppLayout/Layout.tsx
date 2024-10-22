@@ -1,5 +1,5 @@
 import { App } from '@app/App';
-import { NavBar } from '../NavBar';
+import { NavBar } from '../NavBar/NavBar';
 import { Header } from '../Header';
 import { useLocation } from 'react-router-dom';
 import { AUTH_ROUTE, RESTORE_PASSWORD } from '@app/Domains/Auth';

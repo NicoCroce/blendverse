@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { NavBar } from '../Layout/NavBar';
+import { NavBar } from './NavBar/NavBar';
 import {
   Sheet,
   SheetContent,
