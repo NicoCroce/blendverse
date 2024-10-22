@@ -2,6 +2,7 @@ import { procedure } from '@server/Infrastructure';
 import { AuthService } from '../../Application';
 import z from 'zod';
 import { loggerContextInput } from '@server/utils/pino';
+import { executeService } from '@server/Application';
 
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -42,4 +43,15 @@ export class AuthController {
     ctx.res.clearCookie('auth_token');
     return { message: 'Logged out successfully' };
   });
+
+  restorePassword = procedure
+    .input(
+      z
+        .string()
+        .min(1, { message: 'Debe ingresar un mail' })
+        .email('Debe ingresar un mail válido'),
+    )
+    .mutation(
+      executeService(this.authService.restorePassword.bind(this.authService)),
+    );
 }
