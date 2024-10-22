@@ -7,21 +7,31 @@ import clsx from 'clsx';
 
 import './Layout.css';
 
+const halfPageRoutes = new Set([AUTH_ROUTE, RESTORE_PASSWORD]);
+
 export const Layout = () => {
   const { pathname } = useLocation();
-  const isLoginPage = pathname === AUTH_ROUTE || pathname === RESTORE_PASSWORD;
+  const isHalfPage = halfPageRoutes.has(pathname);
 
-  const layoutStyle = clsx('layout', {
-    'login-page': isLoginPage,
+  if (isHalfPage) {
+    return (
+      <main className="main">
+        <App />
+      </main>
+    );
+  }
+
+  const layoutStyle = clsx({
+    layout: !isHalfPage,
   });
 
   return (
     <div className={layoutStyle}>
       <Header />
-      {!isLoginPage && <NavBar className="is-desktop" />}
       <main className="main">
         <App />
       </main>
+      <NavBar className="is-desktop" />
     </div>
   );
 };

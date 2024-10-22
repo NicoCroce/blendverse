@@ -84,7 +84,7 @@ export const LoginForm = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="space-y-8 my-16 w-full"
+        className="my-8 space-y-4 md:space-y-6 md:my-16 w-full"
       >
         <FormField
           name="mail"
@@ -142,11 +142,11 @@ export const LoginForm = () => {
             )}
           />
         )}
-        <Container row justify="between">
+        <Container justify="between" className="md:flex-row !mt-4">
           <Link to={RESTORE_PASSWORD} className="flex items-center">
             ¿Olvidaste tu contraseña?
           </Link>
-          <Container row>
+          <Container row justify="end">
             <Button type="submit" isLoading={isPending || isPendingRegister}>
               {registrationMode ? 'Aceptar' : 'Ingresar'}
             </Button>
