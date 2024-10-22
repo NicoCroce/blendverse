@@ -84,7 +84,7 @@ export const LoginForm = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="my-8 md:space-y-8 md:my-16 w-full"
+        className="my-8 space-y-4 md:space-y-6 md:my-16 w-full"
       >
         <FormField
           name="mail"
