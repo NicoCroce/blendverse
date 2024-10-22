@@ -1,4 +1,4 @@
-import { Page } from '@app/Aplication';
+import { HalfPage } from '@app/Aplication';
 import { LoginForm } from '../Components';
 import { useLogout } from '../Hooks/useLogout';
 
@@ -6,8 +6,8 @@ export const LoginPage = () => {
   useLogout();
 
   return (
-    <Page title="Iniciar sesión" size="small">
+    <HalfPage title="Iniciar sesión" left={<p>otro</p>}>
       <LoginForm />
-    </Page>
+    </HalfPage>
   );
 };
