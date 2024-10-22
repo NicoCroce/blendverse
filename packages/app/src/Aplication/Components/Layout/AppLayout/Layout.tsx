@@ -2,14 +2,14 @@ import { App } from '@app/App';
 import { NavBar } from '../NavBar';
 import { Header } from '../Header';
 import { useLocation } from 'react-router-dom';
-import { AUTH_ROUTE } from '@app/Domains/Auth';
+import { AUTH_ROUTE, RESTORE_PASSWORD } from '@app/Domains/Auth';
 import clsx from 'clsx';
 
 import './Layout.css';
 
 export const Layout = () => {
-  const location = useLocation();
-  const isLoginPage = location.pathname === AUTH_ROUTE;
+  const { pathname } = useLocation();
+  const isLoginPage = pathname === AUTH_ROUTE || pathname === RESTORE_PASSWORD;
 
   const layoutStyle = clsx('layout', {
     'login-page': isLoginPage,

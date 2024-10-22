@@ -14,6 +14,8 @@ import { z } from 'zod';
 import { useLoginUser } from '../Hooks';
 import { useEffect, useState } from 'react';
 import { useRegisterUser } from '../Hooks/useRegisterUser';
+import { Link } from 'react-router-dom';
+import { RESTORE_PASSWORD } from '../Auth.routes';
 
 export const LoginForm = () => {
   const { mutate: mutateLogin, isPending } = useLoginUser();
@@ -140,17 +142,22 @@ export const LoginForm = () => {
             )}
           />
         )}
-        <Container row justify="end">
-          <Button type="submit" isLoading={isPending || isPendingRegister}>
-            {registrationMode ? 'Aceptar' : 'Ingresar'}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={handleSecondary}
-            disabled={isPending || isPendingRegister}
-          >
-            {registrationMode ? 'Cancelar' : 'Registrarse'}
-          </Button>
+        <Container row justify="between">
+          <Link to={RESTORE_PASSWORD} className="flex items-center">
+            ¿Olvidaste tu contraseña?
+          </Link>
+          <Container row>
+            <Button type="submit" isLoading={isPending || isPendingRegister}>
+              {registrationMode ? 'Aceptar' : 'Ingresar'}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={handleSecondary}
+              disabled={isPending || isPendingRegister}
+            >
+              {registrationMode ? 'Cancelar' : 'Registrarse'}
+            </Button>
+          </Container>
         </Container>
       </form>
     </Form>
