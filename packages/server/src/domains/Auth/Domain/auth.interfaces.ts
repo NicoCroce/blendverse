@@ -16,6 +16,10 @@ export interface IValidateUserPassword extends IRequestContext {
   };
 }
 
+export interface IRestorePassword extends IRequestContext {
+  input: string; // mail
+}
+
 export interface IExecuteResponse {
   token: string;
   user: User;

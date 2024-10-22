@@ -1,1 +1,1 @@
-export * from './LoinPage';
+export * from './LoginPage';

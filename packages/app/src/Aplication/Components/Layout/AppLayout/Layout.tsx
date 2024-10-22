@@ -1,27 +1,37 @@
 import { App } from '@app/App';
-import { NavBar } from '../NavBar';
+import { NavBar } from '../NavBar/NavBar';
 import { Header } from '../Header';
 import { useLocation } from 'react-router-dom';
-import { AUTH_ROUTE } from '@app/Domains/Auth';
+import { AUTH_ROUTE, RESTORE_PASSWORD } from '@app/Domains/Auth';
 import clsx from 'clsx';
 
 import './Layout.css';
 
-export const Layout = () => {
-  const location = useLocation();
-  const isLoginPage = location.pathname === AUTH_ROUTE;
+const halfPageRoutes = new Set([AUTH_ROUTE, RESTORE_PASSWORD]);
 
-  const layoutStyle = clsx('layout', {
-    'login-page': isLoginPage,
+export const Layout = () => {
+  const { pathname } = useLocation();
+  const isHalfPage = halfPageRoutes.has(pathname);
+
+  if (isHalfPage) {
+    return (
+      <main className="main">
+        <App />
+      </main>
+    );
+  }
+
+  const layoutStyle = clsx({
+    layout: !isHalfPage,
   });
 
   return (
     <div className={layoutStyle}>
       <Header />
-      {!isLoginPage && <NavBar className="is-desktop" />}
       <main className="main">
         <App />
       </main>
+      <NavBar className="is-desktop" />
     </div>
   );
 };
