@@ -6,7 +6,7 @@ export const LoginPage = () => {
   useLogout();
 
   return (
-    <HalfPage title="Iniciar sesión" left={<p>otro</p>}>
+    <HalfPage title="Iniciar sesión">
       <LoginForm />
     </HalfPage>
   );
