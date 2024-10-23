@@ -9,13 +9,18 @@ const SPACE = {
   none: 'gap-0',
 } as const;
 
-interface ContainerProps {
+interface ContainerProps
+  extends React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {
   children: React.ReactNode;
   row?: boolean;
   className?: string;
   align?: AlignValues;
   justify?: AlignValues | 'between' | 'evenly' | 'around';
   space?: keyof typeof SPACE;
+  block?: boolean;
 }
 
 export const Container = ({
@@ -25,8 +30,12 @@ export const Container = ({
   align = 'strech',
   justify = 'start',
   space = 'medium',
+  block = false,
+  ...props
 }: ContainerProps) => {
-  const _className = clsx(
+  const _classNameBlock = clsx('block', className);
+
+  const _classNameFlex = clsx(
     'flex',
     `items-${align} justify-${justify} ${SPACE[space]}`,
     className,
@@ -35,5 +44,10 @@ export const Container = ({
       'flex-col': !row,
     },
   );
-  return <div className={_className}>{children}</div>;
+
+  return (
+    <div className={block ? _classNameBlock : _classNameFlex} {...props}>
+      {children}
+    </div>
+  );
 };
