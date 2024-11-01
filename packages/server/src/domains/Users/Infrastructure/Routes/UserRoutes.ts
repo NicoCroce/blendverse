@@ -1,14 +1,24 @@
-import { usersController } from '../../user.app';
+import { container } from '@server/utils/Container';
+import { UsersController } from '../Controllers';
 
-const { getUsers, getUser, registerUser, deleteUser, updateUser } =
-  usersController;
+export const UserRoutes = () => {
+  const {
+    getUsers,
+    getUser,
+    registerUser,
+    deleteUser,
+    updateUser,
+    changePassword,
+  } = container.resolve<UsersController>('usersController');
 
-export const UserRoutes = {
-  users: {
-    getAll: getUsers,
-    create: registerUser,
-    get: getUser,
-    delete: deleteUser,
-    update: updateUser,
-  },
+  return {
+    users: {
+      getAll: getUsers,
+      create: registerUser,
+      get: getUser,
+      delete: deleteUser,
+      update: updateUser,
+      changePassword,
+    },
+  };
 };
