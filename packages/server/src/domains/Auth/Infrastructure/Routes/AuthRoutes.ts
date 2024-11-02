@@ -1,9 +1,7 @@
-import { container } from '@server/utils/Container';
-import { AuthController } from '../Controllers';
+import { authController } from '../../auth.app';
 
 export const AuthRoutes = () => {
-  const { login, logout, restorePassword } =
-    container.resolve<AuthController>('authController');
+  const { login, logout, restorePassword } = authController();
 
   return {
     auth: {

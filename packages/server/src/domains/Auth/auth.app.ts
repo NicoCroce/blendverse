@@ -4,6 +4,7 @@ import { asClass } from 'awilix';
 import { Login } from './Domain';
 import { ValidateUserPassword, RestorePassword } from './Domain/UseCases';
 import { AuthRepositoryImplementation } from './Infrastructure/Repository/AuthRepository.implementation';
+import { container } from '@server/utils/Container';
 
 export const authApp = {
   authRepository: asClass(AuthRepositoryImplementation),
@@ -13,3 +14,6 @@ export const authApp = {
   _validateUserPassword: asClass(ValidateUserPassword),
   _restorePassword: asClass(RestorePassword),
 };
+
+export const authController = () =>
+  container.resolve<AuthController>('authController');

@@ -12,6 +12,7 @@ import {
   UpdateUser,
   ChangePassword,
 } from './Domain';
+import { container } from '@server/utils/Container';
 
 export const userApp = {
   usersRepository: asClass(UsersRepositoryImplementationLocal),
@@ -24,3 +25,6 @@ export const userApp = {
   _updateUser: asClass(UpdateUser),
   _changePassword: asClass(ChangePassword),
 };
+
+export const usersController = () =>
+  container.resolve<UsersController>('usersController');

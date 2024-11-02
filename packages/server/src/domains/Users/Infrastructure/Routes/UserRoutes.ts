@@ -1,5 +1,4 @@
-import { container } from '@server/utils/Container';
-import { UsersController } from '../Controllers';
+import { usersController } from '../../user.app';
 
 export const UserRoutes = () => {
   const {
@@ -9,7 +8,7 @@ export const UserRoutes = () => {
     deleteUser,
     updateUser,
     changePassword,
-  } = container.resolve<UsersController>('usersController');
+  } = usersController();
 
   return {
     users: {
