@@ -86,4 +86,16 @@ export class LocalDatabase {
 
     return response;
   };
+
+  changePassword = async (id: number, password: string) => {
+    const userIndex = Users.findIndex((user) => user.id === id);
+    if (userIndex === -1) return null;
+
+    Users[userIndex] = {
+      ...Users[userIndex],
+      password,
+    };
+
+    return Users[userIndex];
+  };
 }

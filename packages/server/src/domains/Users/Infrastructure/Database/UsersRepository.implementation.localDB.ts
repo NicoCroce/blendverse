@@ -1,4 +1,5 @@
 import {
+  IChangePasswordRepository,
   IDeleteUserRepository,
   IGetUserRepository,
   IGetUsersRepository,
@@ -115,5 +116,16 @@ export class UsersRepositoryImplementationLocal implements UserRepository {
     const userDeleted = await this.Db.deleteUser(id);
     if (!userDeleted) return null;
     return id;
+  }
+
+  async changePassword({
+    password,
+    requestContext,
+  }: IChangePasswordRepository): Promise<void | null> {
+    console.log(requestContext);
+    const { userId } = requestContext.values;
+    const userUpdated = await this.Db.changePassword(userId, password);
+
+    if (!userUpdated) return null;
   }
 }
