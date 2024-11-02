@@ -43,3 +43,11 @@ export interface IUser {
   companyLogo?: string;
   companyName?: string;
 }
+
+export interface IChangePassword extends IRequestContext {
+  input: {
+    password: string;
+    newPassword: string;
+    rePassword: string;
+  };
+}
