@@ -66,4 +66,16 @@ export class UsersController {
     .mutation(
       executeService(this.usersService.updateUser.bind(this.usersService)),
     );
+
+  changePassword = protectedProcedure
+    .input(
+      z.object({
+        password: z.string(),
+        newPassword: z.string(),
+        rePassword: z.string(),
+      }),
+    )
+    .mutation(
+      executeService(this.usersService.changePassword.bind(this.usersService)),
+    );
 }
