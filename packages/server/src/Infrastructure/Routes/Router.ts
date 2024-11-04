@@ -1,7 +1,7 @@
 import { Express } from 'express';
 import { UserRoutes } from '@server/domains/Users';
 import { router, trpcExpress, createContext } from '../trpc';
-import { AuthRoutes } from '@server/domains/Auth/Infrastructure/Routes';
+import { AuthRoutes } from '@server/domains/Auth';
 
 const MainRouter = () => {
   const AllRouters = { ...UserRoutes(), ...AuthRoutes() };
