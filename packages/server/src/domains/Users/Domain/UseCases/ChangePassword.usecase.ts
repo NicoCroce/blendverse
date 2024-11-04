@@ -2,6 +2,7 @@ import { AppError, executeUseCase, IUseCase } from '@server/Application';
 import { ValidateUserPassword } from '@server/domains/Auth';
 import { IChangePassword } from '../User.interfaces';
 import { UserRepository } from '../User.repository';
+import { getCryptedPassword } from '@server/utils/bcrypt';
 
 export class ChangePassword implements IUseCase<void> {
   constructor(
@@ -26,7 +27,7 @@ export class ChangePassword implements IUseCase<void> {
 
     try {
       await this.usersRepository.changePassword({
-        password,
+        password: getCryptedPassword(newPassword),
         requestContext,
       });
     } catch (error) {
