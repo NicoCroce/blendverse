@@ -39,6 +39,7 @@ export interface IUser {
   mail: string;
   name: string;
   password?: string;
+  renewPassword?: boolean;
   userImage?: string;
   companyLogo?: string;
   companyName?: string;
