@@ -20,7 +20,6 @@ export const ActionsUsers = ({ row }: { row: Row<TUser> }) => {
       </Link>
       <AlertDialogCancelConfirm
         onConfirm={() => {
-          console.log(row.getValue('id'));
           handleDelete(row.getValue('id'));
         }}
       >

@@ -1,15 +1,16 @@
 import { toast } from 'sonner';
 import { UsersService } from '../Users.service';
-import { useCacheUsers } from './useCacheUsers';
+import { useGlobalStore } from '@app/Aplication';
+import { TUser } from '../User.entity';
 
 export const useChangePassword = () => {
-  const cacheUsers = useCacheUsers();
+  const { setQueryData } = useGlobalStore<TUser>('dataUser');
 
   return UsersService.changePassword.useMutation({
     onError: ({ message }) => toast.error(message),
     onSuccess: () => {
       toast.success('Contraseña actualizada');
-      cacheUsers.invalidate();
+      setQueryData((prev) => ({ ...prev!, renewPassword: false }));
     },
   });
 };
