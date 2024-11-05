@@ -1,5 +1,6 @@
 import { Op } from 'sequelize';
 import {
+  IChangePasswordRepository,
   IDeleteUserRepository,
   IGetUserRepository,
   IGetUsersRepository,
@@ -35,6 +36,7 @@ export class UsersRepositoryImplementation implements UserRepository {
       nombre: user.mail,
       apellido: '',
       clave: user.password!,
+      renovar_clave: user.values.renewPassword || false,
       email: user.mail,
     });
     return User.create({
@@ -74,6 +76,7 @@ export class UsersRepositoryImplementation implements UserRepository {
       mail: user.email,
       name: user.nombre,
       password: user.clave,
+      renewPassword: user.renovar_clave,
       userImage: user.imagen,
       companyLogo: user.CompaniesModel.logo,
       companyName: user.CompaniesModel.denominacion,
@@ -95,5 +98,19 @@ export class UsersRepositoryImplementation implements UserRepository {
     const rowsAffected = await UserScheme.destroy({ where: { id } });
     if (rowsAffected === 0) return null;
     return id;
+  }
+
+  async changePassword({
+    password,
+    requestContext,
+  }: IChangePasswordRepository): Promise<void | null> {
+    const id = requestContext.values.userId;
+
+    const rowsAffected = await UserScheme.update(
+      { clave: password, renovar_clave: false },
+      { where: { id } },
+    );
+
+    if (!id || !rowsAffected[0]) return null;
   }
 }
