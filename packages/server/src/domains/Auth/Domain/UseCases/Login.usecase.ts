@@ -30,10 +30,6 @@ export class Login implements IUseCase<IExecuteResponse> {
     };
 
     const token = generateToken(data);
-    const userImageResponse =
-      userImage && process.env.URL_IMG
-        ? `${process.env.URL_IMG}/${userImage}`
-        : '';
 
     return {
       token,
@@ -42,7 +38,7 @@ export class Login implements IUseCase<IExecuteResponse> {
         name,
         mail,
         renewPassword,
-        userImage: userImageResponse,
+        userImage,
         companyLogo,
         companyName,
       }),

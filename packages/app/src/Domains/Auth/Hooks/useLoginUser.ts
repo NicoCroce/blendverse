@@ -13,7 +13,7 @@ export const useLoginUser = () => {
     onError(error) {
       toast.error(error.message);
     },
-    onSuccess: (data) => {
+    onSuccess: ({ data }) => {
       setLogged();
       setQueryData(data);
       navigate(MAIN_ROUTE);
