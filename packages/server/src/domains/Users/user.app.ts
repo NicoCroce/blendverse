@@ -1,6 +1,5 @@
-import { container } from '@server/utils/Container';
-import { UsersService } from './Application';
 import { asClass } from 'awilix';
+import { UsersService } from './Application';
 import {
   UsersController,
   UsersRepositoryImplementation,
@@ -11,9 +10,11 @@ import {
   RegisterUser,
   DeleteUser,
   UpdateUser,
+  ChangePassword,
 } from './Domain';
+import { container } from '@server/utils/Container';
 
-container.register({
+export const userApp = {
   usersRepository: asClass(UsersRepositoryImplementation),
   usersService: asClass(UsersService),
   usersController: asClass(UsersController),
@@ -22,7 +23,8 @@ container.register({
   _registerUser: asClass(RegisterUser),
   _deleteUser: asClass(DeleteUser),
   _updateUser: asClass(UpdateUser),
-});
+  _changePassword: asClass(ChangePassword),
+};
 
-export const usersController =
+export const usersController = () =>
   container.resolve<UsersController>('usersController');

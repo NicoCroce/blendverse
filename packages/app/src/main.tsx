@@ -8,7 +8,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import './index.css';
 import { Layout } from './Aplication/Components/Layout/AppLayout/Layout';
-import { registerEventViewport, setUserStore } from './Aplication/Helpers';
+import { registerEventViewport } from './Aplication/Helpers';
 import { TrpcApi, trpcClientApi } from './Infrastructure/Services/clientApi';
 import { persistOptions } from './Aplication/Helpers/persister';
 import { registerSW } from 'virtual:pwa-register';
@@ -33,7 +33,6 @@ const updateSW = registerSW({
 });
 
 registerEventViewport(queryClient);
-setUserStore(queryClient);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

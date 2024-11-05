@@ -1,4 +1,5 @@
 import {
+  IChangePasswordRepository,
   IDeleteUserRepository,
   IGetUserRepository,
   IGetUsersRepository,
@@ -20,10 +21,11 @@ export class UsersRepositoryImplementationLocal implements UserRepository {
     // TODO: use requestContext to execte db
     console.log(requestContext);
     const users = await this.Db.getUsersList(filters);
-    const response = users.map(({ id, name, mail }) => {
-      console.log(id, name, mail);
-      return User.create({ id, mail, name });
+    const response = users.map(({ id, name, mail, renewPassword }) => {
+      console.log(id, name, mail, renewPassword);
+      return User.create({ id, mail, name, renewPassword: !!renewPassword });
     });
+    console.log(response);
     return response;
   }
 
@@ -33,11 +35,11 @@ export class UsersRepositoryImplementationLocal implements UserRepository {
   }: IRegisterUserRepository): Promise<User> {
     // TODO: use requestContext to execte db
     console.log(requestContext);
-    const { id, mail, name } = await this.Db.addUser({
+    const { id, mail, name, renewPassword } = await this.Db.addUser({
       ...user.values,
       password: user.password || '',
     });
-    return User.create({ id, mail, name });
+    return User.create({ id, mail, name, renewPassword: !!renewPassword });
   }
 
   async getUser({
@@ -50,8 +52,8 @@ export class UsersRepositoryImplementationLocal implements UserRepository {
     if (!userFound) {
       return null;
     }
-    const { mail, name } = userFound;
-    return User.create({ id, mail, name });
+    const { mail, name, renewPassword } = userFound;
+    return User.create({ id, mail, name, renewPassword: !!renewPassword });
   }
 
   async validateUser({
@@ -74,15 +76,18 @@ export class UsersRepositoryImplementationLocal implements UserRepository {
       mail: _mail,
       name,
       password,
+      renewPassword,
       companyLogo,
       companyName,
       userImage,
     } = user;
+
     return User.create({
       id: userID,
       mail: _mail,
       name,
       password,
+      renewPassword: !!renewPassword,
       companyLogo,
       companyName,
       userImage,
@@ -115,5 +120,16 @@ export class UsersRepositoryImplementationLocal implements UserRepository {
     const userDeleted = await this.Db.deleteUser(id);
     if (!userDeleted) return null;
     return id;
+  }
+
+  async changePassword({
+    password,
+    requestContext,
+  }: IChangePasswordRepository): Promise<void | null> {
+    console.log(requestContext);
+    const { userId } = requestContext.values;
+    const userUpdated = await this.Db.changePassword(userId, password);
+
+    if (!userUpdated) return null;
   }
 }

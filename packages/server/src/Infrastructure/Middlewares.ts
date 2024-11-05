@@ -1,6 +1,5 @@
 import { Express } from 'express';
 import cors from 'cors';
-import { InstanceMainRouter } from './Routes/Router';
 import cookieParser from 'cookie-parser';
 import { pinoHttp } from 'pino-http';
 import { logger } from '@server/utils/pino';
@@ -50,9 +49,6 @@ export const initMiddlewares = (app: Express) => {
       }, */
     }),
   );
-
-  //** Routes */
-  InstanceMainRouter(app);
 };
 
 /* customLogLevel: (res: Response, err?: Error) => {

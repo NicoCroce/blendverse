@@ -3,7 +3,6 @@ import { AuthService } from '../Auth.service';
 import { useNavigate } from 'react-router-dom';
 import { setLogged } from '@app/Aplication/Helpers/isLogged';
 import { MAIN_ROUTE } from '@app/Domains/Main';
-import { setLoggedUser } from '@app/Aplication/Helpers/manageLoggedUser';
 import { useGlobalStore } from '@app/Aplication';
 
 export const useLoginUser = () => {
@@ -16,7 +15,6 @@ export const useLoginUser = () => {
     },
     onSuccess: (data) => {
       setLogged();
-      setLoggedUser(data);
       setQueryData(data);
       navigate(MAIN_ROUTE);
     },
