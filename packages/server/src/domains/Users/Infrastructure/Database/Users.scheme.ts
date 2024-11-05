@@ -17,6 +17,7 @@ export class UserScheme extends Model<
   declare apellido: string;
   declare email: string;
   declare clave: string;
+  declare renovar_clave: boolean;
   declare imagen?: CreationOptional<string>;
   declare telefono?: CreationOptional<string>;
   declare direccion?: CreationOptional<string>;
@@ -45,6 +46,7 @@ UserScheme.init(
     apellido: DataTypes.STRING,
     email: DataTypes.STRING,
     clave: DataTypes.STRING,
+    renovar_clave: DataTypes.BOOLEAN,
     imagen: DataTypes.STRING,
 
     telefono: DataTypes.STRING,
