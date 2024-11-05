@@ -45,6 +45,7 @@ export class LocalDatabase {
       mail,
       name,
       password,
+      renewPassword: 1,
       userImage:
         'https://media.licdn.com/media/AAYQAQSOAAgAAQAAAAAAAB-zrMZEDXI2T62PSuT6kpB6qg.png',
       companyLogo:
@@ -85,5 +86,18 @@ export class LocalDatabase {
     Users.splice(userIndex, 1);
 
     return response;
+  };
+
+  changePassword = async (id: number, password: string) => {
+    const userIndex = Users.findIndex((user) => user.id === id);
+    if (userIndex === -1) return null;
+
+    Users[userIndex] = {
+      ...Users[userIndex],
+      password,
+      renewPassword: 0,
+    };
+
+    return Users[userIndex];
   };
 }

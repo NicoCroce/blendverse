@@ -4,6 +4,7 @@ export const Users = [
     name: 'admin',
     mail: 'admin@admin.com',
     password: '$2a$10$pxMW7.kXzU9YTOTVj4YSh.rN/ijGSOA8T6vbbSXR/Eu3wGa55aVUm',
+    renewPassword: 1,
     userImage:
       'https://media.licdn.com/dms/image/v2/D4D03AQGnZHqP2ZrCpQ/profile-displayphoto-shrink_100_100/profile-displayphoto-shrink_100_100/0/1707777018397?e=1733356800&v=beta&t=j1UYX7BCmIey_cdb86UTLNpXPbmMEcrlDeweWqDV_FY',
     companyLogo:
@@ -15,6 +16,7 @@ export const Users = [
     name: 'nico123',
     mail: 'prueba@gmail.com',
     password: '$2a$10$pxMW7.kXzU9YTOTVj4YSh.rN/ijGSOA8T6vbbSXR/Eu3wGa55aVUm',
+    renewPassword: 1,
     userImage:
       'https://media.licdn.com/dms/image/v2/D4D03AQGnZHqP2ZrCpQ/profile-displayphoto-shrink_100_100/profile-displayphoto-shrink_100_100/0/1707777018397?e=1733356800&v=beta&t=j1UYX7BCmIey_cdb86UTLNpXPbmMEcrlDeweWqDV_FY',
     companyLogo:

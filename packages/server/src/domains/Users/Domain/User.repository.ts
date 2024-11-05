@@ -24,6 +24,10 @@ export interface IDeleteUserRepository extends IRequestContext {
   id: number;
 }
 
+export interface IChangePasswordRepository extends IRequestContext {
+  password: string;
+}
+
 export interface UserRepository {
   getUsers(params: IGetUsersRepository): Promise<User[]>;
   registerUser(params: IRegisterUserRepository): Promise<User>;
@@ -31,4 +35,5 @@ export interface UserRepository {
   validateUser(params: IValidateUserRepository): Promise<User | null>;
   updateUser(params: IUpdateUserRepository): Promise<number | null>;
   deleteUser(params: IDeleteUserRepository): Promise<number | null>;
+  changePassword(params: IChangePasswordRepository): Promise<void | null>;
 }

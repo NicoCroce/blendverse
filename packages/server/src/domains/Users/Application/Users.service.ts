@@ -6,8 +6,10 @@ import {
   User,
   DeleteUser,
   UpdateUser,
+  ChangePassword,
 } from '../Domain';
 import {
+  IChangePassword,
   IDeleteUser,
   IGetUser,
   IGetUsers,
@@ -22,6 +24,7 @@ export class UsersService {
     private readonly _registerUser: RegisterUser,
     private readonly _deleteUser: DeleteUser,
     private readonly _updateUser: UpdateUser,
+    private readonly _changePassword: ChangePassword,
   ) {}
 
   async getUsers({ input, requestContext }: IGetUsers): Promise<User[]> {
@@ -59,6 +62,17 @@ export class UsersService {
   async updateUser({ input, requestContext }: IUpdateUser): Promise<number> {
     return executeUseCase({
       useCase: this._updateUser,
+      input,
+      requestContext,
+    });
+  }
+
+  async changePassword({
+    input,
+    requestContext,
+  }: IChangePassword): Promise<void> {
+    return executeUseCase({
+      useCase: this._changePassword,
       input,
       requestContext,
     });

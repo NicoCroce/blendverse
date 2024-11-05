@@ -39,7 +39,16 @@ export interface IUser {
   mail: string;
   name: string;
   password?: string;
+  renewPassword?: boolean;
   userImage?: string;
   companyLogo?: string;
   companyName?: string;
+}
+
+export interface IChangePassword extends IRequestContext {
+  input: {
+    password: string;
+    newPassword: string;
+    rePassword: string;
+  };
 }
