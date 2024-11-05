@@ -11,7 +11,7 @@
     "app:dev": "pnpm --filter app dev",
     "server:dev": "pnpm --filter server dev",
     "tsc": "tsc --noEmit ./**/src/**/*.ts",
-    "update-framework": "git checkout main && git fetch origin && git fetch blendverse && git reset --hard origin/main && git merge blendverse/main && git push origin main"
+    "update-framework": "git checkout main && git fetch origin && git fetch blendverse && git reset --hard origin/main && git merge blendverse/macrosistemas && git push origin main"
   },
   "keywords": [],
   "author": "",

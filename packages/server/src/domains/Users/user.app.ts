@@ -2,7 +2,7 @@ import { asClass } from 'awilix';
 import { UsersService } from './Application';
 import {
   UsersController,
-  UsersRepositoryImplementationLocal,
+  UsersRepositoryImplementation,
 } from './Infrastructure';
 import {
   GetUsers,
@@ -15,7 +15,7 @@ import {
 import { container } from '@server/utils/Container';
 
 export const userApp = {
-  usersRepository: asClass(UsersRepositoryImplementationLocal),
+  usersRepository: asClass(UsersRepositoryImplementation),
   usersService: asClass(UsersService),
   usersController: asClass(UsersController),
   _getUsers: asClass(GetUsers),
