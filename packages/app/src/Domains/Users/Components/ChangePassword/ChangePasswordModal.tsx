@@ -12,7 +12,7 @@ export const ChangePasswordModal = () => {
     return null;
   }
 
-  const handleClose = () => setIsOpen(false);
+  const handleClose = () => setTimeout(() => setIsOpen(false), 100);
 
   return (
     <Modal
