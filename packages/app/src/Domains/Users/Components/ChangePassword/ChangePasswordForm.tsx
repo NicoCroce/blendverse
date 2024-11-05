@@ -75,7 +75,7 @@ export const ChangePasswordForm = ({ onClose }: ChangePasswordFormProps) => {
           control={form.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Constraseña actual</FormLabel>
+              <FormLabel>Contraseña actual</FormLabel>
               <FormControl>
                 <Input.Password {...field} />
               </FormControl>
@@ -88,7 +88,7 @@ export const ChangePasswordForm = ({ onClose }: ChangePasswordFormProps) => {
           control={form.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Constraseña nueva</FormLabel>
+              <FormLabel>Contraseña nueva</FormLabel>
               <FormControl>
                 <Input.Password {...field} />
               </FormControl>
@@ -101,7 +101,7 @@ export const ChangePasswordForm = ({ onClose }: ChangePasswordFormProps) => {
           control={form.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Ingrese nuevamente la constraseña nueva</FormLabel>
+              <FormLabel>Ingrese nuevamente la contraseña nueva</FormLabel>
               <FormControl>
                 <Input.Password {...field} />
               </FormControl>
