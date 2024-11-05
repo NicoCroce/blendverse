@@ -75,11 +75,6 @@ export const LoginForm = () => {
     mutateLogin(values);
   };
 
-  const handleSecondary = () => {
-    form.setValue('rePassword', '');
-    setRegistrationMode((prevState) => !prevState);
-  };
-
   return (
     <Form {...form}>
       <form
@@ -149,13 +144,6 @@ export const LoginForm = () => {
           <Container row justify="end">
             <Button type="submit" isLoading={isPending || isPendingRegister}>
               {registrationMode ? 'Aceptar' : 'Ingresar'}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={handleSecondary}
-              disabled={isPending || isPendingRegister}
-            >
-              {registrationMode ? 'Cancelar' : 'Registrarse'}
             </Button>
           </Container>
         </Container>
