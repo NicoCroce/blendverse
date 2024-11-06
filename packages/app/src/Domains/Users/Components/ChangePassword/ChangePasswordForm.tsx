@@ -30,7 +30,7 @@ const formSchema = z
   });
 
 interface ChangePasswordFormProps {
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 export const ChangePasswordForm = ({ onClose }: ChangePasswordFormProps) => {
@@ -46,7 +46,7 @@ export const ChangePasswordForm = ({ onClose }: ChangePasswordFormProps) => {
   const { mutate, isSuccess, isPending } = useChangePassword();
 
   if (isSuccess) {
-    onClose();
+    if (onClose) onClose();
     return null;
   }
 
@@ -63,7 +63,7 @@ export const ChangePasswordForm = ({ onClose }: ChangePasswordFormProps) => {
   };
 
   const handleCancel = () => {
-    onClose();
+    if (onClose) onClose();
     form.reset();
   };
 
@@ -110,9 +110,15 @@ export const ChangePasswordForm = ({ onClose }: ChangePasswordFormProps) => {
           )}
         />
         <Container row justify="end" className="pt-4">
-          <Button variant="outline" onClick={handleCancel} disabled={isPending}>
-            Cancelar
-          </Button>
+          {onClose && (
+            <Button
+              variant="outline"
+              onClick={handleCancel}
+              disabled={isPending}
+            >
+              Cancelar
+            </Button>
+          )}
           <Button type="submit" isLoading={isPending}>
             Aceptar
           </Button>
