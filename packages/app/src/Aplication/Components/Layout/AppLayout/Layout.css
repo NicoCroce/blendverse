@@ -25,7 +25,6 @@
   z-index: 10;
   right: 0;
   left: var(--menu-width);
-  width: 100%;
   height: var(--menu-height);
   background-color: white;
 }

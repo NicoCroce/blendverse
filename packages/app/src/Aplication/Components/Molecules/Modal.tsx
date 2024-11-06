@@ -12,7 +12,7 @@ interface ModalProps {
   description: string;
   children: React.ReactNode;
   isOpen?: boolean;
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 export const Modal = ({
@@ -22,8 +22,12 @@ export const Modal = ({
   isOpen = false,
   onClose,
 }: ModalProps) => {
+  const handleClose = () => {
+    if (onClose) onClose();
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>

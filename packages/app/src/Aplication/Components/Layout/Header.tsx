@@ -3,10 +3,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { MobileMenu } from './MobileMenu';
 import { Button } from '../ui/button';
+import { AccountMenu } from '../Organisms/Menu/AccountMenu';
+import { useDevice } from '@app/Aplication/Hooks';
 
 export const Header = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const { isDesktop } = useDevice();
   const backButtonIsVisible = pathname.slice(1).split('/').length > 1;
   const handleBack = () => navigate(-1);
 
@@ -19,6 +22,7 @@ export const Header = () => {
           </Button>
         )}
       </span>
+      {isDesktop && <AccountMenu />}
       {!backButtonIsVisible && pathname !== '/' && <MobileMenu />}
     </header>
   );
