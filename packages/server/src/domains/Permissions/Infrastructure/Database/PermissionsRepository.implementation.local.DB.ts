@@ -1,4 +1,5 @@
 import {
+  IGetPermissionsByUserRepository,
   IGetPermissionsRepository,
   IGetRolesRepository,
   Permissions,
@@ -26,5 +27,13 @@ export class PermissionsRepositoryImplementationLocal
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getPermissions(params: IGetPermissionsRepository): Promise<Permissions[]> {
     throw new Error('Method not implemented.');
+  }
+
+  async getPermissionsByUser({
+    requestContext,
+  }: IGetPermissionsByUserRepository): Promise<string[]> {
+    return (
+      (await this.Db.getPermissionsByUser(requestContext.values.userId)) || ['']
+    );
   }
 }

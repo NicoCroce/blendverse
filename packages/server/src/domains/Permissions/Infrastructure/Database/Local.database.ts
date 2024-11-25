@@ -1,4 +1,4 @@
-import { Permissions, Roles } from '@server/data';
+import { Permissions, Roles, Users } from '@server/data';
 import { delay } from '@server/utils/Utils';
 
 export class LocalDatabasePermissions {
@@ -10,5 +10,13 @@ export class LocalDatabasePermissions {
   getRolesList = async () => {
     await delay();
     return Roles;
+  };
+
+  getPermissionsByUser = async (userId: number) => {
+    await delay();
+    const _user = Users.find((user) => user.id === userId);
+    const rol = Roles.find((p) => p.name === _user?.rol);
+
+    return rol?.permissions;
   };
 }
