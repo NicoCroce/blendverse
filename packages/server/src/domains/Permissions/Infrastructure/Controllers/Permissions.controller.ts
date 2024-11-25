@@ -16,4 +16,12 @@ export class PermissionsController {
       this.permissionsService.getRoles.bind(this.permissionsService),
     ),
   );
+
+  getPermissionByUser = protectedProcedure.query(
+    executeService(
+      this.permissionsService.getPermissionsByUser.bind(
+        this.permissionsService,
+      ),
+    ),
+  );
 }
