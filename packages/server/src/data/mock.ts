@@ -67,7 +67,7 @@ export const Products = [
 
 export const Permissions = [
   {
-    name: 'document-statistics',
+    name: 'dasdboard-access',
     description: 'Lee el estado de todos los documentos',
   },
 ];
@@ -76,6 +76,6 @@ export const Roles = [
   {
     name: 'recurso-humano',
     description: 'Tienen acceso a toda la información de los empleados',
-    permissions: ['document-statistics'],
+    permissions: ['dashboard-access'],
   },
 ];
