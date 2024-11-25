@@ -62,3 +62,18 @@ export const Products = [
     price: 104,
   },
 ];
+
+export const Permissions = [
+  {
+    name: 'document-statistics',
+    description: 'Lee el estado de todos los documentos',
+  },
+];
+
+export const Roles = [
+  {
+    name: 'recurso-humano',
+    description: 'Tienen acceso a toda la información de los empleados',
+    permissions: ['document-statistics'],
+  },
+];
