@@ -1,8 +1,10 @@
 import { executeUseCase } from '@server/Application';
 import {
   GetPermissions,
+  GetPermissionsByUser,
   GetRoles,
   IGetPermissions,
+  IGetPermissionsByUser,
   IGetRoles,
   Permissions,
   Roles,
@@ -12,6 +14,7 @@ export class PermissionsService {
   constructor(
     private readonly _getPermissions: GetPermissions,
     private readonly _getRoles: GetRoles,
+    private readonly _getPermissionsByUser: GetPermissionsByUser,
   ) {}
 
   async getPermissions({
@@ -26,6 +29,15 @@ export class PermissionsService {
   async getRoles({ requestContext }: IGetRoles): Promise<Roles[]> {
     return executeUseCase({
       useCase: this._getRoles,
+      requestContext,
+    });
+  }
+
+  async getPermissionsByUser({
+    requestContext,
+  }: IGetPermissionsByUser): Promise<string[]> {
+    return executeUseCase({
+      useCase: this._getPermissionsByUser,
       requestContext,
     });
   }
