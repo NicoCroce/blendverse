@@ -6,3 +6,4 @@ export interface IPermissions {
 }
 
 export interface IGetPermissions extends IRequestContext {}
+export interface IGetPermissionsByUser extends IRequestContext {}

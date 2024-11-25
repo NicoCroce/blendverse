@@ -4,8 +4,12 @@ import { Roles } from './Roles.entity';
 
 export interface IGetPermissionsRepository extends IRequestContext {}
 export interface IGetRolesRepository extends IRequestContext {}
+export interface IGetPermissionsByUserRepository extends IRequestContext {}
 
 export interface PermissionsRepository {
   getPermissions(params: IGetPermissionsRepository): Promise<Permissions[]>;
   getRoles(params: IGetRolesRepository): Promise<Roles[]>;
+  getPermissionsByUser(
+    params: IGetPermissionsByUserRepository,
+  ): Promise<string[]>;
 }
