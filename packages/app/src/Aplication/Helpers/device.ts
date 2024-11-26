@@ -8,7 +8,8 @@ export const registerEventViewport = (queryClient: QueryClient) => {
   });
 };
 
-export const setStoreIsMobile = (width: number, queryClient: QueryClient) => {
+const setStoreIsMobile = (width: number, queryClient: QueryClient) => {
   const isMobile = width <= 768;
-  queryClient.setQueryData(['isMobile'], isMobile);
+  if (queryClient.getQueryData(['isMobile']) !== isMobile)
+    queryClient.setQueryData(['isMobile'], isMobile);
 };
