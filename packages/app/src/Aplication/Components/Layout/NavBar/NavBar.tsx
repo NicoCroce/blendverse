@@ -14,6 +14,7 @@ import { NavBarHeader } from './NavBarHeader';
 import { useDevice } from '@app/Aplication/Hooks';
 import { MAIN_ROUTE } from '@app/Domains/Main';
 import { useHasPermission } from '@app/Aplication/Hooks/useHasPermission';
+import { DASHBOARD_ACCESS } from '@app/Aplication/Helpers';
 
 export const styleLink =
   'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary';
@@ -31,7 +32,7 @@ export const NavBar = ({ className = '' }: { className?: string }) => {
       <NavBarHeader />
       <nav className="flex flex-col h-full justify-between mt-4">
         <Container space="none">
-          {hasPermission('dashboard-access') && (
+          {hasPermission(DASHBOARD_ACCESS) && (
             <Container className="flex flex-col gap-2 md:p-4">
               <NavLink to={MAIN_ROUTE} className={isActiveLink}>
                 <FontAwesomeIcon icon={faDashboard} />
