@@ -3,10 +3,10 @@ import { asClass } from 'awilix';
 import { PermissionsController } from './Infrastructure/Controllers';
 import { GetPermissions, GetPermissionsByUser, GetRoles } from './Domain';
 import { PermissionsService } from './Aplication';
-import { PermissionsRepositoryImplementationLocal } from './Infrastructure/Database';
+import { PermissionsRepositoryImplementation } from './Infrastructure';
 
 export const permissionsApp = {
-  permissionsRepository: asClass(PermissionsRepositoryImplementationLocal),
+  permissionsRepository: asClass(PermissionsRepositoryImplementation),
   permissionsService: asClass(PermissionsService),
   permissionsController: asClass(PermissionsController),
   _getPermissions: asClass(GetPermissions),
