@@ -1,4 +1,5 @@
 import { CompaniesModel } from '@server/domains/Companies/Infrastructure';
+import { RolesModel } from '@server/domains/Permissions';
 import { sequelize } from '@server/Infrastructure';
 import {
   DataTypes,
@@ -28,6 +29,8 @@ export class UserScheme extends Model<
   declare readonly CompaniesModel: NonAttribute<
     InferAttributes<CompaniesModel>
   >;
+
+  declare readonly RolesModels: NonAttribute<RolesModel[]>;
 
   declare createdAt: CreationOptional<Date>;
   declare updatedAt?: CreationOptional<Date>;
