@@ -19,7 +19,7 @@ import { USERS_ROUTE } from '../Users.routes';
 import { useEffect, useMemo } from 'react';
 import { TUser } from '../User.entity';
 import { Combobox } from '@app/Aplication/Components/Organisms';
-import { useGetRoles } from '@app/Domains/Auth';
+import { useGetRoleByUser, useGetRoles } from '@app/Domains/Auth';
 
 interface UserFormProps {
   editData?: TUser | null;
@@ -30,8 +30,7 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
   const { mutate } = useAddUser();
   const { mutate: mutateUpdate } = useUpdateUser();
   const navigate = useNavigate();
-
-  console.log(rolesOptions);
+  const { data: userRole } = useGetRoleByUser(editData?.id);
 
   const options = useMemo(() => {
     return rolesOptions?.map((rol) => ({
@@ -89,7 +88,8 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
 
     form.setValue('name', editData?.name);
     form.setValue('mail', editData?.mail);
-  }, [editData, form]);
+    form.setValue('role', userRole || '');
+  }, [editData, form, userRole]);
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
     console.log(values);
