@@ -28,6 +28,7 @@ export class UsersController {
         mail: z.string(),
         password: z.string(),
         rePassword: z.string(),
+        role: z.string().nullable().default(null),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -61,6 +62,7 @@ export class UsersController {
         id: z.number(),
         name: z.string(),
         mail: z.string(),
+        role: z.string().nullable().default(null),
       }),
     )
     .mutation(
