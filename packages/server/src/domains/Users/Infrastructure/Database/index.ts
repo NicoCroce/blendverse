@@ -1,3 +1,3 @@
 export * from './Relations';
-export * from './Users.scheme';
+export * from './Users.model';
 export * from './UsersRepository.implementation';

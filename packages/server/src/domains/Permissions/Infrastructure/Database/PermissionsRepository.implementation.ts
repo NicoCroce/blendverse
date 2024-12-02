@@ -1,7 +1,11 @@
-import { UserScheme } from '@server/domains/Users';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { UserModel } from '@server/domains/Users';
 import {
+  IAssociateUserToRoleRepository,
+  IDissociateUserToRoleRepository,
   IGetPermissionsByUserRepository,
   IGetPermissionsRepository,
+  IGetRoleByUserRepository,
   IGetRolesRepository,
   Permissions,
   PermissionsRepository,
@@ -13,15 +17,11 @@ import { PermissionsModel } from './Permissions.model';
 export class PermissionsRepositoryImplementation
   implements PermissionsRepository
 {
-  async getRoles(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _params: IGetRolesRepository,
-  ): Promise<Roles[]> {
+  async getRoles(_params: IGetRolesRepository): Promise<Roles[]> {
     throw new Error('Method not implemented.');
   }
 
   async getPermissions({
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     requestContext,
   }: IGetPermissionsRepository): Promise<Permissions[]> {
     throw new Error('Method not implemented.');
@@ -32,7 +32,7 @@ export class PermissionsRepositoryImplementation
   }: IGetPermissionsByUserRepository): Promise<string[]> {
     const userId = requestContext.values.userId;
 
-    const user = await UserScheme.findOne({
+    const user = await UserModel.findOne({
       where: { id: userId },
       include: [
         {
@@ -62,5 +62,15 @@ export class PermissionsRepositoryImplementation
     }
 
     return permissions.map((p) => p.codigo);
+  }
+
+  associateUserToRole(params: IAssociateUserToRoleRepository): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+  dissociateUserToRole(params: IDissociateUserToRoleRepository): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+  getRoleByUser(params: IGetRoleByUserRepository): Promise<string | null> {
+    throw new Error('Method not implemented.');
   }
 }

@@ -11,12 +11,12 @@ import {
   UserRepository,
 } from '../../Domain';
 
-import { UserScheme } from './Users.scheme';
+import { UserModel } from './Users.model';
 import { CompaniesModel } from '@server/domains/Companies/Infrastructure';
 
 export class UsersRepositoryImplementation implements UserRepository {
   async getUsers({ filters }: IGetUsersRepository): Promise<User[]> {
-    const users = await UserScheme.findAll({
+    const users = await UserModel.findAll({
       attributes: ['id', 'email', 'nombre'],
       where: filters?.name
         ? {
@@ -32,7 +32,7 @@ export class UsersRepositoryImplementation implements UserRepository {
   }
 
   async registerUser({ user }: IRegisterUserRepository): Promise<User> {
-    const newUser = await UserScheme.create({
+    const newUser = await UserModel.create({
       nombre: user.mail,
       apellido: '',
       clave: user.password!,
@@ -47,7 +47,7 @@ export class UsersRepositoryImplementation implements UserRepository {
   }
 
   async getUser({ id }: IGetUserRepository): Promise<User | null> {
-    const userFound = await UserScheme.findOne({ where: { id } });
+    const userFound = await UserModel.findOne({ where: { id } });
     if (!userFound) {
       return null;
     }
@@ -59,7 +59,7 @@ export class UsersRepositoryImplementation implements UserRepository {
     mail,
     id,
   }: IValidateUserRepository): Promise<User | null> {
-    const user = await UserScheme.findOne<UserScheme>({
+    const user = await UserModel.findOne<UserModel>({
       where: mail ? { email: mail } : { id },
       include: [
         {
@@ -85,7 +85,7 @@ export class UsersRepositoryImplementation implements UserRepository {
 
   async updateUser({ user }: IUpdateUserRepository): Promise<number | null> {
     const { id, mail, name } = user.values;
-    const rowsAffected = await UserScheme.update(
+    const rowsAffected = await UserModel.update(
       { nombre: name, email: mail },
       { where: { id } },
     );
@@ -95,7 +95,7 @@ export class UsersRepositoryImplementation implements UserRepository {
   }
 
   async deleteUser({ id }: IDeleteUserRepository): Promise<number | null> {
-    const rowsAffected = await UserScheme.destroy({ where: { id } });
+    const rowsAffected = await UserModel.destroy({ where: { id } });
     if (rowsAffected === 0) return null;
     return id;
   }
@@ -106,7 +106,7 @@ export class UsersRepositoryImplementation implements UserRepository {
   }: IChangePasswordRepository): Promise<void | null> {
     const id = requestContext.values.userId;
 
-    const rowsAffected = await UserScheme.update(
+    const rowsAffected = await UserModel.update(
       { clave: password, renovar_clave: false },
       { where: { id } },
     );

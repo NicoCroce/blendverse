@@ -9,9 +9,9 @@ import {
   CreationOptional,
   NonAttribute,
 } from 'sequelize';
-export class UserScheme extends Model<
-  InferAttributes<UserScheme>,
-  InferCreationAttributes<UserScheme>
+export class UserModel extends Model<
+  InferAttributes<UserModel>,
+  InferCreationAttributes<UserModel>
 > {
   declare id: CreationOptional<number>;
   declare nombre: string;
@@ -37,7 +37,7 @@ export class UserScheme extends Model<
   declare deletedAt?: CreationOptional<Date>;
 }
 
-UserScheme.init(
+UserModel.init(
   {
     id: {
       type: DataTypes.BIGINT,
