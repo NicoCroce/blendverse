@@ -1,5 +1,6 @@
 import {
   IAssociateUserToRoleRepository,
+  IDissociateUserToRoleRepository,
   IGetPermissionsByUserRepository,
   IGetPermissionsRepository,
   IGetRoleByUserRepository,
@@ -54,5 +55,13 @@ export class PermissionsRepositoryImplementationLocal
     requestContext,
   }: IGetRoleByUserRepository): Promise<string | null> {
     return this.Db.getRoleByUser(userId);
+  }
+
+  async dissociateUserToRole({
+    userId,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    requestContext,
+  }: IDissociateUserToRoleRepository): Promise<void> {
+    return this.Db.dissociateUserToRole(userId);
   }
 }

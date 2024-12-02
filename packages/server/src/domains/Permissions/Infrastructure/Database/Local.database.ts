@@ -34,6 +34,19 @@ export class LocalDatabasePermissions {
     } else {
       Roles_Users[indexRole].roleName = role;
     }
+
+    console.log(Roles_Users);
+  };
+
+  dissociateUserToRole = async (userId: number) => {
+    await delay();
+    const indexRole = Roles_Users.findIndex(
+      (userRole) => userRole.userId === userId,
+    );
+
+    if (indexRole !== -1) {
+      Roles_Users.splice(indexRole, 1);
+    }
   };
 
   getRoleByUser = async (userId: number) => {
