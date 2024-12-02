@@ -20,6 +20,8 @@ import { useEffect, useMemo } from 'react';
 import { TUser } from '../User.entity';
 import { Combobox } from '@app/Aplication/Components/Organisms';
 import { useGetRoleByUser, useGetRoles } from '@app/Domains/Auth';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUnlink } from '@fortawesome/free-solid-svg-icons';
 
 interface UserFormProps {
   editData?: TUser | null;
@@ -115,6 +117,10 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
     form.setValue('role', value);
   };
 
+  const handleCleanRol = () => {
+    form.setValue('role', undefined);
+  };
+
   const { formState } = form;
 
   return (
@@ -160,12 +166,19 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
             <FormItem>
               <FormLabel>Rol de Usuario</FormLabel>
               <FormControl>
-                <Container block>
+                <Container row>
                   <Combobox
                     options={options}
                     value={field.value}
                     onChangeValue={handleChangeRol}
                   />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleCleanRol}
+                  >
+                    <FontAwesomeIcon icon={faUnlink}></FontAwesomeIcon>
+                  </Button>
                 </Container>
               </FormControl>
               <FormMessage />
