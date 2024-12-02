@@ -13,12 +13,23 @@ import {
 } from '../../Domain';
 import { RolesModel } from './Roles.model';
 import { PermissionsModel } from './Permissions.model';
+import { Users_RolesModel } from './Users_Roles.model';
+import { Roles_Users } from '@server/data';
+import { where } from 'sequelize';
 
 export class PermissionsRepositoryImplementation
   implements PermissionsRepository
 {
   async getRoles(_params: IGetRolesRepository): Promise<Roles[]> {
-    throw new Error('Method not implemented.');
+    const roles = await RolesModel.findAll();
+
+    return roles.map((rol) =>
+      Roles.create({
+        name: rol.denominacion,
+        description: '',
+        permissions: [],
+      }),
+    );
   }
 
   async getPermissions({
@@ -64,13 +75,58 @@ export class PermissionsRepositoryImplementation
     return permissions.map((p) => p.codigo);
   }
 
-  associateUserToRole(params: IAssociateUserToRoleRepository): Promise<void> {
-    throw new Error('Method not implemented.');
+  async associateUserToRole({
+    userId,
+    role,
+  }: IAssociateUserToRoleRepository): Promise<void> {
+    // Buscar si ya existe una relación entre el usuario y un rol
+    const existingRelation = await Users_RolesModel.findOne({
+      where: { id_usuario: userId },
+    });
+
+    const existingRol = await RolesModel.findOne({
+      where: { denominacion: role },
+    });
+
+    if (!existingRol) throw new Error('Rol no encontrado');
+
+    const newRoleId = existingRol.id;
+
+    if (existingRelation) {
+      // Si ya tiene un rol asignado, actualizar el rol
+      if (existingRelation.id_rol !== newRoleId) {
+        await existingRelation.update({ id_rol: newRoleId });
+      }
+    } else {
+      // Si no tiene un rol asignado, crear una nueva relación
+      await Users_RolesModel.create({
+        id_usuario: userId,
+        id_rol: newRoleId,
+      });
+    }
   }
-  dissociateUserToRole(params: IDissociateUserToRoleRepository): Promise<void> {
-    throw new Error('Method not implemented.');
+
+  async dissociateUserToRole({
+    userId,
+  }: IDissociateUserToRoleRepository): Promise<void> {
+    await Users_RolesModel.destroy({
+      where: { id_usuario: userId },
+    });
   }
-  getRoleByUser(params: IGetRoleByUserRepository): Promise<string | null> {
-    throw new Error('Method not implemented.');
+
+  async getRoleByUser({
+    userId,
+  }: IGetRoleByUserRepository): Promise<string | null> {
+    const foundRole = await Users_RolesModel.findOne({
+      where: { id_usuario: userId },
+    });
+
+    if (!foundRole) return null;
+
+    const roleName = await RolesModel.findOne({
+      where: { id: foundRole.id_rol },
+    });
+
+    return roleName?.denominacion || null;
   }
 }
