@@ -1,7 +1,13 @@
 import { container } from '@server/utils/Container';
 import { asClass } from 'awilix';
 import { PermissionsController } from './Infrastructure/Controllers';
-import { GetPermissions, GetPermissionsByUser, GetRoles } from './Domain';
+import {
+  AssociateUserToRole,
+  GetPermissions,
+  GetPermissionsByUser,
+  GetRoleByUser,
+  GetRoles,
+} from './Domain';
 import { PermissionsService } from './Aplication';
 import { PermissionsRepositoryImplementationLocal } from './Infrastructure/Database';
 
@@ -12,6 +18,8 @@ export const permissionsApp = {
   _getPermissions: asClass(GetPermissions),
   _getRoles: asClass(GetRoles),
   _getPermissionsByUser: asClass(GetPermissionsByUser),
+  _associateUserToRole: asClass(AssociateUserToRole),
+  _getRoleByUser: asClass(GetRoleByUser),
 };
 
 export const permissionsController = () =>

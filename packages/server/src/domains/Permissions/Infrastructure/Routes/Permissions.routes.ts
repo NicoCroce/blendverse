@@ -1,7 +1,7 @@
 import { permissionsController } from '../../permissions.app';
 
 export const PermissionsRoutes = () => {
-  const { getPermissions, getRoles, getPermissionByUser } =
+  const { getPermissions, getRoles, getPermissionByUser, getRoleByUser } =
     permissionsController();
 
   return {
@@ -9,6 +9,7 @@ export const PermissionsRoutes = () => {
       getPermissions,
       getRoles,
       getPermissionByUser,
+      getRoleByUser,
     },
   };
 };

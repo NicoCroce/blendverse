@@ -21,12 +21,11 @@ export class UsersRepositoryImplementationLocal implements UserRepository {
     // TODO: use requestContext to execte db
     console.log(requestContext);
     const users = await this.Db.getUsersList(filters);
-    const response = users.map(({ id, name, mail, renewPassword }) => {
+
+    return users.map(({ id, name, mail, renewPassword }) => {
       console.log(id, name, mail, renewPassword);
       return User.create({ id, mail, name, renewPassword: !!renewPassword });
     });
-    console.log(response);
-    return response;
   }
 
   async registerUser({
