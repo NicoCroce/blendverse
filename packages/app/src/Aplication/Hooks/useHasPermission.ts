@@ -1,4 +1,4 @@
-import { useGetPermissions } from '@app/Domains/Auth/useGetPermissions';
+import { useGetPermissions } from '@app/Domains/Auth/Hooks/useGetPermissions';
 
 export const useHasPermission = () => {
   const { data } = useGetPermissions();

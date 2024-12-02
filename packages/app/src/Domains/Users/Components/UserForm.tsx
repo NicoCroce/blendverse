@@ -16,17 +16,30 @@ import { Input } from '@app/Aplication/Components/ui/input';
 import { Button, Container } from '@app/Aplication/Components';
 
 import { USERS_ROUTE } from '../Users.routes';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { TUser } from '../User.entity';
+import { Combobox } from '@app/Aplication/Components/Organisms';
+import { useGetRoleByUser, useGetRoles } from '@app/Domains/Auth';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUnlink } from '@fortawesome/free-solid-svg-icons';
 
 interface UserFormProps {
   editData?: TUser | null;
 }
 
 export const UserForm = ({ editData = null }: UserFormProps) => {
+  const { data: rolesOptions } = useGetRoles();
   const { mutate } = useAddUser();
   const { mutate: mutateUpdate } = useUpdateUser();
   const navigate = useNavigate();
+  const { data: userRole } = useGetRoleByUser(editData?.id);
+
+  const options = useMemo(() => {
+    return rolesOptions?.map((rol) => ({
+      value: rol.name,
+      label: `${rol.name}`,
+    }));
+  }, [rolesOptions]);
 
   const formSchema = z
     .object({
@@ -36,6 +49,7 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
       mail: z.string().min(1, { message: 'Enter an email' }).email({
         message: 'Enter a correct format email',
       }),
+      role: z.string().optional(),
       password: !editData
         ? z.string().min(8, {
             message: 'La contraseña debe ser mayor a 8 caracteres',
@@ -65,6 +79,7 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
     defaultValues: {
       name: '',
       mail: '',
+      role: '',
       password: '',
       rePassword: '',
     },
@@ -75,14 +90,17 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
 
     form.setValue('name', editData?.name);
     form.setValue('mail', editData?.mail);
-  }, [editData, form]);
+    form.setValue('role', userRole || '');
+  }, [editData, form, userRole]);
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
+    console.log(values);
     if (editData) {
       mutateUpdate({
         id: editData.id!,
         mail: values.mail,
         name: values.name,
+        role: values.role || null,
       });
     } else {
       mutate(values);
@@ -93,6 +111,14 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
   const handleCancel = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     navigate(-1);
+  };
+
+  const handleChangeRol = (value: string) => {
+    form.setValue('role', value);
+  };
+
+  const handleCleanRol = () => {
+    form.setValue('role', undefined);
   };
 
   const { formState } = form;
@@ -119,7 +145,7 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
               )}
             </FormItem>
           )}
-        ></FormField>
+        />
         <FormField
           name="mail"
           control={form.control}
@@ -132,7 +158,34 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
               <FormMessage />
             </FormItem>
           )}
-        ></FormField>
+        />
+        <FormField
+          name="role"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Rol de Usuario</FormLabel>
+              <FormControl>
+                <Container row>
+                  <Combobox
+                    options={options}
+                    value={field.value}
+                    onChangeValue={handleChangeRol}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleCleanRol}
+                  >
+                    <FontAwesomeIcon icon={faUnlink}></FontAwesomeIcon>
+                  </Button>
+                </Container>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         {!editData && (
           <>
             <FormField

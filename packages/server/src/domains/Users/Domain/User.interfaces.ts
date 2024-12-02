@@ -11,6 +11,7 @@ export interface IRegisterUser extends IRequestContext {
     name: string;
     password: string;
     rePassword: string;
+    role: string | null;
   };
 }
 export interface IGetUser extends IRequestContext {
@@ -28,6 +29,7 @@ export interface IUpdateUser extends IRequestContext {
     id: number;
     mail: string;
     name: string;
+    role: string | null;
   };
 }
 export interface IDeleteUser extends IRequestContext {
