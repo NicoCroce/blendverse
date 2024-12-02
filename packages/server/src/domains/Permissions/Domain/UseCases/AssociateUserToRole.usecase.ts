@@ -10,10 +10,18 @@ export class AssociateUserToRole implements IUseCase<void> {
     requestContext,
   }: IAssociateUserToRole): Promise<void> {
     const { role, userId } = input;
-    return this.permissionsRepository.associateUserToRole({
-      role,
-      userId,
-      requestContext,
-    });
+
+    if (role) {
+      await this.permissionsRepository.associateUserToRole({
+        role,
+        userId,
+        requestContext,
+      });
+    } else {
+      await this.permissionsRepository.dissociateUserToRole({
+        userId,
+        requestContext,
+      });
+    }
   }
 }

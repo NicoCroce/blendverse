@@ -9,6 +9,9 @@ export interface IAssociateUserToRoleRepository extends IRequestContext {
   userId: number;
   role: string;
 }
+export interface IDissociateUserToRoleRepository extends IRequestContext {
+  userId: number;
+}
 export interface IGetRoleByUserRepository extends IRequestContext {
   userId: number;
 }
@@ -20,5 +23,6 @@ export interface PermissionsRepository {
     params: IGetPermissionsByUserRepository,
   ): Promise<string[]>;
   associateUserToRole(params: IAssociateUserToRoleRepository): Promise<void>;
+  dissociateUserToRole(params: IDissociateUserToRoleRepository): Promise<void>;
   getRoleByUser(params: IGetRoleByUserRepository): Promise<string | null>;
 }
