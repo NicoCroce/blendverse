@@ -15,10 +15,7 @@ export class GetRoleByUser implements IUseCase<string> {
         requestContext,
       });
 
-      if (!role)
-        throw new AppError(
-          `Error al obtener el rol del usuario con ID ${userId}`,
-        );
+      if (!role) return '';
 
       return role;
     } catch (error) {
