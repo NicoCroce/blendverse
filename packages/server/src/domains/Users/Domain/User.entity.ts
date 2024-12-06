@@ -9,6 +9,7 @@ export class User {
     private readonly _password?: UserPassword,
     private readonly _renewPassword?: boolean,
     private readonly _userImage?: string,
+    private readonly _ownerId?: number,
     private readonly _companyLogo?: string,
     private readonly _companyName?: string,
   ) {}
@@ -20,6 +21,7 @@ export class User {
     password,
     renewPassword = false,
     userImage,
+    ownerId,
     companyLogo,
     companyName,
   }: IUser) {
@@ -32,6 +34,7 @@ export class User {
       userPassword,
       renewPassword,
       userImage,
+      ownerId,
       companyLogo,
       companyName,
     );
@@ -48,6 +51,7 @@ export class User {
       name: this._name.value,
       renewPassword: this._renewPassword,
       userImage: this._userImage,
+      ownerId: this._ownerId,
       companyLogo: this._companyLogo,
       companyName: this._companyName,
     };

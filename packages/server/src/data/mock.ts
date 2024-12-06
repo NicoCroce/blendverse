@@ -7,6 +7,7 @@ export const Users = [
     renewPassword: 1,
     userImage:
       'https://media.licdn.com/dms/image/v2/D4D03AQGnZHqP2ZrCpQ/profile-displayphoto-shrink_100_100/profile-displayphoto-shrink_100_100/0/1707777018397?e=1733356800&v=beta&t=j1UYX7BCmIey_cdb86UTLNpXPbmMEcrlDeweWqDV_FY',
+    ownerId: 1,
     companyLogo:
       'https://www.colorpluspinturerias.com/assets/images/color-plus-logo.png',
     companyName: 'Color Plus',
@@ -19,6 +20,7 @@ export const Users = [
     renewPassword: 1,
     userImage:
       'https://media.licdn.com/dms/image/v2/D4D03AQGnZHqP2ZrCpQ/profile-displayphoto-shrink_100_100/profile-displayphoto-shrink_100_100/0/1707777018397?e=1733356800&v=beta&t=j1UYX7BCmIey_cdb86UTLNpXPbmMEcrlDeweWqDV_FY',
+    ownerId: 1,
     companyLogo:
       'https://media.licdn.com/dms/image/v2/C560EAQFi2OGWfxI4qA/rightRail-logo-shrink_200_200/rightRail-logo-shrink_200_200/0/1630998002580?e=1728522000&v=beta&t=SlHmEK_Z3rKJWOcqgW_aH2BPuj_c33yarTSrjr6gu6s',
     companyName: 'LinkedIn',
