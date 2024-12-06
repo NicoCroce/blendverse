@@ -16,10 +16,10 @@ export class UsersRepositoryImplementationLocal implements UserRepository {
 
   async getUsers({
     filters,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     requestContext,
   }: IGetUsersRepository): Promise<User[]> {
     // TODO: use requestContext to execte db
-    console.log(requestContext);
     const users = await this.Db.getUsersList(filters);
 
     return users.map(({ id, name, mail, renewPassword }) => {
@@ -70,12 +70,14 @@ export class UsersRepositoryImplementationLocal implements UserRepository {
         : null;
 
     if (!user) return null;
+
     const {
       id: userID,
       mail: _mail,
       name,
       password,
       renewPassword,
+      ownerId,
       companyLogo,
       companyName,
       userImage,
@@ -87,6 +89,7 @@ export class UsersRepositoryImplementationLocal implements UserRepository {
       name,
       password,
       renewPassword: !!renewPassword,
+      ownerId,
       companyLogo,
       companyName,
       userImage,

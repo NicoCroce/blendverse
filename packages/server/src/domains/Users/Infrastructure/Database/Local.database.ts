@@ -48,6 +48,7 @@ export class LocalDatabase {
       renewPassword: 1,
       userImage:
         'https://media.licdn.com/media/AAYQAQSOAAgAAQAAAAAAAB-zrMZEDXI2T62PSuT6kpB6qg.png',
+      ownerId: 1,
       companyLogo:
         'https://media.licdn.com/dms/image/v2/C560EAQFi2OGWfxI4qA/rightRail-logo-shrink_200_200/rightRail-logo-shrink_200_200/0/1630998002580?e=1728522000&v=beta&t=SlHmEK_Z3rKJWOcqgW_aH2BPuj_c33yarTSrjr6gu6s',
       companyName: 'LinkedIn',

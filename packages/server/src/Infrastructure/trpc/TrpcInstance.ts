@@ -18,6 +18,7 @@ export const createContext = ({
   const requestContext = new RequestContext(
     _requestContext.userId,
     _requestContext.requestId,
+    123,
   );
 
   logger.info('\n\n=================================\n');
@@ -66,7 +67,7 @@ const protectedProcedure = t.procedure.use(async function isAuthed(opts) {
   let dataToken;
 
   try {
-    dataToken = (await verifyToken(token)) as { id: number };
+    dataToken = (await verifyToken(token)) as { id: number; ownerId: number };
   } catch {
     throw new TRPCError({
       message: 'Token error',
@@ -75,7 +76,9 @@ const protectedProcedure = t.procedure.use(async function isAuthed(opts) {
   }
 
   const userId = dataToken.id;
+  const ownerId = dataToken.ownerId;
   ctx.requestContext.setUserId(userId);
+  ctx.requestContext.setOwerId(ownerId);
 
   return opts.next({
     ctx: {
