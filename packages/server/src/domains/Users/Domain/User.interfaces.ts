@@ -43,6 +43,7 @@ export interface IUser {
   password?: string;
   renewPassword?: boolean;
   userImage?: string;
+  ownerId?: number;
   companyLogo?: string;
   companyName?: string;
 }
