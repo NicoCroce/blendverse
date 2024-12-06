@@ -22,11 +22,13 @@ export class Login implements IUseCase<IExecuteResponse> {
       userImage,
       companyLogo,
       companyName,
+      ownerId,
     } = user.values;
 
     const data = {
       id: id,
       user: name,
+      ownerId: ownerId,
     };
 
     const token = generateToken(data);
