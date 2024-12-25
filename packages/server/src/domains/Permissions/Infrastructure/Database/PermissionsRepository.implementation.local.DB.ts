@@ -16,10 +16,7 @@ export class PermissionsRepositoryImplementationLocal
 {
   private Db = new LocalDatabasePermissions();
 
-  async getRoles(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _params: IGetRolesRepository,
-  ): Promise<Roles[]> {
+  async getRoles(_params: IGetRolesRepository): Promise<Roles[]> {
     const roles = await this.Db.getRolesList();
 
     return roles.map(({ name, description, permissions }) =>
@@ -27,8 +24,9 @@ export class PermissionsRepositoryImplementationLocal
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  getPermissions(params: IGetPermissionsRepository): Promise<Permissions[]> {
+  getPermissions({
+    requestContext: _,
+  }: IGetPermissionsRepository): Promise<Permissions[]> {
     throw new Error('Method not implemented.');
   }
 
@@ -43,24 +41,21 @@ export class PermissionsRepositoryImplementationLocal
   async associateUserToRole({
     userId,
     role,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    requestContext,
+    requestContext: _,
   }: IAssociateUserToRoleRepository): Promise<void> {
     return await this.Db.associateUserToRole(userId, role);
   }
 
   async getRoleByUser({
     userId,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    requestContext,
+    requestContext: _,
   }: IGetRoleByUserRepository): Promise<string | null> {
     return this.Db.getRoleByUser(userId);
   }
 
   async dissociateUserToRole({
     userId,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    requestContext,
+    requestContext: _,
   }: IDissociateUserToRoleRepository): Promise<void> {
     return this.Db.dissociateUserToRole(userId);
   }
