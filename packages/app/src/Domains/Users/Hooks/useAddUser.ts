@@ -21,6 +21,8 @@ export const useAddUser = () => {
           companyLogo: undefined,
           companyName: undefined,
           userImage: undefined,
+          ownerId: 0,
+          renewPassword: true,
         },
       ];
 

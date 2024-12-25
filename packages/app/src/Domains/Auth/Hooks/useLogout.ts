@@ -9,6 +9,7 @@ const clearStore = () =>
     localStorage.removeItem('logged');
     clear();
     queryClient.clear();
+    window.location.reload(); //carga todos los stores de tanstack
   }, 1000);
 
 export const useLogout = () => {
