@@ -16,11 +16,11 @@ export default defineConfig({
       // static assets in the public folder
       includeAssets: ['**/*'],
       manifest: {
-        name: 'GestDoc',
-        short_name: 'GestDoc',
-        theme_color: '#f0660a',
+        name: 'Macrosistemas',
+        short_name: 'Macrosistemas',
+        theme_color: '#3c3c3c',
         background_color: '#ffffff',
-        display: 'fullscreen',
+        display: 'standalone',
         orientation: 'portrait',
         scope: '/',
         start_url: '/',
