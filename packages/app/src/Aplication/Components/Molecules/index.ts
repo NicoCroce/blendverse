@@ -3,6 +3,7 @@ export * from './Button';
 export * from './Input';
 export * from './Link';
 export * from './List';
+export * from './MenuItem';
 export * from './Modal';
 export * from './OutletSheet';
 export * from './Text';

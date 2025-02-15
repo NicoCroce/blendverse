@@ -1,7 +1,7 @@
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { MobileMenu } from './MobileMenu';
+import { MobileMenu } from './MobileMenu/MobileMenu';
 import { Button } from '../ui/button';
 import { AccountMenu } from '../Organisms/Menu/AccountMenu';
 import { useDevice } from '@app/Aplication/Hooks';
