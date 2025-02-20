@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input } from '@app/Aplication/Components/ui/input';
 import { Link, useMatch } from 'react-router-dom';
 import { OutletSheet } from '@app/Aplication/Components';
@@ -18,6 +18,10 @@ export const SearchUser = () => {
   const { searchParams, updateDebouncedParams } =
     useURLParams<TUserSearch>(USERS_ROUTE);
   const [filterSearch, setFilterSearch] = useState(searchParams?.name || '');
+
+  useEffect(() => {
+    if (isInDetail) setIsSheetOpen(true);
+  }, [isInDetail]);
 
   const to = (userId && USERS_SEARCH_DETAIL_ROUTE.replace(':id', userId)) || '';
 
