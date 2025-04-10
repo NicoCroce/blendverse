@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import ReactDOM from 'react-dom/client';
 import { QueryClient } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
@@ -41,9 +41,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         client={queryClient}
         persistOptions={persistOptions}
       >
-        <BrowserRouter>
+        <HashRouter basename="/">
           <Layout />
-        </BrowserRouter>
+        </HashRouter>
         <ReactQueryDevtools initialIsOpen={false} />
       </PersistQueryClientProvider>
     </TrpcApi.Provider>

@@ -1,0 +1,9 @@
+@media screen and (max-width: 768px) {
+  .date-range-content > div:first-child {
+    overflow: scroll;
+    box-shadow: 0px -12px 11px -10px #0000008a inset;
+    > div {
+      height: 300px;
+    }
+  }
+}
