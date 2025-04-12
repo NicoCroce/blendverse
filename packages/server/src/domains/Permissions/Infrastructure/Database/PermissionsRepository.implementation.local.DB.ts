@@ -16,10 +16,7 @@ export class PermissionsRepositoryImplementationLocal
 {
   private Db = new LocalDatabasePermissions();
 
-  async getRoles(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _params: IGetRolesRepository,
-  ): Promise<Roles[]> {
+  async getRoles(_params: IGetRolesRepository): Promise<Roles[]> {
     const roles = await this.Db.getRolesList();
 
     return roles.map(({ name, description, permissions }) =>
