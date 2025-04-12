@@ -25,8 +25,11 @@
       "@app/*": ["src/*"],
       "@/*": ["./src/*"]
     },
-    "types": ["vite-plugin-pwa/client"]
+    "types": ["vite/client", "vite-plugin-pwa/client"]
   },
-  "include": ["src/**/*"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src/**/*", "./env.d.ts"],
+  "references": [
+    { "path": "./tsconfig.node.json" },
+    { "path": "../server/tsconfig.json" } // Ruta específica al archivo tsconfig del servidor
+  ]
 }

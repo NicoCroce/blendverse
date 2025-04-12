@@ -13,7 +13,7 @@ import { useDebounce } from './useDebounce';
  * @param {number} [debounceTime=300]
  * @returns {{ searchParams: any; updateDebouncedParams: any; updateParams: any; }}
  */
-export const useURLParams = <TParams extends Record<string, string>>(
+export const useURLParams = <TParams extends Record<string, string | number>>(
   baseURL?: string,
   debounceTime: number = 300,
 ) => {

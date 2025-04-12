@@ -1,14 +1,44 @@
-import { Page, Title, Text, Link, Container, List } from '@app/Aplication';
+import {
+  Page,
+  Title,
+  Text,
+  Link,
+  Container,
+  List,
+  Button,
+} from '@app/Aplication';
+
+const Comp = () => (
+  <Container row space="small">
+    <Button> Agregar</Button>
+    <Button variant="destructive"> Eliminar</Button>
+  </Container>
+);
 
 export const MainPage = () => {
   return (
-    <Page title="Blendverse" size="small">
+    <Page title="Blendverse" size="small" headerRight={<Comp />}>
       <Container row justify="center">
         <img
           src="https://github.com/user-attachments/assets/d6558622-7fa0-485e-9f75-2a0fe9c0aae8"
           width="512"
         />
       </Container>
+
+      <Title variant="h1">Título h1</Title>
+      <Title variant="h2">Título h2</Title>
+      <Title variant="h3">Título h3</Title>
+      <Title variant="h4">Título h4</Title>
+      <Text>párrafo</Text>
+      <Text.Lead>Lead</Text.Lead>
+      <Text.Blockquote>Blockquote</Text.Blockquote>
+      <Text.Code>Code</Text.Code>
+      <Text.Muted>Muted</Text.Muted>
+      <Text.Small>Small</Text.Small>
+      <Text>
+        Texto en <strong>negrita</strong>
+      </Text>
+
       <Text>
         <Text.Code>Blendverse</Text.Code> captura la idea de un proyecto que
         integra diferentes tecnologías y frameworks de una manera armónica y
@@ -69,6 +99,24 @@ export const MainPage = () => {
             </Link>
           </List.Li>
         </List>
+      </Container>
+
+      <Container row>
+        <Container className="w-[1000px]">
+          <img src="https://pbs.twimg.com/profile_images/1785867863191932928/EpOqfO6d_400x400.png" />
+        </Container>
+        <Container>
+          <Text.Lead>Nuevo curso de React</Text.Lead>
+          <Text.Small>
+            hace referencia a un espacio o entorno cohesivo. En este
+            caso,Blendverse sugiere un entorno en el que se unen tanto el
+            backend (con tRPC, Node.js, Typescript, Express) como el frontend
+            (con React, Typescript, React Router DOM, TanstackQuery y shadcn).
+            Esta fusión de tecnologías crea un universo propio donde todo se
+            conecta de manera eficiente, enfatizando la integración y la
+            interoperabilidad entre todas las partes del proyecto.
+          </Text.Small>
+        </Container>
       </Container>
     </Page>
   );

@@ -43,6 +43,15 @@ const formatPercent = (number: number) => {
 const getMappedCurrency = (currentCurrency: TCurrencyKey) =>
   CURRENCY_MAP[currentCurrency];
 
+export const formatDate = (date: Date) => {
+  const formatter = new Intl.DateTimeFormat('es-AR', {
+    month: 'long',
+    day: 'numeric',
+  });
+
+  return formatter.format(new Date(date));
+};
+
 export const format = {
   /** 🟢 This function format number to ARS */
   ARS: formatCurrency(getMappedCurrency(0)),

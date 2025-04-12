@@ -22,7 +22,7 @@ export const UserUpdatePage = () => {
   if (isError) return null;
 
   return (
-    <Page title="Editar usuario" size="small">
+    <Page title="Editar usuario" size="small" backButton>
       {isLoading ? (
         <Text.Small>Buscando usurio</Text.Small>
       ) : (
