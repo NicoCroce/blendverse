@@ -23,7 +23,7 @@ const InputPassword = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
       />
       <Button
         variant="outline"
-        className="absolute right-0 top-0"
+        className="absolute right-0 top-[0.75px]"
         onClick={() => setShow((prev) => !prev)}
         type="button"
       >

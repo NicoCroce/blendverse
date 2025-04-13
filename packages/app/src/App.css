@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+html {
+  font-size: 15px;
+}
+
 html,
 body,
 #root,

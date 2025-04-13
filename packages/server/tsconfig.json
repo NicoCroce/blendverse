@@ -11,6 +11,7 @@
     /* Type Checking */
     "strict": true /* Enable all strict type-checking options. */,
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+    "composite": true,
     "declaration": true,
     "resolveJsonModule": true,
     "experimentalDecorators": true,
@@ -22,13 +23,19 @@
     "paths": {
       "@server/*": ["src/*"]
     },
-    "typeRoots": ["./node_modules/@types"]
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types" // Cambio de "Types" a "types" (minúsculas)
+    ]
   },
+  "files": [
+    "src/types/express/index.d.ts" // Incluye explícitamente el archivo
+  ],
   "ts-node": {
     "esm": true,
     "compiler": "typescript",
     "experimentalSpecifierResolution": "node"
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "src/**/*.d.ts"], // Esto incluirá archivos de declaración como express.d.ts,
   "exclude": ["node_modules", "dist"]
 }

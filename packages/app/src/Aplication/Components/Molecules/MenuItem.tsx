@@ -1,16 +1,23 @@
 import { useHasPermission } from '@app/Aplication/Hooks/useHasPermission';
 import { Container } from '../Layout';
-import { NavLink, NavLinkRenderProps } from 'react-router-dom';
+import {
+  NavLink,
+  NavLinkRenderProps,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
-import { useDevice } from '@app/Aplication/Hooks';
+
+import { useEffect } from 'react';
 
 export interface MenuItemProps {
   permission?: string | string[];
   text: string;
-  icon: IconDefinition;
+  icon?: IconDefinition;
   to: string;
-  onlyMobile?: boolean;
+  children?: React.ReactNode;
+  redirect?: string;
 }
 
 export const styleLink =
@@ -27,22 +34,33 @@ const MenuItemElement = ({
   icon,
   text,
   to,
-  onlyMobile = false,
+  children,
+  redirect,
 }: Omit<MenuItemProps, 'permission'>) => {
-  const { isMobile } = useDevice();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (redirect && pathname === to) navigate(redirect);
+  }, [navigate, pathname, redirect, to]);
 
   const isActiveLink = ({ isActive }: NavLinkRenderProps): string => {
-    return isActive ? styleLink + ' bg-muted' : styleLink;
+    return isActive ? styleLink + ' bg-muted text-primary' : styleLink;
   };
 
-  if (!isMobile && onlyMobile) return null;
-
   return (
-    <Container className="flex flex-col gap-2">
-      <NavLink to={to} className={isActiveLink}>
-        <FontAwesomeIcon icon={icon} />
-        {text}
-      </NavLink>
-    </Container>
+    <>
+      <Container space="small" className="flex flex-col gap-2">
+        <NavLink to={to} className={isActiveLink}>
+          {icon && <FontAwesomeIcon icon={icon} />}
+          {text}
+        </NavLink>
+        {children && (
+          <Container space="none" className="pl-7">
+            {children}
+          </Container>
+        )}
+      </Container>
+    </>
   );
 };

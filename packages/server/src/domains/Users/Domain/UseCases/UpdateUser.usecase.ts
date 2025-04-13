@@ -33,7 +33,7 @@ export class UpdateUser implements IUseCase<number> {
           userId: id,
         },
       });
-    } catch (error) {
+    } catch {
       throw new AppError('Can`t assign the rol');
     }
 

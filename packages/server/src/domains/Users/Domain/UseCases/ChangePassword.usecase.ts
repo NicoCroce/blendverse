@@ -30,7 +30,7 @@ export class ChangePassword implements IUseCase<void> {
         password: getCryptedPassword(newPassword),
         requestContext,
       });
-    } catch (error) {
+    } catch {
       throw new AppError('No se pudo cambiar la constraseña');
     }
   }
