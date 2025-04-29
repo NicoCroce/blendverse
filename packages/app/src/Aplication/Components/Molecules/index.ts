@@ -5,6 +5,7 @@ export * from './DatePicker';
 export * from './DateRange';
 export * from './EmptyScreenFilter';
 export * from './FilterButton';
+export * from './FormFields/InputField';
 export * from './Input';
 export * from './Link';
 export * from './List';
