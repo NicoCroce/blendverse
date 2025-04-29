@@ -23,7 +23,7 @@ type TOption = {
   label: string;
 };
 
-interface ComboboxProps {
+export interface ComboboxProps {
   options?: TOption[];
   value?: string;
   onChangeValue: (value: string) => void;
