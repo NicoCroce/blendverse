@@ -14,6 +14,7 @@ import { Combobox } from '@app/Aplication/Components/Organisms';
 import { useGetRoleByUser, useGetRoles } from '@app/Domains/Auth';
 import { formSchemaDefinition } from './userForm.schema';
 import { SelectField } from '@app/Aplication/Components/Molecules/FormFields/SelectField';
+import { faUnlink } from '@fortawesome/free-solid-svg-icons';
 
 interface UserFormProps {
   editData?: TUser | null;
@@ -108,6 +109,7 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
             <Combobox options={options} onChangeValue={handleChangeRol} />
           }
           handleClean={handleCleanRol}
+          handleCleanIcon={faUnlink}
         />
 
         {!editData && (

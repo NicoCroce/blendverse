@@ -8,8 +8,11 @@ import {
 } from '../../ui/form';
 import { Container } from '../../Layout';
 import { Button } from '../Button';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUnlink } from '@fortawesome/free-solid-svg-icons';
+import {
+  FontAwesomeIcon,
+  FontAwesomeIconProps,
+} from '@fortawesome/react-fontawesome';
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
 import { ComboboxProps } from '../../Organisms';
 
@@ -18,7 +21,8 @@ interface SelectFieldProps<T extends FieldValues> {
   control: Control<T>;
   label: string;
   combobox: React.ReactElement<ComboboxProps>;
-  handleClean: () => void;
+  handleClean: () => void | null;
+  handleCleanIcon?: FontAwesomeIconProps['icon'];
 }
 
 export const SelectField = <T extends FieldValues>({
@@ -27,6 +31,7 @@ export const SelectField = <T extends FieldValues>({
   combobox,
   label,
   handleClean,
+  handleCleanIcon = faTrashCan,
 }: SelectFieldProps<T>) => {
   return (
     <FormFieldComponent
@@ -44,7 +49,7 @@ export const SelectField = <T extends FieldValues>({
                   })
                 : combobox}
               <Button type="button" variant="outline" onClick={handleClean}>
-                <FontAwesomeIcon icon={faUnlink}></FontAwesomeIcon>
+                <FontAwesomeIcon icon={handleCleanIcon}></FontAwesomeIcon>
               </Button>
             </Container>
           </FormControl>
