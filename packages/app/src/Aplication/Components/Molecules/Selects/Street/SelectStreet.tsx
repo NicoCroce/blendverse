@@ -1,7 +1,7 @@
 import { FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import { useState } from 'react';
-import { SelectBase } from './SelectBase';
 import { useGetStreets } from './Hooks/useGetStreets';
+import { SelectBase } from '../SelectBase';
 
 interface SelectStreetProps<T extends FieldValues> {
   name: Path<T>;
@@ -25,6 +25,7 @@ export const SelectStreet = <T extends FieldValues>({
       options={StreetOptions}
       onChangeFilter={handleChangeFilter}
       isLoading={isLoading}
+      isBig
     />
   );
 };
