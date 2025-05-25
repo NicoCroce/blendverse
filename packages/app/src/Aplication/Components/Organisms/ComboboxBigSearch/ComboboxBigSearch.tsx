@@ -22,7 +22,7 @@ type TOption = {
   label: string;
 };
 
-export interface ComboboxProps {
+export interface ComboboxBigSearchProps {
   options?: TOption[];
   value?: string;
   onChangeValue: (value: string) => void;
@@ -34,7 +34,7 @@ export const ComboboxBigSearch = ({
   onChangeValue,
   options = [],
   onChangeFilter,
-}: ComboboxProps) => {
+}: ComboboxBigSearchProps) => {
   const [open, setOpen] = useState(false);
   const [valueSearch, setValuSearch] = useState('');
 
