@@ -21,8 +21,9 @@ interface SelectFieldProps<T extends FieldValues> {
   control: Control<T>;
   label: string;
   combobox: React.ReactElement<ComboboxProps>;
-  handleClean: () => void | null;
+  handleClean?: () => void;
   handleCleanIcon?: FontAwesomeIconProps['icon'];
+  onChangeOmit?: boolean;
 }
 
 export const SelectField = <T extends FieldValues>({
@@ -32,6 +33,7 @@ export const SelectField = <T extends FieldValues>({
   label,
   handleClean,
   handleCleanIcon = faTrashCan,
+  onChangeOmit = false,
 }: SelectFieldProps<T>) => {
   return (
     <FormFieldComponent
@@ -45,12 +47,14 @@ export const SelectField = <T extends FieldValues>({
               {React.isValidElement(combobox)
                 ? React.cloneElement(combobox, {
                     value: field.value,
-                    onChangeValue: field.onChange,
+                    ...(!onChangeOmit && { onChangeValue: field.onChange }),
                   })
                 : combobox}
-              <Button type="button" variant="outline" onClick={handleClean}>
-                <FontAwesomeIcon icon={handleCleanIcon}></FontAwesomeIcon>
-              </Button>
+              {handleClean && (
+                <Button type="button" variant="outline" onClick={handleClean}>
+                  <FontAwesomeIcon icon={handleCleanIcon}></FontAwesomeIcon>
+                </Button>
+              )}
             </Container>
           </FormControl>
           <FormMessage />
