@@ -63,14 +63,11 @@ export class StreetsService {
     input,
     requestContext,
   }: IGetAllStreets): Promise<ISelect[]> {
-    console.log('INPUT: ', input);
     const data = await executeUseCase({
       useCase: this._getAllStreets,
       input,
       requestContext,
     });
-
-    console.log(data);
 
     return TransformToSelect(data, 'denominacion');
   }
