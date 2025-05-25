@@ -21,6 +21,7 @@ export const formSchemaDefinition = (editData: TUser | null) =>
             message: 'La contraseña debe ser mayor a 8 caracteres',
           })
         : z.string(),
+      street: z.string().optional(),
     })
     .refine(
       (data) => {
