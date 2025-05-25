@@ -13,7 +13,7 @@ export const SelectStreet = <T extends FieldValues>({
   form,
 }: SelectStreetProps<T>) => {
   const [search, setSearch] = useState('');
-  const { data: StreetOptions } = useGetStreets(search);
+  const { data: StreetOptions, isLoading } = useGetStreets(search);
 
   const handleChangeFilter = (value: string) => setSearch(value);
 
@@ -24,6 +24,7 @@ export const SelectStreet = <T extends FieldValues>({
       inputLabel="Calle"
       options={StreetOptions}
       onChangeFilter={handleChangeFilter}
+      isLoading={isLoading}
     />
   );
 };

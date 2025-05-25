@@ -16,6 +16,8 @@ import { cn } from '@app/Aplication/lib/utils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
+import { Spinner } from '../../Molecules';
+import { Container } from '../../Layout';
 
 type TOption = {
   value: string;
@@ -27,6 +29,7 @@ export interface ComboboxBigSearchProps {
   value?: string;
   onChangeValue: (value: string) => void;
   onChangeFilter: (value: string) => void;
+  isLoading?: boolean;
 }
 
 export const ComboboxBigSearch = ({
@@ -34,13 +37,13 @@ export const ComboboxBigSearch = ({
   onChangeValue,
   options = [],
   onChangeFilter,
+  isLoading = false,
 }: ComboboxBigSearchProps) => {
   const [open, setOpen] = useState(false);
   const [valueSearch, setValuSearch] = useState('');
 
   const handleOpenChange = (state: boolean) => {
     if (!value && !state) {
-      console.log('envia a onchange');
       onChangeValue('');
     }
     setOpen(state);
@@ -54,9 +57,6 @@ export const ComboboxBigSearch = ({
     )?.label;
     if (!findSelected) onChangeValue('');
   };
-
-  console.log('vale', value);
-  console.log('options', options);
 
   return (
     <Popover open={open} onOpenChange={handleOpenChange}>
@@ -88,7 +88,14 @@ export const ComboboxBigSearch = ({
             placeholder="Buscar..."
           />
           <CommandList>
-            <CommandEmpty>Nada seleccionado</CommandEmpty>
+            {isLoading ? (
+              <Container row justify="center" className="m-4">
+                <Spinner />
+              </Container>
+            ) : (
+              <CommandEmpty>Nada seleccionado</CommandEmpty>
+            )}
+
             <CommandGroup>
               {options.map((option) => (
                 <CommandItem
