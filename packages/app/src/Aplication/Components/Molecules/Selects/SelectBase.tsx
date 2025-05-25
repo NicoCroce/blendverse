@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { SelectField } from '@app/Aplication/Components/Molecules/FormFields/SelectField';
-import { ComboboxBigSearch } from '../../Organisms';
+import { Combobox, ComboboxBigSearch } from '../../Organisms';
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 
 interface SelectBaseProps<T extends FieldValues> {
@@ -12,8 +12,9 @@ interface SelectBaseProps<T extends FieldValues> {
     value: number;
     label: string;
   }>;
-  onChangeFilter: (value: string) => void;
+  onChangeFilter?: (value: string) => void;
   isLoading?: boolean;
+  isBig?: boolean;
 }
 
 export const SelectBase = <T extends FieldValues>({
@@ -24,6 +25,7 @@ export const SelectBase = <T extends FieldValues>({
   options,
   onChangeFilter,
   isLoading = false,
+  isBig = false,
 }: SelectBaseProps<T>) => {
   const memoOptions = useMemo(() => {
     return options?.map(({ value, label }) => ({
@@ -45,12 +47,16 @@ export const SelectBase = <T extends FieldValues>({
       label={inputLabel}
       onChangeOmit
       combobox={
-        <ComboboxBigSearch
-          options={memoOptions}
-          onChangeValue={handleChange}
-          onChangeFilter={onChangeFilter}
-          isLoading={isLoading}
-        />
+        isBig && onChangeFilter ? (
+          <ComboboxBigSearch
+            options={memoOptions}
+            onChangeValue={handleChange}
+            onChangeFilter={onChangeFilter}
+            isLoading={isLoading}
+          />
+        ) : (
+          <Combobox options={memoOptions} onChangeValue={handleChange} />
+        )
       }
       handleClean={enableClean ? handleClean : undefined}
     />
