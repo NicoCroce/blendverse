@@ -3,13 +3,13 @@ import dotenv from 'dotenv';
 dotenv.config();
 import express, { Request, Express, Response } from 'express';
 import { initMiddlewares } from './Infrastructure/Middlewares';
-import { registerDomains } from './domains/register';
 import { InstanceMainRouter } from './Infrastructure/Routes/Router';
+import { registerDI } from './Infrastructure/di/register';
 
 const app: Express = express();
 const port = process.env.PORT || 5500;
 
-registerDomains();
+registerDI(app);
 initMiddlewares(app);
 //** Routes */
 InstanceMainRouter(app);
