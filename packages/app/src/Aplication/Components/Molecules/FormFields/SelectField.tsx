@@ -8,8 +8,11 @@ import {
 } from '../../ui/form';
 import { Container } from '../../Layout';
 import { Button } from '../Button';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUnlink } from '@fortawesome/free-solid-svg-icons';
+import {
+  FontAwesomeIcon,
+  FontAwesomeIconProps,
+} from '@fortawesome/react-fontawesome';
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
 import { ComboboxProps } from '../../Organisms';
 
@@ -18,7 +21,9 @@ interface SelectFieldProps<T extends FieldValues> {
   control: Control<T>;
   label: string;
   combobox: React.ReactElement<ComboboxProps>;
-  handleClean: () => void;
+  handleClean?: () => void;
+  handleCleanIcon?: FontAwesomeIconProps['icon'];
+  onChangeOmit?: boolean;
 }
 
 export const SelectField = <T extends FieldValues>({
@@ -27,6 +32,8 @@ export const SelectField = <T extends FieldValues>({
   combobox,
   label,
   handleClean,
+  handleCleanIcon = faTrashCan,
+  onChangeOmit = false,
 }: SelectFieldProps<T>) => {
   return (
     <FormFieldComponent
@@ -40,12 +47,14 @@ export const SelectField = <T extends FieldValues>({
               {React.isValidElement(combobox)
                 ? React.cloneElement(combobox, {
                     value: field.value,
-                    onChangeValue: field.onChange,
+                    ...(!onChangeOmit && { onChangeValue: field.onChange }),
                   })
                 : combobox}
-              <Button type="button" variant="outline" onClick={handleClean}>
-                <FontAwesomeIcon icon={faUnlink}></FontAwesomeIcon>
-              </Button>
+              {handleClean && (
+                <Button type="button" variant="outline" onClick={handleClean}>
+                  <FontAwesomeIcon icon={handleCleanIcon}></FontAwesomeIcon>
+                </Button>
+              )}
             </Container>
           </FormControl>
           <FormMessage />

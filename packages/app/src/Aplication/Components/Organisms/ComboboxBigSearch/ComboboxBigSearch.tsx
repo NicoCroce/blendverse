@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { Button } from '@/Aplication/Components/ui/button';
 import {
   Command,
@@ -17,27 +15,51 @@ import {
 import { cn } from '@app/Aplication/lib/utils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { useState } from 'react';
+import { Spinner } from '../../Molecules';
+import { Container } from '../../Layout';
 
 type TOption = {
   value: string;
   label: string;
 };
 
-export interface ComboboxProps {
+export interface ComboboxBigSearchProps {
   options?: TOption[];
   value?: string;
   onChangeValue: (value: string) => void;
+  onChangeFilter: (value: string) => void;
+  isLoading?: boolean;
 }
 
-export const Combobox = ({
+export const ComboboxBigSearch = ({
   value,
   onChangeValue,
   options = [],
-}: ComboboxProps) => {
-  const [open, setOpen] = React.useState(false);
+  onChangeFilter,
+  isLoading = false,
+}: ComboboxBigSearchProps) => {
+  const [open, setOpen] = useState(false);
+  const [valueSearch, setValuSearch] = useState('');
+
+  const handleOpenChange = (state: boolean) => {
+    if (!value && !state) {
+      onChangeValue('');
+    }
+    setOpen(state);
+  };
+
+  const handleInputSearch = (valueInputSearch: string) => {
+    setValuSearch(valueInputSearch);
+    onChangeFilter(valueInputSearch);
+    const findSelected = options.find(
+      (option) => option.value === value,
+    )?.label;
+    if (!findSelected) onChangeValue('');
+  };
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -48,8 +70,9 @@ export const Combobox = ({
             !value && 'text-muted-foreground',
           )}
         >
-          {value
-            ? options.find((option) => option.value === value)?.label
+          {value && options && options.length > 0
+            ? options.find((option) => option.value === value)?.label ||
+              'Selecciona una opción'
             : 'Selecciona una opción'}
           <FontAwesomeIcon
             icon={faChevronDown}
@@ -59,16 +82,30 @@ export const Combobox = ({
       </PopoverTrigger>
       <PopoverContent className="w-full p-0">
         <Command>
-          <CommandInput placeholder="Buscar..." />
+          <CommandInput
+            onValueChange={handleInputSearch}
+            value={valueSearch}
+            placeholder="Buscar..."
+          />
           <CommandList>
-            <CommandEmpty>Nada seleccionado</CommandEmpty>
+            {isLoading ? (
+              <Container row justify="center" className="m-4">
+                <Spinner />
+              </Container>
+            ) : (
+              <CommandEmpty>Nada seleccionado</CommandEmpty>
+            )}
+
             <CommandGroup>
               {options.map((option) => (
                 <CommandItem
                   key={option.value}
                   value={option.label}
-                  onSelect={(currentValue) => {
-                    onChangeValue(currentValue === value ? '' : currentValue);
+                  onSelect={(currentLabel) => {
+                    const selected = options.find(
+                      (opt) => opt.label === currentLabel,
+                    );
+                    onChangeValue(selected ? selected.value : '');
                     setOpen(false);
                   }}
                 >

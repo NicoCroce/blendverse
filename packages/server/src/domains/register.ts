@@ -1,7 +1,11 @@
-import { container } from '@server/utils/Container';
 import { userApp } from './Users';
 import { authApp } from './Auth';
 import { permissionsApp } from './Permissions';
+import { streetApp } from './Streets';
 
-export const registerDomains = () =>
-  container.register({ ...authApp, ...userApp, ...permissionsApp });
+export const registerDomains = () => ({
+  ...authApp,
+  ...userApp,
+  ...permissionsApp,
+  ...streetApp,
+});
