@@ -96,3 +96,32 @@ export const Roles_Users = [
     roleName: 'admin-access',
   },
 ];
+
+function shuffleString(str: string): string {
+  if (str.length <= 2) return str;
+  const firstTwo = str.slice(0, 2);
+  const rest = str.slice(2).split('');
+  for (let i = rest.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [rest[i], rest[j]] = [rest[j], rest[i]];
+  }
+  return firstTwo + rest.join('');
+}
+
+export const Streets = [
+  { id: 1, denominacion: 'Mitre' },
+  { id: 2, denominacion: 'España' },
+  { id: 3, denominacion: 'San Martín' },
+  { id: 4, denominacion: 'Pellegrini' },
+  // Generados automáticamente combinando las denominaciones existentes y mezclando letras
+  ...Array.from({ length: 196 }, (_, i) => {
+    const baseNames = ['Mitre', 'España', 'San Martín', 'Pellegrini'];
+    const base = baseNames[i % baseNames.length];
+    const shuffled = shuffleString(base);
+    const suffix = Math.floor(i / baseNames.length) + 1;
+    return {
+      id: i + 5,
+      denominacion: `${shuffled} ${suffix}`,
+    };
+  }),
+];
