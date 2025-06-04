@@ -1,5 +1,5 @@
-import { useQuery, useQueryClient, Updater } from '@tanstack/react-query';
 import { useCallback } from 'react';
+import { useQuery, useQueryClient, Updater } from '@tanstack/react-query';
 
 type QueryDataUpdater<TData> = Updater<TData | undefined, TData>;
 
@@ -15,11 +15,9 @@ export const useGlobalStore = <TData>(queryKey: string) => {
    * @returns void
    */
   const setQueryData = useCallback(
-    (updater: QueryDataUpdater<TData>) => {
-      console.log('[setQueryData] Triggered for', queryKey);
-      return queryClient.setQueryData<TData>([queryKey], updater);
-    },
-    [queryClient, queryKey], // solo cambia si estos cambian
+    (updater: QueryDataUpdater<TData>) =>
+      queryClient.setQueryData<TData>([queryKey], updater),
+    [queryClient, queryKey],
   );
 
   const query = useQuery<TData>({ queryKey: [queryKey] });
