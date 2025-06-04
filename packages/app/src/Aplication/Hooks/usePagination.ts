@@ -1,8 +1,9 @@
 import { useCallback } from 'react';
 import { useURLParams } from './useURLParams';
+import { TPagination } from '../Helpers';
 
 export const usePagination = (totalPages: number) => {
-  const { searchParams, updateParams } = useURLParams();
+  const { searchParams, updateParams } = useURLParams<TPagination>();
   const currentPage = Number(searchParams?.page) || 1;
   const currentLimit = Number(searchParams?.limit) || 10;
 
