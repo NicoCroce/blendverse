@@ -11,7 +11,9 @@ export class UsersController {
     .input(
       z
         .object({
-          name: z.string(),
+          name: z.string().optional(),
+          page: z.string().optional(),
+          limit: z.string().optional(),
         })
         .optional(),
     )

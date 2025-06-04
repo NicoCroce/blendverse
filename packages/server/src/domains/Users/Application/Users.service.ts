@@ -16,6 +16,7 @@ import {
   IRegisterUser,
   IUpdateUser,
 } from '../Domain/User.interfaces';
+import { IPaginationResponse } from '@server/Application';
 
 export class UsersService {
   constructor(
@@ -27,7 +28,10 @@ export class UsersService {
     private readonly _changePassword: ChangePassword,
   ) {}
 
-  async getUsers({ input, requestContext }: IGetUsers): Promise<User[]> {
+  async getUsers({
+    input,
+    requestContext,
+  }: IGetUsers): Promise<IPaginationResponse<User[]>> {
     return executeUseCase({ useCase: this._getUsers, input, requestContext });
   }
 
