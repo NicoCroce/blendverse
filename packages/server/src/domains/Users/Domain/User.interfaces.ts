@@ -1,9 +1,9 @@
-import { IRequestContext } from '@server/Application';
+import { IPagination, IRequestContext } from '@server/Application';
 
 export interface IGetUsers extends IRequestContext {
   input?: {
     name?: string;
-  };
+  } & IPagination;
 }
 export interface IRegisterUser extends IRequestContext {
   input: {

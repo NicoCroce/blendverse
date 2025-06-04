@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Input } from '@app/Aplication/Components/ui/input';
+import { Input } from '@app/Aplication/Components/Molecules';
 import { Link, useMatch } from 'react-router-dom';
 import { OutletSheet } from '@app/Aplication/Components';
 import { Button } from '@app/Aplication/Components';
@@ -30,7 +30,7 @@ export const SearchUser = () => {
   }: React.ChangeEvent<HTMLInputElement>) => {
     setFilterSearch(value);
     // Update URL params when change input.
-    updateDebouncedParams({ name: value });
+    updateDebouncedParams({ name: value, page: 1 });
   };
 
   return (

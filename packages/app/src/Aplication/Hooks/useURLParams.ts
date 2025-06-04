@@ -1,89 +1,110 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useDebounce } from './useDebounce';
 
 /**
- * This hook returns searchParams as an Object format and methods to update them.
- * You can use searchParams to get an object.
- * updateDebouncedParams use this method to update with delay.
- * updateDebouncedParams, use this method to update with out delay.
- *
- * @template {Record<string, string>} TParams
- * @param {?string} [baseURL] example '/catalog
- * @param {number} [debounceTime=300]
- * @returns {{ searchParams: any; updateDebouncedParams: any; updateParams: any; }}
+ * Hook para manejar parámetros de URL de forma reactiva
+ * @template TParams - Tipo de los parámetros esperados
+ * @param baseURL - URL base opcional para la navegación
+ * @param debounceMs - Tiempo de debounce en milisegundos (opcional)
  */
 export const useURLParams = <TParams extends Record<string, string | number>>(
-  baseURL?: string,
-  debounceTime: number = 300,
+  baseURL: string = '',
+  debounceMs?: number,
 ) => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  // Define a new state than change from the component.
-  const [urlSearchParams, updateDebouncedParams] = useState<
-    Partial<Record<keyof TParams, string>>
-  >({});
-  // Send this value to debounce hook.
-  const debouncedValue = useDebounce(urlSearchParams, debounceTime);
+  const debounceRef = useRef<NodeJS.Timeout>();
 
+  // Convertir searchParams a objeto tipado - se actualiza automáticamente
+  const params = useMemo((): TParams | undefined => {
+    if (searchParams.size === 0) return undefined;
+
+    const entries = Array.from(searchParams.entries());
+    return Object.fromEntries(entries) as TParams;
+  }, [searchParams]);
+
+  // Función para actualizar parámetros sin debounce
   const updateParams = useCallback(
-    (params: Partial<Record<keyof TParams, string>>) => {
-      // Get a new searchParams
-      const newSearchParams = new URLSearchParams(searchParams);
-      /** This verify the values of each keys. If the the value exists, 
-      update the key else if the value doesn't exist, delete the key.
-      */
-      Object.entries(params).forEach(([key, value]) => {
-        if (value) {
-          newSearchParams.set(key, value as string);
+    (
+      newParams: Partial<
+        Record<keyof TParams, string | number | null | undefined>
+      >,
+    ) => {
+      const updatedParams = new URLSearchParams(searchParams);
+
+      Object.entries(newParams).forEach(([key, value]) => {
+        if (value !== null && value !== undefined && value !== '') {
+          updatedParams.set(key, String(value));
         } else {
-          newSearchParams.delete(key);
+          updatedParams.delete(key);
         }
       });
-      /* navigate
-        Using navigate here updates the browser URL without reloading the page, 
-        which is crucial for maintaining application state and providing a smooth 
-        user experience.
-      */
-      navigate(`${baseURL}?${newSearchParams.toString()}`, {
-        replace: true,
-      });
-      /* setSearchParams 
-        Updates the search parameters in the internal state of React Router.
-        Triggers a re-render of components that depend on these parameters.
-        Does not cause a full navigation like navigate does.
-      */
-      setSearchParams(newSearchParams);
+
+      if (baseURL) {
+        navigate(`${baseURL}?${updatedParams.toString()}`, { replace: true });
+      } else {
+        setSearchParams(updatedParams, { replace: true });
+      }
     },
     [baseURL, navigate, searchParams, setSearchParams],
   );
 
-  useEffect(() => {
-    // This execution updates the parameters on every change of the debounce value.
-    if (Object.keys(debouncedValue).length > 0) {
-      updateParams(debouncedValue);
-    }
-  }, [debouncedValue, updateParams]);
+  // Función para actualizar parámetros con debounce
+  const updateDebouncedParams = useCallback(
+    (
+      newParams: Partial<
+        Record<keyof TParams, string | number | null | undefined>
+      >,
+    ) => {
+      if (!debounceMs) {
+        updateParams(newParams);
+        return;
+      }
 
-  /*
-    This code return undefined or an object with each searchParams if params exists
-  */
-  const getSearchParams = useCallback(
-    (): TParams | undefined =>
-      searchParams.size === 0
-        ? undefined
-        : (Object.fromEntries(searchParams.entries()) as TParams),
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+
+      debounceRef.current = setTimeout(() => {
+        updateParams(newParams);
+      }, debounceMs);
+    },
+    [updateParams, debounceMs],
+  );
+
+  // Función para limpiar todos los parámetros
+  const clearParams = useCallback(() => {
+    if (baseURL) {
+      navigate(baseURL, { replace: true });
+    } else {
+      setSearchParams({}, { replace: true });
+    }
+  }, [baseURL, navigate, setSearchParams]);
+
+  // Función para obtener un parámetro específico
+  const getParam = useCallback(
+    (key: keyof TParams): string | undefined => {
+      return searchParams.get(key as string) || undefined;
+    },
     [searchParams],
   );
 
-  /*
-    You can use searchParams to get an object.
-    updateDebouncedParams use this method to update with delay.
-    updateDebouncedParams, use this method to update with out delay.
-  */
+  // Función para verificar si existe un parámetro
+  const hasParam = useCallback(
+    (key: keyof TParams): boolean => {
+      return searchParams.has(key as string);
+    },
+    [searchParams],
+  );
+
   return {
-    searchParams: getSearchParams(),
-    updateDebouncedParams,
+    params,
     updateParams,
+    updateDebouncedParams,
+    clearParams,
+    getParam,
+    hasParam,
+    // Mantener compatibilidad con tu API actual
+    searchParams: params,
   };
 };

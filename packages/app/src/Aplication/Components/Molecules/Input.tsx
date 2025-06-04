@@ -5,9 +5,13 @@ import { Button } from './Button';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 // Extiende el Input básico con forwardRef
-const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
-  return <InputLib ref={ref} {...props} />;
-});
+const Input = forwardRef<HTMLInputElement, InputProps>(
+  ({ className, ...props }, ref) => {
+    return (
+      <InputLib ref={ref} className={`h-8 ${className ?? ''}`} {...props} />
+    );
+  },
+);
 
 // Input de tipo contraseña con capacidad de mostrar/ocultar texto
 const InputPassword = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
