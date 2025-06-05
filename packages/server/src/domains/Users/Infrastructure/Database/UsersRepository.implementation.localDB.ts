@@ -3,6 +3,7 @@ import {
   IDeleteUserRepository,
   IGetUserRepository,
   IGetUsersRepository,
+  IGetUsersRepositoryResponse,
   IRegisterUserRepository,
   IUpdateUserRepository,
   IValidateUserRepository,
@@ -18,14 +19,22 @@ export class UsersRepositoryImplementationLocal implements UserRepository {
     filters,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     requestContext,
-  }: IGetUsersRepository): Promise<User[]> {
+  }: IGetUsersRepository): Promise<IGetUsersRepositoryResponse> {
     // TODO: use requestContext to execte db
     const users = await this.Db.getUsersList(filters);
 
-    return users.map(({ id, name, mail, renewPassword }) => {
-      console.log(id, name, mail, renewPassword);
-      return User.create({ id, mail, name, renewPassword: !!renewPassword });
-    });
+    const data = users.map(({ id, name, mail, renewPassword }) =>
+      User.create({ id, mail, name, renewPassword: !!renewPassword }),
+    );
+
+    return {
+      data,
+      meta: {
+        totalItems: data.length,
+        totalPages: 1,
+        currentPage: 1,
+      },
+    };
   }
 
   async registerUser({
