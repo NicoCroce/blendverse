@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { SelectField } from '@app/Aplication/Components/Molecules/FormFields/SelectField';
 import { Combobox, ComboboxBigSearch } from '../../Organisms';
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
+import { FontAwesomeIconProps } from '@fortawesome/react-fontawesome';
 
 interface SelectBaseProps<T extends FieldValues> {
   name: Path<T>;
@@ -9,12 +10,13 @@ interface SelectBaseProps<T extends FieldValues> {
   form: UseFormReturn<T>;
   inputLabel: string;
   options?: Array<{
-    value: number;
+    value: number | string;
     label: string;
   }>;
   onChangeFilter?: (value: string) => void;
   isLoading?: boolean;
   isBig?: boolean;
+  handleCleanIcon?: FontAwesomeIconProps['icon'];
 }
 
 export const SelectBase = <T extends FieldValues>({
@@ -26,6 +28,7 @@ export const SelectBase = <T extends FieldValues>({
   onChangeFilter,
   isLoading = false,
   isBig = false,
+  handleCleanIcon,
 }: SelectBaseProps<T>) => {
   const memoOptions = useMemo(() => {
     return options?.map(({ value, label }) => ({
@@ -59,6 +62,7 @@ export const SelectBase = <T extends FieldValues>({
         )
       }
       handleClean={enableClean ? handleClean : undefined}
+      handleCleanIcon={handleCleanIcon}
     />
   );
 };
