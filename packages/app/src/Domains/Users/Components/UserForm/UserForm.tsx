@@ -6,16 +6,16 @@ import { Form } from '@app/Aplication/Components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@app/Aplication/Components/ui/input';
 import { Button, Container, InputField } from '@app/Aplication/Components';
-
 import { USERS_ROUTE } from '../../Users.routes';
 import { useEffect, useMemo } from 'react';
 import { TUser } from '../../User.entity';
-import { Combobox } from '@app/Aplication/Components/Organisms';
 import { useGetRoleByUser, useGetRoles } from '@app/Domains/Auth';
 import { formSchemaDefinition } from './userForm.schema';
-import { SelectField } from '@app/Aplication/Components/Molecules/FormFields/SelectField';
 import { faUnlink } from '@fortawesome/free-solid-svg-icons';
-import { SelectStreet } from '@app/Aplication/Components/Molecules/Selects';
+import {
+  SelectBase,
+  SelectStreet,
+} from '@app/Aplication/Components/Molecules/Selects';
 import { SelectOther } from '@app/Aplication/Components/Molecules/Selects/Other';
 
 interface UserFormProps {
@@ -23,7 +23,7 @@ interface UserFormProps {
 }
 
 export const UserForm = ({ editData = null }: UserFormProps) => {
-  const { data: rolesOptions } = useGetRoles();
+  const { data: rolesOptions, isLoading } = useGetRoles();
   const { mutate } = useAddUser();
   const { mutate: mutateUpdate } = useUpdateUser();
   const navigate = useNavigate();
@@ -78,14 +78,6 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
     navigate(-1);
   };
 
-  const handleChangeRol = (value: string) => {
-    form.setValue('role', value);
-  };
-
-  const handleCleanRol = () => {
-    form.setValue('role', undefined);
-  };
-
   return (
     <Form {...form}>
       <form
@@ -108,14 +100,13 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
           <Input type="email" />
         </InputField>
 
-        <SelectField
-          control={form.control}
+        <SelectBase
+          form={form}
+          inputLabel="Rol de Usuario"
           name="role"
-          label="Rol de Usuario"
-          combobox={
-            <Combobox options={options} onChangeValue={handleChangeRol} />
-          }
-          handleClean={handleCleanRol}
+          options={options}
+          enableClean
+          isLoading={isLoading}
           handleCleanIcon={faUnlink}
         />
 
