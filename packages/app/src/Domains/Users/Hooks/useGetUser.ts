@@ -16,8 +16,9 @@ export const useGetUser = (id?: number) => {
   // Extraemos los datos de la caché si es que existe.
   const cachedUsers = useMemo(
     () =>
-      cacheUsersList.getData(searchParams)?.find((user) => user.id === id) ||
-      null,
+      cacheUsersList
+        .getData(searchParams)
+        ?.data.find((user) => user.id === id) || null,
     [cacheUsersList, id, searchParams],
   );
 
