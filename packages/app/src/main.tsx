@@ -26,7 +26,7 @@ export const queryClient = new QueryClient({
 // add this to prompt for a refresh
 const updateSW = registerSW({
   onNeedRefresh() {
-    if (confirm('New content available. Reload?')) {
+    if (confirm('Nueva versión disponible')) {
       updateSW(true);
     }
   },
