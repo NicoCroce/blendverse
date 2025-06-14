@@ -34,8 +34,6 @@ export class LocalDatabasePermissions {
     } else {
       Roles_Users[indexRole].roleName = role;
     }
-
-    console.log(Roles_Users);
   };
 
   dissociateUserToRole = async (userId: number) => {
