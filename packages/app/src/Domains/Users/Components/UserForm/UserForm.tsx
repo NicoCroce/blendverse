@@ -12,11 +12,7 @@ import { TUser } from '../../User.entity';
 import { useGetRoleByUser, useGetRoles } from '@app/Domains/Auth';
 import { formSchemaDefinition } from './userForm.schema';
 import { faUnlink } from '@fortawesome/free-solid-svg-icons';
-import {
-  SelectBase,
-  SelectStreet,
-} from '@app/Aplication/Components/Molecules/Selects';
-import { SelectOther } from '@app/Aplication/Components/Molecules/Selects/Other';
+import { SelectBase } from '@app/Aplication/Components/Molecules/Selects';
 
 interface UserFormProps {
   editData?: TUser | null;
@@ -46,7 +42,6 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
       role: '',
       password: '',
       rePassword: '',
-      street: '',
     },
   });
 
@@ -91,10 +86,6 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
         >
           <Input />
         </InputField>
-
-        <SelectStreet form={form} name="street" />
-
-        <SelectOther form={form} name="street" />
 
         <InputField control={form.control} name="mail" label="Email de Usuario">
           <Input type="email" />
