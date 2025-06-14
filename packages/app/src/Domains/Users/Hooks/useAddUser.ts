@@ -27,6 +27,7 @@ export const useAddUser = () => {
               companyName: undefined,
               userImage: undefined,
               ownerId: 0,
+              rol: undefined,
             },
           ],
         };
