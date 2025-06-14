@@ -5,7 +5,7 @@ import express, { Request, Express, Response } from 'express';
 import { initMiddlewares } from './Infrastructure/Middlewares';
 import { InstanceMainRouter } from './Infrastructure/Routes/Router';
 import { registerDI } from './Infrastructure/di/register';
-import { connect, relateModels } from './Infrastructure';
+import { connect, relateModels } from './Infrastructure/Database';
 
 const app: Express = express();
 const port = process.env.PORT || 5500;
