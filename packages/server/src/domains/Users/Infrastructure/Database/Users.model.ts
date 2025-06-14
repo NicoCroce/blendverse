@@ -1,6 +1,6 @@
+import { sequelize } from '@server/Infrastructure/Database';
 import { CompaniesModel } from '@server/domains/Companies/Infrastructure';
 import { RolesModel } from '@server/domains/Permissions';
-import { sequelize } from '@server/Infrastructure';
 import {
   DataTypes,
   InferAttributes,

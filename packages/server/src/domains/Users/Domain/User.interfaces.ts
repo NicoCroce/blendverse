@@ -46,6 +46,7 @@ export interface IUser {
   ownerId?: number;
   companyLogo?: string;
   companyName?: string;
+  rol?: string;
 }
 
 export interface IChangePassword extends IRequestContext {

@@ -3,14 +3,12 @@ import { UserRoutes } from '@server/domains/Users';
 import { router, trpcExpress, createContext } from '../trpc';
 import { AuthRoutes } from '@server/domains/Auth';
 import { PermissionsRoutes } from '@server/domains/Permissions';
-import { StreetRoutes } from '@server/domains/Streets';
 
 const MainRouter = () => {
   const AllRouters = {
     ...UserRoutes(),
     ...AuthRoutes(),
     ...PermissionsRoutes(),
-    ...StreetRoutes(),
   };
   return router(AllRouters);
 };

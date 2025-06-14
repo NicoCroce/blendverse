@@ -1,4 +1,4 @@
-import { sequelize } from '@server/Infrastructure';
+import { sequelize } from '@server/Infrastructure/Database';
 import {
   CreationOptional,
   DataTypes,

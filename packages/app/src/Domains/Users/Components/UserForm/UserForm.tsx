@@ -5,36 +5,27 @@ import { z } from 'zod';
 import { Form } from '@app/Aplication/Components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@app/Aplication/Components/ui/input';
-import { Button, Container, InputField } from '@app/Aplication/Components';
-import { USERS_ROUTE } from '../../Users.routes';
-import { useEffect, useMemo } from 'react';
-import { TUser } from '../../User.entity';
-import { useGetRoleByUser, useGetRoles } from '@app/Domains/Auth';
-import { formSchemaDefinition } from './userForm.schema';
-import { faUnlink } from '@fortawesome/free-solid-svg-icons';
 import {
-  SelectBase,
-  SelectStreet,
-} from '@app/Aplication/Components/Molecules/Selects';
-import { SelectOther } from '@app/Aplication/Components/Molecules/Selects/Other';
+  Button,
+  Container,
+  InputField,
+  SelectRoles,
+} from '@app/Aplication/Components';
+import { USERS_ROUTE } from '../../Users.routes';
+import { useEffect } from 'react';
+import { TUser } from '../../User.entity';
+import { useGetRoleByUser } from '@app/Domains/Auth';
+import { formSchemaDefinition } from './userForm.schema';
 
 interface UserFormProps {
   editData?: TUser | null;
 }
 
 export const UserForm = ({ editData = null }: UserFormProps) => {
-  const { data: rolesOptions, isLoading } = useGetRoles();
   const { mutate } = useAddUser();
   const { mutate: mutateUpdate } = useUpdateUser();
   const navigate = useNavigate();
   const { data: userRole } = useGetRoleByUser(editData?.id);
-
-  const options = useMemo(() => {
-    return rolesOptions?.map((rol) => ({
-      value: rol.name,
-      label: `${rol.name}`,
-    }));
-  }, [rolesOptions]);
 
   const formSchema = formSchemaDefinition(editData);
 
@@ -46,7 +37,6 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
       role: '',
       password: '',
       rePassword: '',
-      street: '',
     },
   });
 
@@ -92,23 +82,11 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
           <Input />
         </InputField>
 
-        <SelectStreet form={form} name="street" />
-
-        <SelectOther form={form} name="street" />
-
         <InputField control={form.control} name="mail" label="Email de Usuario">
           <Input type="email" />
         </InputField>
 
-        <SelectBase
-          form={form}
-          inputLabel="Rol de Usuario"
-          name="role"
-          options={options}
-          enableClean
-          isLoading={isLoading}
-          handleCleanIcon={faUnlink}
-        />
+        <SelectRoles form={form} name="role" />
 
         {!editData && (
           <>

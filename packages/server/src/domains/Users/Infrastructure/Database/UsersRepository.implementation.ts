@@ -14,6 +14,7 @@ import {
 
 import { UserModel } from './Users.model';
 import { CompaniesModel } from '@server/domains/Companies/Infrastructure';
+import { RolesModel } from '@server/domains/Permissions';
 
 export class UsersRepositoryImplementation implements UserRepository {
   async getUsers({
@@ -26,7 +27,6 @@ export class UsersRepositoryImplementation implements UserRepository {
     const { count, rows } = await UserModel.findAndCountAll({
       limit,
       offset,
-      order: [['createdAt', 'DESC']],
       attributes: ['id', 'email', 'nombre'],
       where: filters?.name
         ? {
@@ -35,13 +35,23 @@ export class UsersRepositoryImplementation implements UserRepository {
             },
           }
         : {},
+      include: [
+        {
+          model: RolesModel,
+        },
+      ],
     });
 
     const totalPages = Math.ceil(count / limit);
 
     return {
-      data: rows.map(({ id, email, nombre }) =>
-        User.create({ id, mail: email, name: nombre }),
+      data: rows.map(({ id, email, nombre, RolesModels }) =>
+        User.create({
+          id,
+          mail: email,
+          name: nombre,
+          rol: RolesModels[0]?.id.toString() ?? '',
+        }),
       ),
       meta: {
         totalItems: count,
