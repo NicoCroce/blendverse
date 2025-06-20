@@ -1,3 +1,3 @@
 pnpm lint-staged
-(cd packages/app && pnpm tsc)
 (cd packages/server && pnpm tsc)
+(cd packages/app && pnpm tsc)
