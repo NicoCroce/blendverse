@@ -11,7 +11,7 @@ import { useEffect, useMemo } from 'react';
 import { TUser } from '../../User.entity';
 import { useGetRoleByUser, useGetRoles } from '@app/Domains/Auth';
 import { formSchemaDefinition } from './userForm.schema';
-import { faUnlink } from '@fortawesome/free-solid-svg-icons';
+
 import {
   SelectBase,
   SelectStreet,
@@ -107,7 +107,6 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
           options={options}
           enableClean
           isLoading={isLoading}
-          handleCleanIcon={faUnlink}
         />
 
         {!editData && (

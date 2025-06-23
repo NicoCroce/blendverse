@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { SelectField } from '@app/Aplication/Components/Molecules/FormFields/SelectField';
 import { Combobox, ComboboxBigSearch } from '../../Organisms';
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
-import { FontAwesomeIconProps } from '@fortawesome/react-fontawesome';
 
 interface SelectBaseProps<T extends FieldValues> {
   name: Path<T>;
@@ -16,7 +15,7 @@ interface SelectBaseProps<T extends FieldValues> {
   onChangeFilter?: (value: string) => void;
   isLoading?: boolean;
   isBig?: boolean;
-  handleCleanIcon?: FontAwesomeIconProps['icon'];
+  label?: string;
 }
 
 export const SelectBase = <T extends FieldValues>({
@@ -28,7 +27,7 @@ export const SelectBase = <T extends FieldValues>({
   onChangeFilter,
   isLoading = false,
   isBig = false,
-  handleCleanIcon,
+  label,
 }: SelectBaseProps<T>) => {
   const memoOptions = useMemo(() => {
     return options?.map(({ value, label }) => ({
@@ -52,17 +51,22 @@ export const SelectBase = <T extends FieldValues>({
       combobox={
         isBig && onChangeFilter ? (
           <ComboboxBigSearch
+            value={form.getValues(name) as string}
             options={memoOptions}
             onChangeValue={handleChange}
             onChangeFilter={onChangeFilter}
             isLoading={isLoading}
+            label={label || ''}
           />
         ) : (
-          <Combobox options={memoOptions} onChangeValue={handleChange} />
+          <Combobox
+            value={form.getValues(name) as string}
+            options={memoOptions}
+            onChangeValue={handleChange}
+          />
         )
       }
       handleClean={enableClean ? handleClean : undefined}
-      handleCleanIcon={handleCleanIcon}
     />
   );
 };
