@@ -45,6 +45,10 @@ export const ComboboxBigSearch = ({
   const [valueSearch, setValueSearch] = useState(label);
 
   useEffect(() => {
+    setValueSearch(label);
+  }, [label]);
+
+  useEffect(() => {
     onChangeFilter(valueSearch);
   }, [onChangeFilter, valueSearch]);
 
