@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Button } from '@/Aplication/Components/ui/button';
 import {
   Command,
@@ -15,7 +16,6 @@ import {
 import { cn } from '@app/Aplication/lib/utils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import { useState } from 'react';
 import { Spinner } from '../../Molecules';
 import { Container } from '../../Layout';
 
@@ -30,6 +30,7 @@ export interface ComboboxBigSearchProps {
   onChangeValue: (value: string) => void;
   onChangeFilter: (value: string) => void;
   isLoading?: boolean;
+  label: string;
 }
 
 export const ComboboxBigSearch = ({
@@ -38,24 +39,32 @@ export const ComboboxBigSearch = ({
   options = [],
   onChangeFilter,
   isLoading = false,
+  label,
 }: ComboboxBigSearchProps) => {
   const [open, setOpen] = useState(false);
-  const [valueSearch, setValuSearch] = useState('');
+  const [valueSearch, setValueSearch] = useState(label);
+
+  useEffect(() => {
+    onChangeFilter(valueSearch);
+  }, [onChangeFilter, valueSearch]);
+
+  useEffect(() => {
+    if (!value) return;
+    if (!options.length) return;
+    const findSelected = options.find(
+      (option) => option.value === String(value),
+    );
+    if (!findSelected) onChangeValue('');
+  }, [options, value, onChangeValue]);
+
+  const setInputSearch = (valueToSearch: string) =>
+    setValueSearch(valueToSearch);
 
   const handleOpenChange = (state: boolean) => {
     if (!value && !state) {
       onChangeValue('');
     }
     setOpen(state);
-  };
-
-  const handleInputSearch = (valueInputSearch: string) => {
-    setValuSearch(valueInputSearch);
-    onChangeFilter(valueInputSearch);
-    const findSelected = options.find(
-      (option) => option.value === value,
-    )?.label;
-    if (!findSelected) onChangeValue('');
   };
 
   return (
@@ -71,8 +80,7 @@ export const ComboboxBigSearch = ({
           )}
         >
           {value && options && options.length > 0
-            ? options.find((option) => option.value === value)?.label ||
-              'Selecciona una opción'
+            ? options.find((option) => option.value === String(value))?.label
             : 'Selecciona una opción'}
           <FontAwesomeIcon
             icon={faChevronDown}
@@ -83,7 +91,7 @@ export const ComboboxBigSearch = ({
       <PopoverContent className="w-full p-0">
         <Command>
           <CommandInput
-            onValueChange={handleInputSearch}
+            onValueChange={setInputSearch}
             value={valueSearch}
             placeholder="Buscar..."
           />
@@ -113,7 +121,9 @@ export const ComboboxBigSearch = ({
                     icon={faCheck}
                     className={cn(
                       'mr-2 h-4 w-4',
-                      value === option.value ? 'opacity-100' : 'opacity-0',
+                      String(value) === option.value
+                        ? 'opacity-100'
+                        : 'opacity-0',
                     )}
                   />
                   {option.label}
