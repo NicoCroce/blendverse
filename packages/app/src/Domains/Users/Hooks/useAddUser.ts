@@ -8,7 +8,7 @@ export const useAddUser = () => {
 
   return UsersService.create.useMutation({
     onError: (_err, _variables) => {
-      toast.error('Usuario no agregado');
+      toast.error(`Usuario no agregado, ${_err.message.toLowerCase()}.`);
     },
     onSuccess: () => {
       toast.success('Usuario agregado');

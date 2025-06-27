@@ -22,7 +22,7 @@ interface UserFormProps {
 }
 
 export const UserForm = ({ editData = null }: UserFormProps) => {
-  const { mutate } = useAddUser();
+  const { mutate, isSuccess } = useAddUser();
   const { mutate: mutateUpdate } = useUpdateUser();
   const navigate = useNavigate();
   const { data: userRole } = useGetRoleByUser(editData?.id);
@@ -39,6 +39,12 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
       rePassword: '',
     },
   });
+
+  useEffect(() => {
+    if (isSuccess) {
+      navigate(USERS_ROUTE);
+    }
+  }, [isSuccess, navigate]);
 
   useEffect(() => {
     if (!editData) return;
@@ -60,7 +66,6 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
     } else {
       mutate(values);
     }
-    navigate(USERS_ROUTE);
   };
 
   const handleCancel = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
