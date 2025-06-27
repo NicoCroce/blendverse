@@ -43,6 +43,6 @@ CompaniesModel.init(
     sequelize,
     paranoid: true,
     modelName: 'CompaniesModel',
-    tableName: 'Sis_propietarios',
+    tableName: 'sis_propietarios',
   },
 );
