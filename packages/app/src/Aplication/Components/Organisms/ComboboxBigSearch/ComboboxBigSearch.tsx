@@ -84,7 +84,9 @@ export const ComboboxBigSearch = ({
           )}
         >
           {value && options && options.length > 0
-            ? options.find((option) => option.value === String(value))?.label
+            ? options.find(
+                (option) => option.value.toString() === String(value),
+              )?.label
             : 'Selecciona una opción'}
           <FontAwesomeIcon
             icon={faChevronDown}

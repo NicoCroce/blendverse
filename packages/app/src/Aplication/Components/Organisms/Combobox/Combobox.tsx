@@ -49,7 +49,9 @@ export const Combobox = ({
           )}
         >
           {value
-            ? options.find((option) => option.value === value)?.label
+            ? options.find(
+                (option) => option.value.toString() === value.toString(),
+              )?.label
             : 'Selecciona una opción'}
           <FontAwesomeIcon
             icon={faChevronDown}
