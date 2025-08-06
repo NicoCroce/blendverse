@@ -56,7 +56,7 @@ export const Button = ({
       {...props}
       onClick={onClick}
       variant={_variant ? _variant : variant}
-      className={`flex gap-2 p-4 h-0 ${className}`}
+      className={`flex gap-2 p-[14px] h-0 ${className}`}
       disabled={disabled || isLoading}
       type={type}
     >
