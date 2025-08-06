@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "build": "rm tsconfig.tsbuildinfo && npx tsc && tsc-alias",
-    "dev": "node --watch -r ts-node/register -r tsconfig-paths/register src/index.ts",
+    "dev": "tsx watch src/index.ts",
     "ts": "tsc -v"
   },
   "keywords": [],
@@ -39,6 +39,7 @@
     "@types/node": "^20.15.0",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.10",
-    "tsconfig-paths": "^4.2.0"
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.20.3"
   }
 }

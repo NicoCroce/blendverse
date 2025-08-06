@@ -5,9 +5,9 @@ export const AuthRoutes = () => {
 
   return {
     auth: {
-      login: login,
-      logout,
-      restorePassword,
+      login: login(),
+      logout: logout(),
+      restorePassword: restorePassword(),
     },
   };
 };

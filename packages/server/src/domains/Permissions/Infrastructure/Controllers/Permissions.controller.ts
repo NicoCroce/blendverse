@@ -6,31 +6,35 @@ import z from 'zod';
 export class PermissionsController {
   constructor(private readonly permissionsService: PermissionsService) {}
 
-  getPermissions = protectedProcedure.query(
-    executeService(
-      this.permissionsService.getPermissions.bind(this.permissionsService),
-    ),
-  );
-
-  getRoles = protectedProcedure.query(
-    executeService(
-      this.permissionsService.getRoles.bind(this.permissionsService),
-    ),
-  );
-
-  getPermissionByUser = protectedProcedure.query(
-    executeService(
-      this.permissionsService.getPermissionsByUser.bind(
-        this.permissionsService,
-      ),
-    ),
-  );
-
-  getRoleByUser = protectedProcedure
-    .input(z.number())
-    .query(
+  getPermissions = () =>
+    protectedProcedure.query(
       executeService(
-        this.permissionsService.getRoleByUser.bind(this.permissionsService),
+        this.permissionsService.getPermissions.bind(this.permissionsService),
       ),
     );
+
+  getRoles = () =>
+    protectedProcedure.query(
+      executeService(
+        this.permissionsService.getRoles.bind(this.permissionsService),
+      ),
+    );
+
+  getPermissionByUser = () =>
+    protectedProcedure.query(
+      executeService(
+        this.permissionsService.getPermissionsByUser.bind(
+          this.permissionsService,
+        ),
+      ),
+    );
+
+  getRoleByUser = () =>
+    protectedProcedure
+      .input(z.number())
+      .query(
+        executeService(
+          this.permissionsService.getRoleByUser.bind(this.permissionsService),
+        ),
+      );
 }
