@@ -6,10 +6,10 @@ export const PermissionsRoutes = () => {
 
   return {
     permissions: {
-      getPermissions,
-      getRoles,
-      getPermissionByUser,
-      getRoleByUser,
+      getPermissions: getPermissions(),
+      getRoles: getRoles(),
+      getPermissionByUser: getPermissionByUser(),
+      getRoleByUser: getRoleByUser(),
     },
   };
 };

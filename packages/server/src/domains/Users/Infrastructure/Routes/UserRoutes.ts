@@ -12,12 +12,12 @@ export const UserRoutes = () => {
 
   return {
     users: {
-      getAll: getUsers,
-      create: registerUser,
-      get: getUser,
-      delete: deleteUser,
-      update: updateUser,
-      changePassword,
+      getAll: getUsers(),
+      create: registerUser(),
+      get: getUser(),
+      delete: deleteUser(),
+      update: updateUser(),
+      changePassword: changePassword(),
     },
   };
 };

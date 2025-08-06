@@ -6,11 +6,11 @@ export const StreetRoutes = () => {
 
   return {
     streets: {
-      getAll: getAllStreets,
-      create: createStreet,
-      get: getStreet,
-      delete: deleteStreet,
-      update: updateStreet,
+      getAll: getAllStreets(),
+      create: createStreet(),
+      get: getStreet(),
+      delete: deleteStreet(),
+      update: updateStreet(),
     },
   };
 };
