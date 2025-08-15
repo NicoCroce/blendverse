@@ -11,7 +11,7 @@ export const initSequelize = () => {
     password: process.env.DB_PASSWORD || '',
     host: process.env.DB_HOST || '127.0.0.1',
     port: parseInt(process.env.DB_PORT || '3306'),
-    logging: true,
+    logging: console.log,
   });
 
   return sequelizeInstance;
