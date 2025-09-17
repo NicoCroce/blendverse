@@ -15,14 +15,15 @@ import {
 import { UserModel } from './Users.model';
 import { CompaniesModel } from '@server/domains/Companies/Infrastructure';
 import { RolesModel } from '@server/domains/Permissions';
+import { PaginationImplementation } from '@server/utils/pagination';
 
 export class UsersRepositoryImplementation implements UserRepository {
   async getUsers({
     filters,
   }: IGetUsersRepository): Promise<IGetUsersRepositoryResponse> {
-    const page = Number(filters?.page) || 1;
-    const limit = Number(filters?.limit) || 10;
-    const offset = (page - 1) * limit;
+    // Usar la utilidad de paginación.
+    const { limit, offset, createPaginatedResponse } =
+      PaginationImplementation(filters);
 
     const { count, rows } = await UserModel.findAndCountAll({
       limit,
@@ -42,23 +43,18 @@ export class UsersRepositoryImplementation implements UserRepository {
       ],
     });
 
-    const totalPages = Math.ceil(count / limit);
+    // Mapear los datos
+    const mappedUsers = rows.map(({ id, email, nombre, RolesModels }) =>
+      User.create({
+        id,
+        mail: email,
+        name: nombre,
+        rol: RolesModels[0]?.id.toString() ?? '',
+      }),
+    );
 
-    return {
-      data: rows.map(({ id, email, nombre, RolesModels }) =>
-        User.create({
-          id,
-          mail: email,
-          name: nombre,
-          rol: RolesModels[0]?.id.toString() ?? '',
-        }),
-      ),
-      meta: {
-        totalItems: count,
-        totalPages,
-        currentPage: page,
-      },
-    };
+    // Crear respuesta paginada usando la utilidad
+    return createPaginatedResponse(mappedUsers, count);
   }
 
   async registerUser({ user }: IRegisterUserRepository): Promise<User> {
