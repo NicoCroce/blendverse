@@ -8,36 +8,28 @@ export const trpcClientApi = TrpcApi.createClient({
   links: [
     httpLink({
       url: URL_SERVER + '/api',
-      fetch: async (
-        url: URL | RequestInfo,
-        options?: RequestInit,
-      ): Promise<Response> => {
-        try {
-          const response = await fetch(url, {
-            ...options,
-            credentials: 'include', // Incluye cookies
-          });
+      fetch: async (url, options) => {
+        const response = await fetch(url, {
+          ...options,
+          credentials: 'include', // Incluye cookies
+        } as RequestInit);
 
-          if (!response.ok) {
-            const responseJson = await response.clone().json();
+        if (!response.ok) {
+          const responseJson = await response.clone().json();
 
-            if (
-              response.status === 401 &&
-              window.location.pathname !== '/' &&
-              responseJson.error.message === 'Token not provided'
-            ) {
-              // Redirige a la página de login si el error es 401
-              window.location.href = '/';
-              // Asegura de que siempre devuelvas una respuesta
-              return new Response(null, { status: 401 });
-            }
+          if (
+            response.status === 401 &&
+            window.location.pathname !== '/' &&
+            responseJson.error.message === 'Token not provided'
+          ) {
+            // Redirige a la página de login si el error es 401
+            window.location.href = '/';
+            // Asegura de que siempre devuelvas una respuesta
+            return new Response(null, { status: 401 });
           }
-
-          return response;
-        } catch (error) {
-          console.error('Fetch error:', error);
-          throw error; // Vuelve a lanzar el error para que tRPC pueda manejarlo
         }
+
+        return response;
       },
     }),
   ],
