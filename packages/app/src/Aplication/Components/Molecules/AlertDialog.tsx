@@ -12,11 +12,13 @@ import {
 interface AlertDialogCancelConfirmProps {
   children: React.ReactNode;
   onConfirm: () => void;
+  message?: string;
 }
 
 export const AlertDialogCancelConfirm = ({
   children,
   onConfirm,
+  message,
 }: AlertDialogCancelConfirmProps) => {
   return (
     <AlertDialog>
@@ -25,7 +27,7 @@ export const AlertDialogCancelConfirm = ({
         <AlertDialogHeader>
           <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
           <AlertDialogDescription>
-            Esta acción no se puede deshacer.
+            {message && message}. Esta acción no se puede deshacer.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
