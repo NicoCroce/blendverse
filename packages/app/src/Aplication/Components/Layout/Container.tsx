@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 
-type AlignValues = 'start' | 'end' | 'center' | 'strech';
+type AlignValues = 'start' | 'end' | 'center' | 'strech' | 'baseline';
 
 const SPACE = {
   small: 'gap-2',
