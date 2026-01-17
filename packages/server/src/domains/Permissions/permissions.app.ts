@@ -1,15 +1,16 @@
 import { container } from '@server/utils/Container';
 import { asClass } from 'awilix';
 import { PermissionsController } from './Infrastructure/Controllers';
+
+import { PermissionsRepositoryImplementation } from './Infrastructure';
 import {
   AssociateUserToRole,
   GetPermissions,
   GetPermissionsByUser,
   GetRoleByUser,
   GetRoles,
-} from './Domain';
-import { PermissionsService } from './Application';
-import { PermissionsRepositoryImplementation } from './Infrastructure';
+  PermissionsService,
+} from './Application';
 
 export const permissionsApp = {
   permissionsRepository: asClass(PermissionsRepositoryImplementation),
