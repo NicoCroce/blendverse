@@ -8,9 +8,8 @@ import {
   IGetPermissionsByUser,
   IGetRoleByUser,
   IGetRoles,
-  Permissions,
-  Roles,
-} from '../Domain';
+} from './UseCases';
+import { Permissions, Roles } from '../Domain';
 
 export class PermissionsService {
   constructor(

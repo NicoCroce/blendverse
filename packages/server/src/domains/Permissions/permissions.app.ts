@@ -8,7 +8,7 @@ import {
   GetRoleByUser,
   GetRoles,
 } from './Domain';
-import { PermissionsService } from './Aplication';
+import { PermissionsService } from './Application';
 import { PermissionsRepositoryImplementation } from './Infrastructure';
 
 export const permissionsApp = {

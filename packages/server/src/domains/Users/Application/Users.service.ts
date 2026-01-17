@@ -3,11 +3,10 @@ import {
   GetUsers,
   GetUser,
   RegisterUser,
-  User,
   DeleteUser,
   UpdateUser,
   ChangePassword,
-} from '../Domain';
+} from './';
 import {
   IChangePassword,
   IDeleteUser,
@@ -17,6 +16,7 @@ import {
   IUpdateUser,
 } from '../Domain/User.interfaces';
 import { IPaginationResponse } from '@server/Application';
+import { User } from '../Domain';
 
 export class UsersService {
   constructor(

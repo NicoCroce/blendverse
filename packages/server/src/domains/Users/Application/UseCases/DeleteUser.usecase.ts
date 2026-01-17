@@ -1,6 +1,6 @@
 import { AppError, IUseCase } from '@server/Application';
-import { UserRepository } from '../User.repository';
-import { IDeleteUser } from '../User.interfaces';
+import { UserRepository } from '../../Domain/User.repository';
+import { IDeleteUser } from '../../Domain/User.interfaces';
 
 export class DeleteUser implements IUseCase<number> {
   constructor(private readonly usersRepository: UserRepository) {}

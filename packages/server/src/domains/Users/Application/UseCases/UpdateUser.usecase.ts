@@ -1,7 +1,7 @@
 import { AppError, executeUseCase, IUseCase } from '@server/Application';
-import { User } from '../User.entity';
-import { UserRepository } from '../User.repository';
-import { IUpdateUser } from '../User.interfaces';
+import { User } from '../../Domain/User.entity';
+import { UserRepository } from '../../Domain/User.repository';
+import { IUpdateUser } from '../../Domain/User.interfaces';
 import { AssociateUserToRole } from '@server/domains/Permissions';
 
 export class UpdateUser implements IUseCase<number> {

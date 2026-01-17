@@ -1,7 +1,7 @@
 import { IUseCase } from '@server/Application/Interfaces/IUseCase';
-import { User } from '../User.entity';
-import { UserRepository } from '../User.repository';
-import { IGetUsers } from '../User.interfaces';
+import { User } from '../../Domain/User.entity';
+import { UserRepository } from '../../Domain/User.repository';
+import { IGetUsers } from '../../Domain/User.interfaces';
 import { IPaginationResponse } from '@server/Application';
 
 export class GetUsers implements IUseCase<IPaginationResponse<User[]>> {

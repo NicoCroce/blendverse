@@ -1,8 +1,8 @@
 import { AppError, IUseCase } from '@server/Application';
 import { getCryptedPassword } from '@server/utils/bcrypt';
-import { UserRepository } from '../User.repository';
-import { User } from '../User.entity';
-import { IRegisterUser } from '../User.interfaces';
+import { UserRepository } from '../../Domain/User.repository';
+import { User } from '../../Domain/User.entity';
+import { IRegisterUser } from '../../Domain/User.interfaces';
 
 export class RegisterUser implements IUseCase<User> {
   constructor(private readonly usersRepository: UserRepository) {}

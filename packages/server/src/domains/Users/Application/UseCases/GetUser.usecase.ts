@@ -1,7 +1,7 @@
 import { AppError, IUseCase } from '@server/Application';
-import { User } from '../User.entity';
-import { UserRepository } from '../User.repository';
-import { IGetUser } from '../User.interfaces';
+import { User } from '../../Domain/User.entity';
+import { UserRepository } from '../../Domain/User.repository';
+import { IGetUser } from '../../Domain/User.interfaces';
 
 export class GetUser implements IUseCase<User> {
   constructor(private readonly usersRepository: UserRepository) {}
