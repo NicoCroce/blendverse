@@ -6,6 +6,11 @@ tools:
     'edit/createDirectory',
     'edit/createFile',
     'edit/editFiles',
+    'read/readFile',
+    'read/listDirectory',
+    'search/fileSearch',
+    'terminal/runCommand',
+    'diagnostics/getErrors',
     'skills/back-ddd-generator',
     'skills/usecases-migration',
   ]
