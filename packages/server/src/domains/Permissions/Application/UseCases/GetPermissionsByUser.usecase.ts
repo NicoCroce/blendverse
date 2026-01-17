@@ -1,6 +1,5 @@
 import { IUseCase } from '@server/Application';
-import { PermissionsRepository } from '../Permissions.repository';
-import { IGetPermissionsByUser } from '../Permissions.interfaces';
+import { IGetPermissionsByUser, PermissionsRepository } from '../../Domain';
 
 export class GetPermissionsByUser implements IUseCase<string[]> {
   constructor(private permissionsRepository: PermissionsRepository) {}
