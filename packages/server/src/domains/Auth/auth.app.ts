@@ -1,8 +1,11 @@
 import { AuthService } from './Application';
 import { AuthController } from './Infrastructure';
 import { asClass } from 'awilix';
-import { Login } from './Domain';
-import { ValidateUserPassword, RestorePassword } from './Domain/UseCases';
+import {
+  Login,
+  ValidateUserPassword,
+  RestorePassword,
+} from './Application/UseCases';
 import { AuthRepositoryImplementation } from './Infrastructure/Repository/AuthRepository.implementation';
 import { container } from '@server/utils/Container';
 

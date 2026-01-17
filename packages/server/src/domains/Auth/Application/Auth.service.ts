@@ -1,11 +1,11 @@
 import { executeUseCase } from '@server/Application';
-import { Login } from '../Domain';
+import { Login } from './UseCases/Login.usecase';
 import {
   IExecuteResponse,
   Ilogin,
   IRestorePassword,
 } from '../Domain/auth.interfaces';
-import { RestorePassword } from '../Domain/UseCases/RestorePassword.usecase';
+import { RestorePassword } from './UseCases';
 
 export class AuthService {
   constructor(

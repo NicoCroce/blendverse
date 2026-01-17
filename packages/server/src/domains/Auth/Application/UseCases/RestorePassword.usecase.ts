@@ -1,6 +1,6 @@
 import { AppError, IUseCase } from '@server/Application';
-import { IRestorePassword } from '../auth.interfaces';
-import { AuthRepository } from '../Auth.repository';
+import { IRestorePassword } from '../../Domain/auth.interfaces';
+import { AuthRepository } from '../../Domain/Auth.repository';
 
 export class RestorePassword implements IUseCase<void> {
   constructor(private readonly authRepository: AuthRepository) {}

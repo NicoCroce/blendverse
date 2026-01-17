@@ -1,6 +1,6 @@
 import { AppError, IUseCase } from '@server/Application';
 import { User, UserRepository } from '@server/domains/Users';
-import { IValidateUserPassword } from '../auth.interfaces';
+import { IValidateUserPassword } from '../../Domain/auth.interfaces';
 import { comparePassword } from '@server/utils/bcrypt';
 
 export class ValidateUserPassword implements IUseCase<User> {
