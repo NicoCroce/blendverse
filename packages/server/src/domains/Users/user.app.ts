@@ -11,7 +11,7 @@ import {
   DeleteUser,
   UpdateUser,
   ChangePassword,
-} from './Domain';
+} from './Application';
 import { container } from '@server/utils/Container';
 
 export const userApp = {
