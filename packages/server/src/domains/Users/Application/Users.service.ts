@@ -14,9 +14,9 @@ import {
   IGetUsers,
   IRegisterUser,
   IUpdateUser,
-} from '../Domain/User.interfaces';
+  User,
+} from '../Domain';
 import { IPaginationResponse } from '@server/Application';
-import { User } from '../Domain';
 
 export class UsersService {
   constructor(

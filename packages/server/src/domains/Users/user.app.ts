@@ -1,10 +1,6 @@
 import { asClass } from 'awilix';
-import { UsersService } from './Application';
 import {
-  UsersController,
-  UsersRepositoryImplementation,
-} from './Infrastructure';
-import {
+  UsersService,
   GetUsers,
   GetUser,
   RegisterUser,
@@ -12,6 +8,10 @@ import {
   UpdateUser,
   ChangePassword,
 } from './Application';
+import {
+  UsersController,
+  UsersRepositoryImplementation,
+} from './Infrastructure';
 import { container } from '@server/utils/Container';
 
 export const userApp = {

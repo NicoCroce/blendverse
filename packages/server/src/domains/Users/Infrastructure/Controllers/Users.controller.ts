@@ -3,6 +3,7 @@ import { UsersService } from '../../Application';
 import { executeService } from '@server/Application';
 import { loggerContextInput } from '@server/utils/pino';
 import z from 'zod';
+import { paginationZodParams } from '@server/utils/pagination';
 
 export class UsersController {
   constructor(private usersService: UsersService) {}
@@ -13,8 +14,7 @@ export class UsersController {
         z
           .object({
             name: z.string().optional(),
-            page: z.string().optional(),
-            limit: z.string().optional(),
+            ...paginationZodParams,
           })
           .optional(),
       )
