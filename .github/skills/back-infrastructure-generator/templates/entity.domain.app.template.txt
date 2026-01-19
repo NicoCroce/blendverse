@@ -1,12 +1,29 @@
-import { {{EntityName}}RepositoryImplementation } from './Infrastructure/Database/{{EntityName}}sRepository.implementation';
-import { {{EntityName}}Service } from './Application/{{EntityName}}s.service';
-import { {{EntityName}}Controller } from './Infrastructure/Controllers/{{EntityName}}s.controller';
-import { {{EntityName}}Routes } from './Infrastructure/Routes/{{EntityName}}Routes';
+import { asClass } from 'awilix';
+import {
+  {{EntityName}}sService,
+  Get{{EntityName}}s,
+  Get{{EntityName}},
+  Register{{EntityName}},
+  Delete{{EntityName}},
+  Update{{EntityName}},
+} from './Application';
+import {
+  {{EntityName}}sController,
+  {{EntityName}}sRepositoryImplementation,
+} from './Infrastructure';
+import { container } from '@server/utils/Container';
 
-// Inicialización de la capa de dominio
-const {{entityName}}Repository = new {{EntityName}}RepositoryImplementation();
-const {{entityName}}Service = new {{EntityName}}Service({{entityName}}Repository);
-const {{entityName}}Controller = new {{EntityName}}Controller({{entityName}}Service);
-const {{entityName}}Routes = new {{EntityName}}Routes({{entityName}}Controller);
+export const {{entityName}}App = {
+  {{entityName}}sRepository: asClass({{EntityName}}sRepositoryImplementation),
+  {{entityName}}sService: asClass({{EntityName}}sService),
+  {{entityName}}sController: asClass({{EntityName}}sController),
+  _get{{EntityName}}s: asClass(Get{{EntityName}}s),
+  _get{{EntityName}}: asClass(Get{{EntityName}}),
+  _register{{EntityName}}: asClass(Register{{EntityName}}),
+  _delete{{EntityName}}: asClass(Delete{{EntityName}}),
+  _update{{EntityName}}: asClass(Update{{EntityName}}),
+};
 
-export { {{entityName}}Repository, {{entityName}}Service, {{entityName}}Controller, {{entityName}}Routes };
+export const {{entityName}}sController = () =>
+  container.resolve<{{EntityName}}sController>('{{entityName}}sController');
+

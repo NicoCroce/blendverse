@@ -1,66 +1,60 @@
-import { Request, Response } from 'express';
-import { {{EntityName}}Service } from '../../Application/{{EntityName}}s.service';
-import { I{{EntityName}}Create, I{{EntityName}}Update } from '../../Domain/{{EntityName}}.interfaces';
+import { procedure, protectedProcedure } from '@server/Infrastructure/trpc';
+import { {{EntityName}}sService } from '../../Application';
+import { executeService } from '@server/Application';
+import { paginationZodParams } from '@server/utils/pagination';
+import z from 'zod';
 
-export class {{EntityName}}Controller {
-  constructor(private readonly {{entityName}}Service: {{EntityName}}Service) {}
+export class {{EntityName}}sController {
+  constructor(private {{entityName}}sService: {{EntityName}}sService) {}
 
-  async get{{EntityName}}s(req: Request, res: Response): Promise<void> {
-    try {
-      const filters = req.query;
-      const {{entityName}}s = await this.{{entityName}}Service.get{{EntityName}}s(filters);
-      res.status(200).json({{entityName}}s.map({{entityName}} => {{entityName}}.toObject()));
-    } catch (error) {
-      res.status(500).json({ error: (error as Error).message });
-    }
-  }
+  get{{EntityName}}s = () =>
+    protectedProcedure
+      .input(
+        z
+          .object({
+            name: z.string().optional(),
+            ...paginationZodParams,
+          })
+          .optional(),
+      )
+      .query(
+        executeService(this.{{entityName}}sService.get{{EntityName}}s.bind(this.{{entityName}}sService)),
+      );
 
-  async get{{EntityName}}(req: Request, res: Response): Promise<void> {
-    try {
-      const { id } = req.params;
-      const {{entityName}} = await this.{{entityName}}Service.get{{EntityName}}(id);
-      if (!{{entityName}}) {
-        res.status(404).json({ error: '{{EntityName}} not found' });
-        return;
-      }
-      res.status(200).json({{entityName}}.toObject());
-    } catch (error) {
-      res.status(500).json({ error: (error as Error).message });
-    }
-  }
+  get{{EntityName}} = () =>
+    protectedProcedure
+      .input(z.number())
+      .query(executeService(this.{{entityName}}sService.get{{EntityName}}.bind(this.{{entityName}}sService)));
 
-  async register{{EntityName}}(req: Request, res: Response): Promise<void> {
-    try {
-      const data: I{{EntityName}}Create = req.body;
-      const {{entityName}} = await this.{{entityName}}Service.register{{EntityName}}(data);
-      res.status(201).json({{entityName}}.toObject());
-    } catch (error) {
-      res.status(400).json({ error: (error as Error).message });
-    }
-  }
+  register{{EntityName}} = () =>
+    protectedProcedure
+      .input(
+        z.object({
+          name: z.string(),
+          // Add your entity properties here
+        }),
+      )
+      .mutation(
+        executeService(this.{{entityName}}sService.register{{EntityName}}.bind(this.{{entityName}}sService)),
+      );
 
-  async update{{EntityName}}(req: Request, res: Response): Promise<void> {
-    try {
-      const { id } = req.params;
-      const data: I{{EntityName}}Update = { ...req.body, id };
-      const {{entityName}} = await this.{{entityName}}Service.update{{EntityName}}(data);
-      res.status(200).json({{entityName}}.toObject());
-    } catch (error) {
-      res.status(400).json({ error: (error as Error).message });
-    }
-  }
+  update{{EntityName}} = () =>
+    protectedProcedure
+      .input(
+        z.object({
+          id: z.number(),
+          name: z.string(),
+          // Add your update properties here
+        }),
+      )
+      .mutation(
+        executeService(this.{{entityName}}sService.update{{EntityName}}.bind(this.{{entityName}}sService)),
+      );
 
-  async delete{{EntityName}}(req: Request, res: Response): Promise<void> {
-    try {
-      const { id } = req.params;
-      const result = await this.{{entityName}}Service.delete{{EntityName}}(id);
-      if (!result) {
-        res.status(404).json({ error: '{{EntityName}} not found' });
-        return;
-      }
-      res.status(200).json({ message: '{{EntityName}} deleted successfully' });
-    } catch (error) {
-      res.status(500).json({ error: (error as Error).message });
-    }
-  }
+  delete{{EntityName}} = () =>
+    protectedProcedure
+      .input(z.number())
+      .mutation(
+        executeService(this.{{entityName}}sService.delete{{EntityName}}.bind(this.{{entityName}}sService)),
+      );
 }

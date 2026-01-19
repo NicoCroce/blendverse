@@ -67,9 +67,9 @@ Debes seguir este orden estrictamente:
 
 6. **Actualizar archivos \*.usecase.ts en Application/UseCases:**
 
-   - Cambiar todos los imports de entidades desde `../` a `../../Domain/`
-   - Cambiar todos los imports de interfaces desde `../` a `../../Domain/`
-   - Cambiar todos los imports de repositorios desde `../` a `../../Domain/`
+   - Cambiar todos los imports de entidades desde `../../Domain/`
+   - Cambiar todos los imports de interfaces desde `../../Domain/`
+   - Cambiar todos los imports de repositorios desde `../../Domain/`
    - Mantener imports de `@server/Application` sin cambios
 
 7. **Actualizar [domain].app.ts:**

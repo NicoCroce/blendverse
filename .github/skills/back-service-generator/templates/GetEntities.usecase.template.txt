@@ -1,12 +1,16 @@
-import { {{EntityName}} } from '../{{EntityName}}.entity';
-import { I{{EntityName}}Repository } from '../{{EntityName}}.repository';
-import { I{{EntityName}}Filter } from '../{{EntityName}}.interfaces';
+import { {{EntityName}}, {{EntityName}}Repository, IGet{{EntityName}}s } from '../../Domain';
+import { IPaginationResponse, IUseCase } from '@server/Application';
 
-export class Get{{EntityName}}sUseCase {
-  constructor(private readonly {{entityName}}Repository: I{{EntityName}}Repository) {}
+export class Get{{EntityName}}s implements IUseCase<IPaginationResponse<{{EntityName}}[]>> {
+  constructor(private {{entityName}}sRepository: {{EntityName}}Repository) {}
 
-  async execute(filters?: I{{EntityName}}Filter): Promise<{{EntityName}}[]> {
-    const {{entityName}}s = await this.{{entityName}}Repository.get{{EntityName}}s(filters);
-    return {{entityName}}s;
+  async execute({
+    input,
+    requestContext,
+  }: IGet{{EntityName}}s): Promise<IPaginationResponse<{{EntityName}}[]>> {
+    return this.{{entityName}}sRepository.get{{EntityName}}s({
+      filters: input,
+      requestContext,
+    });
   }
 }

@@ -1,46 +1,66 @@
-import { I{{EntityName}}Repository } from '../Domain/{{EntityName}}.repository';
+import { executeUseCase } from '@server/Application/Adapters/ExecuteUseCase';
 import {
-  Get{{EntityName}}UseCase,
-  Get{{EntityName}}sUseCase,
-  Register{{EntityName}}UseCase,
-  Update{{EntityName}}UseCase,
-  Delete{{EntityName}}UseCase,
-} from '../Domain/UseCases';
-import { I{{EntityName}}Create, I{{EntityName}}Update, I{{EntityName}}Filter } from '../Domain/{{EntityName}}.interfaces';
-import { {{EntityName}} } from '../Domain/{{EntityName}}.entity';
+  Get{{EntityName}}s,
+  Get{{EntityName}},
+  Register{{EntityName}},
+  Delete{{EntityName}},
+  Update{{EntityName}},
+} from './';
+import {
+  IGet{{EntityName}}s,
+  IGet{{EntityName}},
+  IRegister{{EntityName}},
+  IDelete{{EntityName}},
+  IUpdate{{EntityName}},
+  {{EntityName}},
+} from '../Domain';
+import { IPaginationResponse } from '@server/Application';
 
-export class {{EntityName}}Service {
-  private get{{EntityName}}UseCase: Get{{EntityName}}UseCase;
-  private get{{EntityName}}sUseCase: Get{{EntityName}}sUseCase;
-  private register{{EntityName}}UseCase: Register{{EntityName}}UseCase;
-  private update{{EntityName}}UseCase: Update{{EntityName}}UseCase;
-  private delete{{EntityName}}UseCase: Delete{{EntityName}}UseCase;
+export class {{EntityName}}sService {
+  constructor(
+    private readonly _get{{EntityName}}s: Get{{EntityName}}s,
+    private readonly _get{{EntityName}}: Get{{EntityName}},
+    private readonly _register{{EntityName}}: Register{{EntityName}},
+    private readonly _delete{{EntityName}}: Delete{{EntityName}},
+    private readonly _update{{EntityName}}: Update{{EntityName}},
+  ) {}
 
-  constructor(private readonly {{entityName}}Repository: I{{EntityName}}Repository) {
-    this.get{{EntityName}}UseCase = new Get{{EntityName}}UseCase({{entityName}}Repository);
-    this.get{{EntityName}}sUseCase = new Get{{EntityName}}sUseCase({{entityName}}Repository);
-    this.register{{EntityName}}UseCase = new Register{{EntityName}}UseCase({{entityName}}Repository);
-    this.update{{EntityName}}UseCase = new Update{{EntityName}}UseCase({{entityName}}Repository);
-    this.delete{{EntityName}}UseCase = new Delete{{EntityName}}UseCase({{entityName}}Repository);
+  async get{{EntityName}}s({
+    input,
+    requestContext,
+  }: IGet{{EntityName}}s): Promise<IPaginationResponse<{{EntityName}}[]>> {
+    return executeUseCase({ useCase: this._get{{EntityName}}s, input, requestContext });
   }
 
-  async get{{EntityName}}s(filters?: I{{EntityName}}Filter): Promise<{{EntityName}}[]> {
-    return await this.get{{EntityName}}sUseCase.execute(filters);
+  async get{{EntityName}}({ input, requestContext }: IGet{{EntityName}}): Promise<{{EntityName}}> {
+    return executeUseCase({
+      useCase: this._get{{EntityName}},
+      input,
+      requestContext,
+    });
   }
 
-  async get{{EntityName}}(id: string): Promise<{{EntityName}} | null> {
-    return await this.get{{EntityName}}UseCase.execute(id);
+  async register{{EntityName}}({ input, requestContext }: IRegister{{EntityName}}): Promise<{{EntityName}}> {
+    return executeUseCase({
+      useCase: this._register{{EntityName}},
+      input,
+      requestContext,
+    });
   }
 
-  async register{{EntityName}}(data: I{{EntityName}}Create): Promise<{{EntityName}}> {
-    return await this.register{{EntityName}}UseCase.execute(data);
+  async update{{EntityName}}({ input, requestContext }: IUpdate{{EntityName}}): Promise<number> {
+    return executeUseCase({
+      useCase: this._update{{EntityName}},
+      input,
+      requestContext,
+    });
   }
 
-  async update{{EntityName}}(data: I{{EntityName}}Update): Promise<{{EntityName}}> {
-    return await this.update{{EntityName}}UseCase.execute(data);
-  }
-
-  async delete{{EntityName}}(id: string): Promise<boolean> {
-    return await this.delete{{EntityName}}UseCase.execute(id);
+  async delete{{EntityName}}({ input, requestContext }: IDelete{{EntityName}}): Promise<number> {
+    return executeUseCase({
+      useCase: this._delete{{EntityName}},
+      input,
+      requestContext,
+    });
   }
 }
