@@ -1,4 +1,10 @@
 import { IPagination } from '@server/Application';
+import z from 'zod';
+
+export const paginationZodParams = {
+  page: z.string().optional(),
+  limit: z.string().optional(),
+};
 
 // Interfaz base más flexible que permite propiedades opcionales
 interface PaginationFilters extends IPagination {
