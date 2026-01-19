@@ -1,0 +1,61 @@
+import { I{{EntityName}} } from './{{EntityName}}.interfaces';
+
+export class {{EntityName}} {
+  constructor(
+    private readonly _id: string,
+    private readonly _name: string,
+    private readonly _description?: string,
+    private readonly _active: boolean = true,
+    private readonly _createdAt: Date = new Date(),
+  ) {}
+
+  static create({
+    id,
+    name,
+    description,
+    active = true,
+    createdAt = new Date(),
+  }: I{{EntityName}}) {
+    return new {{EntityName}}(
+      id,
+      name,
+      description,
+      active,
+      createdAt,
+    );
+  }
+
+  toJSON() {
+    return this.values;
+  }
+
+  get values() {
+    return {
+      id: this._id,
+      name: this._name,
+      description: this._description,
+      active: this._active,
+      createdAt: this._createdAt,
+    };
+  }
+
+  get id() {
+    return this._id;
+  }
+
+  get name() {
+    return this._name;
+  }
+
+  get description() {
+    return this._description;
+  }
+
+  get active() {
+    return this._active;
+  }
+
+  get createdAt() {
+    return this._createdAt;
+  }
+}

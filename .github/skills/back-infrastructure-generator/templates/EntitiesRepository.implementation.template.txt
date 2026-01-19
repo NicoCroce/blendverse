@@ -1,0 +1,25 @@
+import { {{EntityName}} } from '../../Domain/{{EntityName}}.entity';
+import { I{{EntityName}}Repository } from '../../Domain/{{EntityName}}.repository';
+import { I{{EntityName}}Create, I{{EntityName}}Update, I{{EntityName}}Filter } from '../../Domain/{{EntityName}}.interfaces';
+
+export class {{EntityName}}RepositoryImplementation implements I{{EntityName}}Repository {
+  async get{{EntityName}}s(filters?: I{{EntityName}}Filter): Promise<{{EntityName}}[]> {
+    throw new Error('Method not implemented.');
+  }
+
+  async get{{EntityName}}(id: string): Promise<{{EntityName}} | null> {
+    throw new Error('Method not implemented.');
+  }
+
+  async register{{EntityName}}(data: I{{EntityName}}Create): Promise<{{EntityName}}> {
+    throw new Error('Method not implemented.');
+  }
+
+  async update{{EntityName}}(data: I{{EntityName}}Update): Promise<{{EntityName}}> {
+    throw new Error('Method not implemented.');
+  }
+
+  async delete{{EntityName}}(id: string): Promise<boolean> {
+    throw new Error('Method not implemented.');
+  }
+}

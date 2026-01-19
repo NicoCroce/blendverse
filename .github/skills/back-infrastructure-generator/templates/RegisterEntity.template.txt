@@ -1,0 +1,12 @@
+import { {{EntityName}} } from '../{{EntityName}}.entity';
+import { I{{EntityName}}Repository } from '../{{EntityName}}.repository';
+import { I{{EntityName}}Create } from '../{{EntityName}}.interfaces';
+
+export class Register{{EntityName}}UseCase {
+  constructor(private readonly {{entityName}}Repository: I{{EntityName}}Repository) {}
+
+  async execute(data: I{{EntityName}}Create): Promise<{{EntityName}}> {
+    const {{entityName}} = await this.{{entityName}}Repository.register{{EntityName}}(data);
+    return {{entityName}};
+  }
+}

@@ -1,0 +1,11 @@
+import { {{EntityName}} } from '../{{EntityName}}.entity';
+import { I{{EntityName}}Repository } from '../{{EntityName}}.repository';
+
+export class Get{{EntityName}}UseCase {
+  constructor(private readonly {{entityName}}Repository: I{{EntityName}}Repository) {}
+
+  async execute(id: string): Promise<{{EntityName}} | null> {
+    const {{entityName}} = await this.{{entityName}}Repository.get{{EntityName}}(id);
+    return {{entityName}};
+  }
+}

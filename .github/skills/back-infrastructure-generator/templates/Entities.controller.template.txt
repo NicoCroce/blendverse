@@ -1,0 +1,66 @@
+import { Request, Response } from 'express';
+import { {{EntityName}}Service } from '../../Application/{{EntityName}}s.service';
+import { I{{EntityName}}Create, I{{EntityName}}Update } from '../../Domain/{{EntityName}}.interfaces';
+
+export class {{EntityName}}Controller {
+  constructor(private readonly {{entityName}}Service: {{EntityName}}Service) {}
+
+  async get{{EntityName}}s(req: Request, res: Response): Promise<void> {
+    try {
+      const filters = req.query;
+      const {{entityName}}s = await this.{{entityName}}Service.get{{EntityName}}s(filters);
+      res.status(200).json({{entityName}}s.map({{entityName}} => {{entityName}}.toObject()));
+    } catch (error) {
+      res.status(500).json({ error: (error as Error).message });
+    }
+  }
+
+  async get{{EntityName}}(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      const {{entityName}} = await this.{{entityName}}Service.get{{EntityName}}(id);
+      if (!{{entityName}}) {
+        res.status(404).json({ error: '{{EntityName}} not found' });
+        return;
+      }
+      res.status(200).json({{entityName}}.toObject());
+    } catch (error) {
+      res.status(500).json({ error: (error as Error).message });
+    }
+  }
+
+  async register{{EntityName}}(req: Request, res: Response): Promise<void> {
+    try {
+      const data: I{{EntityName}}Create = req.body;
+      const {{entityName}} = await this.{{entityName}}Service.register{{EntityName}}(data);
+      res.status(201).json({{entityName}}.toObject());
+    } catch (error) {
+      res.status(400).json({ error: (error as Error).message });
+    }
+  }
+
+  async update{{EntityName}}(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      const data: I{{EntityName}}Update = { ...req.body, id };
+      const {{entityName}} = await this.{{entityName}}Service.update{{EntityName}}(data);
+      res.status(200).json({{entityName}}.toObject());
+    } catch (error) {
+      res.status(400).json({ error: (error as Error).message });
+    }
+  }
+
+  async delete{{EntityName}}(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      const result = await this.{{entityName}}Service.delete{{EntityName}}(id);
+      if (!result) {
+        res.status(404).json({ error: '{{EntityName}} not found' });
+        return;
+      }
+      res.status(200).json({ message: '{{EntityName}} deleted successfully' });
+    } catch (error) {
+      res.status(500).json({ error: (error as Error).message });
+    }
+  }
+}

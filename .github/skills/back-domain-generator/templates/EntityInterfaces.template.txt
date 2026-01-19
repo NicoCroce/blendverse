@@ -1,0 +1,40 @@
+import { IPagination, IRequestContext } from '@server/Application';
+
+export interface IGet{{DomainName}} extends IRequestContext {
+  input?: {
+    name?: string;
+  } & IPagination;
+}
+
+export interface IRegister{{EntityName}} extends IRequestContext {
+  input: {
+    // Add your entity properties here
+  };
+}
+
+export interface IGet{{EntityName}} extends IRequestContext {
+  input: number; // {{entityNameLower}} id
+}
+
+export interface IValidate{{EntityName}} extends IRequestContext {
+  input: {
+    id?: number;
+    // Add other validation fields
+  };
+}
+
+export interface IUpdate{{EntityName}} extends IRequestContext {
+  input: {
+    id: number;
+    // Add your update properties here
+  };
+}
+
+export interface IDelete{{EntityName}} extends IRequestContext {
+  input: number; // {{EntityName}} Id
+}
+
+export interface I{{EntityName}} {
+  id?: number;
+  // Add your entity properties here
+}

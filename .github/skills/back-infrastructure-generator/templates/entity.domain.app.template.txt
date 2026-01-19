@@ -1,0 +1,12 @@
+import { {{EntityName}}RepositoryImplementation } from './Infrastructure/Database/{{EntityName}}sRepository.implementation';
+import { {{EntityName}}Service } from './Application/{{EntityName}}s.service';
+import { {{EntityName}}Controller } from './Infrastructure/Controllers/{{EntityName}}s.controller';
+import { {{EntityName}}Routes } from './Infrastructure/Routes/{{EntityName}}Routes';
+
+// Inicialización de la capa de dominio
+const {{entityName}}Repository = new {{EntityName}}RepositoryImplementation();
+const {{entityName}}Service = new {{EntityName}}Service({{entityName}}Repository);
+const {{entityName}}Controller = new {{EntityName}}Controller({{entityName}}Service);
+const {{entityName}}Routes = new {{EntityName}}Routes({{entityName}}Controller);
+
+export { {{entityName}}Repository, {{entityName}}Service, {{entityName}}Controller, {{entityName}}Routes };

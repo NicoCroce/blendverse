@@ -1,0 +1,10 @@
+import { I{{EntityName}}Repository } from '../{{EntityName}}.repository';
+
+export class Delete{{EntityName}}UseCase {
+  constructor(private readonly {{entityName}}Repository: I{{EntityName}}Repository) {}
+
+  async execute(id: string): Promise<boolean> {
+    const result = await this.{{entityName}}Repository.delete{{EntityName}}(id);
+    return result;
+  }
+}

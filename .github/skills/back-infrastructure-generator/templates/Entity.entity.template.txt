@@ -1,0 +1,78 @@
+import { {{EntityName}}Id, {{EntityName}}Name, {{EntityName}}Email } from './ValueObjects';
+import { I{{EntityName}} } from './{{EntityName}}.interfaces';
+
+export class {{EntityName}} {
+  private id: {{EntityName}}Id;
+  private name: {{EntityName}}Name;
+  private email: {{EntityName}}Email;
+  private active: boolean;
+  private createdAt: Date;
+
+  constructor({
+    id,
+    name,
+    email,
+    active = true,
+    createdAt = new Date(),
+  }: I{{EntityName}}) {
+    this.id = new {{EntityName}}Id(id);
+    this.name = new {{EntityName}}Name(name);
+    this.email = new {{EntityName}}Email(email);
+    this.active = active;
+    this.createdAt = createdAt;
+  }
+
+  // Getters
+  getId(): string {
+    return this.id.getValue();
+  }
+
+  getName(): string {
+    return this.name.getValue();
+  }
+
+  getEmail(): string {
+    return this.email.getValue();
+  }
+
+  getActive(): boolean {
+    return this.active;
+  }
+
+  getCreatedAt(): Date {
+    return this.createdAt;
+  }
+
+  // Setters
+  setName(name: string): void {
+    this.name = new {{EntityName}}Name(name);
+  }
+
+  setEmail(email: string): void {
+    this.email = new {{EntityName}}Email(email);
+  }
+
+  setActive(active: boolean): void {
+    this.active = active;
+  }
+
+  // Métodos de dominio
+  deactivate(): void {
+    this.active = false;
+  }
+
+  activate(): void {
+    this.active = true;
+  }
+
+  // Conversión a objeto plano
+  toObject(): I{{EntityName}} {
+    return {
+      id: this.getId(),
+      name: this.getName(),
+      email: this.getEmail(),
+      active: this.getActive(),
+      createdAt: this.getCreatedAt(),
+    };
+  }
+}

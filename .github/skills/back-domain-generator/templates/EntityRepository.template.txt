@@ -1,0 +1,45 @@
+import {
+  IPagination,
+  IRequestContext,
+  IPaginationResponse,
+} from '@server/Application';
+import { {{EntityName}} } from './{{EntityName}}.entity';
+
+export interface IGet{{DomainName}}Repository extends IRequestContext {
+  filters?: {
+    name?: string;
+  } & IPagination;
+}
+
+export interface IRegister{{EntityName}}Repository extends IRequestContext {
+  {{entityName}}: {{EntityName}};
+}
+
+export interface IGet{{EntityName}}Repository extends IRequestContext {
+  id: number;
+}
+
+export interface IValidate{{EntityName}}Repository extends IRequestContext {
+  id?: number;
+  // Add other validation fields
+}
+
+export interface IUpdate{{EntityName}}Repository extends IRequestContext {
+  {{entityName}}: {{EntityName}};
+}
+
+export interface IDelete{{EntityName}}Repository extends IRequestContext {
+  id: number;
+}
+
+export interface IGet{{DomainName}}RepositoryResponse
+  extends IPaginationResponse<{{EntityName}}[]> {}
+
+export interface {{EntityName}}Repository {
+  get{{DomainName}}(params: IGet{{DomainName}}Repository): Promise<IGet{{DomainName}}RepositoryResponse>;
+  register{{EntityName}}(params: IRegister{{EntityName}}Repository): Promise<{{EntityName}}>;
+  get{{EntityName}}(params: IGet{{EntityName}}Repository): Promise<{{EntityName}} | null>;
+  validate{{EntityName}}(params: IValidate{{EntityName}}Repository): Promise<{{EntityName}} | null>;
+  update{{EntityName}}(params: IUpdate{{EntityName}}Repository): Promise<number | null>;
+  delete{{EntityName}}(params: IDelete{{EntityName}}Repository): Promise<number | null>;
+}
