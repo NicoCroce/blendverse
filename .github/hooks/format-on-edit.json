@@ -1,0 +1,10 @@
+{
+  "description": "Ejecuta Prettier sobre archivos editados por el agente para mantener el formato consistente.",
+  "hooks": [
+    {
+      "event": "PostToolUse",
+      "toolNames": ["editFiles", "createFile"],
+      "command": "pnpm format"
+    }
+  ]
+}
