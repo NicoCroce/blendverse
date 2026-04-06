@@ -1,10 +1,10 @@
 import { toast } from 'sonner';
 import { UsersService } from '../Users.service';
 import { useGlobalStore } from '@app/Aplication';
-import { TUser } from '../User.entity';
+import { TUserLogged } from '../User.entity';
 
 export const useChangePassword = () => {
-  const { setQueryData } = useGlobalStore<TUser>('dataUser');
+  const { setQueryData } = useGlobalStore<TUserLogged>('dataUser');
 
   return UsersService.changePassword.useMutation({
     onError: ({ message }) => toast.error(message),

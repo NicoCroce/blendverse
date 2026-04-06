@@ -1,23 +1,38 @@
 import { useGlobalStore } from '@app/Aplication/Hooks';
 import { DataList } from './DataList';
-import { DataTable } from './DataTable';
 
 interface DataListProps<TData> {
   table: React.ReactNode;
   listComponent: ({ data }: { data: TData }) => JSX.Element;
   data: TData[];
+  hasMore: boolean;
+  isLoading?: boolean;
+  currentPage: number;
 }
 
 export const DataCollection = <TData,>({
   table,
   listComponent,
   data,
+  hasMore,
+  isLoading,
+  currentPage,
 }: DataListProps<TData>) => {
   const { data: isMobile } = useGlobalStore('isMobile');
-  if (data.length === 0) {
-    return isMobile ? <DataList.Skeleton /> : <DataTable.Skeleton />;
-  }
+
   return (
-    <>{isMobile ? <DataList data={data} component={listComponent} /> : table}</>
+    <>
+      {isMobile ? (
+        <DataList
+          data={data}
+          component={listComponent}
+          hasMore={hasMore}
+          isLoading={isLoading}
+          currentPage={currentPage}
+        />
+      ) : (
+        table
+      )}
+    </>
   );
 };

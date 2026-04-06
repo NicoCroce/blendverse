@@ -11,6 +11,7 @@ export const formSchemaDefinition = (editData: TUser | null) =>
         message: 'Enter a correct format email',
       }),
       role: z.string().optional(),
+      profile: z.string().optional(),
       password: !editData
         ? z.string().min(8, {
             message: 'La contraseña debe ser mayor a 8 caracteres',

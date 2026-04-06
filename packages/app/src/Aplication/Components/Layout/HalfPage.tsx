@@ -26,7 +26,7 @@ export const HalfPage = ({ children, left, title, background }: PageProps) => {
       >
         <div
           className="h-1/2 md:h-full absolute top-0 left-0 right-0 md:right-1/2 bottom-0 brightness-50 opacity-80 saturate-50 hue-rotate-[176deg]"
-          style={inlineStyles}
+          style={{ ...inlineStyles, backgroundPositionX: 'center' }}
         ></div>
         <div className="relative z-10 realative">{left}</div>
       </Container>

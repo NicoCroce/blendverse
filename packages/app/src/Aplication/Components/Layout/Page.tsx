@@ -39,7 +39,7 @@ export const Page = ({
   }, [backButton, setQueryData]);
 
   return (
-    <div className="page p-4 grid grid-rows-[min-content_auto] grid-cols-1 gap-6 max-w-[100vw] h-full bg-gray-50 md:p-6 md:pt-10">
+    <div className="page p-4 grid grid-rows-[min-content_auto] grid-cols-1 gap-6 max-w-[100vw] h-full md:p-6 pt-0 overflow-auto">
       <Container
         row={isMobile ? false : true}
         justify="between"

@@ -1,23 +1,31 @@
+import { DataTable } from '@app/Aplication/Components/Organisms/DataCollection/DataTable';
+import { DataCollection } from '@app/Aplication/Components/Organisms/DataCollection/DataCollection';
 import { useGetUsers } from '../../Hooks';
-import { DataList, useAccumulatedData } from '@app/Aplication';
-import { UserItem } from './UserItem';
+import { columns } from './ColumnsUsersTable';
+import { initPagination } from '@app/Aplication';
+import { UserCard } from './UserCard';
 
 export const UsersList = () => {
-  const { data, isFetching } = useGetUsers();
-
-  // Usar el hook personalizado para acumular datos
-  const { accumulatedData: accumulatedUsers } = useAccumulatedData({
-    data: data?.data,
-  });
+  const { data, isLoading, isFetching } = useGetUsers();
 
   return (
-    <div className="w-full">
-      <DataList
-        data={accumulatedUsers}
-        component={UserItem}
-        isLoading={isFetching}
-        hasMore={data?.meta?.hasMore} // Usar el campo hasMore del servidor
-      />
-    </div>
+    <DataCollection
+      data={data?.data || []}
+      isLoading={isFetching}
+      listComponent={UserCard}
+      hasMore={data?.meta.hasMore || false}
+      currentPage={data?.meta.currentPage || 1}
+      table={
+        isLoading && !data ? (
+          <DataTable.Skeleton />
+        ) : (
+          <DataTable
+            columns={columns}
+            data={data?.data || []}
+            pagination={data?.meta || initPagination}
+          />
+        )
+      }
+    />
   );
 };

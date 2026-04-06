@@ -13,6 +13,7 @@ interface FormFieldProps<T extends FieldValues> {
   control: Control<T>;
   children: React.ReactNode;
   label: string;
+  htmlName?: string; // Permite sobrescribir el atributo HTML name
 }
 
 export const InputField = <T extends FieldValues>({
@@ -20,6 +21,7 @@ export const InputField = <T extends FieldValues>({
   control,
   children,
   label,
+  htmlName,
 }: FormFieldProps<T>) => {
   return (
     <FormFieldComponent
@@ -30,7 +32,10 @@ export const InputField = <T extends FieldValues>({
           <FormLabel>{label}</FormLabel>
           <FormControl>
             {React.isValidElement(children)
-              ? React.cloneElement(children, { ...field }) // Clona el nodo y le pasa las props
+              ? React.cloneElement(children, {
+                  ...field,
+                  ...(htmlName && { name: htmlName }), // Sobrescribe el name HTML si se proporciona
+                })
               : children}
           </FormControl>
           <FormMessage />

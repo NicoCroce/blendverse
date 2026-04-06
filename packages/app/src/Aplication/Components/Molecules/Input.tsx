@@ -6,9 +6,15 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 // Extiende el Input básico con forwardRef
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, ...props }, ref) => {
+  ({ className, disabled, ...props }, ref) => {
+    // Siempre habilitado en login
     return (
-      <InputLib ref={ref} className={`h-8 ${className ?? ''}`} {...props} />
+      <InputLib
+        ref={ref}
+        className={`h-8 ${className ?? ''}`}
+        {...props}
+        disabled={false}
+      />
     );
   },
 );
@@ -16,20 +22,21 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 // Input de tipo contraseña con capacidad de mostrar/ocultar texto
 const InputPassword = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const [show, setShow] = useState(false);
-
   return (
     <div className="relative">
       <Input
         className="pr-14"
         type={show ? 'text' : 'password'}
-        ref={ref} // Pasa el ref al Input
+        ref={ref}
         {...props}
+        disabled={false}
       />
       <Button
         variant="outline"
         className="absolute right-0 top-[0.75px]"
         onClick={() => setShow((prev) => !prev)}
         type="button"
+        forceEnabled
       >
         <FontAwesomeIcon icon={show ? faEyeSlash : faEye} />
       </Button>

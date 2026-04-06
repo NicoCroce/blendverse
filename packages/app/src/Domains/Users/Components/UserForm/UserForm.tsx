@@ -10,6 +10,7 @@ import {
   Container,
   InputField,
   SelectRoles,
+  SelectProfiles,
 } from '@app/Aplication/Components';
 import { USERS_ROUTE } from '../../Users.routes';
 import { useEffect } from 'react';
@@ -22,7 +23,7 @@ interface UserFormProps {
 }
 
 export const UserForm = ({ editData = null }: UserFormProps) => {
-  const { mutate, isSuccess } = useAddUser();
+  const { mutate, isSuccess, isPending } = useAddUser();
   const { mutate: mutateUpdate } = useUpdateUser();
   const navigate = useNavigate();
   const { data: userRole } = useGetRoleByUser(editData?.id);
@@ -35,6 +36,7 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
       name: '',
       mail: '',
       role: '',
+      profile: '',
       password: '',
       rePassword: '',
     },
@@ -84,7 +86,7 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
           control={form.control}
           label="Nombre de Usuario"
         >
-          <Input />
+          <Input type="text" />
         </InputField>
 
         <InputField control={form.control} name="mail" label="Email de Usuario">
@@ -92,6 +94,8 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
         </InputField>
 
         <SelectRoles form={form} name="role" />
+
+        <SelectProfiles form={form} name="profile" />
 
         {!editData && (
           <>
@@ -115,7 +119,7 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
           <Button appearance="cancel" onClick={handleCancel}>
             Cancelar
           </Button>
-          <Button type="submit" appearance="save" />
+          <Button type="submit" appearance="save" isLoading={isPending} />
         </Container>
       </form>
     </Form>

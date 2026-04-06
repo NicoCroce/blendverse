@@ -32,14 +32,10 @@ export const Header = () => {
         space="small"
         className="relative z-10"
       >
-        <img
-          src={img}
-          width={36}
-          className="rounded-full border-2 border-primary"
-        />
+        <img src={img} width={36} className="p-1 grayscale-[50%]" />
         <Container space="none">
           <Title variant="h3" className="text-primary">
-            GestDoc
+            MacroGest
           </Title>
         </Container>
       </Container>
