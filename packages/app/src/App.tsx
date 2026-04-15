@@ -5,10 +5,13 @@ import { AllRoutes } from './Infrastructure';
 
 import './App.css';
 import { ChangePasswordModal } from './Domains/Users/Components/ChangePassword/ChangePasswordModal';
-import { usePublicPages } from './Aplication';
+import { useChangeTheme } from './Aplication/Hooks/useChangeTheme';
+import { usePublicPages } from './Aplication/Hooks/usePublicPages';
 
 export const App = () => {
   const isPublicPage = usePublicPages();
+  useChangeTheme();
+
   return (
     <>
       <Routes>{AllRoutes}</Routes>

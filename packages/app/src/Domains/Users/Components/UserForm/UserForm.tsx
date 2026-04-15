@@ -10,7 +10,6 @@ import {
   Container,
   InputField,
   SelectRoles,
-  SelectProfiles,
 } from '@app/Aplication/Components';
 import { USERS_ROUTE } from '../../Users.routes';
 import { useEffect } from 'react';
@@ -54,7 +53,8 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
     form.setValue('name', editData?.name);
     form.setValue('mail', editData?.mail);
     form.setValue('role', userRole || '');
-  }, [editData, form, userRole]);
+    form.setValue('profile', String(editData?.id || ''));
+  }, [editData, form, userRole, '']);
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
     console.log(values);
@@ -64,6 +64,7 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
         mail: values.mail,
         name: values.name,
         role: values.role || null,
+        profile: values.profile || null,
       });
     } else {
       mutate(values);
@@ -94,8 +95,6 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
         </InputField>
 
         <SelectRoles form={form} name="role" />
-
-        <SelectProfiles form={form} name="profile" />
 
         {!editData && (
           <>

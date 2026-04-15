@@ -44,7 +44,7 @@ export const RestorePassword = () => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} forceEnabled />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -56,6 +56,7 @@ export const RestorePassword = () => {
             type="button"
             appearance="cancel"
             onClick={() => navigate(AUTH_ROUTE)}
+            forceEnabled
           >
             Cancelar
           </Button>
