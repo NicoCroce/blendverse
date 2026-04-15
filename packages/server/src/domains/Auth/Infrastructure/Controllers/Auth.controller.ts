@@ -22,7 +22,7 @@ export class AuthController {
 
         const requestContext = ctx.requestContext;
 
-        const { token, user } = await this.authService.login({
+        const { token, user, theme } = await this.authService.login({
           input,
           requestContext,
         });
@@ -37,7 +37,7 @@ export class AuthController {
           maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
         });
 
-        return user;
+        return { ...user.values, theme };
       });
 
   logout = () =>

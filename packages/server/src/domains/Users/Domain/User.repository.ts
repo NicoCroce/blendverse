@@ -2,6 +2,7 @@ import {
   IPagination,
   IRequestContext,
   IPaginationResponse,
+  ISelect,
 } from '@server/Application';
 import { User } from './User.entity';
 
@@ -35,6 +36,16 @@ export interface IChangePasswordRepository extends IRequestContext {
 export interface IGetUsersRepositoryResponse
   extends IPaginationResponse<User[]> {}
 
+export interface IGetSelectUserRepository extends IRequestContext {
+  filters?: {
+    nombre?: string;
+  };
+}
+
+export interface IGetEmailsByUsersIdRepository extends IRequestContext {
+  userIds: number[];
+}
+
 export interface UserRepository {
   getUsers(params: IGetUsersRepository): Promise<IGetUsersRepositoryResponse>;
   registerUser(params: IRegisterUserRepository): Promise<User>;
@@ -43,4 +54,6 @@ export interface UserRepository {
   updateUser(params: IUpdateUserRepository): Promise<number | null>;
   deleteUser(params: IDeleteUserRepository): Promise<number | null>;
   changePassword(params: IChangePasswordRepository): Promise<void | null>;
+  getSelectUser(params: IGetSelectUserRepository): Promise<ISelect[]>;
+  getEmailsByUsersId(params: IGetEmailsByUsersIdRepository): Promise<string[]>;
 }

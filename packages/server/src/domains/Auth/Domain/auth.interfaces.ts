@@ -23,4 +23,5 @@ export interface IRestorePassword extends IRequestContext {
 export interface IExecuteResponse {
   token: string;
   user: User;
+  theme: number;
 }

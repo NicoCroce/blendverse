@@ -2,3 +2,4 @@ export * from './User.entity';
 export * from './User.interfaces';
 export * from './User.repository';
 export * from './ValueObjects';
+export * from './UserSelect.entity';

@@ -11,7 +11,7 @@ export const initSequelize = () => {
     password: process.env.DB_PASSWORD || '',
     host: process.env.DB_HOST || '127.0.0.1',
     port: parseInt(process.env.DB_PORT || '3306'),
-    logging: console.log,
+    logging: false,
   });
 
   return sequelizeInstance;
@@ -25,13 +25,14 @@ export const getSequelize = () => {
   return sequelizeInstance;
 };
 
-// For backward compatibility, export a lazy getter that returns the sequelize instance
-export const sequelize = new Proxy({} as Sequelize, {
-  get: (_target, prop) => {
-    const instance = getSequelize();
-    return instance[prop as keyof Sequelize];
+// Create a lazy proxy that will initialize sequelize only when accessed
+const handler: ProxyHandler<Sequelize> = {
+  get(_target: unknown, prop: string): unknown {
+    return Reflect.get(getSequelize(), prop);
   },
-});
+};
+
+export const sequelize = new Proxy(getSequelize(), handler) as Sequelize;
 
 export const connect = async () => {
   try {

@@ -13,6 +13,7 @@ export class User {
     private readonly _companyLogo?: string,
     private readonly _companyName?: string,
     private readonly _rol?: string,
+    private readonly _tema?: number,
   ) {}
 
   static create({

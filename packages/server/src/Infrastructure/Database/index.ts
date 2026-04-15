@@ -1,2 +1,2 @@
 export * from './connection';
-export * from './relations';
+export { relateModels } from './relations';

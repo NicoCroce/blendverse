@@ -12,6 +12,7 @@ export interface IRegisterUser extends IRequestContext {
     password: string;
     rePassword: string;
     role: string | null;
+    profile: string | null;
   };
 }
 export interface IGetUser extends IRequestContext {
@@ -30,6 +31,7 @@ export interface IUpdateUser extends IRequestContext {
     mail: string;
     name: string;
     role: string | null;
+    profile: string | null;
   };
 }
 export interface IDeleteUser extends IRequestContext {
@@ -55,4 +57,14 @@ export interface IChangePassword extends IRequestContext {
     newPassword: string;
     rePassword: string;
   };
+}
+
+export interface IGetSelectUser extends IRequestContext {
+  input?: {
+    nombre: string;
+  };
+}
+
+export interface IGetEmailsByUsersId extends IRequestContext {
+  input: number[];
 }

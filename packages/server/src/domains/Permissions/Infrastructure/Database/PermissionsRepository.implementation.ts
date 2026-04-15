@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { Op } from 'sequelize';
 import { UserModel } from '@server/domains/Users';
 import {
   IAssociateUserToRoleRepository,
@@ -7,6 +8,8 @@ import {
   IGetPermissionsRepository,
   IGetRoleByUserRepository,
   IGetRolesRepository,
+  IGetRoleByUserIdRepository,
+  IGetRolesByMaxHierarchyRepository,
   Permissions,
   PermissionsRepository,
   Roles,
@@ -26,6 +29,55 @@ export class PermissionsRepositoryImplementation
         name: rol.denominacion,
         description: '',
         permissions: [],
+        hierarchy: rol.jerarquia,
+      }),
+    );
+  }
+
+  async getRoleByUserId({
+    userId,
+  }: IGetRoleByUserIdRepository): Promise<Roles | null> {
+    const userRole = await Users_RolesModel.findOne({
+      where: { id_usuario: userId },
+    });
+
+    if (!userRole) {
+      return null;
+    }
+
+    const roleRecord = await RolesModel.findOne({
+      where: { id: userRole.id_rol },
+    });
+
+    if (!roleRecord) {
+      return null;
+    }
+
+    return Roles.create({
+      name: roleRecord.denominacion,
+      description: '',
+      permissions: [],
+      hierarchy: roleRecord.jerarquia,
+    });
+  }
+
+  async getRolesByMaxHierarchy({
+    maxHierarchy,
+  }: IGetRolesByMaxHierarchyRepository): Promise<Roles[]> {
+    const roles = await RolesModel.findAll({
+      where: {
+        jerarquia: {
+          [Op.lte]: maxHierarchy,
+        },
+      },
+    });
+
+    return roles.map((rol) =>
+      Roles.create({
+        name: rol.denominacion,
+        description: '',
+        permissions: [],
+        hierarchy: rol.jerarquia,
       }),
     );
   }
