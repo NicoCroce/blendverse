@@ -25,6 +25,15 @@ export interface IDeleteUserprofile extends IRequestContext {
 export interface IGetAllProfilesByUser extends IRequestContext {
   input?: Record<string, never>;
 }
+export interface IGetProfileByUserId extends IRequestContext {
+  input: number;
+}
+export interface IAssociateUserToProfile extends IRequestContext {
+  input: {
+    userId: number;
+    profileId: number | null;
+  };
+}
 export interface IUserprofile {
   id_usuario?: number;
   id_perfil?: number;

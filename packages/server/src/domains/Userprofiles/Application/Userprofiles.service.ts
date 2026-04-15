@@ -1,8 +1,5 @@
-﻿import {
-  executeUseCase,
-  IPaginationResponse,
-  IRequestContext,
-} from '@server/Application';
+﻿import { executeUseCase } from '@server/Application/Adapters/ExecuteUseCase';
+import { IPaginationResponse } from '@server/Application';
 import {
   Userprofile,
   ICreateUserprofile,
@@ -10,6 +7,7 @@ import {
   IGetAllUserprofiles,
   IGetUserprofile,
   IUpdateUserprofile,
+  IGetProfileByUserId,
 } from '../Domain';
 import {
   CreateUserprofile,
@@ -20,10 +18,6 @@ import {
   GetProfileByUserId,
 } from './UseCases';
 
-interface IGetProfileByUserId extends IRequestContext {
-  input: number;
-}
-
 export class UserprofilesService {
   constructor(
     private readonly _createUserprofile: CreateUserprofile,
@@ -33,7 +27,6 @@ export class UserprofilesService {
     private readonly _getUserprofile: GetUserprofile,
     private readonly _getProfileByUserId: GetProfileByUserId,
   ) {}
-
   async createUserprofile({
     input,
     requestContext,

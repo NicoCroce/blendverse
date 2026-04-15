@@ -1,9 +1,5 @@
-import { IRequestContext, IUseCase } from '@server/Application';
-import { UserprofilesRepository } from '../../Domain';
-
-interface IGetProfileByUserId extends IRequestContext {
-  input: number; // userId
-}
+import { IUseCase } from '@server/Application';
+import { UserprofilesRepository, IGetProfileByUserId } from '../../Domain';
 
 export class GetProfileByUserId implements IUseCase<number | null> {
   constructor(

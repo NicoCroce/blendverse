@@ -20,7 +20,7 @@ export class UpdateUserprofile implements IUseCase<Userprofile> {
       id_usuario,
       id_perfil,
     });
-    const idret = await this.userprofilesRepository.update({
+    const idret = await this.userprofilesRepository.updateUserprofile({
       userprofile: updUserprofile,
       requestContext,
     });

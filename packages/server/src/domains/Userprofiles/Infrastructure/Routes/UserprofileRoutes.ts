@@ -1,4 +1,4 @@
-﻿import { getUserprofilesController } from '../../userprofile.app';
+﻿import { userprofilesController } from '../../userprofile.app';
 
 export const UserprofileRoutes = () => {
   const {
@@ -8,7 +8,7 @@ export const UserprofileRoutes = () => {
     getUserprofile,
     updateUserprofile,
     getProfileByUserId,
-  } = getUserprofilesController();
+  } = userprofilesController();
 
   return {
     userprofiles: {

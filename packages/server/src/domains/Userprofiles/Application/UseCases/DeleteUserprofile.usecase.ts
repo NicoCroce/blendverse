@@ -16,7 +16,7 @@ export class DeleteUserprofile implements IUseCase<number | null> {
       requestContext,
     });
     if (userprofile) {
-      await this.userprofilesRepository.delete({
+      await this.userprofilesRepository.deleteUserprofile({
         id,
         requestContext,
       });

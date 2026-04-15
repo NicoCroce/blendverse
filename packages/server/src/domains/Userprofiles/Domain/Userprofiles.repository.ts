@@ -27,9 +27,15 @@ export interface UserprofilesRepository {
     params: IGetUserprofilesRepository,
   ): Promise<IGetUserprofilesRepositoryResponse>;
   getAllProfilesByUser(params: IRequestContext): Promise<Userprofile[] | null>;
-  create(params: ICreateUserprofileRepository): Promise<Userprofile | null>;
-  update(params: IUpdateUserprofileRepository): Promise<number | null>;
-  delete(params: IDeleteUserprofileRepository): Promise<number | null>;
+  createUserprofile(
+    params: ICreateUserprofileRepository,
+  ): Promise<Userprofile | null>;
+  updateUserprofile(
+    params: IUpdateUserprofileRepository,
+  ): Promise<number | null>;
+  deleteUserprofile(
+    params: IDeleteUserprofileRepository,
+  ): Promise<number | null>;
   getUserprofile(
     params: IGetUserprofileRepository,
   ): Promise<Userprofile | null>;

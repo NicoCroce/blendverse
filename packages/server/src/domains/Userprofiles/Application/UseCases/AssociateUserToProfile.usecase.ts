@@ -1,12 +1,9 @@
-import { AppError, IRequestContext, IUseCase } from '@server/Application';
-import { UserprofilesRepository, Userprofile } from '../../Domain';
-
-interface IAssociateUserToProfile extends IRequestContext {
-  input: {
-    userId: number;
-    profileId: number | null;
-  };
-}
+import { AppError, IUseCase } from '@server/Application';
+import {
+  UserprofilesRepository,
+  Userprofile,
+  IAssociateUserToProfile,
+} from '../../Domain';
 
 export class AssociateUserToProfile implements IUseCase<void> {
   constructor(
@@ -31,7 +28,7 @@ export class AssociateUserToProfile implements IUseCase<void> {
       if (existingProfiles && existingProfiles.length > 0) {
         const existingProfile = existingProfiles[0];
         if (existingProfile.values.id) {
-          await this.userprofilesRepository.delete({
+          await this.userprofilesRepository.deleteUserprofile({
             id: existingProfile.values.id,
             requestContext,
           });
@@ -52,7 +49,7 @@ export class AssociateUserToProfile implements IUseCase<void> {
           id_usuario: userId,
           id_perfil: profileId,
         });
-        await this.userprofilesRepository.update({
+        await this.userprofilesRepository.updateUserprofile({
           userprofile: updatedProfile,
           requestContext,
         });
@@ -63,7 +60,7 @@ export class AssociateUserToProfile implements IUseCase<void> {
         id_usuario: userId,
         id_perfil: profileId,
       });
-      const created = await this.userprofilesRepository.create({
+      const created = await this.userprofilesRepository.createUserprofile({
         userprofile: newUserprofile,
         requestContext,
       });

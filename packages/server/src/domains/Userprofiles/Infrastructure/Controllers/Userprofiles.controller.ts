@@ -1,4 +1,4 @@
-﻿import { protectedProcedure } from '@server/Infrastructure';
+﻿import { protectedProcedure } from '@server/Infrastructure/trpc';
 import { UserprofilesService } from '../../Application';
 import { executeService } from '@server/Application';
 import z from 'zod';
@@ -45,14 +45,13 @@ export class UserprofilesController {
           id_perfil: z.number(),
         }),
       )
-      .mutation(async ({ ctx, input }) => {
-        const response = await this.userprofilesService.createUserprofile({
-          input,
-          requestContext: ctx.requestContext,
-        });
-
-        return response;
-      });
+      .mutation(
+        executeService(
+          this.userprofilesService.createUserprofile.bind(
+            this.userprofilesService,
+          ),
+        ),
+      );
 
   deleteUserprofile = () =>
     protectedProcedure

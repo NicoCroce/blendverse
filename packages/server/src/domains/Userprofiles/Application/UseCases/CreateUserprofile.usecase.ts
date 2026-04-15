@@ -20,7 +20,7 @@ export class CreateUserprofile implements IUseCase<Userprofile> {
       id_perfil,
       id,
     });
-    const userprofile = await this.userprofilesRepository.create({
+    const userprofile = await this.userprofilesRepository.createUserprofile({
       userprofile: newUserprofile,
       requestContext,
     });

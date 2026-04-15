@@ -79,7 +79,7 @@ export class UserprofilesRepositoryImplementation
     return createPaginatedResponse(data, count);
   }
 
-  async create({
+  async createUserprofile({
     userprofile,
   }: ICreateUserprofileRepository): Promise<Userprofile | null> {
     if (!userprofile) {
@@ -114,7 +114,7 @@ export class UserprofilesRepositoryImplementation
     });
   }
 
-  async update({
+  async updateUserprofile({
     userprofile,
   }: IUpdateUserprofileRepository): Promise<number | null> {
     const { id, id_usuario, id_perfil } = userprofile.values;
@@ -130,7 +130,9 @@ export class UserprofilesRepositoryImplementation
     return id;
   }
 
-  async delete({ id }: IDeleteUserprofileRepository): Promise<number | null> {
+  async deleteUserprofile({
+    id,
+  }: IDeleteUserprofileRepository): Promise<number | null> {
     const rowsAffected = await UserprofileModel.destroy({ where: { id } });
     if (rowsAffected === 0) return null;
     return id;
