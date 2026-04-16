@@ -5,8 +5,6 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
-    "baseUrl": "./",
-
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -22,7 +20,7 @@
     "noFallthroughCasesInSwitch": true,
     "paths": {
       "@server/*": ["./../server/src/*"],
-      "@app/*": ["src/*"],
+      "@app/*": ["./src/*"],
       "@/*": ["./src/*"]
     },
     "types": ["vite/client", "vite-plugin-pwa/client"]

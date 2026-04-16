@@ -16,7 +16,7 @@ export default defineConfig({
       // static assets in the public folder
       includeAssets: ['**/*'],
       devOptions: {
-        enabled: true,
+        enabled: false,
       },
       manifest: {
         name: 'MacroGest',
