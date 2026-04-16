@@ -8,6 +8,7 @@ export const UserRoutes = () => {
     deleteUser,
     updateUser,
     changePassword,
+    getSelectUser,
   } = usersController();
 
   return {
@@ -18,6 +19,7 @@ export const UserRoutes = () => {
       delete: deleteUser(),
       update: updateUser(),
       changePassword: changePassword(),
+      getSelect: getSelectUser(),
     },
   };
 };

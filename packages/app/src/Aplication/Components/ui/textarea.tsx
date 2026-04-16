@@ -1,12 +1,14 @@
 import * as React from 'react';
 
 import { cn } from '@/Aplication/lib/utils';
+import { useIsEditable } from '@/Aplication/Hooks/useIsEditable';
 
 export interface TextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, ...props }, ref) => {
+  ({ className, disabled, ...props }, ref) => {
+    const isEditable = useIsEditable();
     return (
       <textarea
         className={cn(
@@ -14,6 +16,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           className,
         )}
         ref={ref}
+        disabled={disabled ?? !isEditable}
         {...props}
       />
     );

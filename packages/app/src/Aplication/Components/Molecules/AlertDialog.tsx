@@ -27,7 +27,7 @@ export const AlertDialogCancelConfirm = ({
         <AlertDialogHeader>
           <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
           <AlertDialogDescription>
-            {message && message}. Esta acción no se puede deshacer.
+            {message && message && '.'} Esta acción no se puede deshacer.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

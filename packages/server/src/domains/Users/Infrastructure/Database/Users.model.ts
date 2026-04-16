@@ -31,6 +31,7 @@ export class UserModel extends Model<
   >;
 
   declare readonly RolesModels: NonAttribute<RolesModel[]>;
+  declare readonly UserProfileModels: NonAttribute<unknown[]>;
 
   declare createdAt: CreationOptional<Date>;
   declare updatedAt?: CreationOptional<Date>;

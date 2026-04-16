@@ -1,0 +1,34 @@
+﻿import { asClass } from 'awilix';
+import {
+  OwnersyssService,
+  GetAllOwnersyss,
+  GetOwnersys,
+  CreateOwnersys,
+  DeleteOwnersys,
+  UpdateOwnersys,
+  GetSelectOwnersys,
+  ChangeTheme,
+  GetOwnerTheme,
+} from './Application';
+import {
+  OwnersyssController,
+  OwnersyssRepositoryImplementation,
+} from './Infrastructure';
+import { container } from '@server/utils/Container';
+
+export const ownersysApp = {
+  ownersyssRepository: asClass(OwnersyssRepositoryImplementation),
+  ownersyssService: asClass(OwnersyssService),
+  ownersyssController: asClass(OwnersyssController),
+  _getAllOwnersyss: asClass(GetAllOwnersyss),
+  _getSelectOwnersys: asClass(GetSelectOwnersys),
+  _getOwnersys: asClass(GetOwnersys),
+  _create: asClass(CreateOwnersys),
+  _delete: asClass(DeleteOwnersys),
+  _update: asClass(UpdateOwnersys),
+  _changeTheme: asClass(ChangeTheme),
+  _getOwnerTheme: asClass(GetOwnerTheme),
+};
+
+export const ownersyssController = () =>
+  container.resolve<OwnersyssController>('ownersyssController');

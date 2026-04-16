@@ -5,8 +5,20 @@ export class GetRoles implements IUseCase<Roles[]> {
   constructor(private permissionsRepository: PermissionsRepository) {}
 
   async execute({ requestContext }: IGetRoles): Promise<Roles[]> {
-    return this.permissionsRepository.getRoles({
-      requestContext,
+    const userId = requestContext.values.userId;
+
+    // Obtener el rol del usuario actual
+    const userRole = await this.permissionsRepository.getRoleByUserId({
+      userId,
+    });
+
+    if (!userRole) {
+      throw new Error(`Usuario con ID ${userId} no tiene rol asignado`);
+    }
+
+    // Obtener todos los roles con jerarquía menor o igual
+    return this.permissionsRepository.getRolesByMaxHierarchy({
+      maxHierarchy: userRole.values.hierarchy,
     });
   }
 }

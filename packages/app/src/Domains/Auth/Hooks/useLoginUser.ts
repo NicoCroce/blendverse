@@ -4,10 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { setLogged } from '@app/Aplication/Helpers/isLogged';
 import { MAIN_ROUTE } from '@app/Domains/Main';
 import { useGlobalStore } from '@app/Aplication';
+import { TUserLogged } from '@app/Domains/Users';
 
 export const useLoginUser = () => {
   const navigate = useNavigate();
-  const { setQueryData } = useGlobalStore('dataUser');
+  const { setQueryData } = useGlobalStore<TUserLogged>('dataUser');
 
   return AuthService.login.useMutation({
     onError(error) {

@@ -18,6 +18,7 @@ interface SelectProps {
   onValueChange: (value: string) => void;
   options: TOptions[];
   defaultValue: string;
+  forceEnabled?: boolean;
 }
 
 export const Select = ({
@@ -25,10 +26,11 @@ export const Select = ({
   placeholder,
   onValueChange,
   defaultValue,
+  forceEnabled = false,
 }: SelectProps) => {
   return (
     <SelectLib onValueChange={onValueChange} defaultValue={defaultValue}>
-      <SelectTrigger className="w-20">
+      <SelectTrigger className="w-20" forceEnabled={forceEnabled}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

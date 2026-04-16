@@ -1,23 +1,29 @@
 import { useEffect } from 'react';
 import { AuthService } from '../Auth.service';
 import { isLogged } from '@app/Aplication/Helpers/isLogged';
-import { clear } from 'idb-keyval';
-import { queryClient } from '@app/main';
+import { createIDBPersister } from '@app/Aplication/Helpers/Indexdb';
+import { queryClient } from '@app/queryClient';
 
-const clearStore = () =>
-  setTimeout(() => {
-    localStorage.removeItem('logged');
-    clear();
-    queryClient.clear();
-    window.location.reload(); //carga todos los stores de tanstack
-  }, 1000);
+const persister = createIDBPersister();
+
+const clearStore = async () => {
+  localStorage.removeItem('logged');
+  queryClient.removeQueries();
+  queryClient.getQueryCache().clear();
+  queryClient.getMutationCache().clear();
+  await persister.removeClient();
+  window.location.reload();
+};
 
 export const useLogout = () => {
-  const { mutate } = AuthService.logout.useMutation();
+  const { mutate } = AuthService.logout.useMutation({
+    onSuccess: async () => {
+      await clearStore();
+    },
+  });
 
   useEffect(() => {
     if (isLogged()) {
-      clearStore();
       mutate();
     }
   }, [mutate]);

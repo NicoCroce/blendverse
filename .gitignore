@@ -6,3 +6,5 @@ dist
 packages/server/logs/pino/server.log
 .DS_Store
 tsconfig.tsbuildinfo
+
+packages/app/dev-dist

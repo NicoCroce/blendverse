@@ -51,7 +51,7 @@ export const SelectBase = <T extends FieldValues>({
       combobox={
         isBig && onChangeFilter ? (
           <ComboboxBigSearch
-            value={form.getValues(name) as string}
+            value={form.getValues(name)}
             options={memoOptions}
             onChangeValue={handleChange}
             onChangeFilter={onChangeFilter}
@@ -60,7 +60,7 @@ export const SelectBase = <T extends FieldValues>({
           />
         ) : (
           <Combobox
-            value={form.getValues(name) as string}
+            value={form.getValues(name)}
             options={memoOptions}
             onChangeValue={handleChange}
           />

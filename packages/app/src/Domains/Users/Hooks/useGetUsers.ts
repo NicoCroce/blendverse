@@ -4,5 +4,7 @@ import { UsersService } from '../Users.service';
 
 export const useGetUsers = () => {
   const { searchParams } = useURLParams<TUserSearch>();
-  return UsersService.getAll.useQuery(searchParams);
+  return UsersService.getAll.useQuery(searchParams, {
+    placeholderData: (prev) => prev,
+  });
 };

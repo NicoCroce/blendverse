@@ -27,6 +27,7 @@
   left: var(--menu-width);
   height: var(--menu-height);
   background-color: white;
+  background-image: linear-gradient(hsl(var(--accent)), hsl(var(--accent)));
 }
 
 .layout {

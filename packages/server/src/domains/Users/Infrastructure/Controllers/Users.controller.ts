@@ -1,9 +1,9 @@
-import { procedure, protectedProcedure } from '@server/Infrastructure/trpc';
+import { protectedProcedure } from '@server/Infrastructure/trpc';
 import { UsersService } from '../../Application';
 import { executeService } from '@server/Application';
 import { loggerContextInput } from '@server/utils/pino';
 import z from 'zod';
-import { paginationZodParams } from '@server/utils/pagination';
+import { paginationZodParams } from '@server/utils';
 
 export class UsersController {
   constructor(private usersService: UsersService) {}
@@ -28,7 +28,7 @@ export class UsersController {
       .query(executeService(this.usersService.getUser.bind(this.usersService)));
 
   registerUser = () =>
-    procedure
+    protectedProcedure
       .input(
         z.object({
           name: z.string(),
@@ -36,6 +36,7 @@ export class UsersController {
           password: z.string(),
           rePassword: z.string(),
           role: z.string().nullable().default(null),
+          profile: z.string().nullable().default(null),
         }),
       )
       .mutation(async ({ ctx, input }) => {
@@ -72,6 +73,7 @@ export class UsersController {
           name: z.string(),
           mail: z.string(),
           role: z.string().nullable().default(null),
+          profile: z.string().nullable().default(null),
         }),
       )
       .mutation(
@@ -91,5 +93,18 @@ export class UsersController {
         executeService(
           this.usersService.changePassword.bind(this.usersService),
         ),
+      );
+
+  getSelectUser = () =>
+    protectedProcedure
+      .input(
+        z
+          .object({
+            nombre: z.string().default(''),
+          })
+          .optional(),
+      )
+      .query(
+        executeService(this.usersService.getSelectUser.bind(this.usersService)),
       );
 }

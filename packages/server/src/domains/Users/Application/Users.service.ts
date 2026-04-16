@@ -6,17 +6,21 @@ import {
   DeleteUser,
   UpdateUser,
   ChangePassword,
+  GetSelectUser,
+  GetEmailsByUsersId,
 } from './';
 import {
   IChangePassword,
   IDeleteUser,
+  IGetEmailsByUsersId,
   IGetUser,
   IGetUsers,
   IRegisterUser,
   IUpdateUser,
-  User,
-} from '../Domain';
-import { IPaginationResponse } from '@server/Application';
+  IGetSelectUser,
+} from '../Domain/User.interfaces';
+import { IPaginationResponse, ISelect } from '@server/Application';
+import { User } from '../Domain';
 
 export class UsersService {
   constructor(
@@ -26,6 +30,8 @@ export class UsersService {
     private readonly _deleteUser: DeleteUser,
     private readonly _updateUser: UpdateUser,
     private readonly _changePassword: ChangePassword,
+    private readonly _getSelectUser: GetSelectUser,
+    private readonly _getEmailsByUsersId: GetEmailsByUsersId,
   ) {}
 
   async getUsers({
@@ -77,6 +83,29 @@ export class UsersService {
   }: IChangePassword): Promise<void> {
     return executeUseCase({
       useCase: this._changePassword,
+      input,
+      requestContext,
+    });
+  }
+  async getSelectUser({
+    input,
+    requestContext,
+  }: IGetSelectUser): Promise<ISelect[]> {
+    const data = await executeUseCase({
+      useCase: this._getSelectUser,
+      input,
+      requestContext,
+    });
+
+    return data;
+  }
+
+  async getEmailsByUsersId({
+    input,
+    requestContext,
+  }: IGetEmailsByUsersId): Promise<string[]> {
+    return executeUseCase({
+      useCase: this._getEmailsByUsersId,
       input,
       requestContext,
     });

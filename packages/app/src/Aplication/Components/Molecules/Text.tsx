@@ -37,8 +37,13 @@ const TextMuted = ({ children, className = '' }: TextProps) => (
   <p className={`text-sm text-muted-foreground ${className}`}>{children}</p>
 );
 
+export const Label = ({ children, className = '' }: TextProps) => (
+  <p className={`leading-none text-sm ${className}`}>{children}</p>
+);
+
 Text.Blockquote = TextBlockquote;
 Text.Code = TextCode;
 Text.Lead = TextLead;
 Text.Small = TextSmall;
 Text.Muted = TextMuted;
+Text.Label = Label;

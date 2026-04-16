@@ -16,6 +16,14 @@ export interface IGetRoleByUserRepository extends IRequestContext {
   userId: number;
 }
 
+export interface IGetRoleByUserIdRepository {
+  userId: number;
+}
+
+export interface IGetRolesByMaxHierarchyRepository {
+  maxHierarchy: number;
+}
+
 export interface PermissionsRepository {
   getPermissions(params: IGetPermissionsRepository): Promise<Permissions[]>;
   getRoles(params: IGetRolesRepository): Promise<Roles[]>;
@@ -25,4 +33,8 @@ export interface PermissionsRepository {
   associateUserToRole(params: IAssociateUserToRoleRepository): Promise<void>;
   dissociateUserToRole(params: IDissociateUserToRoleRepository): Promise<void>;
   getRoleByUser(params: IGetRoleByUserRepository): Promise<string | null>;
+  getRoleByUserId(params: IGetRoleByUserIdRepository): Promise<Roles | null>;
+  getRolesByMaxHierarchy(
+    params: IGetRolesByMaxHierarchyRepository,
+  ): Promise<Roles[]>;
 }

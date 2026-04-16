@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { useURLParams } from './useURLParams';
+import { TPagination } from '../Helpers';
 
 const INIT_NUMBER_PAGE = 10;
-const ADD_NUMBER_PAGE = 10;
 
 interface UsePaginationIntersectionProps {
   hasMore: boolean;
@@ -16,43 +16,46 @@ export const usePaginationIntersection = ({
   onLoadMore,
 }: UsePaginationIntersectionProps) => {
   const observerRef = useRef<HTMLDivElement>(null);
-  const { updateParams } = useURLParams();
+  const isFetchingRef = useRef(false);
+  const currentPageRef = useRef(
+    (() => {
+      const hash = window.location.hash;
+      const queryString = hash.split('?')[1] || '';
+      return Number(new URLSearchParams(queryString).get('page')) || 1;
+    })(),
+  );
+  const { updateParams } = useURLParams<TPagination>();
 
   useEffect(() => {
-    const currentObserverRef = observerRef.current; // Capturar referencia para cleanup
+    if (!isLoading) isFetchingRef.current = false;
+  }, [isLoading]);
+
+  useEffect(() => {
+    if (!hasMore || isLoading) return;
+
+    // El IntersectionObserver siempre dispara un callback inmediato al llamar
+    // observe() reportando el estado inicial. Ignoramos esa primera llamada para
+    // evitar que un refresh incremente la página automáticamente.
+    let skipInitialFire = true;
 
     const observer = new IntersectionObserver(
-      (entries) => {
-        const target = entries[0];
-        if (target.isIntersecting && hasMore && !isLoading) {
-          // Leer directamente del hash porque usas React Router con hash routing
-          const hash = window.location.hash; // "#/users?limit=10"
-          const queryString = hash.split('?')[1] || ''; // "limit=10"
-          const urlParams = new URLSearchParams(queryString);
-          const currentLimit = urlParams.get('limit');
-
-          const newLimit =
-            (Number(currentLimit) || INIT_NUMBER_PAGE) + ADD_NUMBER_PAGE;
-
-          onLoadMore?.();
-          updateParams({ limit: newLimit });
+      ([entry]) => {
+        if (skipInitialFire) {
+          skipInitialFire = false;
+          return;
         }
+        if (!entry.isIntersecting || isFetchingRef.current) return;
+        isFetchingRef.current = true;
+
+        currentPageRef.current += 1;
+        onLoadMore?.();
+        updateParams({ limit: INIT_NUMBER_PAGE, page: currentPageRef.current });
       },
-      {
-        threshold: 1.0,
-        rootMargin: '200px',
-      },
+      { threshold: 1.0, rootMargin: '200px' },
     );
 
-    if (currentObserverRef) {
-      observer.observe(currentObserverRef);
-    }
-
-    return () => {
-      if (currentObserverRef) {
-        observer.unobserve(currentObserverRef);
-      }
-    };
+    if (observerRef.current) observer.observe(observerRef.current);
+    return () => observer.disconnect();
   }, [hasMore, isLoading, onLoadMore, updateParams]);
 
   return { observerRef };

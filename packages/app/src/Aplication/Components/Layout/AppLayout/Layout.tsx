@@ -23,7 +23,7 @@ export const Layout = () => {
   });
 
   return (
-    <div className={layoutStyle}>
+    <div className={`${layoutStyle}`}>
       <Header />
       <main className="main">
         <App />

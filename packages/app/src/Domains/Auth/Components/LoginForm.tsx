@@ -7,7 +7,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@app/Aplication/Components/ui/form';
-import { Input } from '@app/Aplication/Components';
+import { Input } from '@app/Aplication/Components/Molecules/Input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -142,7 +142,11 @@ export const LoginForm = () => {
             ¿Olvidaste tu contraseña?
           </Link>
           <Container row justify="end">
-            <Button type="submit" isLoading={isPending || isPendingRegister}>
+            <Button
+              type="submit"
+              isLoading={isPending || isPendingRegister}
+              forceEnabled
+            >
               {registrationMode ? 'Aceptar' : 'Ingresar'}
             </Button>
           </Container>

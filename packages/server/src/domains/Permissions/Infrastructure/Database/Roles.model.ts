@@ -15,6 +15,7 @@ export class RolesModel extends Model<
 > {
   declare id: CreationOptional<number>;
   declare denominacion: string;
+  declare jerarquia: number;
 
   declare readonly PermissionsModels: NonAttribute<
     InferAttributes<PermissionsModel>
@@ -30,6 +31,7 @@ RolesModel.init(
       allowNull: false,
     },
     denominacion: DataTypes.STRING,
+    jerarquia: DataTypes.INTEGER,
   },
   {
     sequelize,

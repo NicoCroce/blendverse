@@ -9,6 +9,7 @@ import {
   faSpinner,
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
+import { useIsEditable } from '@/Aplication/Hooks/useIsEditable';
 
 const CustomButtonOptions = {
   cancel: { icon: faXmark, variant: 'outline', text: 'Cancelar' },
@@ -21,6 +22,7 @@ const CustomButtonOptions = {
 type TCustomButtonOptions = typeof CustomButtonOptions;
 type TKeys = keyof TCustomButtonOptions;
 
+// Permite forzar habilitado para casos como login
 interface CustomlButtonNewProps extends ButtonProps {
   appearance?: TKeys;
   showLabel?: boolean;
@@ -31,6 +33,7 @@ interface CustomlButtonNewProps extends ButtonProps {
   variant?: ButtonProps['variant'];
   disabled?: boolean;
   icon?: IconDefinition;
+  forceEnabled?: boolean; // <--- NUEVO
 }
 
 export const Button = React.forwardRef<
@@ -50,6 +53,7 @@ export const Button = React.forwardRef<
       disabled = false,
       className,
       icon,
+      forceEnabled = false, // <--- NUEVO
       ...props
     },
     ref,
@@ -59,6 +63,7 @@ export const Button = React.forwardRef<
       icon: iconPreset,
       text,
     } = CustomButtonOptions[appearance];
+    const isEditable = useIsEditable();
     return (
       <LibButton
         {...props}
@@ -66,7 +71,7 @@ export const Button = React.forwardRef<
         onClick={onClick}
         variant={_variant ? _variant : variant}
         className={`flex gap-2 p-[14px] h-0 ${className}`}
-        disabled={disabled || isLoading}
+        disabled={forceEnabled ? false : disabled || isLoading || !isEditable}
         type={type}
       >
         {showIcon && !isLoading && (icon || iconPreset) && (

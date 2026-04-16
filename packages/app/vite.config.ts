@@ -15,16 +15,24 @@ export default defineConfig({
       // add this to cache all the
       // static assets in the public folder
       includeAssets: ['**/*'],
+      devOptions: {
+        enabled: false,
+      },
       manifest: {
-        name: 'Macrosistemas',
-        short_name: 'Macrosistemas',
-        theme_color: '#3c3c3c',
+        name: 'MacroGest',
+        short_name: 'MacroGest',
+        theme_color: '#000000',
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait',
         scope: '/',
         start_url: '/',
         icons: [
+          {
+            src: 'images/icons/icon-48x48.png',
+            sizes: '48x48',
+            type: 'image/png',
+          },
           {
             src: 'images/icons/icon-72x72.png',
             sizes: '72x72',

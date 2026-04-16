@@ -3,6 +3,7 @@ import { Skeleton } from '../../ui/skeleton';
 import { usePaginationIntersection } from '@app/Aplication/Hooks';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { useEffect, useState } from 'react';
 
 interface DataListProps<TData> {
   component: ({ data }: { data: TData }) => JSX.Element;
@@ -10,6 +11,7 @@ interface DataListProps<TData> {
   onLoadMore?: () => void;
   hasMore?: boolean;
   isLoading?: boolean;
+  currentPage: number;
 }
 
 export const DataList = <TData,>({
@@ -18,10 +20,22 @@ export const DataList = <TData,>({
   onLoadMore,
   hasMore = true,
   isLoading = false,
+  currentPage,
 }: DataListProps<TData>) => {
+  const [persistData, setPersistData] = useState(data);
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (currentPage === 1) {
+        setPersistData(data);
+      } else {
+        setPersistData((prev) => [...prev, ...data]);
+      }
+    }
+  }, [data, isLoading]);
+
   const Component = component;
 
-  // Usar el hook personalizado para manejar el scroll infinito
   const { observerRef } = usePaginationIntersection({
     hasMore,
     isLoading,
@@ -29,9 +43,9 @@ export const DataList = <TData,>({
   });
 
   return (
-    <div className="mb-10">
+    <div className="mb-10 w-full">
       <ul className="flex flex-col gap-4">
-        {data.map((currentData) => (
+        {persistData.map((currentData) => (
           <li key={uuidv4()}>
             <Component data={currentData} />
           </li>
@@ -44,7 +58,12 @@ export const DataList = <TData,>({
           ref={observerRef}
           className="h-4 flex justify-center items-center p-10"
         >
-          {isLoading && <FontAwesomeIcon icon={faSpinner} size="2xl" spin />}
+          <FontAwesomeIcon
+            icon={faSpinner}
+            size="2xl"
+            spin
+            style={{ visibility: isLoading ? 'visible' : 'hidden' }}
+          />
         </div>
       )}
     </div>

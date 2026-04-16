@@ -1,11 +1,11 @@
-import { TUser } from '@app/Domains/Users';
+import { TUserLogged } from '@app/Domains/Users';
 
 import { Container } from '../Container';
 import { useGlobalStore } from '@app/Aplication/Hooks';
 import { Title, Text } from '../../Molecules';
 
 export const NavBarHeader = () => {
-  const { data: dataUser } = useGlobalStore<TUser>('dataUser');
+  const { data: dataUser } = useGlobalStore<TUserLogged>('dataUser');
   return (
     <header>
       <Container row className="md:px-4">
