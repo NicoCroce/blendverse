@@ -1,16 +1,12 @@
 import * as React from 'react';
 
 import { cn } from '@/Aplication/lib/utils';
-import { useIsEditable } from '@/Aplication/Hooks/useIsEditable';
 
 export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
-  forceEnabled?: boolean;
-}
+  extends React.InputHTMLAttributes<HTMLInputElement> {}
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, disabled, forceEnabled = false, ...props }, ref) => {
-    const isEditable = useIsEditable();
+export const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, type, ...props }, ref) => {
     return (
       <input
         type={type}
@@ -20,12 +16,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           className,
         )}
         ref={ref}
-        disabled={forceEnabled ? false : (disabled ?? !isEditable)}
         {...props}
       />
     );
   },
 );
 Input.displayName = 'Input';
-
-export { Input };

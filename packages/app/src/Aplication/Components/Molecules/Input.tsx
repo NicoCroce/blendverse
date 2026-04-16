@@ -1,19 +1,24 @@
 import { forwardRef, useState } from 'react';
-import { Input as InputLib, InputProps } from '../ui/input';
+import { Input as InputLib, InputProps as InputPropsLib } from '../ui/input';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button } from './Button';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { useIsEditable } from '@app/Aplication/Hooks/useIsEditable';
+
+interface InputProps extends InputPropsLib {
+  forceEnabled?: boolean;
+}
 
 // Extiende el Input básico con forwardRef
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, disabled, ...props }, ref) => {
-    // Siempre habilitado en login
+  ({ className, disabled, forceEnabled = false, ...props }, ref) => {
+    const isEditable = useIsEditable();
     return (
       <InputLib
         ref={ref}
-        className={`h-8 ${className ?? ''}`}
+        className={`h-8 bg-white ${className ?? ''}`}
+        disabled={forceEnabled ? false : (disabled ?? !isEditable)}
         {...props}
-        disabled={false}
       />
     );
   },
@@ -29,11 +34,10 @@ const InputPassword = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
         type={show ? 'text' : 'password'}
         ref={ref}
         {...props}
-        disabled={false}
       />
       <Button
         variant="outline"
-        className="absolute right-0 top-[0.75px]"
+        className="absolute right-0 top-[0.75px] p-[13px]"
         onClick={() => setShow((prev) => !prev)}
         type="button"
         forceEnabled

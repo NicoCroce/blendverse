@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Input } from '@app/Aplication/Components/ui/input';
+import { Input } from '@app/Aplication/Components';
 import { Search } from 'lucide-react';
 import { USERS_ROUTE } from '../Users.routes';
 import { useURLParams } from '@app/Aplication/Hooks/useURLParams';

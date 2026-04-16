@@ -4,7 +4,7 @@ import { useAddUser, useUpdateUser } from '../../Hooks';
 import { z } from 'zod';
 import { Form } from '@app/Aplication/Components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Input } from '@app/Aplication/Components/ui/input';
+import { Input } from '@app/Aplication/Components';
 import {
   Button,
   Container,
