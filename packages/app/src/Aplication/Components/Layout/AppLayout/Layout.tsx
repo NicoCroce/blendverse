@@ -7,9 +7,6 @@ import clsx from 'clsx';
 import './Layout.css';
 import { usePublicPages } from '@app/Aplication/Hooks';
 
-const gradient =
-  'bg-gradient-to-b from-[hsl(var(--accent))] from-[10.33%] to-transparent';
-
 export const Layout = () => {
   const isPublicPage = usePublicPages();
 
@@ -26,7 +23,7 @@ export const Layout = () => {
   });
 
   return (
-    <div className={`${layoutStyle} ${gradient}`}>
+    <div className={`${layoutStyle}`}>
       <Header />
       <main className="main">
         <App />

@@ -16,11 +16,11 @@ export const useChangeTheme = () => {
     );
     document.documentElement.style.setProperty(
       '--accent',
-      `${theme.color_primary_hsl} / 0.1`,
+      `${theme.color_primary_hsl} / 0.15`,
     );
     document.documentElement.style.setProperty(
       '--muted',
-      `${theme.color_primary_hsl} / 0.1`,
+      `${theme.color_primary_hsl} / 0.15`,
     );
   }
 };
