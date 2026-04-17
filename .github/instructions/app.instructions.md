@@ -28,6 +28,13 @@ packages/app/src/Domains/[Domain]/
 
 ## Patrones Obligatorios
 
+## Reglas de oro
+
+1. Las páginas y los componentes solo pueden llamar a los servicios desde los hooks, de su propio dominio o de los demás.
+2. TRPc solo puede ser llamado desde la carpeta `Service`.
+3. Si vas a utilizar un `Input`, `Button`, etc. Debes verificar primero en `Layout`, `Molecules`, `Organisms`.
+4. Si vas a utilizar un componente de `packages/app/src/Aplication/Components/ui` debes informarlo antes de utilizarlo.
+
 ### Entity (tipos)
 
 ```typescript
@@ -190,3 +197,8 @@ Antes de crear cualquier componente nuevo, verificar en `packages/app/src/Aplica
 | Páginas        | `[Entity][Action].page.tsx`                                | `ArticlesList.page.tsx` |
 | Routes const   | `[ENTITY]_[ACTION]_ROUTE`                                  | `ARTICLES_NEW_ROUTE`    |
 | Router export  | `[Domain]Router`                                           | `ArticlesRouter`        |
+
+## Resctricciones
+
+1. No debes llamar un servicio (TRPC, o de la carpeta Service) desde un componente tsx.
+2. No debes escribir grandes bloqeues de código directamente en \*.page. Debes colocarlo en la carpeta `Components` del dominio.

@@ -20,6 +20,20 @@ description: Genera un dominio DDD completo en el servidor: entidad, interfaces,
 
 ---
 
+## Convención de Nombres del Proyecto
+
+| Elemento                                 | Idioma      | Ejemplos                                  |
+| ---------------------------------------- | ----------- | ----------------------------------------- |
+| Carpeta del dominio                      | **Inglés**  | `ArticleSpecialDiscounts/`, `Customers/`  |
+| Clases (Entidad, Modelo, Servicio, etc.) | **Inglés**  | `ArticleSpecialDiscount`, `CustomerModel` |
+| Atributos de la entidad                  | **Español** | `cantidad_minima`, `tipo_descuento`       |
+| Nombres de columnas en la DB             | **Español** | `id_articulo`, `fecha_sincronizacion_mg`  |
+| Parámetros de interfaces                 | **Español** | `id_propietario`, `denominacion`          |
+
+> **IMPORTANTE:** Nunca traducir los nombres de columnas ni atributos de entidad al inglés. Siempre mantener los nombres tal como están en la base de datos.
+
+---
+
 ## Protocolo de Preguntas (OBLIGATORIO si faltan datos)
 
 Antes de generar cualquier archivo, pregunta al usuario:
