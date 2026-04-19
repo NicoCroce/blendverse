@@ -57,4 +57,19 @@ export class AuthController {
       .mutation(
         executeService(this.authService.restorePassword.bind(this.authService)),
       );
+
+  renewPasswordAuth = () =>
+    procedure
+      .input(
+        z.object({
+          token: z.string(),
+          newPassword: z.string(),
+          rePassword: z.string(),
+        }),
+      )
+      .mutation(
+        executeService(
+          this.authService.renewPasswordAuth.bind(this.authService),
+        ),
+      );
 }

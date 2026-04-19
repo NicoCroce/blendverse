@@ -3,14 +3,19 @@ import { Login } from './UseCases/Login.usecase';
 import {
   IExecuteResponse,
   Ilogin,
+  IRenewPasswordAuth,
   IRestorePassword,
 } from '../Domain/auth.interfaces';
 import { RestorePassword } from './UseCases';
+import { RenewPasswordAuth } from './UseCases/RenewPasswordAuth.usecase';
+import { TRPCError } from '@trpc/server';
+import { verifyToken } from '@server/utils';
 
 export class AuthService {
   constructor(
     private readonly _login: Login,
     private readonly _restorePassword: RestorePassword,
+    private readonly _renewPasswordAuth: RenewPasswordAuth,
   ) {}
 
   async login({ input, requestContext }: Ilogin): Promise<IExecuteResponse> {
@@ -31,6 +36,37 @@ export class AuthService {
     return executeUseCase({
       useCase: this._restorePassword,
       input,
+      requestContext,
+    });
+  }
+
+  async renewPasswordAuth({
+    input,
+    requestContext,
+  }: IRenewPasswordAuth): Promise<void> {
+    const { token, newPassword, rePassword } = input;
+
+    if (!token) {
+      throw new TRPCError({
+        message: 'Token not provided',
+        code: 'UNAUTHORIZED',
+      });
+    }
+
+    let dataToken;
+
+    try {
+      dataToken = (await verifyToken(token)) as { email: string };
+    } catch {
+      throw new TRPCError({
+        message: 'Token error',
+        code: 'UNAUTHORIZED',
+      });
+    }
+
+    return executeUseCase({
+      useCase: this._renewPasswordAuth,
+      input: { mail: dataToken.email, newPassword, rePassword },
       requestContext,
     });
   }

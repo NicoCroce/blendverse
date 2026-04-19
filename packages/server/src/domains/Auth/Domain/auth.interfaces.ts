@@ -1,5 +1,5 @@
 import { IRequestContext } from '@server/Application';
-import { User } from '@server/domains/Users';
+import { IRenewPassword, User } from '@server/domains/Users';
 
 export interface Ilogin extends IRequestContext {
   input: {
@@ -19,6 +19,12 @@ export interface IValidateUserPassword extends IRequestContext {
 export interface IRestorePassword extends IRequestContext {
   input: string; // mail
 }
+
+export interface IRenewPasswordAuth extends IRequestContext {
+  input: { token: string; newPassword: string; rePassword: string };
+}
+
+export interface IRenewPasswordAuthUsecase extends IRenewPassword {}
 
 export interface IExecuteResponse {
   token: string;

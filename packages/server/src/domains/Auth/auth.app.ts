@@ -8,6 +8,7 @@ import {
 } from './Application/UseCases';
 import { AuthRepositoryImplementation } from './Infrastructure/Repository/AuthRepository.implementation';
 import { container } from '@server/utils/Container';
+import { RenewPasswordAuth } from './Application/UseCases/RenewPasswordAuth.usecase';
 
 export const authApp = {
   authRepository: asClass(AuthRepositoryImplementation),
@@ -16,6 +17,7 @@ export const authApp = {
   _login: asClass(Login),
   _validateUserPassword: asClass(ValidateUserPassword),
   _restorePassword: asClass(RestorePassword),
+  _renewPasswordAuth: asClass(RenewPasswordAuth),
 };
 
 export const authController = () =>
