@@ -1,7 +1,6 @@
 import { protectedProcedure } from '@server/Infrastructure/trpc';
 import { UsersService } from '../../Application';
 import { executeService } from '@server/Application';
-import { loggerContextInput } from '@server/utils/pino';
 import z from 'zod';
 import { paginationZodParams } from '@server/utils';
 
@@ -39,24 +38,9 @@ export class UsersController {
           profile: z.string().nullable().default(null),
         }),
       )
-      .mutation(async ({ ctx, input }) => {
-        const dataLog = {
-          mail: input.mail,
-          name: input.name,
-        };
-
-        loggerContextInput(ctx.requestContext, dataLog).info('Execute Service');
-
-        const response = await this.usersService.registerUser({
-          input,
-          requestContext: ctx.requestContext,
-        });
-
-        loggerContextInput(ctx.requestContext, dataLog).info(
-          'Service response => ',
-        );
-        return response;
-      });
+      .mutation(
+        executeService(this.usersService.registerUser.bind(this.usersService)),
+      );
 
   deleteUser = () =>
     protectedProcedure

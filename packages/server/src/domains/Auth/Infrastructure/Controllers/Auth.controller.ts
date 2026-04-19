@@ -1,7 +1,6 @@
 import { procedure } from '@server/Infrastructure';
 import { AuthService } from '../../Application';
 import z from 'zod';
-import { loggerContextInput } from '@server/utils/pino';
 import { executeService } from '@server/Application';
 
 export class AuthController {
@@ -16,20 +15,10 @@ export class AuthController {
         }),
       )
       .mutation(async ({ ctx, input }) => {
-        loggerContextInput(ctx.requestContext, { mail: input.mail }).info(
-          'Execute Service',
-        );
-
-        const requestContext = ctx.requestContext;
-
         const { token, user, theme } = await this.authService.login({
           input,
-          requestContext,
+          requestContext: ctx.requestContext,
         });
-
-        loggerContextInput(ctx.requestContext, { mail: input.mail }).info(
-          'Service response => ',
-        );
 
         ctx.res.cookie('auth_token', token, {
           httpOnly: true,

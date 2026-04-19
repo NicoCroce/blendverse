@@ -64,14 +64,11 @@ export class OwnersyssController {
           sucursal_presupuestos: z.number().default(0),
         }),
       )
-      .mutation(async ({ ctx, input }) => {
-        const response = await this.ownersyssService.createOwnersys({
-          input,
-          requestContext: ctx.requestContext,
-        });
-
-        return response;
-      });
+      .mutation(
+        executeService(
+          this.ownersyssService.createOwnersys.bind(this.ownersyssService),
+        ),
+      );
 
   deleteOwnersys = () =>
     protectedProcedure
