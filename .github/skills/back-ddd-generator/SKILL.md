@@ -698,6 +698,11 @@ const MainRouter = () => {
 
 ---
 
+## Restricciones
+
+1. Los casos de uso importan e inyectan solo repositorios del mismo dominio, no puede importar otros repositorios.
+2. Si un caso de uso necesita un método de otro dominio, deberá ser llamado desde un caso de uso exportado en el otro dominio, por medio de la inyección de dependencia sobre el caso de uso del dominio correspondiente. `Por ejemnplo: Auth necesita renovar contraseña del usuario, por lo que llamará al caso de uso correspondiente del dominio de Users`.
+
 ## Checklist Final
 
 Tras crear todos los archivos, ejecuta `diagnostics/getErrors` y verifica:

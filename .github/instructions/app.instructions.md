@@ -198,7 +198,8 @@ Antes de crear cualquier componente nuevo, verificar en `packages/app/src/Aplica
 | Routes const   | `[ENTITY]_[ACTION]_ROUTE`                                  | `ARTICLES_NEW_ROUTE`    |
 | Router export  | `[Domain]Router`                                           | `ArticlesRouter`        |
 
-## Resctricciones
+## Restricciones
 
 1. No debes llamar un servicio (TRPC, o de la carpeta Service) desde un componente tsx.
 2. No debes escribir grandes bloqeues de código directamente en \*.page. Debes colocarlo en la carpeta `Components` del dominio.
+3. Evita utilizar `magics strings`.
