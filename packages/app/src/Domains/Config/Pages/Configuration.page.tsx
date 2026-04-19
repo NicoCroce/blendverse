@@ -5,6 +5,7 @@ import { useUpdateTheme } from '../Hooks/useUpdateTheme';
 import { useGetThemes } from '../Hooks';
 import { TUserLogged } from '@app/Domains/Users';
 import { ConfigActions, ThemePreview, ThemeSelector } from '../Components';
+import { MAIN_ROUTE } from '@app/Domains/Main';
 
 export const ConfigurationPage = () => {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ export const ConfigurationPage = () => {
   const handleCancelChange = () => {
     document.documentElement.style.setProperty('--primary', originalPrimary);
     document.documentElement.style.setProperty('--ring', originalPrimary);
-    navigate('/main');
+    navigate(MAIN_ROUTE);
   };
 
   const handleConfirmChange = () => {
