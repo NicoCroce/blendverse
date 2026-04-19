@@ -14,9 +14,9 @@ import {
   GetSelectUser,
   GetEmailsByUsersId,
   ValidateUserPassword,
+  RenewPassword,
 } from './Application';
 import { container } from '@server/utils/Container';
-import { RenewPassword } from './Application/UseCases/RenewPassword.usecase';
 
 export const userApp = {
   usersRepository: asClass(UsersRepositoryImplementation),
