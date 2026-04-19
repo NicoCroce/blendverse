@@ -1,4 +1,5 @@
 export * from './Components';
+export * from './Config.entity';
 export * from './Config.router';
 export * from './Config.routes';
 export * from './Config.service';
