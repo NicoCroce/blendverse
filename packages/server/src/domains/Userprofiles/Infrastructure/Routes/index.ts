@@ -1,2 +1,2 @@
-export * from './UserprofileRoutes';
+export * from './Userprofiles.routes';
 export * from './Router';

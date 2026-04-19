@@ -1,2 +1,2 @@
-export * from './OwnersysRoutes';
+export * from './Ownersyss.routes';
 export * from './Router';

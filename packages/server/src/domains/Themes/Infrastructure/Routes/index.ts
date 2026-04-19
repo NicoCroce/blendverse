@@ -1,2 +1,2 @@
-export * from './ThemeRoutes';
+export * from './Themes.routes';
 export * from './Router';
