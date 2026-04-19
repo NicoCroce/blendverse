@@ -88,7 +88,7 @@ export const LoginForm = () => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} forceEnabled />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -102,7 +102,7 @@ export const LoginForm = () => {
               <FormItem>
                 <FormLabel>Nombre de usuario</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input {...field} forceEnabled />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -116,7 +116,7 @@ export const LoginForm = () => {
             <FormItem>
               <FormLabel>Constraseña</FormLabel>
               <FormControl>
-                <Input.Password {...field} />
+                <Input.Password {...field} forceEnabled />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -130,7 +130,7 @@ export const LoginForm = () => {
               <FormItem>
                 <FormLabel>Ingrese nuevamente la Constraseña</FormLabel>
                 <FormControl>
-                  <Input.Password {...field} />
+                  <Input.Password {...field} forceEnabled />
                 </FormControl>
                 <FormMessage />
               </FormItem>
