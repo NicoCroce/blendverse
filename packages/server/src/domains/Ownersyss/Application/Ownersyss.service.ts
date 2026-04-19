@@ -27,9 +27,9 @@ import {
 
 export class OwnersyssService {
   constructor(
-    private readonly _create: CreateOwnersys,
-    private readonly _delete: DeleteOwnersys,
-    private readonly _update: UpdateOwnersys,
+    private readonly _createOwnersys: CreateOwnersys,
+    private readonly _deleteOwnersys: DeleteOwnersys,
+    private readonly _updateOwnersys: UpdateOwnersys,
     private readonly _getAllOwnersyss: GetAllOwnersyss,
     private readonly _getSelectOwnersys: GetSelectOwnersys,
     private readonly _getOwnersys: GetOwnersys,
@@ -42,7 +42,7 @@ export class OwnersyssService {
     requestContext,
   }: ICreateOwnersys): Promise<Ownersys | null> {
     return executeUseCase({
-      useCase: this._create,
+      useCase: this._createOwnersys,
       input,
       requestContext,
     });
@@ -52,7 +52,7 @@ export class OwnersyssService {
     requestContext,
   }: IDeleteOwnersys): Promise<number | null> {
     return executeUseCase({
-      useCase: this._delete,
+      useCase: this._deleteOwnersys,
       input,
       requestContext,
     });
@@ -62,7 +62,7 @@ export class OwnersyssService {
     requestContext,
   }: IUpdateOwnersys): Promise<Ownersys | null> {
     return executeUseCase({
-      useCase: this._update,
+      useCase: this._updateOwnersys,
       input,
       requestContext,
     });

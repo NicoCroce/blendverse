@@ -8,14 +8,6 @@ export interface Ilogin extends IRequestContext {
   };
 }
 
-export interface IValidateUserPassword extends IRequestContext {
-  input: {
-    mail?: string;
-    id?: number;
-    password: string;
-  };
-}
-
 export interface IRestorePassword extends IRequestContext {
   input: string; // mail
 }

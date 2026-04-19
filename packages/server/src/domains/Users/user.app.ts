@@ -13,6 +13,7 @@ import {
   ChangePassword,
   GetSelectUser,
   GetEmailsByUsersId,
+  ValidateUserPassword,
 } from './Application';
 import { container } from '@server/utils/Container';
 import { RenewPassword } from './Application/UseCases/RenewPassword.usecase';
@@ -30,6 +31,7 @@ export const userApp = {
   _getSelectUser: asClass(GetSelectUser),
   _getEmailsByUsersId: asClass(GetEmailsByUsersId),
   _renewPassword: asClass(RenewPassword),
+  _validateUserPassword: asClass(ValidateUserPassword),
 };
 
 export const usersController = () =>

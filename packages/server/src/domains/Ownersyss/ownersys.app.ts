@@ -23,9 +23,9 @@ export const ownersysApp = {
   _getAllOwnersyss: asClass(GetAllOwnersyss),
   _getSelectOwnersys: asClass(GetSelectOwnersys),
   _getOwnersys: asClass(GetOwnersys),
-  _create: asClass(CreateOwnersys),
-  _delete: asClass(DeleteOwnersys),
-  _update: asClass(UpdateOwnersys),
+  _createOwnersys: asClass(CreateOwnersys),
+  _deleteOwnersys: asClass(DeleteOwnersys),
+  _updateOwnersys: asClass(UpdateOwnersys),
   _changeTheme: asClass(ChangeTheme),
   _getOwnerTheme: asClass(GetOwnerTheme),
 };

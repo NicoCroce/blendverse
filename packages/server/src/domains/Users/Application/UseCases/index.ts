@@ -7,3 +7,4 @@ export * from './GetUsers.usecase';
 export * from './RegisterUser.usecase';
 export * from './RenewPassword.usecase';
 export * from './UpdateUser.usecase';
+export * from './ValidateUserPassword.usecase';

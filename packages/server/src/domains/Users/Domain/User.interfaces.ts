@@ -72,3 +72,11 @@ export interface IGetEmailsByUsersId extends IRequestContext {
 export interface IRenewPassword extends IRequestContext {
   input: { mail: string; newPassword: string; rePassword: string };
 }
+
+export interface IValidateUserPassword extends IRequestContext {
+  input: {
+    mail?: string;
+    id?: number;
+    password: string;
+  };
+}

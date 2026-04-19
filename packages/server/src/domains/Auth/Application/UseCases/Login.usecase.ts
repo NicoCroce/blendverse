@@ -1,16 +1,15 @@
 import { executeUseCase, IUseCase } from '@server/Application';
 import { generateToken } from '@server/utils/JWT';
 import { IExecuteResponse, Ilogin } from '../../Domain/auth.interfaces';
-import { ValidateUserPassword } from './ValidateUserPassword.usecase';
-import { User } from '@server/domains/Users';
-import { PermissionsRepositoryImplementation } from '@server/domains/Permissions/Infrastructure';
-import { GetRoleByUser } from '@server/domains/Permissions/Application/UseCases/GetRoleByUser.usecase';
+import { User, ValidateUserPassword } from '@server/domains/Users';
+import { GetRoleByUser } from '@server/domains/Permissions';
 import { GetOwnersys } from '@server/domains/Ownersyss';
 
 export class Login implements IUseCase<IExecuteResponse> {
   constructor(
     private readonly _validateUserPassword: ValidateUserPassword,
     private readonly _getOwnersys: GetOwnersys,
+    private readonly _getRoleByUser: GetRoleByUser,
   ) {}
 
   async execute({ input, requestContext }: Ilogin): Promise<IExecuteResponse> {
@@ -35,13 +34,16 @@ export class Login implements IUseCase<IExecuteResponse> {
       throw new Error('ownerId no puede ser undefined');
     }
 
-    // Obtener el rol del usuario
-    const permissionsRepository = new PermissionsRepositoryImplementation();
-    const getRoleByUser = new GetRoleByUser(permissionsRepository);
     if (id === undefined) {
       throw new Error('id no puede ser undefined');
     }
-    const rol = await getRoleByUser.execute({ input: id, requestContext });
+
+    // Obtener el rol del usuario
+    const rol = await executeUseCase({
+      useCase: this._getRoleByUser,
+      input: id,
+      requestContext,
+    });
 
     const data = {
       id: id,
