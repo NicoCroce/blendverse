@@ -68,3 +68,7 @@ export interface IGetSelectUser extends IRequestContext {
 export interface IGetEmailsByUsersId extends IRequestContext {
   input: number[];
 }
+
+export interface IRenewPassword extends IRequestContext {
+  input: { mail: string; newPassword: string; rePassword: string };
+}

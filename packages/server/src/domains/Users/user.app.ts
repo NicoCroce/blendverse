@@ -15,6 +15,7 @@ import {
   GetEmailsByUsersId,
 } from './Application';
 import { container } from '@server/utils/Container';
+import { RenewPassword } from './Application/UseCases/RenewPassword.usecase';
 
 export const userApp = {
   usersRepository: asClass(UsersRepositoryImplementation),
@@ -28,6 +29,7 @@ export const userApp = {
   _changePassword: asClass(ChangePassword),
   _getSelectUser: asClass(GetSelectUser),
   _getEmailsByUsersId: asClass(GetEmailsByUsersId),
+  _renewPassword: asClass(RenewPassword),
 };
 
 export const usersController = () =>

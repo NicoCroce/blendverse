@@ -5,4 +5,5 @@ export * from './GetSelectUser.usecase';
 export * from './GetUser.usecase';
 export * from './GetUsers.usecase';
 export * from './RegisterUser.usecase';
+export * from './RenewPassword.usecase';
 export * from './UpdateUser.usecase';

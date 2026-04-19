@@ -1,5 +1,6 @@
 import { Op } from 'sequelize';
 import {
+  IRenewPasswordRepository,
   IChangePasswordRepository,
   IDeleteUserRepository,
   IGetEmailsByUsersIdRepository,
@@ -239,5 +240,16 @@ export class UsersRepositoryImplementation implements UserRepository {
     return users
       .map((user) => user.email)
       .filter((email) => email && email.trim() !== '');
+  }
+
+  async renewPassword(params: IRenewPasswordRepository): Promise<void | null> {
+    const { mail, password } = params;
+
+    const rowsAffected = await UserModel.update(
+      { clave: password },
+      { where: { email: mail } },
+    );
+
+    if (!mail || !rowsAffected[0]) return null;
   }
 }
