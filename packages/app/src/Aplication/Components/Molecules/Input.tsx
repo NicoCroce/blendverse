@@ -13,10 +13,14 @@ interface InputProps extends InputPropsLib {
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ className, disabled, forceEnabled = false, ...props }, ref) => {
     const isEditable = useIsEditable();
+    const dateClass =
+      props.type === 'date'
+        ? 'block [&::-webkit-calendar-picker-indicator]:cursor-pointer'
+        : '[&::-webkit-calendar-picker-indicator]:ml-auto [&::-webkit-calendar-picker-indicator]:cursor-pointer';
     return (
       <InputLib
         ref={ref}
-        className={`h-8 bg-white ${className ?? ''}`}
+        className={`h-8 bg-white ${dateClass} ${className ?? ''}`}
         disabled={forceEnabled ? false : (disabled ?? !isEditable)}
         {...props}
       />
