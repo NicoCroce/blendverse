@@ -1,4 +1,4 @@
-import { executeUseCase } from '@server/Application';
+import { executeUseCase, AppError } from '@server/Application';
 import { Login } from './UseCases/Login.usecase';
 import {
   IExecuteResponse,
@@ -8,7 +8,6 @@ import {
 } from '../Domain/auth.interfaces';
 import { RestorePassword } from './UseCases';
 import { RenewPasswordAuth } from './UseCases/RenewPasswordAuth.usecase';
-import { TRPCError } from '@trpc/server';
 import { verifyToken } from '@server/utils';
 
 export class AuthService {
@@ -47,10 +46,7 @@ export class AuthService {
     const { token, newPassword, rePassword } = input;
 
     if (!token) {
-      throw new TRPCError({
-        message: 'Token not provided',
-        code: 'UNAUTHORIZED',
-      });
+      throw new AppError('Token not provided', 401, 'UNAUTHORIZED');
     }
 
     let dataToken;
@@ -58,10 +54,7 @@ export class AuthService {
     try {
       dataToken = (await verifyToken(token)) as { email: string };
     } catch {
-      throw new TRPCError({
-        message: 'Token error',
-        code: 'UNAUTHORIZED',
-      });
+      throw new AppError('Token error', 401, 'UNAUTHORIZED');
     }
 
     return executeUseCase({
