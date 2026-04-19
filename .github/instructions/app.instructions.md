@@ -34,6 +34,7 @@ packages/app/src/Domains/[Domain]/
 2. TRPc solo puede ser llamado desde la carpeta `Service`.
 3. Si vas a utilizar un `Input`, `Button`, etc. Debes verificar primero en `Layout`, `Molecules`, `Organisms`.
 4. Si vas a utilizar un componente de `packages/app/src/Aplication/Components/ui` debes informarlo antes de utilizarlo.
+5. El componente `Container` es estrucutral, por lo que si lo utilizas por defecto ya es flex column. Esto facilita el layout. **SI VAS A UTILIZARLO ANALIZA BIEN SU COMPORTAMIENTO PARA NO AGREGAR BLOCK INNECESARIAMENTE** También ten en cuenta `space` los valores correctos.
 
 ### Entity (tipos)
 
