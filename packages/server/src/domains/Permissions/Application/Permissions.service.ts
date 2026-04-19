@@ -4,7 +4,7 @@ import {
   GetPermissionsByUser,
   GetRoleByUser,
   GetRoles,
-} from './';
+} from '.';
 import {
   IGetPermissions,
   IGetPermissionsByUser,

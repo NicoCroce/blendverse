@@ -1,2 +1,2 @@
-export * from './Permissions.services';
+export * from './Permissions.service';
 export * from './UseCases';
