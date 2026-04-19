@@ -36,7 +36,7 @@ export const HalfPage = ({ children, left, title, background }: PageProps) => {
       >
         <Container className="w-full max-w-[500px]">
           <Title variant="h1">{title}</Title>
-          <Container block>{children}</Container>
+          <Container>{children}</Container>
         </Container>
       </Container>
     </Container>
