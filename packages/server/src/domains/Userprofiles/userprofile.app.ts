@@ -8,6 +8,7 @@ import {
   UpdateUserprofile,
   AssociateUserToProfile,
   GetProfileByUserId,
+  GetAllProfilesByUser,
 } from './Application';
 import {
   UserprofilesController,
@@ -26,6 +27,7 @@ export const userprofileApp = {
   _updateUserprofile: asClass(UpdateUserprofile),
   _associateUserToProfile: asClass(AssociateUserToProfile),
   _getProfileByUserId: asClass(GetProfileByUserId),
+  _getAllProfilesByUser: asClass(GetAllProfilesByUser),
 };
 
 export const userprofilesController = () =>

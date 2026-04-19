@@ -1,13 +1,15 @@
-import { AppError, IUseCase } from '@server/Application';
+import { AppError, executeUseCase, IUseCase } from '@server/Application';
 import {
   UserprofilesRepository,
   Userprofile,
   IAssociateUserToProfile,
 } from '../../Domain';
+import { GetAllProfilesByUser } from './GetAllProfilesByUser.usecase';
 
 export class AssociateUserToProfile implements IUseCase<void> {
   constructor(
     private readonly userprofilesRepository: UserprofilesRepository,
+    private readonly _getAllProfilesByUser: GetAllProfilesByUser,
   ) {}
 
   async execute({
@@ -18,10 +20,10 @@ export class AssociateUserToProfile implements IUseCase<void> {
     const modifiedContext = requestContext;
     modifiedContext.setUserId(userId);
 
-    const existingProfiles =
-      await this.userprofilesRepository.getAllProfilesByUser({
-        requestContext: modifiedContext,
-      });
+    const existingProfiles = await executeUseCase({
+      useCase: this._getAllProfilesByUser,
+      requestContext: modifiedContext,
+    });
 
     if (!profileId) {
       // Si profileId es null, eliminar la relación existente si hay alguna
