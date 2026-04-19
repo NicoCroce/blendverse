@@ -12,7 +12,7 @@ export class DeleteUser implements IUseCase<number> {
     });
 
     if (!response) {
-      throw new AppError('User can`t be deleted');
+      throw new AppError("User can't be deleted");
     }
 
     return response;

@@ -23,7 +23,7 @@ export class UpdateUser implements IUseCase<number> {
     });
 
     if (!response) {
-      throw new AppError('The user can`t be updated');
+      throw new AppError("The user can't be updated");
     }
 
     try {
@@ -36,7 +36,7 @@ export class UpdateUser implements IUseCase<number> {
         },
       });
     } catch {
-      throw new AppError('Can`t assign the rol');
+      throw new AppError("Can't assign the rol");
     }
 
     try {
@@ -49,7 +49,7 @@ export class UpdateUser implements IUseCase<number> {
         },
       });
     } catch {
-      throw new AppError('Can`t assign the profile');
+      throw new AppError("Can't assign the profile");
     }
 
     return response;
