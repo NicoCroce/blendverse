@@ -26,7 +26,7 @@ export const MobileMenu = () => {
     <Sheet open={isOpen} onOpenChange={() => setOpen(false)}>
       <Button
         onClick={() => setOpen(true)}
-        className="justify-self-end md:hidden"
+        className="justify-self-end md:hidden bg-transparent pr-0 pl-2"
         variant="ghost"
       >
         <FontAwesomeIcon icon={faBars} size="2x" className="text-primary" />
