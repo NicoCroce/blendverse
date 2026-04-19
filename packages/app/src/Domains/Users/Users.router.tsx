@@ -2,7 +2,7 @@ import { Route } from 'react-router-dom';
 import {
   ChangePasswordPage,
   UsersListPage,
-  UsersListPageInfinit,
+  UsersListPageInfinite,
   UsersNewPage,
   UserUpdatePage,
 } from './Pages';
@@ -20,7 +20,7 @@ export const UsersRouter = [
   <Route
     key="users-i"
     path={USERS_ROUTE_INFINITE}
-    element={<UsersListPageInfinit />}
+    element={<UsersListPageInfinite />}
   />,
   <Route key="users" path={USERS_ROUTE} element={<UsersListPage />}>
     <Route
