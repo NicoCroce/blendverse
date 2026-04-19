@@ -36,7 +36,6 @@ export const MainPage = () => {
         />
       </div>
 
-      {/* ── Última actualización ── */}
       <Text.Muted className="text-xs text-right mt-4">
         Última actualización: {new Date().toLocaleDateString('es-AR')}
       </Text.Muted>

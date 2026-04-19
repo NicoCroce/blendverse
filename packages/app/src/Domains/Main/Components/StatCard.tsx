@@ -51,9 +51,9 @@ export const StatCard = ({
         {isLoading ? (
           <Skeleton className="h-9 w-24 mb-1" />
         ) : (
-          <p className="text-3xl font-bold tracking-tight text-primary">
+          <Text className="text-3xl font-bold tracking-tight text-primary pb-2">
             {value?.toLocaleString('es-AR') ?? '—'}
-          </p>
+          </Text>
         )}
         <Text.Muted>{value === 0 ? emptySubtitle : subtitle}</Text.Muted>
       </CardContent>
