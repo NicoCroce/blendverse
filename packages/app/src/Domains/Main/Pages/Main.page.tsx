@@ -1,4 +1,11 @@
-import { Page, Title, Text, Container, useGlobalStore } from '@app/Aplication';
+import {
+  Page,
+  Title,
+  Text,
+  Container,
+  useGlobalStore,
+  Input,
+} from '@app/Aplication';
 import { TUserLogged, USERS_ROUTE, useGetUsers } from '@app/Domains/Users';
 import { StatCard } from '../Components';
 import { faUsers } from '@fortawesome/free-solid-svg-icons';
@@ -22,6 +29,8 @@ export const MainPage = () => {
       <Text.Small className="text-muted-foreground font-medium uppercase tracking-wider mb-2">
         Estado general del sistema
       </Text.Small>
+
+      <Input type="date" />
 
       {/* ── Grid de tarjetas ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
