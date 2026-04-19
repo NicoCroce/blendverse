@@ -54,10 +54,9 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
     form.setValue('mail', editData?.mail);
     form.setValue('role', userRole || '');
     form.setValue('profile', String(editData?.id || ''));
-  }, [editData, form, userRole, '']);
+  }, [editData, form, userRole]);
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
     if (editData) {
       mutateUpdate({
         id: editData.id!,
