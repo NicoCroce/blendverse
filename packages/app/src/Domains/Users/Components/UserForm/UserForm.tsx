@@ -102,14 +102,14 @@ export const UserForm = ({ editData = null }: UserFormProps) => {
               control={form.control}
               label="Contraseña de Usuario"
             >
-              <Input type="password" />
+              <Input.Password type="password" />
             </InputField>
             <InputField
               name="rePassword"
               control={form.control}
               label="Ingresse nuevamente la contraseña de Usuario"
             >
-              <Input type="password" />
+              <Input.Password type="password" />
             </InputField>
           </>
         )}

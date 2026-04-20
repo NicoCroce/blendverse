@@ -34,10 +34,10 @@ const InputPassword = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   return (
     <div className="relative">
       <Input
+        {...props}
         className="pr-14"
         type={show ? 'text' : 'password'}
         ref={ref}
-        {...props}
       />
       <Button
         variant="ghost"
