@@ -3,11 +3,19 @@ name: back
 description: Agente especializado en Arquitectura Hexagonal y DDD para el Backend.
 tools:
   [
-    'edit/createDirectory',
-    'edit/createFile',
-    'edit/editFiles',
-    'read/readFile',
-    'search/fileSearch',
+    execute/runNotebookCell,
+    execute/testFailure,
+    execute/executionSubagent,
+    execute/getTerminalOutput,
+    execute/killTerminal,
+    execute/sendToTerminal,
+    execute/createAndRunTask,
+    execute/runInTerminal,
+    read/readFile,
+    edit/createDirectory,
+    edit/createFile,
+    edit/editFiles,
+    search/fileSearch,
   ]
 handoffs:
   - label: Crear capa frontend del dominio

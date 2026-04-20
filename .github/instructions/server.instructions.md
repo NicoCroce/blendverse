@@ -226,6 +226,7 @@ throw new AppError('Mensaje descriptivo', 400, 'VALIDATION_ERROR');
 
 - `AppError` → `TRPCErrorAdapter` convierte automáticamente.
 - Nunca uses `throw new Error()` directamente en use cases o servicios.
+- Nunca uses `TRPCError` directamente. Usar `TRPCError` acopla la capa Application/Domain a la infraestructura tRPC.
 
 ## Multi-Tenant
 
@@ -241,3 +242,6 @@ whereClause.id_propietario = ownerId;
 1. Los casos de uso importan e inyectan solo repositorios del mismo dominio, no puede importar otros repositorios.
 2. Si un caso de uso necesita un método de otro dominio, deberá ser llamado desde un caso de uso exportado en el otro dominio, por medio de la inyección de dependencia sobre el caso de uso del dominio correspondiente. `Por ejemnplo: Auth necesita renovar contraseña del usuario, por lo que llamará al caso de uso correspondiente del dominio de Users`.
 3. Evita utilizar `magics strings`.
+4. Nunca uses `export * from './Infrastructure'` en el `index.ts` de dominio. Solo está permitido `export * from './Infrastructure/Routes'`. Exponer Controllers o modelos Sequelize rompe el encapsulamiento hexagonal.
+5. Nunca instancies clases con `new` dentro de use cases, services o controllers. Todas las dependencias deben inyectarse vía constructor. Usar `new` rompe el contenedor Awilix y genera dependencias no registradas.
+6. Las claves de use cases en el registro Awilix (`_[camelCaseUseCase]`) deben incluir siempre el nombre de la entidad o dominio. Claves genéricas como `_create`, `_update`, `_delete` están prohibidas — colisionan en el contenedor DI global (flat merge en `register.ts`).
