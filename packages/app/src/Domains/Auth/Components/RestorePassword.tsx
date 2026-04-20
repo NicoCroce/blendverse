@@ -51,7 +51,9 @@ export const RestorePassword = () => {
           )}
         />
         <Container row justify="end">
-          <Button type="submit">Recuperar contraseña</Button>
+          <Button type="submit" forceEnabled>
+            Recuperar contraseña
+          </Button>
           <Button
             type="button"
             appearance="cancel"
