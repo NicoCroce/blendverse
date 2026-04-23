@@ -1,4 +1,4 @@
-﻿import { ProfileModel } from '@server/domains/Profiles';
+﻿import { ProfileModel } from '@server/domains/Profiles/';
 import { UserprofileModel } from './Userprofile.model';
 import { UserModel } from '@server/domains/Users';
 

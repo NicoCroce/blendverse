@@ -4,7 +4,6 @@ import { router, trpcExpress, createContext } from '../trpc';
 import { AuthRoutes } from '@server/domains/Auth';
 import { PermissionsRoutes } from '@server/domains/Permissions';
 import { OwnersysRoutes } from '@server/domains/Ownersyss';
-import { ProfileRoutes } from '@server/domains/Profiles';
 import { ThemeRoutes } from '@server/domains/Themes';
 
 const MainRouter = () => {
@@ -13,7 +12,6 @@ const MainRouter = () => {
     ...UserRoutes(),
     ...AuthRoutes(),
     ...PermissionsRoutes(),
-    ...ProfileRoutes(),
     ...ThemeRoutes(),
   };
   return router(AllRouters);
