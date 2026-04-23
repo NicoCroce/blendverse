@@ -5,7 +5,6 @@ import { AuthRoutes } from '@server/domains/Auth';
 import { PermissionsRoutes } from '@server/domains/Permissions';
 import { OwnersysRoutes } from '@server/domains/Ownersyss';
 import { ProfileRoutes } from '@server/domains/Profiles';
-import { UserprofileRoutes } from '@server/domains/Userprofiles';
 import { ThemeRoutes } from '@server/domains/Themes';
 
 const MainRouter = () => {
@@ -15,7 +14,6 @@ const MainRouter = () => {
     ...AuthRoutes(),
     ...PermissionsRoutes(),
     ...ProfileRoutes(),
-    ...UserprofileRoutes(),
     ...ThemeRoutes(),
   };
   return router(AllRouters);

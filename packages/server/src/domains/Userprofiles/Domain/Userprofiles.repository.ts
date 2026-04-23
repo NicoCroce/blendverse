@@ -1,18 +1,7 @@
-﻿import {
-  IPagination,
-  IPaginationResponse,
-  IRequestContext,
-} from '@server/Application';
+﻿import { IPaginationResponse, IRequestContext } from '@server/Application';
 import { Userprofile } from './Userprofiles.entity';
-
-export interface IGetUserprofilesRepository extends IRequestContext {
-  filters?: { search?: string } & IPagination;
-}
 export interface ICreateUserprofileRepository extends IRequestContext {
   userprofile: Userprofile;
-}
-export interface IGetUserprofileRepository extends IRequestContext {
-  id: number;
 }
 export interface IUpdateUserprofileRepository extends IRequestContext {
   userprofile: Userprofile;
@@ -23,9 +12,6 @@ export interface IDeleteUserprofileRepository extends IRequestContext {
 export interface IGetUserprofilesRepositoryResponse
   extends IPaginationResponse<Userprofile[]> {}
 export interface UserprofilesRepository {
-  getAllUserprofiles(
-    params: IGetUserprofilesRepository,
-  ): Promise<IGetUserprofilesRepositoryResponse>;
   getAllProfilesByUser(params: IRequestContext): Promise<Userprofile[] | null>;
   createUserprofile(
     params: ICreateUserprofileRepository,
@@ -36,7 +22,4 @@ export interface UserprofilesRepository {
   deleteUserprofile(
     params: IDeleteUserprofileRepository,
   ): Promise<number | null>;
-  getUserprofile(
-    params: IGetUserprofileRepository,
-  ): Promise<Userprofile | null>;
 }

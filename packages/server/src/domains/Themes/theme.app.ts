@@ -1,12 +1,5 @@
 import { asClass } from 'awilix';
-import {
-  ThemesService,
-  GetAllThemes,
-  GetTheme,
-  CreateTheme,
-  DeleteTheme,
-  UpdateTheme,
-} from './Application';
+import { ThemesService, GetAllThemes, GetTheme } from './Application';
 import {
   ThemesController,
   ThemesRepositoryImplementation,
@@ -19,9 +12,6 @@ export const themeApp = {
   themesController: asClass(ThemesController),
   _getAllThemes: asClass(GetAllThemes),
   _getTheme: asClass(GetTheme),
-  _createTheme: asClass(CreateTheme),
-  _deleteTheme: asClass(DeleteTheme),
-  _updateTheme: asClass(UpdateTheme),
 };
 
 export const themesController = () =>

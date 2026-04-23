@@ -1,10 +1,7 @@
 import { Op } from 'sequelize';
 import {
-  IDeleteThemeRepository,
   IGetThemeRepository,
   IGetThemesRepository,
-  ICreateThemeRepository,
-  IUpdateThemeRepository,
   Theme,
   ThemesRepository,
 } from '../../Domain';
@@ -43,27 +40,6 @@ export class ThemesRepositoryImplementation implements ThemesRepository {
     );
   }
 
-  async create({ theme }: ICreateThemeRepository): Promise<Theme | null> {
-    if (!theme) return null;
-    const { id, nombre, color_clase, texto_clase, color_primary_hsl } =
-      theme.values;
-    const newTheme = await ThemeModel.create({
-      id,
-      nombre,
-      color_clase,
-      texto_clase,
-      color_primary_hsl,
-    });
-    if (!newTheme) return null;
-    return Theme.create({
-      id,
-      nombre,
-      color_clase,
-      texto_clase,
-      color_primary_hsl,
-    });
-  }
-
   async getTheme({ id }: IGetThemeRepository): Promise<Theme | null> {
     const themeFound = await ThemeModel.findOne({ where: { id } });
     if (!themeFound) return null;
@@ -75,22 +51,5 @@ export class ThemesRepositoryImplementation implements ThemesRepository {
       texto_clase,
       color_primary_hsl,
     });
-  }
-
-  async update({ theme }: IUpdateThemeRepository): Promise<number | null> {
-    const { id, nombre, color_clase, texto_clase, color_primary_hsl } =
-      theme.values;
-    const rowsAffected = await ThemeModel.update(
-      { nombre, color_clase, texto_clase, color_primary_hsl },
-      { where: { id } },
-    );
-    if (!id || !rowsAffected[0]) return null;
-    return id;
-  }
-
-  async delete({ id }: IDeleteThemeRepository): Promise<number | null> {
-    const rowsAffected = await ThemeModel.destroy({ where: { id } });
-    if (rowsAffected === 0) return null;
-    return id;
   }
 }
