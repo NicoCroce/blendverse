@@ -1,248 +1,448 @@
-# Server
+# Server — MacroGest Core
 
-Este repositorio contiene una aplicación construida con **Node.js**, **Express**, **TypeScript**, y **tRPC**, siguiendo los principios de **Arquitectura Limpia**. El objetivo de este proyecto es crear una base escalable y mantenible para desarrollar servicios backend que interactúan de manera eficiente y segura con clientes frontend.
+Este paquete contiene la API de **MacroGest Core**, un sistema B2B multi-tenant construido con **Node.js**, **Express**, **TypeScript** y **tRPC**, siguiendo los principios de **Arquitectura Hexagonal / DDD**. El objetivo es mantener una base escalable, multi-tenant y con separación clara de responsabilidades por dominio.
 
 # Tabla de contenido
 
-1. [¿Qué es Clean Architecture y cuáles son sus ventajas?](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#clean-architecture)
-2. [Responsabilidades de cada Capa](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#responsabilidades-de-cada-capa)
-3. [Ejemplo aplicado a un Dominio](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#ejemplo-aplicado-a-users)
-   1. [Domain](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#1-dominio-domain)
-   2. [Application](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#2-aplicaci%C3%B3n-application)
-   3. [Infrastructure](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#3-infraestructura-infrastructure)
-4. [Tecnologías y libs](https://github.com/NicoCroce/blendverse/blob/main/packages/server/readme.md#tecnolog%C3%ADas-y-libs)
+1. [Arquitectura Hexagonal](#arquitectura-hexagonal)
+2. [Multi-tenancy y RequestContext](#multi-tenancy-y-requestcontext)
+3. [Estructura del proyecto](#estructura-del-proyecto)
+4. [Dominios implementados](#dominios-implementados)
+5. [Responsabilidades de cada capa](#responsabilidades-de-cada-capa)
+6. [Ejemplo aplicado a Users](#ejemplo-aplicado-a-users)
+   1. [Domain](#1-dominio-domain)
+   2. [Application](#2-aplicación-application)
+   3. [Infrastructure](#3-infraestructura-infrastructure)
+7. [Inyección de dependencias (Awilix)](#inyección-de-dependencias-awilix)
+8. [tRPC: configuración y flujo](#trpc-configuración-y-flujo)
+9. [Capa Application global](#capa-application-global)
+10. [Tecnologías y libs](#tecnologías-y-libs)
 
-# Clean Architecture
+---
 
-Este enfoque te permitirá mantener un núcleo de lógica de negocio independiente de la infraestructura y de las bibliotecas específicas que estás utilizando.
+# Arquitectura Hexagonal
 
-La **Clean Architecture** es un estilo de arquitectura de software que organiza el código en capas, separando los aspectos de negocio y lógica de aplicación de los detalles de implementación, como la base de datos, frameworks o interfaces de usuario. Su objetivo principal es mantener la independencia de cada capa, permitiendo que cambios en una no afecten a las demás, facilitando la escalabilidad, mantenibilidad y testabilidad del software.
+La **Arquitectura Hexagonal** (también conocida como _Ports & Adapters_) organiza el código de forma que el núcleo de negocio (dominio) quede completamente aislado de los detalles de infraestructura (base de datos, frameworks, transporte HTTP). Su objetivo es que cambios en la infraestructura no afecten la lógica de negocio.
 
-En Clean Architecture, las capas se organizan típicamente de la siguiente manera:
+En este proyecto, la arquitectura se aplica en dos niveles:
 
-1. **Dominio**: Contiene la lógica de negocio pura, como entidades, value objects y casos de uso. No depende de detalles externos.
-2. **Aplicación**: Maneja la lógica de aplicación y coordina las interacciones entre las capas externas y el dominio.
-3. **Infraestructura**: Contiene detalles específicos de implementación, como bases de datos, frameworks, y controladores.
+1. **Nivel global** — carpetas raíz `Application/`, `Infrastructure/`, `utils/` y `domains/`.
+2. **Nivel por dominio** — dentro de cada dominio: `Domain/`, `Application/`, `Infrastructure/`.
 
-El principio central es la "dependencia hacia adentro", donde las capas externas pueden depender de las internas, pero nunca al revés.
+El principio central es la **dependencia hacia adentro**: las capas externas pueden depender de las internas, pero nunca al revés. Las interfaces definen los contratos; las implementaciones los satisfacen desde afuera.
 
 <img width="952" alt="image" src="https://github.com/user-attachments/assets/c321e2bd-5171-4067-a5f9-da0a825ebb24">
 
-## ¿Cómo quedan vinculadas las capas pero continuan desacopladas?
+## ¿Cómo quedan vinculadas las capas sin acoplarse?
 
-Esto se logra por medio de **Inyección de dependencias**
-
-> La **inyección de dependencias** es un patrón de diseño que consiste en proporcionar las dependencias de un objeto desde fuera, en lugar de que el objeto las cree por sí mismo. Esto facilita la gestión de dependencias, mejora la testabilidad y promueve un código más modular y flexible.
+Mediante **Inyección de Dependencias** (Awilix en modo CLASSIC). Ninguna capa instancia sus dependencias directamente; las recibe como parámetros del constructor, permitiendo sustituir implementaciones sin modificar el núcleo.
 
 ![proceso](https://github.com/user-attachments/assets/de5f790d-894a-4312-865d-dd0326260077)
 
-### Responsabilidades de cada Capa
+---
+
+# Multi-tenancy y RequestContext
+
+MacroGest Core es una plataforma **multi-tenant**: todos los datos pertenecen a un propietario (`ownerId`). El aislamiento se garantiza en cada query de repositorio.
+
+**Flujo:**
+
+```
+JWT token → { id: userId, ownerId } → protectedProcedure → RequestContext → repositorio filtra por ownerId
+```
+
+`RequestContext` es una entidad de la capa `Application` global que encapsula los valores de la solicitud actual:
+
+```typescript
+class RequestContext {
+  get values() {
+    return { userId, requestId, ownerId };
+  }
+}
+```
+
+Todo repositorio recibe `requestContext` e incluye `id_propietario = requestContext.values.ownerId` en sus queries. **Nunca se omite este filtro.**
+
+---
+
+# Estructura del proyecto
+
+```
+packages/server/src/
+├── index.ts                        # Punto de entrada: inicia Express + tRPC
+├── Application/                    # Contratos y utilidades globales
+│   ├── Adapters/
+│   │   ├── ExecuteUseCase.ts       # Adaptador try/catch para ejecutar use cases
+│   │   ├── ExecuteService.ts
+│   │   ├── TRPCErrorAdapter.ts     # Mapea AppError → TRPCError
+│   │   └── TransformToSelect.ts
+│   ├── Entities/
+│   │   ├── RequestContext.ts       # Contexto multi-tenant por solicitud
+│   │   └── AppError.ts             # Error de dominio personalizado
+│   ├── Interfaces/
+│   │   ├── IUseCase.ts             # Contrato base de todos los Use Cases
+│   │   ├── IPagination.ts          # Paginación tipada
+│   │   ├── IRequestContext.ts
+│   │   ├── IErrorAdapter.ts
+│   │   └── ISelect.ts
+│   └── Utils/
+│       ├── Date.ts
+│       ├── LoadImages.ts
+│       └── Email/
+│           ├── EmailSender.ts      # Envío de emails vía Nodemailer
+│           └── EmailsTemplates.ts  # Plantillas HTML de emails
+├── Infrastructure/                 # Configuración global de infraestructura
+│   ├── Middlewares.ts              # Middlewares Express (CORS, cookies, etc.)
+│   ├── Auth/
+│   │   └── Auth.ts                 # Middleware de verificación de token
+│   ├── Database/
+│   │   ├── connection.ts           # Conexión Sequelize a MySQL
+│   │   └── relations.ts            # Definición global de asociaciones de modelos
+│   ├── Routes/
+│   │   └── Router.ts               # Router tRPC principal + exporta TMainRouter
+│   ├── di/
+│   │   └── register.ts             # Registra todos los dominios en Awilix
+│   └── trpc/
+│       └── TrpcInstance.ts         # initTRPC, createContext, protectedProcedure
+├── domains/                        # Dominios del negocio
+│   ├── register.ts                 # Exporta todos los dominios para el DI
+│   ├── Auth/
+│   ├── Users/
+│   ├── Permissions/
+│   ├── Themes/
+│   ├── Ownersyss/
+│   ├── Userprofiles/
+│   ├── Companies/
+│   └── Profiles/
+├── utils/                          # Helpers transversales
+│   ├── JWT.ts                      # Firma y verificación de tokens
+│   ├── bcrypt.ts                   # Hashing de contraseñas
+│   ├── Container.ts                # Contenedor Awilix (CLASSIC mode)
+│   ├── pagination.ts               # Helper de paginación
+│   ├── pino.ts                     # Configuración del logger
+│   ├── format.ts
+│   └── Utils.ts
+└── types/
+    └── express/index.d.ts          # Extensión de tipos de Express
+```
+
+---
+
+# Dominios implementados
+
+Cada dominio sigue la estructura `Domain/ → Application/ → Infrastructure/`.
+
+| Dominio          | Descripción                           | Use Cases destacados                                                                                                                                                |
+| ---------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Auth**         | Login, restaurar y renovar contraseña | `Login`, `RestorePassword`, `RenewPasswordAuth`, `ValidateUserPassword`                                                                                             |
+| **Users**        | CRUD completo de usuarios             | `GetUsers`, `GetUser`, `RegisterUser`, `UpdateUser`, `DeleteUser`, `ChangePassword`, `GetSelectUser`, `GetEmailsByUsersId`, `ValidateUserPassword`, `RenewPassword` |
+| **Permissions**  | Roles y permisos por usuario          | `GetRoles`, `GetPermissions`, `GetRoleByUser`, `GetPermissionsByUser`, `AssociateUserToRole`                                                                        |
+| **Themes**       | Temas visuales del sistema            | `GetAllThemes`, `GetTheme`                                                                                                                                          |
+| **Ownersyss**    | Datos del tenant/propietario          | `GetOwnersys`, `GetOwnerTheme`, `ChangeTheme`                                                                                                                       |
+| **Userprofiles** | Asociación usuario–perfil             | `GetAllProfilesByUser`, `AssociateUserToProfile`                                                                                                                    |
+| **Companies**    | Modelo de empresa (solo DB)           | —                                                                                                                                                                   |
+| **Profiles**     | Modelo de perfil (solo DB)            | —                                                                                                                                                                   |
 
-1. **Domain (Dominio)**
-   - **Responsabilidad:** Contiene las entidades de negocio y las interfaces de los repositorios, así como los casos de uso.
-   - **Ejemplo:** Definición de un modelo de usuario y las operaciones que se pueden realizar con ese usuario.
-2. **Application (Aplicación)**
-   - **Responsabilidad:** Contiene los adaptadores y comunica a otros dominios. Esta capa interactúa con el dominio y la infraestructura.
-   - **Ejemplo:** Implementación de adaptadores para bases de datos y otros servicios externos.
-3. **Infrastructure (Infraestructura)**
-   - **Responsabilidad:** Contiene la implementación concreta de los adaptadores y cualquier infraestructura necesaria (como controladores, configuraciones de bases de datos, etc.).
-   - **Ejemplo:** Controladores que manejan las solicitudes HTTP y las conexiones a la base de datos.
-4. **Config (Configuración)**
+---
 
-- **Responsabilidad:** Contiene la configuración global de la aplicación.
-- **Ejemplo:** Configuración de conexión a bases de datos, variables de entorno, etc.
+# Responsabilidades de cada capa
 
-## Aclaraciones antes de comenzar
+## 1. Domain (Dominio)
 
-El proyecto se encuentra segmentado por las capas mencionadas y al mismo tiempo posee una carpeta que contiene la misma estructura de Clean Architecture definida para cada dominio.
+La capa más interna. **No depende de ninguna otra capa del proyecto.** Contiene:
 
-`domains` es una carpeta que contiene cada **dominio / feature / entidad / vertical / sección** o como pueda identificarse. Es decir puede ser cada parte de la aplicación como ser _Users, Products, Orders, Payments, Auth, etc._
+- **Entidades**: objetos de negocio con sus atributos y comportamiento (`User.entity.ts`).
+- **Value Objects**: encapsulan y validan reglas de negocio. Son inmutables y lanzan excepciones si los datos son inválidos (`UserEmail.value.ts`, `UserPassword.value.ts`, etc.).
+- **Interfaces de repositorio**: contratos `abstract` que definen los métodos de persistencia sin implementarlos (`User.repository.ts`).
 
-`Application` define Adaptadores, Interfaces, Entidades que sean globales a la aplicación y no correspondan a un dominio en particular.
+## 2. Application (Aplicación)
 
-`Insfrastructure` define la conexión global a BD, Auth, Routes, tRPC, middlewares, etc.
+Orquesta el negocio. **Depende solo del Domain.** Contiene:
 
-`utils` librerías y helpers que no pertenecen a un dominio en particular y pueden ser utilizado entre todos.
+- **Use Cases**: cada uno tiene un único método `execute({ input, requestContext })`. Reciben el repositorio por inyección de dependencias.
+- **Service**: recibe los use cases ya instanciados y expone métodos de alto nivel al controlador.
 
-`data` es la carpeta que contiene los mocks de ejemplo.
+## 3. Infrastructure (Infraestructura)
 
-<img width="293" alt="root" src="https://github.com/user-attachments/assets/fe5b0294-881e-4409-919c-1b9b49c07614">
+Detalles de implementación. **Puede depender de Application y Domain.** Contiene:
 
-Para entenderlo con más claridad, veamos un ejemplo dentro de `domains`
+- **Modelo Sequelize**: define la tabla en MySQL (`Users.model.ts`).
+- **Implementación del repositorio**: satisface el contrato de Domain usando Sequelize (`UsersRepository.implementation.ts`). Siempre filtra por `id_propietario`.
+- **Controlador tRPC**: valida con Zod y delega al Service.
+- **Rutas tRPC**: define las `procedures` y las registra en el Router principal.
 
-## Ejemplo aplicado a Users
+---
 
-### 1. Dominio (Domain)
+# Ejemplo aplicado a Users
 
-**1.1 Entidades (Entities):**
+## 1. Dominio (Domain)
 
-- **Definición:** Las entidades son objetos de negocio que tienen atributos y comportamientos. Representan los datos centrales del sistema y su lógica asociada.
-- **Uso:** Definir modelos de datos que son fundamentales para la lógica de negocio. Ejemplo: `User.ts`.
+### 1.1 Entidades
 
-[https://github.com/NicoCroce/blendverse/blob/34d3e42d74c321e9cb6c71103a20adaec242c4b1/packages/server/src/domains/Users/Domain/User.entity.ts#L1-L31](https://github.com/NicoCroce/blendverse/blob/34d3e42d74c321e9cb6c71103a20adaec242c4b1/packages/server/src/domains/Users/Domain/User.entity.ts#L1-L31)
+Representan los objetos de negocio con solo los atributos que el área de producto necesita. Los constructores instancian los Value Objects correspondientes.
 
-Dentro de dominio se definen las **entidades**, pero son las entidades de los objetos que necesita el área de producto. Es decir, lo que se va a estar representando en la aplicación y/o los datos requeridos por la gente de producto.
+```typescript
+// User.entity.ts
+export class User {
+  private readonly _id: UserId;
+  private readonly _name: UserName;
+  private readonly _mail: UserEmail;
 
-> _Ej: Un usuario tiene **name, email, id, etc** pero no necesita el token, los roles, etc. Eso es otra entidad que los puede relacionar._
+  constructor(id: number, name: string, mail: string) {
+    this._id = new UserId(id);
+    this._name = new UserName(name);
+    this._mail = new UserEmail(mail);
+  }
+
+  get id() {
+    return this._id.value;
+  }
+  get name() {
+    return this._name.value;
+  }
+  get mail() {
+    return this._mail.value;
+  }
+}
+```
+
+### 1.2 Value Objects
+
+Encapsulan y validan reglas de negocio. Son inmutables y sin identidad propia. Si el dato no cumple la regla, lanzan `AppError`.
+
+```typescript
+// UserEmail.value.ts
+export class UserEmail {
+  private readonly _value: string;
+  constructor(value: string) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
+      throw new AppError('Email inválido', 400);
+    this._value = value;
+  }
+  get value() {
+    return this._value;
+  }
+}
+```
+
+### 1.3 Repositorio (interfaz)
+
+Define el contrato sin implementación. La capa Infrastructure lo satisface.
+
+```typescript
+// User.repository.ts
+export abstract class UserRepository {
+  abstract getAll(requestContext: RequestContext): Promise<User[]>;
+  abstract getById(id: number, requestContext: RequestContext): Promise<User>;
+  abstract save(user: User, requestContext: RequestContext): Promise<User>;
+  abstract update(user: User, requestContext: RequestContext): Promise<User>;
+  abstract delete(id: number, requestContext: RequestContext): Promise<void>;
+}
+```
+
+## 2. Aplicación (Application)
+
+### 2.1 Use Cases
+
+Cada caso de uso tiene un único método `execute`. Recibe el repositorio por DI.
+
+```typescript
+// GetUsers.usecase.ts
+export class GetUsersUseCase implements IUseCase<User[]> {
+  constructor(private readonly userRepository: UserRepository) {}
+
+  async execute({ requestContext }: { requestContext: RequestContext }) {
+    return this.userRepository.getAll(requestContext);
+  }
+}
+```
+
+### 2.2 Service
+
+Orquesta los use cases y usa `executeUseCase` (adaptador global) para manejo uniforme de errores.
+
+```typescript
+// Users.service.ts
+export class UsersService {
+  constructor(
+    private readonly getUsersUseCase: GetUsersUseCase,
+    private readonly registerUserUseCase: RegisterUserUseCase,
+  ) {}
+
+  getAll(requestContext: RequestContext) {
+    return executeUseCase(this.getUsersUseCase, { requestContext });
+  }
+}
+```
+
+## 3. Infraestructura (Infrastructure)
+
+### 3.1 Modelo Sequelize
+
+Define la tabla y los tipos de columna en MySQL.
+
+```typescript
+// Users.model.ts
+export const UsersModel = sequelize.define('usuario', {
+  id_usuario: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  nombre: { type: DataTypes.STRING, allowNull: false },
+  email: { type: DataTypes.STRING, allowNull: false, unique: true },
+  password: { type: DataTypes.STRING, allowNull: false },
+  id_propietario: { type: DataTypes.INTEGER, allowNull: false },
+});
+```
 
-**1.2 Value Object**
+### 3.2 Implementación del repositorio
+
+Satisface el contrato de `UserRepository`. **Siempre filtra por `ownerId`.**
+
+```typescript
+// UsersRepository.implementation.ts
+export class UsersRepositoryImplementation extends UserRepository {
+  async getAll(requestContext: RequestContext) {
+    const users = await UsersModel.findAll({
+      where: { id_propietario: requestContext.values.ownerId },
+    });
+    return users.map((u) => new User(u.id_usuario, u.nombre, u.email));
+  }
+}
+```
 
-- **Definición:** Lanzan excepciones cuando los valores no cumplen con las reglas de negocio. Los ValueObject no tienen identidad propia, son inmutables y no se les asigna un identificador.
-- **Uso:** Los **Value Objects** encapsulan reglas de negocio y validaciones. Si un Value Object no cumple con las reglas definidas, lanzará una excepción. La responsabilidad de manejar estas excepciones depende del contexto en el que se usan.
+### 3.3 Controlador tRPC
 
-Como se puede observar en el código anterior `private readonly _mail: UserEmail;` es de tipo `UserEmail`y eso es un ValueObject.
+Valida con Zod y delega al Service. Usa `protectedProcedure` para requerir autenticación.
 
-Mapea los datos que van a ser representación de la Entidad. La entidad en sí es una interfaz, que hace referencia a lo que vamos a guardar, mientras que ValueObject es un middleware que hace un mapeo y valida.
+```typescript
+// Users.controller.ts
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
+
+  getAll() {
+    return protectedProcedure.query(({ ctx }) =>
+      this.usersService.getAll(ctx.requestContext),
+    );
+  }
 
-Esta clase/función recibe los datos que envían los casos de uso. Es decir que desde acá defino la estructura de lo que tiene que hacer. En los `ValuObjects` voy a definir las reglas de negocio, como por ejemplo en el mail, la regex que valide el formato.
+  create() {
+    return protectedProcedure
+      .input(z.object({ nombre: z.string(), email: z.string().email() }))
+      .mutation(({ ctx, input }) =>
+        this.usersService.register(input, ctx.requestContext),
+      );
+  }
+}
+```
 
-[https://github.com/NicoCroce/blendverse/blob/34d3e42d74c321e9cb6c71103a20adaec242c4b1/packages/server/src/domains/Users/Domain/ValueObjects/UserEmail.value.ts#L1-L21](https://github.com/NicoCroce/blendverse/blob/34d3e42d74c321e9cb6c71103a20adaec242c4b1/packages/server/src/domains/Users/Domain/ValueObjects/UserEmail.value.ts#L1-L21)
+### 3.4 Rutas y registro global
 
-**1.3 Repositorios (Repositories):**
+Las rutas del dominio se registran en el Router principal, que exporta `TMainRouter` para el frontend:
 
-- **Definición:** Las interfaces de repositorios definen los métodos para interactuar con la capa de persistencia de datos (base de datos). No contienen implementación concreta.
-- **Uso:** Proveer abstracciones para operaciones CRUD y otras interacciones con los datos. Ejemplo: `User.repository.ts`.
+```typescript
+// Infrastructure/Routes/Router.ts
+const MainRouter = () =>
+  router({
+    ...OwnersysRoutes(),
+    ...UserRoutes(),
+    ...AuthRoutes(),
+    ...PermissionsRoutes(),
+    ...ThemeRoutes(),
+  });
 
-[https://github.com/NicoCroce/blendverse/blob/34d3e42d74c321e9cb6c71103a20adaec242c4b1/packages/server/src/domains/Users/Domain/User.repository.ts#L1-L7](https://github.com/NicoCroce/blendverse/blob/34d3e42d74c321e9cb6c71103a20adaec242c4b1/packages/server/src/domains/Users/Domain/User.repository.ts#L1-L7)
+export type TMainRouter = ReturnType<typeof MainRouter>;
+```
 
-**1.4 Casos de Uso (Use Cases):**
+El tipo `TMainRouter` es importado directamente por la app para inferir todos los tipos de la API sin ningún contrato adicional.
 
-- **Definición:** Los casos de uso (o interacciones) contienen la lógica de aplicación que no pertenece a una entidad en particular. Representan acciones que pueden ser realizadas en el sistema.
-- **Uso:** Implementar la lógica que orquesta las entidades y repositorios para cumplir con un requisito de negocio específico. Ejemplo: `GetAllUsers.usecase.ts`.
+---
 
-[https://github.com/NicoCroce/blendverse/blob/34d3e42d74c321e9cb6c71103a20adaec242c4b1/packages/server/src/domains/Users/Domain/UseCases/GetAllUsers.usecase.ts#L1-L11](https://github.com/NicoCroce/blendverse/blob/34d3e42d74c321e9cb6c71103a20adaec242c4b1/packages/server/src/domains/Users/Domain/UseCases/GetAllUsers.usecase.ts#L1-L11)
+# Inyección de dependencias (Awilix)
 
-Como se puede observar en este caso `userRepository` es recibido por inyección de dependencia y utilizado dentro del caso de uso.
+Awilix en modo **CLASSIC** resuelve las dependencias del constructor en orden posicional. Cada dominio exporta su registro; el DI global los agrupa.
 
-Cada caso de uso tiene solo un método `execute` que contiene la lógica a ejecutar.
+**Flujo:**
 
-> Si bien en esta instancia se está almacenando el nuevo usuario en la base de datos, por el momento `se desconoce su implementación, solo se conoce su definición`, es decir que posee un método save pero no se conoce qué tipo de base de datos será ni su lenguaje.
+```
+[dominio].app.ts → domains/register.ts → Infrastructure/di/register.ts → container.register()
+```
 
-### 2. Aplicación (Application)
+Ejemplo del dominio Users:
 
-**2.1 Servicios (Services):**
+```typescript
+// user.app.ts
+export const userApp = {
+  usersRepositoryImpl: asClass(UsersRepositoryImplementation).singleton(),
+  getUsersUseCase: asClass(GetUsersUseCase).singleton(),
+  usersService: asClass(UsersService).singleton(),
+  usersController: asClass(UsersController).singleton(),
+};
+```
 
-- **Definición:** Los servicios en la capa de aplicación encapsulan la lógica de casos de uso y coordinan entre la capa de dominio y la infraestructura.
-- **Uso:** Implementar lógica adicional que no pertenece a la capa de dominio pero que es necesaria para los casos de uso. Ejemplo: `User.service.ts`.
+Awilix inyecta las dependencias por nombre de parámetro del constructor, resolviendo el grafo automáticamente.
 
-[https://github.com/NicoCroce/blendverse/blob/043df19bb3d3e3a12ae14de9807e060eb70c9646/packages/server/src/domains/Users/Application/User.service.ts#L1-L36](https://github.com/NicoCroce/blendverse/blob/043df19bb3d3e3a12ae14de9807e060eb70c9646/packages/server/src/domains/Users/Application/User.service.ts#L1-L36)
+---
 
-> En este caso esta clase contiene un método llamado createUser y recibe los datos que enviará al caso de uso. En este ejemplo no agrega una lógica adicional, solo ejecuta el caso de uso y nada más. En ejemplos más complejos esta capa resolverá validaciones o mapeos entre la capa de Infraestructura y la capa de Dominio.
+# tRPC: configuración y flujo
 
-Continuando con el ejemplo, executeUseCase es un adaptador dentro de la misma capa, que permite ejecutar el caso de uso y así mismo validar su ejecución por medio de try catch.
+## Procedimiento protegido
 
-[https://github.com/NicoCroce/blendverse/blob/043df19bb3d3e3a12ae14de9807e060eb70c9646/packages/server/src/Application/Adapters/ExecuteUseCase.ts#L9-L14](https://github.com/NicoCroce/blendverse/blob/043df19bb3d3e3a12ae14de9807e060eb70c9646/packages/server/src/Application/Adapters/ExecuteUseCase.ts#L9-L14)
+`protectedProcedure` es un middleware de tRPC que verifica el JWT y extrae `userId` + `ownerId` del token, inyectándolos en el `RequestContext` para cada solicitud:
 
-### 3. Infraestructura (Infrastructure)
+```typescript
+const protectedProcedure = t.procedure.use(async (opts) => {
+  const token = verifyTokenInHeader(ctx.cookies);
+  const { id: userId, ownerId } = await verifyToken(token);
+  ctx.requestContext.setUserId(userId);
+  ctx.requestContext.setOwerId(ownerId);
+  return opts.next({ ctx });
+});
+```
 
-**3.1 Controladores (Controllers):**
+## Error handling
 
-- **Definición:** Los controladores manejan las solicitudes y respuestas HTTP. Actúan como una capa intermedia entre la presentación y la lógica de la aplicación.
-- **Uso:** Definir los puntos finales de la API y delegar la lógica de negocio a los servicios y casos de uso. Ejemplo: `Users.controller.ts`.
+`TRPCErrorAdapter` mapea `AppError` (dominio) a `TRPCError` (infraestructura). El `errorFormatter` devuelve solo `code` y `httpStatus`, sin exponer detalles internos al cliente, protegiendo la información sensible del sistema.
 
-[https://github.com/NicoCroce/blendverse/blob/0f0f08f1a5830291a025ee665fd5ed5295a3f47b/packages/server/src/domains/Users/Infrastructure/Controllers/Users.controller.ts#L1-L29](https://github.com/NicoCroce/blendverse/blob/0f0f08f1a5830291a025ee665fd5ed5295a3f47b/packages/server/src/domains/Users/Infrastructure/Controllers/Users.controller.ts#L1-L29)
+---
 
-> Como se puede observar en el ejempo, se utiliza tRPC. En esta capa se puede utilizar por ejemplo express.
+# Capa Application global
 
-**3.2 Base de Datos (DB):**
+Contratos y utilidades transversales a todos los dominios:
 
-- **Definición:** Contiene la configuración y conexión a la base de datos, así como implementaciones concretas de repositorios.
-- **Uso:** Establecer conexiones a bases de datos y definir la lógica de persistencia. Ejemplo: `Local.database.ts`.
+| Archivo               | Propósito                                                  |
+| --------------------- | ---------------------------------------------------------- |
+| `IUseCase.ts`         | Interfaz base `execute({ input, requestContext })`         |
+| `RequestContext.ts`   | Entidad del contexto multi-tenant por solicitud            |
+| `AppError.ts`         | Error de dominio con `message`, `statusCode` y `errorCode` |
+| `IPagination.ts`      | Tipos para paginación (`page`, `limit`, `meta`)            |
+| `ExecuteUseCase.ts`   | Adaptador try/catch para ejecutar use cases uniformemente  |
+| `TRPCErrorAdapter.ts` | Convierte `AppError` en `TRPCError`                        |
+| `EmailSender.ts`      | Envío de emails SMTP vía Nodemailer                        |
+| `EmailsTemplates.ts`  | Plantillas HTML de emails transaccionales                  |
 
-En este código vemos un ejemplo de cómo simular y configurar una BD local. En este archivo se deberá configurar toda la lógica para conectar y comunicarse con la base de datos. Por ejemplo si utilizamos mongoose se deberá configurar todo en este archivo.
-
-[https://github.com/NicoCroce/blendverse/blob/043df19bb3d3e3a12ae14de9807e060eb70c9646/packages/server/src/domains/Users/Infrastructure/Database/Local.database.ts#L1-L37](https://github.com/NicoCroce/blendverse/blob/043df19bb3d3e3a12ae14de9807e060eb70c9646/packages/server/src/domains/Users/Infrastructure/Database/Local.database.ts#L1-L37)
-
-En el siguiente código, podemos ver la implementación de la Interface previamente definida en el dominio y la ejecución de los métodos del esquema de la BD definido en el código de arriba.
-
-**Implementación de Repositorio:**
-
-[https://github.com/NicoCroce/blendverse/blob/0f0f08f1a5830291a025ee665fd5ed5295a3f47b/packages/server/src/domains/Users/Infrastructure/Database/UserRepository.implementation.localDB.ts#L1-L28](https://github.com/NicoCroce/blendverse/blob/0f0f08f1a5830291a025ee665fd5ed5295a3f47b/packages/server/src/domains/Users/Infrastructure/Database/UserRepository.implementation.localDB.ts#L1-L28)
-
-> Si utilizamos moongose por ejemplo para insertar un elemento en una colección, en este archivo deberemos ejecutar los métodos `create` o `save` propios del modelo definido en el paso anterior.
-
-**3.3 Rutas:**
-
-- **Definición:** Las rutas generalmente se definen en la capa de infraestructura, ya que están estrechamente relacionadas con la configuración del servidor web y la forma en que las solicitudes HTTP se manejan y se enrutan a los controladores correspondientes.
-- **Uso:** Las rutas son definiciones que asocian URL específicas con controladores específicos. No deben contener lógica de negocio; en su lugar, simplemente delegan a los controladores.
-
-**Definir Rutas**
-
-[https://github.com/NicoCroce/blendverse/blob/0f0f08f1a5830291a025ee665fd5ed5295a3f47b/packages/server/src/domains/Users/Infrastructure/Routes/UserRoutes.ts#L1-L7](https://github.com/NicoCroce/blendverse/blob/0f0f08f1a5830291a025ee665fd5ed5295a3f47b/packages/server/src/domains/Users/Infrastructure/Routes/UserRoutes.ts#L1-L7)
-
-> En este código se encuentra la definición de un objeto, donde la `key` es la `ruta` y el `value` es el `controller`.
-
-**Exportar rutas**
-
-Otro archivo importante es Router, ya que establece las rutas en tRPC y genera un `type` para luego utilizar en el front.
-
-[https://github.com/NicoCroce/blendverse/blob/0f0f08f1a5830291a025ee665fd5ed5295a3f47b/packages/server/src/domains/Users/Infrastructure/Routes/Router.ts#L1-L5](https://github.com/NicoCroce/blendverse/blob/0f0f08f1a5830291a025ee665fd5ed5295a3f47b/packages/server/src/domains/Users/Infrastructure/Routes/Router.ts#L1-L5)
-
-**Implementar Rutas**
-
-Por último para tener todas las rutas funcionales, es necesario agregar en el archivo Router principal, las nuevas rutas creadas.
-
-[https://github.com/NicoCroce/blendverse/blob/0f0f08f1a5830291a025ee665fd5ed5295a3f47b/packages/server/src/Infrastructure/Routes/Router.ts#L6](https://github.com/NicoCroce/blendverse/blob/0f0f08f1a5830291a025ee665fd5ed5295a3f47b/packages/server/src/Infrastructure/Routes/Router.ts#L6)
-
-**Explicación**
-
-- **UserRoutes.ts:** En este archivo, defines las rutas específicas para las operaciones de usuario. Creas una instancia del controlador correspondiente y defines las rutas y métodos HTTP asociados.
-
-**Conclusión**
-
-Definir las rutas en la capa de infraestructura mantiene la lógica de enrutamiento separada de la lógica de negocio y de aplicación, lo que facilita el mantenimiento y la escalabilidad. Esta organización sigue el principio de separación de responsabilidades, promoviendo una estructura modular y clara.
-
-**3.4 User.app (archivo init del dominio)**
-
-Una vez definido todo, se debe:
-
-1. Instanciar la implementación del repositorio.
-2. Instanciar el service, inyectado la instancia del repositorio.
-3. Instanciar el controlador, inyectando la instancia del service.
-
-> De esta forma se vinculan todas las capas por medio de la inyección de dependencias.
-
-[https://github.com/NicoCroce/blendverse/blob/0f0f08f1a5830291a025ee665fd5ed5295a3f47b/packages/server/src/domains/Users/user.app.ts#L5-L7](https://github.com/NicoCroce/blendverse/blob/0f0f08f1a5830291a025ee665fd5ed5295a3f47b/packages/server/src/domains/Users/user.app.ts#L5-L7)
-
-_Como_ _puede observarse, el archivo `_.app`se encuentra en el`root`de cada`dominio`.\*
-
-### Archivo Principal (index.ts)
-
-- **Responsabilidad:** Punto de entrada de la aplicación, inicia el servidor.
-- **Uso:** Configurar y arrancar el servidor de Express, vinculación de middlewares y tRPC.
-
-[https://github.com/NicoCroce/blendverse/blob/0f0f08f1a5830291a025ee665fd5ed5295a3f47b/packages/server/src/index.ts#L2-L18](https://github.com/NicoCroce/blendverse/blob/0f0f08f1a5830291a025ee665fd5ed5295a3f47b/packages/server/src/index.ts#L2-L18)
-
-### Conclusión
-
-Cada subcarpeta y archivo en esta estructura de Arquitectura Limpia tiene una responsabilidad bien definida, lo que facilita la comprensión, mantenimiento y escalabilidad del código. Esta separación clara permite que cada capa se enfoque en una parte específica de la lógica de la aplicación, promoviendo un diseño modular y flexible.
-
-# Consideraciones
-
-Dentro de `domain` se puede comunicar cualquier capa igual por más que se encuentren en diferentes dominios. Es decir, por ejemplo, es posible comunicar la capa `Application` de productos y de usuarios.
-
-> También es posible comunicar cada capa con la que se encuentra dentro de root.
-
-<img width="1139" alt="domain-link" src="https://github.com/user-attachments/assets/f9f81048-05bf-4131-b439-758ba4f407d2">
+---
 
 # Tecnologías y libs
 
-**Node.js**
-
-Es un entorno de ejecución de JavaScript en el servidor. Permite ejecutar código JavaScript fuera del navegador, utilizando un modelo de E/S no bloqueante y orientado a eventos, ideal para aplicaciones escalables y de alto rendimiento.
-
-[Node.js — Run JavaScript Everywhere](https://nodejs.org/en)
-
-**Express**
-
-Es un framework web minimalista y flexible para Node.js, que simplifica el manejo de rutas, peticiones HTTP y middleware. Es ampliamente utilizado para construir APIs y aplicaciones web en el ecosistema de Node.js.
-
-[Express - Infraestructura de aplicaciones web Node.js](https://expressjs.com/es/)
-
-**TypeScript**: Es un superset de JavaScript desarrollado por Microsoft que añade tipos estáticos al lenguaje. Esto permite detectar errores en tiempo de desarrollo, mejorar la autocompletación, y facilita el mantenimiento y escalabilidad de aplicaciones grandes. TypeScript se compila a JavaScript puro, lo que lo hace compatible con cualquier entorno donde JavaScript se ejecute, como navegadores y Node.js.
-
-[JavaScript With Syntax For Types.](https://www.typescriptlang.org/)
-
-**tRPC**: Es una biblioteca para crear APIs basadas en TypeScript sin necesidad de definir contratos API manualmente. Permite que el cliente y el servidor compartan tipos, asegurando que los contratos estén sincronizados y sean seguros, lo que reduce errores y mejora la productividad.
-
-[tRPC - Move Fast and Break Nothing. End-to-end typesafe APIs made easy. | tRPC](https://trpc.io/)
+| Tecnología        | Versión       | Descripción                             |
+| ----------------- | ------------- | --------------------------------------- |
+| **Node.js**       | >= 22.6.0     | Runtime de JavaScript en el servidor    |
+| **Express**       | ^4.19.2       | Framework HTTP minimalista              |
+| **TypeScript**    | ^5.5.2        | Superset tipado de JavaScript           |
+| **tRPC**          | 11.0.0-rc.390 | API type-safe sin contratos manuales    |
+| **Sequelize**     | ^6.37.3       | ORM para bases de datos relacionales    |
+| **MySQL2**        | ^3.11.3       | Driver MySQL de alto rendimiento        |
+| **Awilix**        | ^11.0.0       | Contenedor IoC / DI en modo CLASSIC     |
+| **Zod**           | ^3.23.8       | Validación de esquemas e inputs         |
+| **jsonwebtoken**  | ^9.0.2        | Firma y verificación de JWT             |
+| **bcryptjs**      | ^2.4.3        | Hashing seguro de contraseñas           |
+| **Pino**          | ^9.4.0        | Logger estructurado de alto rendimiento |
+| **pino-http**     | ^10.3.0       | Integración de Pino con Express         |
+| **Nodemailer**    | ^8.0.1        | Envío de correos electrónicos           |
+| **Multer**        | ^2.0.2        | Carga de archivos multipart/form-data   |
+| **Moment.js**     | ^2.30.1       | Manejo y formateo de fechas             |
+| **cors**          | ^2.8.5        | Middleware CORS para Express            |
+| **cookie-parser** | ^1.4.6        | Parsing de cookies en Express           |
+| **uuid**          | ^10.0.0       | Generación de identificadores únicos    |
