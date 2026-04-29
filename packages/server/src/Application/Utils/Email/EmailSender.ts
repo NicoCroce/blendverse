@@ -27,18 +27,21 @@ export const EmailSender = async ({
     if (!smtpUser) missingVars.push('EMAIL_SMTPUSER');
     if (!smtpPassword) missingVars.push('EMAIL_SMTPPASSWORD');
 
-    logger.error('Variables de entorno SMTP no configuradas:', { missingVars });
+    logger.error({ missingVars }, 'Variables de entorno SMTP no configuradas');
     throw new Error(
       `Variables de entorno SMTP no configuradas: ${missingVars.join(', ')}`,
     );
   }
 
-  logger.info('Configuración SMTP:', {
-    host: smtpServer,
-    port: smtpPort,
-    secure: smtpPort === 465,
-    user: smtpUser,
-  });
+  logger.info(
+    {
+      host: smtpServer,
+      port: smtpPort,
+      secure: smtpPort === 465,
+      user: smtpUser,
+    },
+    'Configuración SMTP',
+  );
 
   // Configurar el transportador SMTP
   const transportConfig: SMTPTransport.Options = {
@@ -72,11 +75,13 @@ export const EmailSender = async ({
   } catch (verifyError: unknown) {
     const errorMessage =
       verifyError instanceof Error ? verifyError.message : 'Error desconocido';
-    logger.error('Error al verificar conexión SMTP:', {
-      error: verifyError,
-      message: errorMessage,
+    logger.error(
+      { error: verifyError, message: errorMessage },
+      'Error al verificar conexión SMTP',
+    );
+    throw new Error(`No se pudo conectar al servidor SMTP: ${errorMessage}`, {
+      cause: verifyError,
     });
-    throw new Error(`No se pudo conectar al servidor SMTP: ${errorMessage}`);
   }
 
   // Extraer texto plano del HTML (simple)
@@ -104,29 +109,36 @@ export const EmailSender = async ({
     },
   };
 
-  logger.info('Enviando email con los siguientes datos:', {
-    from: mailOptions.from,
-    to: mailOptions.to,
-    cc: mailOptions.cc,
-    subject: mailOptions.subject,
-  });
+  logger.info(
+    {
+      from: mailOptions.from,
+      to: mailOptions.to,
+      cc: mailOptions.cc,
+      subject: mailOptions.subject,
+    },
+    'Enviando email con los siguientes datos',
+  );
 
   try {
     const info = await transporter.sendMail(mailOptions);
 
-    logger.info('Email enviado con éxito:', {
-      messageId: info.messageId,
-      response: info.response,
-      accepted: info.accepted,
-      rejected: info.rejected,
-      pending: info.pending,
-    });
+    logger.info(
+      {
+        messageId: info.messageId,
+        response: info.response,
+        accepted: info.accepted,
+        rejected: info.rejected,
+        pending: info.pending,
+      },
+      'Email enviado con éxito',
+    );
 
     // Log adicional para debugging
     if (info.rejected && info.rejected.length > 0) {
-      logger.warn('Algunos destinatarios fueron rechazados:', {
-        rejected: info.rejected,
-      });
+      logger.warn(
+        { rejected: info.rejected },
+        'Algunos destinatarios fueron rechazados',
+      );
     }
 
     return info;
@@ -142,12 +154,10 @@ export const EmailSender = async ({
         ? String(error.command)
         : undefined;
 
-    logger.error('Error al enviar el email:', {
-      error,
-      message: errorMessage,
-      code: errorCode,
-      command: errorCommand,
-    });
+    logger.error(
+      { error, message: errorMessage, code: errorCode, command: errorCommand },
+      'Error al enviar el email',
+    );
     throw error;
   }
 };

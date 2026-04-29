@@ -1,5 +1,7 @@
-import jwt from 'jsonwebtoken';
+import jwt, { type SignOptions } from 'jsonwebtoken';
 import { logger } from './pino';
+
+type ExpiresIn = NonNullable<SignOptions['expiresIn']>;
 
 const getSecretKey = () => {
   const secretKey = process.env.SECRET_KEY_BACK || '';
@@ -8,7 +10,7 @@ const getSecretKey = () => {
   return secretKey;
 };
 
-export const generateToken = (data: object, expire: string = '30D') =>
+export const generateToken = (data: object, expire: ExpiresIn = '30D') =>
   jwt.sign(data, getSecretKey(), { expiresIn: expire });
 
 export const verifyToken = (
