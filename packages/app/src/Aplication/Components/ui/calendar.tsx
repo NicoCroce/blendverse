@@ -4,6 +4,7 @@ import { DayPicker } from 'react-day-picker';
 import { cn } from '@/Aplication/lib/utils';
 import { buttonVariants } from '@/Aplication/Components/ui/button';
 import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons';
+import type { ChevronProps } from 'react-day-picker';
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
@@ -58,24 +59,12 @@ const Calendar = ({
         ...classNames,
       }}
       components={{
-        IconLeft: ({ className, ...props }) => {
-          const { children, ...restProps } = props;
-          return (
-            <ChevronLeftIcon
-              className={cn('h-4 w-4', className)}
-              {...restProps}
-            />
-          );
-        },
-        IconRight: ({ className, ...props }) => {
-          const { children, ...restProps } = props;
-          return (
-            <ChevronRightIcon
-              className={cn('h-4 w-4', className)}
-              {...restProps}
-            />
-          );
-        },
+        Chevron: ({ orientation, className }: ChevronProps) =>
+          orientation === 'right' ? (
+            <ChevronRightIcon className={cn('h-4 w-4', className)} />
+          ) : (
+            <ChevronLeftIcon className={cn('h-4 w-4', className)} />
+          ),
       }}
       {...props}
     />

@@ -15,7 +15,7 @@
     "resolveJsonModule": true,
     "experimentalDecorators": true,
     "types": ["node", "express"],
-    "lib": ["es6"],
+    "lib": ["es2022"],
     "emitDecoratorMetadata": true,
     //"allowImportingTsExtensions": true,
     //"emitDeclarationOnly": true,

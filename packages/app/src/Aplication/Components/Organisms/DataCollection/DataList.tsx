@@ -3,7 +3,7 @@ import { Skeleton } from '../../ui/skeleton';
 import { usePaginationIntersection } from '@app/Aplication/Hooks';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { useEffect, useState } from 'react';
+import { JSX, startTransition, useEffect, useState } from 'react';
 
 interface DataListProps<TData> {
   component: ({ data }: { data: TData }) => JSX.Element;
@@ -26,13 +26,15 @@ export const DataList = <TData,>({
 
   useEffect(() => {
     if (!isLoading) {
-      if (currentPage === 1) {
-        setPersistData(data);
-      } else {
-        setPersistData((prev) => [...prev, ...data]);
-      }
+      startTransition(() => {
+        if (currentPage === 1) {
+          setPersistData(data);
+        } else {
+          setPersistData((prev) => [...prev, ...data]);
+        }
+      });
     }
-  }, [data, isLoading]);
+  }, [data, isLoading, currentPage]);
 
   const Component = component;
 

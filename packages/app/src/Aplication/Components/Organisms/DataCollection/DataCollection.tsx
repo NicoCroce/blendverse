@@ -1,5 +1,6 @@
 import { useGlobalStore } from '@app/Aplication/Hooks';
 import { DataList } from './DataList';
+import { JSX } from 'react';
 
 interface DataListProps<TData> {
   table: React.ReactNode;
