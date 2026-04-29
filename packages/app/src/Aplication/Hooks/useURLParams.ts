@@ -13,7 +13,7 @@ export const useURLParams = <TParams extends Record<string, string | number>>(
 ) => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const debounceRef = useRef<NodeJS.Timeout>();
+  const debounceRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   // Convertir searchParams a objeto tipado - se actualiza automáticamente
   const params = useMemo((): TParams | undefined => {
