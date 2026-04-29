@@ -102,7 +102,7 @@ export class RegisterUser implements IUseCase<User> {
 
       logger.info(`Email de bienvenida enviado a ${mail}`);
     } catch (error) {
-      logger.error(`Error al enviar email de bienvenida a ${mail}:`, error);
+      logger.error(error, `Error al enviar email de bienvenida a ${mail}:`);
       // No lanzamos error para que no falle el registro si falla el email
     }
 
