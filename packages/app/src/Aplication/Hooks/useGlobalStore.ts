@@ -20,7 +20,11 @@ export const useGlobalStore = <TData>(queryKey: string) => {
     [queryClient, queryKey],
   );
 
-  const query = useQuery<TData>({ queryKey: [queryKey] });
+  const query = useQuery<TData>({
+    queryKey: [queryKey],
+    queryFn: () => null as unknown as TData,
+    enabled: false,
+  });
 
   return {
     setQueryData,
