@@ -12,23 +12,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useLoginUser } from '../Hooks';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRegisterUser } from '../Hooks/useRegisterUser';
 import { Link } from 'react-router-dom';
 import { RESTORE_PASSWORD } from '../Auth.routes';
 
 export const LoginForm = () => {
   const { mutate: mutateLogin, isPending } = useLoginUser();
-  const {
-    mutate: mutateRegister,
-    isSuccess,
-    isPending: isPendingRegister,
-  } = useRegisterUser();
   const [registrationMode, setRegistrationMode] = useState(false);
-
-  useEffect(() => {
-    if (isSuccess) setRegistrationMode(false);
-  }, [isSuccess]);
+  const { mutate: mutateRegister, isPending: isPendingRegister } =
+    useRegisterUser(() => setRegistrationMode(false));
 
   const formSchema = z
     .object({
