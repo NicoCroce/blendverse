@@ -71,7 +71,7 @@ export const Button = React.forwardRef<
         onClick={onClick}
         variant={_variant ? _variant : variant}
         className={`flex gap-2 p-[14px] h-0 ${className}`}
-        disabled={forceEnabled ? false : disabled || isLoading || !isEditable}
+        disabled={disabled || isLoading || (!forceEnabled && !isEditable)}
         type={type}
       >
         {showIcon && !isLoading && (icon || iconPreset) && (

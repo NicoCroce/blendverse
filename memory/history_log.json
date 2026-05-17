@@ -1,0 +1,26 @@
+[
+  {
+    "task_id": "TASK-20260517-1",
+    "title": "Cobertura integral de tests para login en frontend y backend",
+    "status": "COMPLETED",
+    "created_at": "2026-05-17T17:51:46Z",
+    "closed_at": "2026-05-17T18:00:00Z",
+    "agents_chain": [
+      {
+        "agent": "Analyst_Agent",
+        "status": "DONE",
+        "timestamp": "2026-05-17T17:51:46Z"
+      },
+      {
+        "agent": "Copilot_Coder",
+        "status": "DONE",
+        "timestamp": "2026-05-17T18:00:00Z"
+      },
+      {
+        "agent": "Copilot_QA",
+        "status": "PASS",
+        "timestamp": "2026-05-17T18:00:00Z"
+      }
+    ]
+  }
+]
