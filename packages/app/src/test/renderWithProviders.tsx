@@ -27,5 +27,5 @@ export const renderWithProviders = (
     </QueryClientProvider>
   );
 
-  return { ...render(ui, { wrapper: Wrapper }), queryClient };
+  return Object.assign(render(ui, { wrapper: Wrapper }), { queryClient });
 };

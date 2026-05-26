@@ -8,3 +8,7 @@ packages/server/logs/pino/server.log
 tsconfig.tsbuildinfo
 
 packages/app/dev-dist
+
+coverage
+playwright-report
+test-results

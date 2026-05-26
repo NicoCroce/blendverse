@@ -51,6 +51,8 @@ Flujo completo:
     ↓
 @back / @front → código + 02_dev_log.md
     ↓
+@tester → tests por regla de negocio + 05_test_log.md
+    ↓
 @qa → 03_qa_report.md
     ├── FAIL (máx. 3 intentos) → @back / @front
     └── PASS → @reviewer → 04_review_log.md
@@ -66,13 +68,14 @@ Todos los agentes leen y escriben en la carpeta `memory/` de la raíz del monore
 
 ## Agentes Disponibles
 
-| Agente      | Rol                     | Cuándo invocarlo                                        |
-| ----------- | ----------------------- | ------------------------------------------------------- |
-| `@analyst`  | Analista Funcional y UX | Inicio de cualquier tarea nueva — genera requerimientos |
-| `@back`     | Coder Backend (DDD)     | Implementar dominios del servidor                       |
-| `@front`    | Coder Frontend (React)  | Implementar dominios del frontend                       |
-| `@qa`       | QA Híbrido              | Validar código tras cada sesión de Coder                |
-| `@reviewer` | Crítico de Estándares   | Revisar arquitectura y convenciones tras QA PASS        |
+| Agente      | Rol                     | Cuándo invocarlo                                                          |
+| ----------- | ----------------------- | ------------------------------------------------------------------------- |
+| `@analyst`  | Analista Funcional y UX | Inicio de cualquier tarea nueva — genera requerimientos                   |
+| `@back`     | Coder Backend (DDD)     | Implementar dominios del servidor                                         |
+| `@front`    | Coder Frontend (React)  | Implementar dominios del frontend                                         |
+| `@tester`   | Especialista en Tests   | Analizar reglas de negocio y generar tests sobre archivos con lógica real |
+| `@qa`       | QA Híbrido              | Validar código (tsc + lint + vitest) tras cada sesión de Coder            |
+| `@reviewer` | Crítico de Estándares   | Revisar arquitectura y convenciones tras QA PASS                          |
 
 Ante una tarea full-stack, `@back` construye el dominio primero y hace handoff a `@front`. Ambos hacen handoff a `@qa` al finalizar.
 
@@ -85,6 +88,7 @@ Ante una tarea full-stack, `@back` construye el dominio primero y hace handoff a
 | `cross-domain-relations` | Relacionar datos de dos dominios del server                     |
 | `sequelize-associations` | Definir asociaciones y eager loading en Sequelize v6            |
 | `usecases-migration`     | Mover UseCases de `Domain/` a `Application/`                    |
+| `test-generator`         | Analizar reglas de negocio y generar tests completos por capa   |
 | `commit-conventions`     | Dudas sobre commits, hooks y lint-staged                        |
 | `requirements-analyst`   | Usada por `@analyst` — template de `01_requirements.md`         |
 | `dev-logger`             | Usada por `@back`/`@front` — template de `02_dev_log.md`        |

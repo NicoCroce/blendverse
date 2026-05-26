@@ -1,5 +1,9 @@
 import { render } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  QueryClient,
+  QueryClientProvider,
+  type MutationFunctionContext,
+} from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { MAIN_ROUTE } from '@app/Domains/Main';
@@ -75,6 +79,20 @@ const Harness = () => {
   return null;
 };
 
+type TLoginMutationOptions = NonNullable<
+  Parameters<typeof AuthService.login.useMutation>[0]
+>;
+
+const loginVariables = {
+  mail: 'john@example.com',
+  password: 'password123',
+};
+
+const mutationContext: MutationFunctionContext = {
+  client: new QueryClient(),
+  meta: undefined,
+};
+
 describe('useLoginUser', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -85,9 +103,7 @@ describe('useLoginUser', () => {
     render(<Harness />, { wrapper: createWrapper() });
 
     const options = vi.mocked(AuthService.login.useMutation).mock
-      .calls[0][0] as {
-      onSuccess: (data: unknown) => void;
-    };
+      .calls[0][0] as TLoginMutationOptions;
     const user = {
       id: 1,
       ownerId: 10,
@@ -97,7 +113,7 @@ describe('useLoginUser', () => {
       theme: 1,
     };
 
-    options.onSuccess(user);
+    options.onSuccess?.(user, loginVariables, undefined, mutationContext);
 
     expect(setLoggedMock).toHaveBeenCalledTimes(1);
     expect(setQueryDataMock).toHaveBeenCalledWith(user);
@@ -108,11 +124,14 @@ describe('useLoginUser', () => {
     render(<Harness />, { wrapper: createWrapper() });
 
     const options = vi.mocked(AuthService.login.useMutation).mock
-      .calls[0][0] as {
-      onError: (error: Error) => void;
-    };
+      .calls[0][0] as TLoginMutationOptions;
 
-    options.onError(new Error('Credenciales inválidas'));
+    options.onError?.(
+      new Error('Credenciales inválidas') as never,
+      loginVariables,
+      undefined,
+      mutationContext,
+    );
 
     expect(toastErrorMock).toHaveBeenCalledWith('Credenciales inválidas');
     expect(setLoggedMock).not.toHaveBeenCalled();

@@ -34,7 +34,7 @@ describe('ValidateUserPassword usecase', () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
-    const bcryptModule = await import('@server/utils/bcrypt');
+    const bcryptModule = await import('@server/utils/bcrypt.js');
     comparePasswordMock = vi.mocked(bcryptModule.comparePassword);
   });
 

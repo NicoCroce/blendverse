@@ -5,11 +5,11 @@ import { AuthController } from './Auth.controller';
 
 vi.mock('@server/Infrastructure', async () => {
   const { router, procedure, protectedProcedure } =
-    await import('@server/Infrastructure/trpc/TrpcInstance');
+    await import('@server/Infrastructure/trpc/TrpcInstance.js');
   return { router, procedure, protectedProcedure };
 });
 vi.mock('@server/domains/Users', async () => {
-  const { User } = await import('@server/domains/Users/Domain/User.entity');
+  const { User } = await import('@server/domains/Users/Domain/User.entity.js');
   return {
     User,
     ValidateUserPassword: class ValidateUserPassword {},

@@ -4,7 +4,7 @@ import { generateToken } from '@server/utils/JWT';
 import { Login } from './Login.usecase';
 
 vi.mock('@server/domains/Users', async () => {
-  const { User } = await import('@server/domains/Users/Domain/User.entity');
+  const { User } = await import('@server/domains/Users/Domain/User.entity.js');
   return { User, ValidateUserPassword: class ValidateUserPassword {} };
 });
 vi.mock('@server/domains/Permissions', () => ({
@@ -12,7 +12,7 @@ vi.mock('@server/domains/Permissions', () => ({
 }));
 vi.mock('@server/domains/Ownersyss', async () => {
   const { Ownersys } =
-    await import('@server/domains/Ownersyss/Domain/Ownersyss.entity');
+    await import('@server/domains/Ownersyss/Domain/Ownersyss.entity.js');
   return { Ownersys, GetOwnersys: class GetOwnersys {} };
 });
 
