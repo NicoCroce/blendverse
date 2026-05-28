@@ -5,12 +5,12 @@ export interface IPermissions {
   description: string;
 }
 
-export interface IGetPermissions extends IRequestContext {}
-export interface IGetPermissionsByUser extends IRequestContext {}
+export type IGetPermissions = IRequestContext;
+export type IGetPermissionsByUser = IRequestContext;
 export interface IAssociateUserToRole extends IRequestContext {
   input: {
     userId: number;
-    role: string;
+    role: string | null;
   };
 }
 export interface IGetRoleByUser extends IRequestContext {
