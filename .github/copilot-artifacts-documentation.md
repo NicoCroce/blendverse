@@ -306,7 +306,7 @@ Crea un dominio completo en `packages/app`. Invoca al agente `@front` con la ski
 **Ruta:** `.github/prompts/new-component.prompt.md`  
 **Modo:** `agent`
 
-Crea un componente React reutilizable en la capa correcta de `packages/app/src/Aplication/Components/`. Verifica si ya existe antes de crear uno nuevo.
+Crea un componente React reutilizable en la capa correcta de `packages/app/src/Application/Components/`. Verifica si ya existe antes de crear uno nuevo.
 
 **Variables:** `{{ComponentName}}`, `{{description}}`, `{{layer}}` (ui/Molecules/Organisms), `{{props}}`
 

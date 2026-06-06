@@ -1,5 +1,6 @@
 ﻿import { ISelect, IUseCase } from '@server/Application';
-import { IGetSelectUser, UserRepository } from '../../Domain';
+import { UserRepository } from '../../Domain';
+import { IGetSelectUser } from '../users.types';
 
 export class GetSelectUser implements IUseCase<ISelect[]> {
   constructor(private readonly usersRepository: UserRepository) {}

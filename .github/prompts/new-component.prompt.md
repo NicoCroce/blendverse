@@ -1,23 +1,21 @@
 ---
 agent: agent
-description: Crea un componente React reutilizable en la capa correcta de `packages/app/src/Aplication/Components`. Verifica si ya existe antes de crear uno nuevo y lo coloca en ui/, Molecules/ u Organisms/ según su complejidad.
+description: Crea un componente React reutilizable en la capa correcta de `packages/app/src/Application/Components`. Verifica si ya existe antes de crear uno nuevo y lo coloca en ui/, Molecules/ u Organisms/ según su complejidad.
 tools: [read/readFile, edit/createFile, edit/editFiles]
 ---
 
-Actúa como el agente `@front`. Vas a crear un componente reutilizable en `packages/app/src/Aplication/Components/`.
+Actúa como el agente `@front`. Vas a crear un componente reutilizable en `packages/app/src/Application/Components/`.
 
 **Pasos obligatorios:**
 
 1. **Verificar si ya existe**: Lista los contenidos de:
-
-   - `packages/app/src/Aplication/Components/ui/`
-   - `packages/app/src/Aplication/Components/Molecules/`
-   - `packages/app/src/Aplication/Components/Organisms/`
+   - `packages/app/src/Application/Components/ui/`
+   - `packages/app/src/Application/Components/Molecules/`
+   - `packages/app/src/Application/Components/Organisms/`
 
    Si ya existe un componente similar, **no crees uno nuevo**. Explica cómo usar el existente.
 
 2. **Determinar la capa correcta:**
-
    - `ui/` → Primitivos básicos (wraps de shadcn/ui, elementos HTML simples con estilos)
    - `Molecules/` → Compuestos de 2-3 primitivos con lógica ligera (ej. InputField = Label + Input + ErrorMessage)
    - `Organisms/` → Agrupaciones complejas con estado o múltiples Molecules
@@ -25,7 +23,7 @@ Actúa como el agente `@front`. Vas a crear un componente reutilizable en `packa
 3. **Crear el componente** en la capa correcta:
 
    ```tsx
-   import { cn } from '@app/Aplication/lib/utils';
+   import { cn } from '@app/Application/lib/utils';
 
    interface {{ComponentName}}Props {
      // props tipadas explícitamente, sin 'any'

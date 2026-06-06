@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Page, useGlobalStore } from '@app/Aplication';
+import { Page, useGlobalStore } from '@app/Application';
 import { useUpdateTheme } from '../Hooks/useUpdateTheme';
 import { useGetThemes } from '../Hooks';
 import { TUserLogged } from '@app/Domains/Users';

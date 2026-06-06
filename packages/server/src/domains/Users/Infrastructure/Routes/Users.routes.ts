@@ -1,4 +1,4 @@
-import { usersController } from '../../user.app';
+import { usersController } from '../..';
 
 export const UserRoutes = () => {
   const {

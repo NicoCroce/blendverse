@@ -1,5 +1,5 @@
-import { Container, Text, Title } from '@app/Aplication';
-import { cn } from '@app/Aplication/lib/utils';
+import { Container, Text, Title } from '@app/Application';
+import { cn } from '@app/Application/lib/utils';
 import { ITheme } from '@server/domains/Themes';
 
 interface ThemeSelectorProps {

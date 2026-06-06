@@ -69,7 +69,7 @@ No ejecutado en esta sesión (requiere servidor + app corriendo).
 | #   | Issue                                                                              | Resolución                                                    |
 | --- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------- |
 | 1   | `Model.init()` falla en tests por circular dep de domain barrels                   | `vi.mock()` por archivo para domain barrels problemáticos     |
-| 2   | `vi.mock('@app/Aplication')` no intercepta alias de path correctamente             | Cambiar a `vi.mock('@app/Aplication/Hooks/useGlobalStore')`   |
+| 2   | `vi.mock('@app/Application')` no intercepta alias de path correctamente            | Cambiar a `vi.mock('@app/Application/Hooks/useGlobalStore')`  |
 | 3   | `window.location.reload` no es configurable en jsdom                               | `vi.stubGlobal('location', ...)` + `vi.unstubAllGlobals()`    |
 | 4   | Error stubs en spec usaban `Error` genérico (mensaje perdido por TRPCErrorAdapter) | Cambiar a `AppError` para preservar mensaje                   |
 | 5   | `useLoginUser.test.ts` tenía JSX en archivo `.ts`                                  | Archivo eliminado; .spec.tsx corregido cubre los mismos casos |

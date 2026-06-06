@@ -6,10 +6,10 @@ import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import './index.css';
-import { Layout } from './Aplication/Components/Layout/AppLayout/Layout';
-import { registerEventViewport } from './Aplication/Helpers';
+import { Layout } from './Application/Components/Layout/AppLayout/Layout';
+import { registerEventViewport } from './Application/Helpers';
 import { TrpcApi, trpcClientApi } from './Infrastructure/Services/clientApi';
-import { persistOptions } from './Aplication/Helpers/persister';
+import { persistOptions } from './Application/Helpers/persister';
 import { registerSW } from 'virtual:pwa-register';
 import { queryClient } from './queryClient';
 

@@ -1,4 +1,4 @@
-import { authController } from '../../auth.app';
+import { authController } from '../..';
 
 export const AuthRoutes = () => {
   const { login, logout, restorePassword, renewPasswordAuth } =

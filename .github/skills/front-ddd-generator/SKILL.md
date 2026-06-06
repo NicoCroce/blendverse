@@ -10,7 +10,7 @@ description: Genera un dominio completo en el frontend React/tRPC: entity types,
 - **MODO AISLADO:** No uses `@workspace`. Solo el contexto que el usuario te provee.
 - **TRABAJA UN DOMINIO A LA VEZ** y verifica errores tras crear cada archivo.
 - **NO modifiques archivos fuera de `packages/app/`** excepto los dos archivos de registro global indicados al final.
-- **VERIFICAR COMPONENTES:** Antes de cualquier componente, revisar que no exista ya en `packages/app/src/Aplication/Components/`.
+- **VERIFICAR COMPONENTES:** Antes de cualquier componente, revisar que no exista ya en `packages/app/src/Application/Components/`.
 
 ## Herramientas Requeridas
 
@@ -92,7 +92,7 @@ Archivos globales a actualizar:
 
 ```typescript
 import { I[Entity] } from '@server/domains/[Domain]';
-import { TPagination } from '@app/Aplication';
+import { TPagination } from '@app/Application';
 
 export type T[Entity] = I[Entity];
 
@@ -164,7 +164,7 @@ export const useCache[Entities] = () => {
 ## Template: `Hooks/useGet[Entities].ts`
 
 ```typescript
-import { useURLParams } from '@app/Aplication/Hooks/useURLParams';
+import { useURLParams } from '@app/Application/Hooks/useURLParams';
 import { T[Entity]Search } from '../[Entity].entity';
 import { [Domain]Service } from '../[Domain].service';
 

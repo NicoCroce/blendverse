@@ -1,12 +1,12 @@
 import { useNavigate } from 'react-router-dom';
-import { Text } from '@app/Aplication';
+import { Text } from '@app/Application';
 import {
   Card,
   CardHeader,
   CardTitle,
   CardContent,
-} from '@/Aplication/Components/ui/card';
-import { Skeleton } from '@/Aplication/Components/ui/skeleton';
+} from '@/Application/Components/ui/card';
+import { Skeleton } from '@/Application/Components/ui/skeleton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 

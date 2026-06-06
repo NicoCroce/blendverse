@@ -1,4 +1,4 @@
-﻿import { IUserprofile } from './Userprofiles.interfaces';
+﻿import { IUserprofile } from './Userprofiles.types';
 export class Userprofile {
   constructor(
     private readonly _id: number | undefined,

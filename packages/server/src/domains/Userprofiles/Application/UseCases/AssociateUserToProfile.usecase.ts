@@ -1,9 +1,6 @@
 import { AppError, executeUseCase, IUseCase } from '@server/Application';
-import {
-  UserprofilesRepository,
-  Userprofile,
-  IAssociateUserToProfile,
-} from '../../Domain';
+import { UserprofilesRepository, Userprofile } from '../../Domain';
+import { IAssociateUserToProfile } from '../userprofiles.types';
 import { GetAllProfilesByUser } from './GetAllProfilesByUser.usecase';
 
 export class AssociateUserToProfile implements IUseCase<void> {

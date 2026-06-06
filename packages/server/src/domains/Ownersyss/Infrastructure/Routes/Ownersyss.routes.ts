@@ -1,4 +1,4 @@
-import { ownersyssController } from '../../ownersys.app';
+import { ownersyssController } from '../..';
 
 export const OwnersysRoutes = () => {
   const { updateTheme, getOwnerTheme, getOwnersys } = ownersyssController();

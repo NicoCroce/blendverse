@@ -1,4 +1,4 @@
-import { ITheme } from './Themes.interfaces';
+import { ITheme } from './Themes.types';
 
 export class Theme {
   constructor(

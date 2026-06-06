@@ -1,5 +1,6 @@
 import { AppError, IUseCase } from '@server/Application';
-import { OwnersyssRepository, IUpdateTheme } from '../../Domain';
+import { OwnersyssRepository } from '../../Domain';
+import { IUpdateTheme } from '../ownersyss.types';
 
 export class ChangeTheme implements IUseCase<number> {
   constructor(private readonly ownersyssRepository: OwnersyssRepository) {}

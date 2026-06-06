@@ -1,4 +1,4 @@
-import { DASHBOARD_ACCESS, MenuItem } from '@app/Aplication';
+import { DASHBOARD_ACCESS, MenuItem } from '@app/Application';
 import { MAIN_ROUTE } from './Main.routes';
 import { faDashboard } from '@fortawesome/free-solid-svg-icons';
 

@@ -1,7 +1,7 @@
 import { AppError, IUseCase } from '@server/Application';
 import { ThemesRepository } from '../../Domain/Themes.repository';
 import { Theme } from '../../Domain/Themes.entity';
-import { IGetTheme } from '../../Domain/Themes.interfaces';
+import { IGetTheme } from '../themes.types';
 
 export class GetTheme implements IUseCase<Theme | null> {
   constructor(private readonly themesRepository: ThemesRepository) {}

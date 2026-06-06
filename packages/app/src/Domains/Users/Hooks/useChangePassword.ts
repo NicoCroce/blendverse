@@ -1,6 +1,6 @@
 import { toast } from 'sonner';
 import { UsersService } from '../Users.service';
-import { useGlobalStore } from '@app/Aplication';
+import { useGlobalStore } from '@app/Application';
 import { TUserLogged } from '../User.entity';
 
 export const useChangePassword = () => {

@@ -1,5 +1,6 @@
 import { AppError, IUseCase } from '@server/Application';
-import { IGetRoleByUser, PermissionsRepository } from '../../Domain';
+import { PermissionsRepository } from '../../Domain';
+import { IGetRoleByUser } from '../permissions.types';
 
 export class GetRoleByUser implements IUseCase<string> {
   constructor(private readonly permissionsRepository: PermissionsRepository) {}

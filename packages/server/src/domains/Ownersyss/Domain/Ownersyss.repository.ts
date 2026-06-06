@@ -8,10 +8,9 @@ export interface IUpdateThemeRepository extends IRequestContext {
   tema: number;
 }
 
-export interface IGetOwnerThemeRepository extends IRequestContext {}
+export type IGetOwnerThemeRepository = IRequestContext;
 
-export interface IGetOwnersyssRepositoryResponse
-  extends IPaginationResponse<Ownersys[]> {}
+export type IGetOwnersyssRepositoryResponse = IPaginationResponse<Ownersys[]>;
 export interface OwnersyssRepository {
   updateTheme(params: IUpdateThemeRepository): Promise<number | null>;
   getOwnersys(params: IGetOwnersysRepository): Promise<Ownersys | null>;

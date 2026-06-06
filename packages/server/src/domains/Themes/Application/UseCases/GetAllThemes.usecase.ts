@@ -1,7 +1,7 @@
 import { IUseCase } from '@server/Application';
 import { Theme } from '../../Domain/Themes.entity';
 import { ThemesRepository } from '../../Domain/Themes.repository';
-import { IGetAllThemes } from '../../Domain/Themes.interfaces';
+import { IGetAllThemes } from '../themes.types';
 
 export class GetAllThemes implements IUseCase<Theme[]> {
   constructor(private readonly themesRepository: ThemesRepository) {}

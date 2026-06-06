@@ -1,6 +1,6 @@
 import { executeUseCase, IUseCase } from '@server/Application';
 import { generateToken } from '@server/utils/JWT';
-import { IExecuteResponse, Ilogin } from '../../Domain/auth.interfaces';
+import { IExecuteResponse, Ilogin } from '../auth.types';
 import { User, ValidateUserPassword } from '@server/domains/Users';
 import { GetRoleByUser } from '@server/domains/Permissions';
 import { GetOwnersys } from '@server/domains/Ownersyss';

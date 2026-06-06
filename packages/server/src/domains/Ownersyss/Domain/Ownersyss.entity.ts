@@ -1,4 +1,4 @@
-﻿import { IOwnersys } from './Ownersyss.interfaces';
+﻿import { IOwnersys } from './Ownersyss.types';
 export class Ownersys {
   constructor(
     private readonly _denominacion: string,

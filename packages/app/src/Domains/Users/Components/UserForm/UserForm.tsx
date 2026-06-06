@@ -2,15 +2,15 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useAddUser, useUpdateUser } from '../../Hooks';
 import { z } from 'zod';
-import { Form } from '@app/Aplication/Components/ui/form';
+import { Form } from '@app/Application/Components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Input } from '@app/Aplication/Components';
 import {
   Button,
   Container,
   InputField,
   SelectRoles,
-} from '@app/Aplication/Components';
+  Input,
+} from '@app/Application/Components';
 import { USERS_ROUTE } from '../../Users.routes';
 import { useEffect } from 'react';
 import { TUser } from '../../User.entity';

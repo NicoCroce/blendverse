@@ -1,5 +1,6 @@
 import { executeUseCase } from '@server/Application';
-import { Theme, IGetAllThemes, IGetTheme } from '../Domain';
+import { Theme } from '../Domain';
+import { IGetAllThemes, IGetTheme } from './themes.types';
 import { GetAllThemes, GetTheme } from './UseCases';
 
 export class ThemesService {

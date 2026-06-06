@@ -64,7 +64,7 @@ packages/app/src/
 ├── main.tsx                         # Bootstrap: QueryClient, TrpcApi.Provider, Router
 ├── App.tsx                          # Componente raíz
 ├── queryClient.ts                   # Instancia compartida de QueryClient
-├── Aplication/
+├── Application/
 │   ├── Components/
 │   │   ├── Layout/
 │   │   │   ├── Page.tsx             # Contenedor estándar de cada página
@@ -317,7 +317,7 @@ Componentes con lógica compleja que integran moléculas y átomos:
 
 # Helpers
 
-Se encuentran en `Aplication/Helpers/`:
+Se encuentran en `Application/Helpers/`:
 
 | Helper           | Descripción                                                                                           |
 | ---------------- | ----------------------------------------------------------------------------------------------------- |

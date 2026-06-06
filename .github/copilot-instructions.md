@@ -68,32 +68,68 @@ Todos los agentes leen y escriben en la carpeta `memory/` de la raíz del monore
 
 ## Agentes Disponibles
 
-| Agente      | Rol                     | Cuándo invocarlo                                                          |
-| ----------- | ----------------------- | ------------------------------------------------------------------------- |
-| `@analyst`  | Analista Funcional y UX | Inicio de cualquier tarea nueva — genera requerimientos                   |
-| `@back`     | Coder Backend (DDD)     | Implementar dominios del servidor                                         |
-| `@front`    | Coder Frontend (React)  | Implementar dominios del frontend                                         |
-| `@tester`   | Especialista en Tests   | Analizar reglas de negocio y generar tests sobre archivos con lógica real |
-| `@qa`       | QA Híbrido              | Validar código (tsc + lint + vitest) tras cada sesión de Coder            |
-| `@reviewer` | Crítico de Estándares   | Revisar arquitectura y convenciones tras QA PASS                          |
+| Agente        | Rol                       | Cuándo invocarlo                                                          |
+| ------------- | ------------------------- | ------------------------------------------------------------------------- |
+| `@analyst`    | Analista Funcional y UX   | Inicio de cualquier tarea nueva — genera requerimientos                   |
+| `@back`       | Coder Backend (DDD)       | Implementar dominios del servidor                                         |
+| `@front`      | Coder Frontend (React)    | Implementar dominios del frontend                                         |
+| `@tester`     | Especialista en Tests     | Analizar reglas de negocio y generar tests sobre archivos con lógica real |
+| `@qa`         | QA Híbrido                | Validar código (tsc + lint + vitest) tras cada sesión de Coder            |
+| `@reviewer`   | Crítico de Estándares     | Revisar arquitectura y convenciones tras QA PASS                          |
+| `@arch-fixer` | Unificador Arquitectónico | Corregir desvíos DDD/Hexagonal en dominios existentes — ver flujo abajo   |
 
 Ante una tarea full-stack, `@back` construye el dominio primero y hace handoff a `@front`. Ambos hacen handoff a `@qa` al finalizar.
 
+## Flujo Alternativo — Unificación Arquitectónica
+
+Cuando el usuario exprese alguna de estas intenciones (o similares), **el Director debe invocar directamente `@arch-fixer`** sin pasar por `@analyst`:
+
+- "unificar criterios"
+- "corregir arquitectura"
+- "estandarizar el proyecto"
+- "hay desvíos de arquitectura"
+- "los dominios no siguen el patrón"
+- "aplicar las convenciones a los dominios existentes"
+- `/unify-project`
+
+Flujo:
+
+```
+Usuario (intención de unificación)
+    ↓
+Director → @arch-fixer
+    ↓
+[skill arch-audit] → reporte + confirmación usuario
+    ↓ (por cada dominio, con confirmación)
+[skill interfaces-to-application] + [skill domain-consolidation]
+    ↓
+tsc --noEmit (verificación de imports)
+    ↓
+vitest run (corrección de tests rotos por la migración)
+    ↓
+Reporte final → Director cierra
+```
+
+> `@arch-fixer` **nunca** modifica archivos de `packages/app/` de forma automática. Los desvíos del frontend se reportan para acción manual.
+
 ## Skills Disponibles
 
-| Skill                    | Cuándo usarla                                                   |
-| ------------------------ | --------------------------------------------------------------- |
-| `back-ddd-generator`     | Crear un dominio nuevo completo en el server                    |
-| `front-ddd-generator`    | Crear un dominio nuevo completo en el frontend                  |
-| `cross-domain-relations` | Relacionar datos de dos dominios del server                     |
-| `sequelize-associations` | Definir asociaciones y eager loading en Sequelize v6            |
-| `usecases-migration`     | Mover UseCases de `Domain/` a `Application/`                    |
-| `test-generator`         | Analizar reglas de negocio y generar tests completos por capa   |
-| `commit-conventions`     | Dudas sobre commits, hooks y lint-staged                        |
-| `requirements-analyst`   | Usada por `@analyst` — template de `01_requirements.md`         |
-| `dev-logger`             | Usada por `@back`/`@front` — template de `02_dev_log.md`        |
-| `qa-runner`              | Usada por `@qa` — secuencia de validación + `03_qa_report.md`   |
-| `code-reviewer`          | Usada por `@reviewer` — checklist 12 ítems + `04_review_log.md` |
+| Skill                       | Cuándo usarla                                                                         |
+| --------------------------- | ------------------------------------------------------------------------------------- |
+| `back-ddd-generator`        | Crear un dominio nuevo completo en el server                                          |
+| `front-ddd-generator`       | Crear un dominio nuevo completo en el frontend                                        |
+| `cross-domain-relations`    | Relacionar datos de dos dominios del server                                           |
+| `sequelize-associations`    | Definir asociaciones y eager loading en Sequelize v6                                  |
+| `usecases-migration`        | Mover UseCases de `Domain/` a `Application/`                                          |
+| `test-generator`            | Analizar reglas de negocio y generar tests completos por capa                         |
+| `commit-conventions`        | Dudas sobre commits, hooks y lint-staged                                              |
+| `arch-audit`                | Auditar todos los dominios y reportar desvíos arquitectónicos                         |
+| `interfaces-to-application` | Migrar `Domain/*.interfaces.ts` → `Application/[domain].types.ts`                     |
+| `domain-consolidation`      | Extraer lógica DI de `index.ts` a `[domain].di.ts`; dejar `index.ts` como barrel puro |
+| `requirements-analyst`      | Usada por `@analyst` — template de `01_requirements.md`                               |
+| `dev-logger`                | Usada por `@back`/`@front` — template de `02_dev_log.md`                              |
+| `qa-runner`                 | Usada por `@qa` — secuencia de validación + `03_qa_report.md`                         |
+| `code-reviewer`             | Usada por `@reviewer` — checklist 12 ítems + `04_review_log.md`                       |
 
 ## Instrucciones Específicas
 

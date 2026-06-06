@@ -1,9 +1,6 @@
 ﻿import { IUseCase } from '@server/Application';
-import {
-  UserprofilesRepository,
-  IGetAllProfilesByUser,
-  Userprofile,
-} from '../../Domain';
+import { UserprofilesRepository, Userprofile } from '../../Domain';
+import { IGetAllProfilesByUser } from '../userprofiles.types';
 
 export class GetAllProfilesByUser implements IUseCase<Userprofile[]> {
   constructor(

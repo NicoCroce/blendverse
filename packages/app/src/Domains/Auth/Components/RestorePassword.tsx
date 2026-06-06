@@ -1,4 +1,4 @@
-import { Button, Container } from '@app/Aplication';
+import { Button, Container } from '@app/Application';
 import {
   Form,
   FormControl,
@@ -6,8 +6,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@app/Aplication/Components/ui/form';
-import { Input } from '@app/Aplication/Components';
+} from '@app/Application/Components/ui/form';
+import { Input } from '@app/Application/Components';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';

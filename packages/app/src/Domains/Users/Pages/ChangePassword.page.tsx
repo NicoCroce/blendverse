@@ -1,4 +1,4 @@
-import { Page } from '@app/Aplication';
+import { Page } from '@app/Application';
 import { ChangePasswordForm } from '../Components';
 
 export const ChangePasswordPage = () => {

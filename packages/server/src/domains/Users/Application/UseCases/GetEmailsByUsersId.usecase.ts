@@ -1,5 +1,6 @@
 import { IUseCase } from '@server/Application';
-import { UserRepository, IGetEmailsByUsersId } from '../../Domain';
+import { UserRepository } from '../../Domain';
+import { IGetEmailsByUsersId } from '../users.types';
 
 export class GetEmailsByUsersId implements IUseCase<string[]> {
   constructor(private readonly usersRepository: UserRepository) {}

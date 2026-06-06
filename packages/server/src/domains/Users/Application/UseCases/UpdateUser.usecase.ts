@@ -1,7 +1,7 @@
 import { AppError, executeUseCase, IUseCase } from '@server/Application';
 import { User } from '../../Domain/User.entity';
 import { UserRepository } from '../../Domain/User.repository';
-import { IUpdateUser } from '../../Domain/User.interfaces';
+import { IUpdateUser } from '../users.types';
 import { AssociateUserToRole } from '@server/domains/Permissions';
 import { AssociateUserToProfile } from '@server/domains/Userprofiles';
 

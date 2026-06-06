@@ -1,5 +1,5 @@
-import { Page, Text } from '@app/Aplication';
-import { Card } from '@app/Aplication/Components/ui/card';
+import { Page, Text } from '@app/Application';
+import { Card } from '@app/Application/Components/ui/card';
 import { UserForm } from '../Components';
 import { useGetUser } from '../Hooks';
 import { useNavigate, useParams } from 'react-router-dom';

@@ -1,5 +1,6 @@
 import { IUseCase } from '@server/Application/Interfaces/IUseCase';
-import { IGetRoles, PermissionsRepository, Roles } from '../../Domain';
+import { PermissionsRepository, Roles } from '../../Domain';
+import { IGetRoles } from '../permissions.types';
 
 export class GetRoles implements IUseCase<Roles[]> {
   constructor(private permissionsRepository: PermissionsRepository) {}

@@ -1,5 +1,5 @@
-import { Container } from '@app/Aplication';
-import { Badge } from '@app/Aplication/Components/ui/badge';
+import { Container } from '@app/Application';
+import { Badge } from '@app/Application/Components/ui/badge';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
 import { useGetUsers } from '../Hooks';

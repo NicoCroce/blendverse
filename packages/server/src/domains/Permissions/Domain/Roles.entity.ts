@@ -1,4 +1,4 @@
-import { IRoles } from './Roles.interfaces';
+import { IRoles } from './Roles.types';
 
 export class Roles {
   constructor(

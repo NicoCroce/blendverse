@@ -1,10 +1,6 @@
 ﻿import { executeUseCase } from '@server/Application';
-import {
-  IUpdateTheme,
-  IGetOwnerTheme,
-  IGetOwnersys,
-  Ownersys,
-} from '../Domain';
+import { Ownersys } from '../Domain';
+import { IUpdateTheme, IGetOwnerTheme, IGetOwnersys } from './ownersyss.types';
 import { ChangeTheme, GetOwnerTheme, GetOwnersys } from './UseCases';
 
 export class OwnersyssService {

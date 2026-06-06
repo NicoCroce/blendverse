@@ -1,4 +1,4 @@
-import { useURLParams } from '@app/Aplication/Hooks/useURLParams';
+import { useURLParams } from '@app/Application/Hooks/useURLParams';
 import { TUserSearch } from '../User.entity';
 import { UsersService } from '../Users.service';
 

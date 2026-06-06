@@ -1,4 +1,4 @@
-import { permissionsController } from '../../permissions.app';
+import { permissionsController } from '../..';
 
 export const PermissionsRoutes = () => {
   const { getPermissions, getRoles, getPermissionByUser, getRoleByUser } =

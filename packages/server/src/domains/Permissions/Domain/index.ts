@@ -1,5 +1,5 @@
 export * from './Permissions.entity';
-export * from './Permissions.interfaces';
+export * from './Permissions.types';
 export * from './Permissions.repository';
 export * from './Roles.entity';
-export * from './Roles.interfaces';
+export * from './Roles.types';

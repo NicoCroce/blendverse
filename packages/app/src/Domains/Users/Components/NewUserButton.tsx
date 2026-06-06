@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
-import { Button } from '@app/Aplication/';
-import { useIsEditable } from '@/Aplication/Hooks/useIsEditable';
+import { Button } from '@app/Application/';
+import { useIsEditable } from '@/Application/Hooks/useIsEditable';
 import { USERS_NEW_ROUTE } from '../Users.routes';
 
 export const NewUserButton = () => {

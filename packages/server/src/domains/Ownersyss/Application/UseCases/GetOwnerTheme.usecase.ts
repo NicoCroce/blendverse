@@ -1,5 +1,6 @@
 import { IUseCase } from '@server/Application';
-import { OwnersyssRepository, IGetOwnerTheme } from '../../Domain';
+import { OwnersyssRepository } from '../../Domain';
+import { IGetOwnerTheme } from '../ownersyss.types';
 
 export class GetOwnerTheme implements IUseCase<number> {
   constructor(private readonly ownersyssRepository: OwnersyssRepository) {}

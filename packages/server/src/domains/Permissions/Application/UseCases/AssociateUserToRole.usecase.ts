@@ -1,5 +1,6 @@
 import { IUseCase } from '@server/Application';
-import { IAssociateUserToRole, PermissionsRepository } from '../../Domain';
+import { PermissionsRepository } from '../../Domain';
+import { IAssociateUserToRole } from '../permissions.types';
 
 export class AssociateUserToRole implements IUseCase<void> {
   constructor(private readonly permissionsRepository: PermissionsRepository) {}

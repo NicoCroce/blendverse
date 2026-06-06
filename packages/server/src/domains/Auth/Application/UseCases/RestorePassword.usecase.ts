@@ -1,5 +1,5 @@
 import { AppError, IUseCase } from '@server/Application';
-import { IRestorePassword } from '../../Domain/auth.interfaces';
+import { IRestorePassword } from '../auth.types';
 import { AuthRepository } from '../../Domain/Auth.repository';
 
 export class RestorePassword implements IUseCase<void> {

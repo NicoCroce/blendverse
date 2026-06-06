@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Input } from '@app/Aplication/Components';
+import { Input } from '@app/Application/Components';
 import { Search } from 'lucide-react';
 import { USERS_ROUTE } from '../Users.routes';
-import { useURLParams } from '@app/Aplication/Hooks/useURLParams';
+import { useURLParams } from '@app/Application/Hooks/useURLParams';
 import { TUserSearch } from '../User.entity';
 import { FilterResult } from './FilterResult';
 

@@ -1,4 +1,4 @@
-import { MenuItem, useDevice } from '@app/Aplication';
+import { MenuItem, useDevice } from '@app/Application';
 import { USERS_CHANGE_PASSWORD } from '../Users';
 import {
   faArrowRightFromBracket,

@@ -1,9 +1,9 @@
 import { toast } from 'sonner';
 import { AuthService } from '../Auth.service';
 import { useNavigate } from 'react-router-dom';
-import { setLogged } from '@app/Aplication/Helpers/isLogged';
+import { setLogged } from '@app/Application/Helpers/isLogged';
 import { MAIN_ROUTE } from '@app/Domains/Main';
-import { useGlobalStore } from '@app/Aplication';
+import { useGlobalStore } from '@app/Application';
 import { TUserLogged } from '@app/Domains/Users';
 
 export const useLoginUser = () => {

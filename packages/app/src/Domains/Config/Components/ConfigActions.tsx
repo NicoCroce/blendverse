@@ -1,4 +1,4 @@
-import { Button, Container } from '@app/Aplication';
+import { Button, Container } from '@app/Application';
 
 interface ConfigActionsProps {
   onConfirm: () => void;

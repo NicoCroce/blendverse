@@ -1,4 +1,4 @@
-import { MenuItem, USER_ACCESS } from '@app/Aplication';
+import { MenuItem, USER_ACCESS } from '@app/Application';
 import { USERS_ROUTE } from './Users.routes';
 import { faUserShield } from '@fortawesome/free-solid-svg-icons';
 

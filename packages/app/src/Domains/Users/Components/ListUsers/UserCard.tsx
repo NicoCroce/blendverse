@@ -1,11 +1,11 @@
 import { To } from 'react-router-dom';
-import { Card } from '@app/Aplication/Components/ui/card';
-import { EditDelete } from '@app/Aplication/Components/Organisms/EditDelete';
+import { Card } from '@app/Application/Components/ui/card';
+import { EditDelete } from '@app/Application/Components/Organisms/EditDelete';
 import { USERS_UPDATE_ROUTE } from '../../Users.routes';
 import { useDeleteUser } from '../../Hooks';
 import { TUser } from '../../User.entity';
-import { Text } from '@app/Aplication/Components/Molecules/Text';
-import { Container } from '@app/Aplication/Components/Layout/Container';
+import { Text } from '@app/Application/Components/Molecules/Text';
+import { Container } from '@app/Application/Components/Layout/Container';
 
 export const UserCard = ({ data: user }: { data: TUser }) => {
   const { mutate } = useDeleteUser();

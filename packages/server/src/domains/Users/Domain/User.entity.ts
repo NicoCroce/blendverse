@@ -1,5 +1,5 @@
 import { UserEmail, UserId, UserName, UserPassword } from './ValueObjects';
-import { IUser } from './User.interfaces';
+import { IUser } from './User.types';
 
 export class User {
   constructor(

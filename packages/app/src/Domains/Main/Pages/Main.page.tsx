@@ -1,4 +1,4 @@
-import { Page, Title, Text, Container, useGlobalStore } from '@app/Aplication';
+import { Page, Title, Text, Container, useGlobalStore } from '@app/Application';
 import { TUserLogged, USERS_ROUTE, useGetUsers } from '@app/Domains/Users';
 import { StatCard } from '../Components';
 import { faUsers } from '@fortawesome/free-solid-svg-icons';

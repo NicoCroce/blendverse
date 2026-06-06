@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { AuthService } from '../Auth.service';
-import { isLogged } from '@app/Aplication/Helpers/isLogged';
-import { createIDBPersister } from '@app/Aplication/Helpers/Indexdb';
+import { isLogged } from '@app/Application/Helpers/isLogged';
+import { createIDBPersister } from '@app/Application/Helpers/Indexdb';
 import { queryClient } from '@app/queryClient';
 
 const persister = createIDBPersister();

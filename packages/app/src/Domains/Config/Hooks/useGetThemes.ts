@@ -1,4 +1,4 @@
-import { isLogged } from '@app/Aplication/Helpers/isLogged';
+import { isLogged } from '@app/Application/Helpers/isLogged';
 import { ThemesService } from '../Config.service';
 
 export const useGetThemes = () => {

@@ -1,4 +1,4 @@
-import { Container } from '@app/Aplication';
+import { Container } from '@app/Application';
 import { MenuUsers } from './Users';
 import { MenuMain } from './Main';
 import { MenuAuth } from './Auth';

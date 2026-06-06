@@ -1,8 +1,8 @@
-import { DataTable } from '@app/Aplication/Components/Organisms/DataCollection/DataTable';
-import { DataCollection } from '@app/Aplication/Components/Organisms/DataCollection/DataCollection';
+import { DataTable } from '@app/Application/Components/Organisms/DataCollection/DataTable';
+import { DataCollection } from '@app/Application/Components/Organisms/DataCollection/DataCollection';
 import { useGetUsers } from '../../Hooks';
 import { columns } from './ColumnsUsersTable';
-import { initPagination } from '@app/Aplication';
+import { initPagination } from '@app/Application';
 import { UserCard } from './UserCard';
 
 export const UsersList = () => {

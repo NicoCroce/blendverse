@@ -2,7 +2,7 @@ import { AppError, executeUseCase, IUseCase } from '@server/Application';
 import { getCryptedPassword } from '@server/utils/bcrypt';
 import { UserRepository } from '../../Domain/User.repository';
 import { User } from '../../Domain/User.entity';
-import { IRegisterUser } from '../../Domain/User.interfaces';
+import { IRegisterUser } from '../users.types';
 import { AssociateUserToRole } from '@server/domains/Permissions';
 import { AssociateUserToProfile } from '@server/domains/Userprofiles';
 import { EmailSender, emailTemplates } from '@server/Application';

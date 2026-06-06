@@ -48,7 +48,7 @@ El usuario necesita cobertura integral de tests sobre la pantalla de login y su 
 - `packages/app/src/Domains/Auth/Auth.routes.tsx`
 - `packages/app/src/Domains/Auth/Auth.router.tsx`
 - `packages/app/src/Domains/Main/Main.routes.tsx`
-- `packages/app/src/Aplication/Helpers/isLogged.ts`
+- `packages/app/src/Application/Helpers/isLogged.ts`
 
 ### Backend
 

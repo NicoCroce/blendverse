@@ -1,6 +1,6 @@
-import { Modal } from '@app/Aplication/Components';
+import { Modal } from '@app/Application/Components';
 import { ChangePasswordForm } from './ChangePasswordForm';
-import { useGlobalStore } from '@app/Aplication';
+import { useGlobalStore } from '@app/Application';
 import { TUserLogged } from '../../User.entity';
 
 export const ChangePasswordModal = () => {

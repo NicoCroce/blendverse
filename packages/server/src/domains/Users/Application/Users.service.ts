@@ -18,7 +18,7 @@ import {
   IRegisterUser,
   IUpdateUser,
   IGetSelectUser,
-} from '../Domain/User.interfaces';
+} from './users.types';
 import { IPaginationResponse, ISelect } from '@server/Application';
 import { User } from '../Domain';
 

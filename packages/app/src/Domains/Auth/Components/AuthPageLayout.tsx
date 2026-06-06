@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { HalfPage, Title } from '@app/Aplication';
+import { HalfPage, Title } from '@app/Application';
 
 interface AuthPageLayoutProps {
   title: string;

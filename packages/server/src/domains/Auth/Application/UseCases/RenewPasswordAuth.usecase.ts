@@ -1,6 +1,6 @@
 import { executeUseCase, IUseCase } from '@server/Application';
 import { RenewPassword } from '@server/domains/Users';
-import { IRenewPasswordAuthUsecase } from '../../Domain/auth.interfaces';
+import { IRenewPasswordAuthUsecase } from '../auth.types';
 
 export class RenewPasswordAuth implements IUseCase<void> {
   constructor(private readonly _renewPassword: RenewPassword) {}

@@ -1,5 +1,5 @@
 import { UsersList, SearchUser, NewUserButton } from '../Components';
-import { Page } from '@app/Aplication/Components/Layout/Page';
+import { Page } from '@app/Application/Components/Layout/Page';
 
 export const UsersListPage = () => {
   return (

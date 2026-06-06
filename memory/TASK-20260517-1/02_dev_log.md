@@ -20,7 +20,7 @@ Los domain barrels (e.g. `@server/domains/Users`) exportan `* from './Infrastruc
 
 ### Estrategia Frontend
 
-- `vi.mock('@app/Aplication')` con alias de path no es interceptado correctamente por Vitest; se reemplazó por `vi.mock('@app/Aplication/Hooks/useGlobalStore')` con la ruta del submódulo.
+- `vi.mock('@app/Application')` con alias de path no es interceptado correctamente por Vitest; se reemplazó por `vi.mock('@app/Application/Hooks/useGlobalStore')` con la ruta del submódulo.
 - `useLoginUser.spec.tsx` necesita `QueryClientProvider` wrapper: `useGlobalStore` internamente llama `useQueryClient()`.
 - `window.location.reload` no es configurable en jsdom. Solución: `vi.stubGlobal('location', { reload: reloadMock })` en `beforeEach` + `vi.unstubAllGlobals()` en `afterEach`.
 

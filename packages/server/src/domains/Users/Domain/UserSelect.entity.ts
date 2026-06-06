@@ -1,4 +1,4 @@
-﻿import { IUser } from './User.interfaces';
+﻿import { IUser } from './User.types';
 export class UserSelect {
   constructor(
     private readonly _nombre: string,

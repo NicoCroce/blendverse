@@ -1,4 +1,4 @@
-import { isLogged } from '@app/Aplication/Helpers/isLogged';
+import { isLogged } from '@app/Application/Helpers/isLogged';
 import { OwnserSysService } from '../Config.service';
 
 export const useGetOwnerTheme = () => {

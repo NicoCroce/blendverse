@@ -26,6 +26,36 @@ packages/app/src/Domains/[Domain]/
 └── index.ts                    # Barrel export del dominio
 ```
 
+## Estructura de Specs
+
+Todos los archivos de test (`.spec.tsx`, `.spec.ts`, `.test.tsx`, `.test.ts`) deben organizarse en una carpeta `specs/` manteniendo la misma estructura del directorio padre.
+
+✅ **CORRECTO:**
+
+```
+packages/app/src/Domains/Auth/
+├── Components/
+│   ├── LoginForm.tsx
+│   └── specs/
+│       └── LoginForm.spec.tsx
+├── Hooks/
+│   ├── useLogin.ts
+│   └── specs/
+│       └── useLogin.spec.ts
+└── Pages/
+    ├── LoginPage.page.tsx
+    └── specs/
+        └── LoginPage.page.spec.tsx
+```
+
+❌ **PROHIBIDO** — Mezclar specs con archivos fuente:
+
+```
+Components/
+├── LoginForm.tsx
+├── LoginForm.spec.tsx          # ← INCORRECTO
+```
+
 ## Patrones Obligatorios
 
 ## Reglas de oro
@@ -33,18 +63,28 @@ packages/app/src/Domains/[Domain]/
 1. Las páginas y los componentes solo pueden llamar a los servicios desde los hooks, de su propio dominio o de los demás.
 2. TRPc solo puede ser llamado desde la carpeta `Service`.
 3. Si vas a utilizar un `Input`, `Button`, etc. Debes verificar primero en `Layout`, `Molecules`, `Organisms`.
-4. Si vas a utilizar un componente de `packages/app/src/Aplication/Components/ui` debes informarlo antes de utilizarlo.
+4. Si vas a utilizar un componente de `packages/app/src/Application/Components/ui` debes informarlo antes de utilizarlo.
 5. El componente `Container` es estrucutral, por lo que si lo utilizas por defecto ya es flex column. Esto facilita el layout. **SI VAS A UTILIZARLO ANALIZA BIEN SU COMPORTAMIENTO PARA NO AGREGAR BLOCK INNECESARIAMENTE** También ten en cuenta `space` los valores correctos.
 
 ### Entity (tipos)
 
-```typescript
-import { IEntity } from '@server/domains/[Domain]';
-import { TPagination } from '@app/Aplication';
+**Nunca definas los tipos manualmente.** Derivalos del router del servidor con `inferRouterOutputs` para que el frontend se sincronice automáticamente cuando el backend cambia.
 
-export type TEntity = IEntity;
+```typescript
+import { inferRouterOutputs } from '@trpc/server';
+import { T[Domain]Router } from '@server/domains/[Domain]';
+import { TPagination } from '@app/Application';
+
+type RouterOutput = inferRouterOutputs<T[Domain]Router>;
+
+// Tipo de la entidad: inferido del output de la procedure getById (o getAll)
+export type TEntity = RouterOutput['[domainName]']['getById'];
+
+// Tipo de búsqueda: solo los parámetros de filtro, no viene del server
 export type TEntitySearch = { search?: string } & TPagination;
 ```
+
+> **Regla:** `TEntity` y variantes (`TEntityList`, `TEntitySelect`, etc.) siempre se derivan de `inferRouterOutputs`. Solo `TEntitySearch` se define manualmente porque describe parámetros de URL, no datos del servidor.
 
 ### Service (tRPC)
 
@@ -59,7 +99,7 @@ export const EntityService = _entityService.[domainName];
 ### Hook de Query (lista paginada)
 
 ```typescript
-import { useURLParams } from '@app/Aplication/Hooks/useURLParams';
+import { useURLParams } from '@app/Application/Hooks/useURLParams';
 import { TEntitySearch } from '../Entity.entity';
 import { EntityService } from '../Entity.service';
 
@@ -170,7 +210,7 @@ const form = useForm<z.infer<typeof formSchema>>({
 
 ## Componentes Compartidos
 
-Antes de crear cualquier componente nuevo, verificar en `packages/app/src/Aplication/Components/`:
+Antes de crear cualquier componente nuevo, verificar en `packages/app/src/Application/Components/`:
 
 | Carpeta      | Contenido                                                   |
 | ------------ | ----------------------------------------------------------- |

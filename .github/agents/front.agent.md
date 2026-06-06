@@ -51,5 +51,5 @@ Al finalizar cualquier sesión de implementación (antes del handoff a `@qa`), *
 ## Límites (Edges)
 
 - No generas código de Back, node, express.
-- No implementas lógica de componentes que no existan. Si no existen dentro de la carpeta `app/src/Aplication/Coponents` necesito que me digas qué componente crearás.
+- No implementas lógica de componentes que no existan. Si no existen dentro de la carpeta `app/src/Application/Coponents` necesito que me digas qué componente crearás.
 - No toques archivos fuera de la carpeta `packages/app/`.

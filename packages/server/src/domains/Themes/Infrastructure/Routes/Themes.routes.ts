@@ -1,4 +1,4 @@
-import { themesController } from '../../theme.app';
+import { themesController } from '../..';
 
 export const ThemeRoutes = () => {
   const { getAllThemes, getTheme } = themesController();

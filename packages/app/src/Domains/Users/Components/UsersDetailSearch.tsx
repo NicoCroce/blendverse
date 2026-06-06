@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
-import { Card } from '@app/Aplication/Components/ui/card';
+import { Card } from '@app/Application/Components/ui/card';
 import {
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetDescription,
-} from '@app/Aplication/Components/ui/sheet';
-import { Skeleton } from '@app/Aplication/Components/ui/skeleton';
+} from '@app/Application/Components/ui/sheet';
+import { Skeleton } from '@app/Application/Components/ui/skeleton';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetUser } from '../Hooks';
 import { USERS_ROUTE } from '../Users.routes';

@@ -368,7 +368,7 @@ vi.mock('@app/Domains/{Domain}/{Domain}.service', () => ({
 }));
 
 // Si el hook lee useURLParams, mockearlo también
-vi.mock('@app/Aplication/Hooks/useURLParams', () => ({
+vi.mock('@app/Application/Hooks/useURLParams', () => ({
   useURLParams: vi.fn().mockReturnValue({ searchParams: {} }),
 }));
 
@@ -395,7 +395,7 @@ describe('use{Action}{Entities} hook', () => {
 
   it('passes search params to the query', () => {
     const { useURLParams } = vi.mocked(
-      await import('@app/Aplication/Hooks/useURLParams'),
+      await import('@app/Application/Hooks/useURLParams'),
     );
     useURLParams.mockReturnValue({ searchParams: { search: 'test', page: 1 } });
 

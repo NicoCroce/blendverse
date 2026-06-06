@@ -5,14 +5,13 @@ import {
   GetRoleByUser,
   GetRoles,
 } from '.';
+import { Permissions, Roles } from '../Domain';
 import {
-  IGetPermissions,
-  IGetPermissionsByUser,
-  IGetRoleByUser,
-  IGetRoles,
-  Permissions,
-  Roles,
-} from '../Domain';
+  IGetPermissions as IGetPermissionsInput,
+  IGetPermissionsByUser as IGetPermissionsByUserInput,
+  IGetRoleByUser as IGetRoleByUserInput,
+  IGetRoles as IGetRolesInput,
+} from './permissions.types';
 
 export class PermissionsService {
   constructor(
@@ -24,14 +23,14 @@ export class PermissionsService {
 
   async getPermissions({
     requestContext,
-  }: IGetPermissions): Promise<Permissions[]> {
+  }: IGetPermissionsInput): Promise<Permissions[]> {
     return executeUseCase({
       useCase: this._getPermissions,
       requestContext,
     });
   }
 
-  async getRoles({ requestContext }: IGetRoles): Promise<Roles[]> {
+  async getRoles({ requestContext }: IGetRolesInput): Promise<Roles[]> {
     return executeUseCase({
       useCase: this._getRoles,
       requestContext,
@@ -40,7 +39,7 @@ export class PermissionsService {
 
   async getPermissionsByUser({
     requestContext,
-  }: IGetPermissionsByUser): Promise<string[]> {
+  }: IGetPermissionsByUserInput): Promise<string[]> {
     return executeUseCase({
       useCase: this._getPermissionsByUser,
       requestContext,
@@ -50,7 +49,7 @@ export class PermissionsService {
   async getRoleByUser({
     input,
     requestContext,
-  }: IGetRoleByUser): Promise<string> {
+  }: IGetRoleByUserInput): Promise<string> {
     return executeUseCase({
       useCase: this._getRoleByUser,
       input,

@@ -1,4 +1,4 @@
-import { Container, Title } from '@app/Aplication';
+import { Container, Title } from '@app/Application';
 
 interface LeftContentPageProps {
   title?: string;

@@ -4,9 +4,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@app/Aplication/Components/ui/card';
+} from '@app/Application/Components/ui/card';
 import { TUser } from '../../User.entity';
-import { Badge } from '@app/Aplication/Components/ui/badge';
+import { Badge } from '@app/Application/Components/ui/badge';
 
 interface UserItemProps {
   data: TUser;

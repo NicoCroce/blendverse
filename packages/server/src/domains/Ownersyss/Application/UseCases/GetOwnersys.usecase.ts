@@ -1,5 +1,6 @@
 ﻿import { AppError, IUseCase } from '@server/Application';
-import { OwnersyssRepository, Ownersys, IGetOwnersys } from '../../Domain';
+import { OwnersyssRepository, Ownersys } from '../../Domain';
+import { IGetOwnersys } from '../ownersyss.types';
 
 export class GetOwnersys implements IUseCase<Ownersys | null> {
   constructor(private readonly ownersyssRepository: OwnersyssRepository) {}

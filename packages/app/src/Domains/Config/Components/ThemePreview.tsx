@@ -1,4 +1,4 @@
-import { Button, Checkbox, Container, Input, Title } from '@app/Aplication';
+import { Button, Checkbox, Container, Input, Title } from '@app/Application';
 
 export const ThemePreview = () => {
   return (
