@@ -15,7 +15,7 @@ tools:
 handoffs:
   - label: Tests completos → QA para validación estática
     agent: qa
-    prompt: 'El agente @tester generó los tests. Leer memory/{task_id}/02_dev_log.md para los archivos afectados y ejecutar la validación estática (tsc + lint + vitest run) con la skill qa-runner.'
+    prompt: 'El agente @tester generó los tests y escribió memory/{task_id}/05_test_log.md. Leer ese archivo y memory/{task_id}/02_dev_log.md para los archivos afectados, luego ejecutar la validación estática (tsc + lint + vitest run) con la skill qa-runner.'
     send: false
 ---
 

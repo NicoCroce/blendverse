@@ -126,6 +126,8 @@ Domains/{Domain}/
 
 ## Template Obligatorio — `03_qa_report.md`
 
+> **Regla de brevedad:** Si el resultado es `PASS`, omitir el output de terminal — solo registrar el estado de cada paso. Si el resultado es `FAIL`, incluir únicamente el error concreto (mensaje + archivo + línea) del paso que falló, no el output completo.
+
 ```markdown
 ---
 task_id: 'TASK-YYYYMMDD-N'
@@ -139,68 +141,32 @@ date: 'YYYY-MM-DD'
 
 ## Resultado General: ✅ PASS / ❌ FAIL
 
----
-
-## 1. Compilación TypeScript
-
-- **Comando:** `npx tsc --noEmit`
-- **Paquete:** `packages/server` | `packages/app` | ambos
-- **Estado:** ✅ Sin errores | ❌ Con errores
-
-\`\`\`bash
-[output completo del terminal]
-\`\`\`
+| Paso          | Comando             | Paquete(s)           | Estado      |
+| ------------- | ------------------- | -------------------- | ----------- |
+| 1. TypeScript | `npx tsc --noEmit`  | server / app / ambos | ✅ / ❌     |
+| 2. Linting    | `pnpm lint`         | raíz del monorepo    | ✅ / ❌     |
+| 3. Tests      | `npx vitest run`    | server / app / ambos | ✅ X passed |
+| 4. Estructura | verificación manual | —                    | ✅ / ❌     |
 
 ---
 
-## 2. Linting
+## Error (solo si status: FAIL)
 
-- **Comando:** `pnpm lint`
-- **Estado:** ✅ Sin errores | ❌ Con errores
+**Paso fallido:** [1 / 2 / 3 / 4]
 
-\`\`\`bash
-[output completo del terminal]
-\`\`\`
+**Error:**
+```
 
----
+[Copiar únicamente el mensaje de error relevante — máximo 20 líneas]
 
-## 3. Tests (Vitest)
-
-- **Comando:** `npx vitest run`
-- **Paquete:** `packages/server` | `packages/app` | ambos
-- **Estado:** ✅ X passed | ❌ X failed
-
-\`\`\`bash
-[output completo de vitest run]
-\`\`\`
-
-### Tests generados en esta sesión
-
-| Archivo                                                                      | Tests | Estado |
-| ---------------------------------------------------------------------------- | ----- | ------ |
-| `packages/server/src/domains/X/Domain/X.entity.spec.ts`                      | 3     | ✅     |
-| `packages/server/src/domains/X/Application/UseCases/CreateX.usecase.spec.ts` | 2     | ✅     |
-
----
-
-## 4. Verificación de Estructura de Carpetas
-
-| Archivo                                                  | Capa Esperada | Estado |
-| -------------------------------------------------------- | ------------- | ------ |
-| `packages/server/src/domains/X/Domain/X.entity.ts`       | Domain        | ✅     |
-| `packages/server/src/domains/X/Application/X.service.ts` | Application   | ✅     |
-
----
-
-## Contexto para el Coder (solo si status: FAIL)
-
-**Error principal:**
-[Copiar el error más relevante del terminal para guiar la corrección]
+```
 
 **Archivo afectado:** `ruta/al/archivo.ts` — línea X
+```
 
 **Acción esperada:** [Descripción concisa de qué debe corregirse]
-```
+
+````
 
 ---
 
@@ -241,7 +207,7 @@ describe('{Entity} entity', () => {
     });
   });
 });
-```
+````
 
 ### Backend — Use Case (`Create{Entity}.usecase.spec.ts`)
 

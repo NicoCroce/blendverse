@@ -25,6 +25,15 @@
     ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
   ],
   "chat.tools.terminal.autoApprove": {
-    "true": true
+    "true": true,
+    ".specify/scripts/bash/": true,
+    ".specify/scripts/powershell/": true
+  },
+  "chat.promptFilesRecommendations": {
+    "speckit.constitution": true,
+    "speckit.specify": true,
+    "speckit.plan": true,
+    "speckit.tasks": true,
+    "speckit.implement": true
   }
 }

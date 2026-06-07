@@ -14,9 +14,9 @@ handoffs:
     agent: back
     prompt: Se necesita crear o modificar lógica de negocio en el servidor. Usa la skill `back-ddd-generator` para el nuevo dominio.
     send: false
-  - label: Validar código con QA
-    agent: qa
-    prompt: 'La implementación está lista. Leer memory/{task_id}/02_dev_log.md para obtener los archivos afectados y ejecutar la validación estática siguiendo la skill qa-runner.'
+  - label: Generar tests de negocio con @tester
+    agent: tester
+    prompt: 'La implementación está lista. Leer memory/{task_id}/02_dev_log.md para obtener los archivos afectados y generar los tests de reglas de negocio con la skill test-generator.'
     send: false
 ---
 

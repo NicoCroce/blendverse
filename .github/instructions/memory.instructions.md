@@ -56,6 +56,8 @@ affected_files:
 ---
 ```
 
+> **Regla `affected_files`:** Listar **solo** los archivos que contienen lógica nueva o modificada (entidades, use cases, servicios, controladores, modelos, implementaciones de repositorio). **No listar** barrels (`index.ts`), archivos de DI (`*.di.ts`) ni archivos de rutas que solo registran el dominio sin lógica propia.
+
 ### Schema — `03_qa_report.md`
 
 ```yaml
@@ -80,12 +82,24 @@ date: 'YYYY-MM-DD'
 ---
 ```
 
+### Schema — `05_test_log.md`
+
+```yaml
+---
+task_id: 'TASK-YYYYMMDD-N'
+agent: 'Tester_Agent'
+status: 'PASS' # PASS | FAIL
+attempts: 1 # número de iteraciones del Tester (máx. 3)
+date: 'YYYY-MM-DD'
+---
+```
+
 ### Schema — `BLOCKED.md`
 
 ```yaml
 ---
 task_id: 'TASK-YYYYMMDD-N'
-agent: 'QA_Agent' # o "Reviewer_Agent"
+agent: 'QA_Agent' # o "Reviewer_Agent" o "Tester_Agent"
 blocked_at: 'YYYY-MM-DD HH:MM'
 attempts: 3
 reason: 'Descripción exacta del error repetido sin solución'
@@ -105,7 +119,9 @@ El campo `attempts` en el frontmatter lleva el conteo de iteraciones por agente.
 
 ## Registro Global `history_log.json`
 
-El Director (Chat base) actualiza este archivo al abrir y cerrar cada tarea:
+El Director (Chat base) actualiza este archivo al abrir y cerrar cada tarea.
+
+> **Regla de rotación:** Mantener un máximo de **10 entradas** en el array. Cuando se agregue la entrada número 11, eliminar la entrada más antigua con `status: COMPLETED`. Las entradas con `status: IN_PROGRESS` o `BLOCKED` nunca se eliminan.
 
 ```json
 [
@@ -125,6 +141,11 @@ El Director (Chat base) actualiza este archivo al abrir y cerrar cada tarea:
         "agent": "Back_Agent",
         "status": "IMPLEMENTED",
         "timestamp": "2026-05-17T10:30:00Z"
+      },
+      {
+        "agent": "Tester_Agent",
+        "status": "PASS",
+        "timestamp": "2026-05-17T10:50:00Z"
       },
       {
         "agent": "QA_Agent",
@@ -148,3 +169,4 @@ El Director (Chat base) actualiza este archivo al abrir y cerrar cada tarea:
 3. **El frontmatter es inmutable** una vez que el archivo alcanza estado final (`DONE`, `IMPLEMENTED`, `PASS`, `APPROVED`). Para re-iterar, incrementar `attempts`.
 4. **Cada agente escribe únicamente su archivo designado**; no modifica archivos de otros agentes.
 5. **Rutas relativas** — siempre usar la ruta desde la raíz del monorepo (ej. `packages/server/src/...`).
+6. **Brevedad obligatoria en reportes** — los cuerpos de `03_qa_report.md` y `04_review_log.md` deben contener solo lo necesario para que el siguiente agente actúe: si el resultado es `PASS`/`APPROVED`, omitir el output de terminal (solo registrar el estado); si es `FAIL`/`REJECTED`, incluir únicamente el error concreto y el archivo afectado.

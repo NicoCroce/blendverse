@@ -52,6 +52,8 @@ Los ítems marcados con 🟡 son **recomendados** — un fallo genera feedback p
 
 ## Template Obligatorio — `04_review_log.md`
 
+> **Regla de brevedad:** Si el resultado es `APPROVED`, el cuerpo se limita a la tabla del checklist. La sección de Feedback solo se escribe en `REJECTED`; la de Deuda Técnica solo si hay algo concreto que reportar.
+
 ````markdown
 ---
 task_id: 'TASK-YYYYMMDD-N'
@@ -86,7 +88,7 @@ date: 'YYYY-MM-DD'
 
 ---
 
-## Feedback (completar solo si status: REJECTED)
+## Feedback (solo si status: REJECTED)
 
 ### Ítem [N] — [Nombre del ítem]
 
@@ -99,17 +101,13 @@ date: 'YYYY-MM-DD'
 ```typescript
 // Ejemplo de cómo debe quedar el código
 ```
-````
 
 ---
 
-## Deuda Técnica Registrada
+## Deuda Técnica (solo si hay algo concreto)
 
-- [Ítems que pasan el checklist pero son subóptimos y deben atenderse en una tarea futura]
-
-_Si no hay deuda técnica, escribir: "Sin deuda técnica adicional."_
-
-```
+- [Ítem subóptimo que debe atenderse en una tarea futura]
+````
 
 ---
 
@@ -120,4 +118,7 @@ _Si no hay deuda técnica, escribir: "Sin deuda técnica adicional."_
 3. **No rechazar** por ítems 🟡 — solo generar feedback en "Deuda Técnica".
 4. **`attempts`** comienza en `1` y se incrementa en cada re-revisión.
 5. **Si `attempts >= 3`**, no escribir el reporte — ejecutar el Protocolo Break-Loop definido en `@reviewer`.
+
+```
+
 ```

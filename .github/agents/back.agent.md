@@ -22,9 +22,9 @@ handoffs:
     agent: front
     prompt: El dominio del servidor ya está completo. Crea la capa de presentación en `packages/app` siguiendo la skill `front-ddd-generator`.
     send: false
-  - label: Validar código con QA
-    agent: qa
-    prompt: 'La implementación está lista. Leer memory/{task_id}/02_dev_log.md para obtener los archivos afectados y ejecutar la validación estática siguiendo la skill qa-runner.'
+  - label: Generar tests de negocio con @tester
+    agent: tester
+    prompt: 'La implementación está lista. Leer memory/{task_id}/02_dev_log.md para obtener los archivos afectados y generar los tests de reglas de negocio con la skill test-generator.'
     send: false
 ---
 
