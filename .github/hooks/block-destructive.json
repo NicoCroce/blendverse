@@ -13,7 +13,8 @@
           "DROP DATABASE",
           "truncate",
           "git clean -fd",
-          "npx prisma migrate reset"
+          "npx prisma migrate reset",
+          "speckit.implement"
         ],
         "message": "⛔ Comando destructivo bloqueado. Requiere confirmación explícita del usuario antes de ejecutar."
       }

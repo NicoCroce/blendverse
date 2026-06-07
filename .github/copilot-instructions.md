@@ -137,6 +137,50 @@ Reporte final → Director cierra
 - Frontend → `.github/instructions/app.instructions.md`
 - Memoria → `.github/instructions/memory.instructions.md`
 
+## Integración Speckit — Pipeline de Diseño
+
+Speckit gestiona la fase de **especificación y planificación** antes de que los agentes de Blendverse implementen.
+Es la capa de diseño; Blendverse es la capa de ejecución. **Nunca usar `speckit.implement`** — es reemplazado por los coders especializados.
+
+### Cuándo usar Speckit
+
+| Fase                             | Agente                                      | Output                                |
+| -------------------------------- | ------------------------------------------- | ------------------------------------- |
+| Especificación                   | `speckit.specify`                           | `specs/{feature}/spec.md`             |
+| Aclaración (si hay ambigüedades) | `speckit.clarify`                           | `spec.md` actualizado                 |
+| Diseño técnico                   | `speckit.plan`                              | `plan.md`, `data-model.md`, contratos |
+| Desglose de tareas               | `speckit.tasks`                             | `tasks.md` → handoff a Blendverse     |
+| Git workflow                     | `speckit.git.feature`, `speckit.git.commit` | rama + commits                        |
+
+### Flujo Unificado Speckit + Blendverse
+
+```
+[DISEÑO — Speckit]
+speckit.git.feature   → crea rama
+speckit.specify       → spec.md
+speckit.clarify       → (opcional) refina spec.md
+speckit.plan          → plan.md + data-model + contracts
+speckit.tasks         → tasks.md
+                           ↓ handoff a Blendverse
+[IMPLEMENTACIÓN — Blendverse]
+@blendverse.analyst   → 01_requirements.md (usa spec.md como input)
+@blendverse.back      → código servidor DDD
+@blendverse.front     → código React
+@blendverse.tester    → tests de reglas de negocio
+@blendverse.qa        → tsc + lint + vitest
+@blendverse.reviewer  → checklist 12 ítems
+speckit.git.commit    → commit automático
+```
+
+**Comando para arrancar el pipeline completo de punta a punta:**
+`/blendverse.start-feature "descripción de la feature"`
+
+Este prompt orquesta Speckit hasta `tasks.md` y luego hace handoff automático a `@blendverse.analyst`,
+sin modificar ningún archivo de Speckit.
+
+> **`speckit.implement` está bloqueado** — configurado en `.github/hooks/block-destructive.json`.
+> Para gobernanza y principios no negociables ver `.specify/memory/constitution.md`.
+
 <!-- SPECKIT START -->
 
 For additional context about technologies to be used, project structure,

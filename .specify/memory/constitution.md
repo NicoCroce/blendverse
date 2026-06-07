@@ -175,6 +175,9 @@ Prevalece sobre cualquier práctica ad-hoc o convención implícita.
 - Los desvíos detectados por `arch-audit` deben corregirse antes de añadir nuevas features al dominio afectado.
 - El Director (Chat base) es responsable de mantener `memory/history_log.json` como registro cronológico fidedigno.
 
-Para guía de desarrollo en tiempo de ejecución ver `.github/copilot-instructions.md`.
+Para guía de desarrollo en tiempo de ejecución y flujo de agentes unificado (Speckit + Blendverse) ver `.github/copilot-instructions.md`.
+
+> **Fuente de verdad operacional**: `.github/copilot-instructions.md` — flujo de agentes, comandos del día a día e integración Speckit/Blendverse.
+> **Fuente de verdad de principios**: este archivo — define los 7 principios NON-NEGOTIABLE, stack y gobernanza.
 
 **Version**: 1.0.0 | **Ratified**: 2026-05-17 | **Last Amended**: 2026-06-06
