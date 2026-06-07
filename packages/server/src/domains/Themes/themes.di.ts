@@ -4,7 +4,7 @@ import {
   ThemesController,
   ThemesRepositoryImplementation,
 } from './Infrastructure';
-import { container } from '@server/utils/Container';
+import { container } from '@server/Infrastructure/di/Container';
 
 export const themeApp = {
   themesRepository: asClass(ThemesRepositoryImplementation),

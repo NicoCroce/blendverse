@@ -7,7 +7,7 @@ import {
 } from './Application/UseCases';
 import { AuthController } from './Infrastructure';
 import { AuthRepositoryImplementation } from './Infrastructure/Repository/AuthRepository.implementation';
-import { container } from '@server/utils/Container';
+import { container } from '@server/Infrastructure/di/Container';
 
 export const authApp = {
   authRepository: asClass(AuthRepositoryImplementation),

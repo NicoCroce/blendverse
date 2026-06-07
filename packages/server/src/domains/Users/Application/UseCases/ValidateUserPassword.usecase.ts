@@ -1,7 +1,7 @@
 import { AppError, IUseCase } from '@server/Application';
 import { User, UserRepository } from '../../Domain';
 import { IValidateUserPassword } from '../users.types';
-import { comparePassword } from '@server/utils/bcrypt';
+import { comparePassword } from '@server/Infrastructure/utils/bcrypt';
 
 export class ValidateUserPassword implements IUseCase<User> {
   constructor(private readonly usersRepository: UserRepository) {}

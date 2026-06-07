@@ -1,4 +1,4 @@
-import { axios } from '@server/utils/axios';
+import { axios } from '@server/Infrastructure/utils/axios';
 import { AuthRepository, IRestorePasswordRepository } from '../../Domain';
 
 const RESTORE_PASSWORD_ENDPOINT = '/nuevousuario/sendReestablecer';

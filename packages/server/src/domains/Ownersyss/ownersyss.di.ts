@@ -9,7 +9,7 @@ import {
   OwnersyssController,
   OwnersyssRepositoryImplementation,
 } from './Infrastructure';
-import { container } from '@server/utils/Container';
+import { container } from '@server/Infrastructure/di/Container';
 
 export const ownersysApp = {
   ownersyssRepository: asClass(OwnersyssRepositoryImplementation),

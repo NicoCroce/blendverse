@@ -1,5 +1,5 @@
 import { executeUseCase, IUseCase } from '@server/Application';
-import { generateToken } from '@server/utils/JWT';
+import { generateToken } from '@server/Infrastructure/utils/JWT';
 import { IExecuteResponse, Ilogin } from '../auth.types';
 import { User, ValidateUserPassword } from '@server/domains/Users';
 import { GetRoleByUser } from '@server/domains/Permissions';

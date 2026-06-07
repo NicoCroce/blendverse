@@ -1,6 +1,6 @@
 import { AppError, IUseCase } from '@server/Application';
 import { IRenewPassword, UserRepository } from '@server/domains/Users';
-import { getCryptedPassword } from '@server/utils/bcrypt';
+import { getCryptedPassword } from '@server/Infrastructure/utils/bcrypt';
 
 export class RenewPassword implements IUseCase<void> {
   constructor(private readonly usersRepository: UserRepository) {}

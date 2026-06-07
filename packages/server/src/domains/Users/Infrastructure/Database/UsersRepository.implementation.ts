@@ -20,7 +20,7 @@ import { UserModel } from './Users.model';
 import { CompaniesModel } from '@server/domains/Companies/Infrastructure';
 import { RolesModel } from '@server/domains/Permissions';
 import { ISelect, TransformToSelect } from '@server/Application';
-import { PaginationImplementation } from '@server/utils/pagination';
+import { PaginationImplementation } from '@server/Infrastructure/utils/pagination';
 
 export class UsersRepositoryImplementation implements UserRepository {
   async getUsers({

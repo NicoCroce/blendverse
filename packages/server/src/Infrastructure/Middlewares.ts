@@ -2,7 +2,7 @@ import { Express } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { pinoHttp } from 'pino-http';
-import { logger } from '@server/utils/pino';
+import { logger } from '@server/Infrastructure/utils/pino';
 import { v4 as uuidv4 } from 'uuid';
 
 export const initMiddlewares = (app: Express) => {

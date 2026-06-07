@@ -1,4 +1,4 @@
-import { logger } from '@server/utils/pino';
+import { logger } from '@server/Infrastructure/utils/pino';
 import nodemailer from 'nodemailer';
 import type SMTPTransport from 'nodemailer/lib/smtp-transport';
 

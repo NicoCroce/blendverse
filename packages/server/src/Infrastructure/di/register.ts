@@ -1,5 +1,5 @@
 import { registerDomains } from '@server/domains/register';
-import { container } from '@server/utils/Container';
+import { container } from '@server/Infrastructure/di/Container';
 import { asValue } from 'awilix';
 import { Express } from 'express';
 

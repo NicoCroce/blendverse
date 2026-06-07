@@ -1,8 +1,8 @@
 import { initTRPC, TRPCError } from '@trpc/server';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { verifyTokenInHeader } from '../Auth/Auth';
-import { verifyToken } from '@server/utils/JWT';
-import { logger, loggerContext } from '@server/utils/pino';
+import { verifyToken } from '@server/Infrastructure/utils/JWT';
+import { logger, loggerContext } from '@server/Infrastructure/utils/pino';
 import { RequestContext } from '@server/Application';
 
 // created for each request

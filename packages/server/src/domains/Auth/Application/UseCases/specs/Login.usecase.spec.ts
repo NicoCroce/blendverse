@@ -1,6 +1,6 @@
 import { AppError, RequestContext } from '@server/Application';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { generateToken } from '@server/utils/JWT';
+import { generateToken } from '@server/Infrastructure/utils/JWT';
 import { Login } from '../Login.usecase';
 
 vi.mock('@server/domains/Users', async () => {

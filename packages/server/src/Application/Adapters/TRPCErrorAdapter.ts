@@ -1,7 +1,7 @@
 import { TRPCError } from '@trpc/server';
 import { IErrorAdapter } from '../Interfaces';
 import { AppError, RequestContext } from '../Entities';
-import { logger, loggerContext } from '@server/utils/pino';
+import { logger, loggerContext } from '@server/Infrastructure/utils/pino';
 
 export class TRPCErrorAdapter implements IErrorAdapter<TRPCError> {
   adapt(error: unknown, requestContext?: RequestContext): TRPCError {

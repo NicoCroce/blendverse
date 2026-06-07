@@ -1,4 +1,4 @@
-import { loggerContextInput } from '@server/utils/pino';
+import { loggerContextInput } from '@server/Infrastructure/utils/pino';
 import { RequestContext } from '../Entities';
 import { IUseCase } from '../Interfaces';
 import { TRPCErrorAdapter } from './TRPCErrorAdapter';

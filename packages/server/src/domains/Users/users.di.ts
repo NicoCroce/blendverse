@@ -16,7 +16,7 @@ import {
   ValidateUserPassword,
   RenewPassword,
 } from './Application';
-import { container } from '@server/utils/Container';
+import { container } from '@server/Infrastructure/di/Container';
 
 export const userApp = {
   usersRepository: asClass(UsersRepositoryImplementation),

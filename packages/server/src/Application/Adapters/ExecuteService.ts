@@ -1,4 +1,4 @@
-import { loggerContext } from '@server/utils/pino';
+import { loggerContext } from '@server/Infrastructure/utils/pino';
 import { RequestContext } from '../Entities';
 import { IRequestContext } from '../Interfaces';
 

@@ -1,12 +1,12 @@
 import { AppError, executeUseCase, IUseCase } from '@server/Application';
-import { getCryptedPassword } from '@server/utils/bcrypt';
+import { getCryptedPassword } from '@server/Infrastructure/utils/bcrypt';
 import { UserRepository } from '../../Domain/User.repository';
 import { User } from '../../Domain/User.entity';
 import { IRegisterUser } from '../users.types';
 import { AssociateUserToRole } from '@server/domains/Permissions';
 import { AssociateUserToProfile } from '@server/domains/Userprofiles';
 import { EmailSender, emailTemplates } from '@server/Application';
-import { logger } from '@server/utils/pino';
+import { logger } from '@server/Infrastructure/utils/pino';
 
 export class RegisterUser implements IUseCase<User> {
   constructor(

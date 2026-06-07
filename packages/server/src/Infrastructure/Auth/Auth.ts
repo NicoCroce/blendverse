@@ -1,6 +1,6 @@
 import { RequestContext } from '@server/Application';
-import { verifyToken } from '@server/utils/JWT';
-import { logger, loggerContext } from '@server/utils/pino';
+import { verifyToken } from '@server/Infrastructure/utils/JWT';
+import { logger, loggerContext } from '@server/Infrastructure/utils/pino';
 import { Request, Response, NextFunction } from 'express';
 
 export const verifyTokenInHeader = (cookies: Record<string, unknown>) => {

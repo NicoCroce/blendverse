@@ -2,7 +2,7 @@ import { protectedProcedure } from '@server/Infrastructure/trpc';
 import { UsersService } from '../../Application';
 import { executeService } from '@server/Application';
 import z from 'zod';
-import { paginationZodParams } from '@server/utils';
+import { paginationZodParams } from '@server/Infrastructure/utils/pagination';
 
 export class UsersController {
   constructor(private usersService: UsersService) {}
