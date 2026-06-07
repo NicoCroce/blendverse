@@ -1,5 +1,5 @@
 ---
-name: tester
+name: blendverse.tester
 description: Agente especializado en análisis de reglas de negocio y generación de tests. Lee el código fuente del dominio, extrae reglas de negocio de cada archivo con lógica real y genera tests que las validan con datos concretos — no stubs. No mide ni persigue cobertura de porcentaje.
 tools:
   [
@@ -14,8 +14,8 @@ tools:
   ]
 handoffs:
   - label: Tests completos → QA para validación estática
-    agent: qa
-    prompt: 'El agente @tester generó los tests y escribió memory/{task_id}/05_test_log.md. Leer ese archivo y memory/{task_id}/02_dev_log.md para los archivos afectados, luego ejecutar la validación estática (tsc + lint + vitest run) con la skill qa-runner.'
+    agent: blendverse.qa
+    prompt: 'El agente @blendverse.tester generó los tests y escribió memory/{task_id}/05_test_log.md. Leer ese archivo y memory/{task_id}/02_dev_log.md para los archivos afectados, luego ejecutar la validación estática (tsc + lint + vitest run) con la skill qa-runner.'
     send: false
 ---
 
@@ -100,15 +100,15 @@ cd packages/server && npx vitest run 2>&1
 cd packages/app && npx vitest run 2>&1
 ```
 
-Todos los tests generados deben pasar (0 failed). Si alguno falla, corregirlo antes de hacer handoff a `@qa`.
+Todos los tests generados deben pasar (0 failed). Si alguno falla, corregirlo antes de hacer handoff a `@blendverse.qa`.
 
 ### Paso 4 — Escribir `05_test_log.md`
 
 Crear `memory/{task_id}/05_test_log.md` siguiendo el template al final de este archivo.
 
-### Paso 5 — Handoff a `@qa`
+### Paso 5 — Handoff a `@blendverse.qa`
 
-Una vez que los tests pasan y el coverage es aceptable, hacer handoff al agente `@qa` para la validación estática completa.
+Una vez que los tests pasan y el coverage es aceptable, hacer handoff al agente `@blendverse.qa` para la validación estática completa.
 
 ---
 
@@ -117,7 +117,7 @@ Una vez que los tests pasan y el coverage es aceptable, hacer handoff al agente 
 Si tras 3 iteraciones los tests siguen fallando sin poder resolverse:
 
 1. Crear `memory/BLOCKED.md` con el detalle del error.
-2. Escribir en el chat: `⛔ El agente @tester alcanzó 3 iteraciones sin resolver los tests. Intervención humana requerida.`
+2. Escribir en el chat: `⛔ El agente @blendverse.tester alcanzó 3 iteraciones sin resolver los tests. Intervención humana requerida.`
 3. Detener toda ejecución.
 
 ---

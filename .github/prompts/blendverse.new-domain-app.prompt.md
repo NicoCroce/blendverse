@@ -1,10 +1,10 @@
 ---
 agent: agent
-description: Crea un dominio completo en el frontend React (entity types, service tRPC, hooks, páginas y registro de rutas). Invoca al agente @front con la skill front-ddd-generator. Requiere que el dominio backend ya exista.
+description: Crea un dominio completo en el frontend React (entity types, service tRPC, hooks, páginas y registro de rutas). Invoca al agente @blendverse.front con la skill front-ddd-generator. Requiere que el dominio backend ya exista.
 tools: [read/readFile, edit/createFile, edit/editFiles]
 ---
 
-Actúa como el agente `@front`. Carga y sigue estrictamente la skill `front-ddd-generator`.
+Actúa como el agente `@blendverse.front`. Carga y sigue estrictamente la skill `front-ddd-generator`.
 
 El usuario quiere crear un nuevo dominio en `packages/app`. El dominio backend en `packages/server/src/domains/[Domain]` **ya existe**.
 

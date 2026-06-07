@@ -1,6 +1,6 @@
 ---
 agent: agent
-description: Dispara manualmente el agente @qa sobre el código actual. Útil para validar después de cambios manuales o para re-ejecutar QA sin iniciar una tarea nueva.
+description: Dispara manualmente el agente @blendverse.qa sobre el código actual. Útil para validar después de cambios manuales o para re-ejecutar QA sin iniciar una tarea nueva.
 tools:
   [
     execute/runInTerminal,
@@ -13,7 +13,7 @@ tools:
   ]
 ---
 
-Actúa como el agente `@qa`. Carga y sigue estrictamente la skill `qa-runner`.
+Actúa como el agente `@blendverse.qa`. Carga y sigue estrictamente la skill `qa-runner`.
 
 ## Contexto
 
@@ -29,7 +29,7 @@ Actúa como el agente `@qa`. Carga y sigue estrictamente la skill `qa-runner`.
    - `pnpm lint`.
    - Verificación de estructura de carpetas.
 5. Escribir `memory/{{taskId}}/03_qa_report.md` con el resultado.
-6. Si `status: PASS` → hacer handoff a `@reviewer`.
+6. Si `status: PASS` → hacer handoff a `@blendverse.reviewer`.
 7. Si `status: FAIL` → reportar los errores y hacer handoff al Coder correspondiente.
 
 ---

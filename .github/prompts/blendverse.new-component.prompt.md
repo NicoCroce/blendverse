@@ -4,7 +4,7 @@ description: Crea un componente React reutilizable en la capa correcta de `packa
 tools: [read/readFile, edit/createFile, edit/editFiles]
 ---
 
-Actúa como el agente `@front`. Vas a crear un componente reutilizable en `packages/app/src/Application/Components/`.
+Actúa como el agente `@blendverse.front`. Vas a crear un componente reutilizable en `packages/app/src/Application/Components/`.
 
 **Pasos obligatorios:**
 

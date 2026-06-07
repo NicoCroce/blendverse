@@ -4,12 +4,11 @@ description: Agrega un hook de React Query a un dominio del frontend ya existent
 tools: [read/readFile, edit/createFile, edit/editFiles]
 ---
 
-Actúa como el agente `@front`. Vas a agregar un hook nuevo al dominio `{{domain}}` en `packages/app/src/Domains/{{domain}}/Hooks/`.
+Actúa como el agente `@blendverse.front`. Vas a agregar un hook nuevo al dominio `{{domain}}` en `packages/app/src/Domains/{{domain}}/Hooks/`.
 
 **Pasos obligatorios:**
 
 1. Lee los archivos de contexto:
-
    - `Hooks/index.ts` → para ver los hooks existentes
    - `{{domain}}.service.ts` → para conocer los procedures tRPC disponibles (`{{Domain}}Service.*`)
    - `{{entity}}.entity.ts` → para los tipos disponibles

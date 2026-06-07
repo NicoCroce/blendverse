@@ -1,10 +1,10 @@
 ---
 agent: agent
-description: Crea un dominio DDD completo en el servidor (entidad, use cases, servicio, controlador, repositorio, modelo Sequelize y registro DI). Invoca al agente @back con la skill back-ddd-generator.
+description: Crea un dominio DDD completo en el servidor (entidad, use cases, servicio, controlador, repositorio, modelo Sequelize y registro DI). Invoca al agente @blendverse.back con la skill back-ddd-generator.
 tools: [read/readFile, edit/createFile, edit/editFiles]
 ---
 
-Actúa como el agente `@back`. Carga y sigue estrictamente la skill `back-ddd-generator`.
+Actúa como el agente `@blendverse.back`. Carga y sigue estrictamente la skill `back-ddd-generator`.
 
 El usuario quiere crear un nuevo dominio en `packages/server`.
 

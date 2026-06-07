@@ -2,7 +2,7 @@
 
 ## Propósito
 
-Guía al agente `@qa` en la generación de tests, ejecución de validación estática (TypeScript + ESLint + Vitest + estructura de carpetas) y la generación del reporte `memory/{task_id}/03_qa_report.md`.
+Guía al agente `@blendverse.qa` en la generación de tests, ejecución de validación estática (TypeScript + ESLint + Vitest + estructura de carpetas) y la generación del reporte `memory/{task_id}/03_qa_report.md`.
 
 ---
 
@@ -295,4 +295,4 @@ describe('useGet{Entities}', () => {
 3. **Si `status: FAIL`**, la sección "Contexto para el Coder" es obligatoria.
 4. **`attempts`** comienza en `1` y se incrementa en cada re-ejecución.
 5. **No sobreescribir** archivos `.spec.ts` ya existentes — solo crear los faltantes.
-6. **Si `attempts >= 3`**, no escribir el reporte — ejecutar el Protocolo Break-Loop definido en `@qa`.
+6. **Si `attempts >= 3`**, no escribir el reporte — ejecutar el Protocolo Break-Loop definido en `@blendverse.qa`.

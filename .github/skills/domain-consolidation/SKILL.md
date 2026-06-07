@@ -1,6 +1,6 @@
 ---
 name: domain-consolidation
-description: Extrae la lógica DI (Awilix) del `index.ts` de cada dominio del server hacia un archivo `[domain].di.ts` dedicado, dejando `index.ts` como barrel puro (solo re-exports). Actualiza el `index.ts` para que re-exporte desde `[domain].di.ts`. Usar como parte del flujo del agente @arch-fixer o cuando se detecte un desvío B3 en arch-audit.
+description: Extrae la lógica DI (Awilix) del `index.ts` de cada dominio del server hacia un archivo `[domain].di.ts` dedicado, dejando `index.ts` como barrel puro (solo re-exports). Actualiza el `index.ts` para que re-exporte desde `[domain].di.ts`. Usar como parte del flujo del agente @blendverse.arch-fixer o cuando se detecte un desvío B3 en arch-audit.
 ---
 
 # Domain Consolidation

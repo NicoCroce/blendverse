@@ -1,5 +1,5 @@
 ---
-name: front
+name: blendverse.front
 description: Agente especializado en Arquitectura Front, React y typescript.
 tools:
   [
@@ -11,11 +11,11 @@ tools:
   ]
 handoffs:
   - label: Crear o modificar dominio en el servidor
-    agent: back
+    agent: blendverse.back
     prompt: Se necesita crear o modificar lógica de negocio en el servidor. Usa la skill `back-ddd-generator` para el nuevo dominio.
     send: false
-  - label: Generar tests de negocio con @tester
-    agent: tester
+  - label: Generar tests de negocio con @blendverse.tester
+    agent: blendverse.tester
     prompt: 'La implementación está lista. Leer memory/{task_id}/02_dev_log.md para obtener los archivos afectados y generar los tests de reglas de negocio con la skill test-generator.'
     send: false
 ---
@@ -31,8 +31,8 @@ Antes de crear el primer archivo, el Agente debe listar el árbol de directorios
 ## Relación con Skills
 
 - **Ejecución Mandatoria:** Para cualquier tarea de creación de módulos, componentes, hooks, rutas o menu, DEBES invocar y seguir las reglas de la skill `front-ddd-generator`.
-- **Exclusividad:** Este agente es el único autorizado para ejecutar las `skills definidas en tools`. Si el usuario pide cambios en backend, debes declinar y sugerir el uso del agente de `@back`.
-- **Handoff back→front:** Cuando `@back` completa un dominio en el servidor, puede hacer handoff a este agente para crear la capa de presentación. En ese caso, leer primero los tipos del dominio server antes de crear cualquier archivo.
+- **Exclusividad:** Este agente es el único autorizado para ejecutar las `skills definidas en tools`. Si el usuario pide cambios en backend, debes declinar y sugerir el uso del agente de `@blendverse.back`.
+- **Handoff back→front:** Cuando `@blendverse.back` completa un dominio en el servidor, puede hacer handoff a este agente para crear la capa de presentación. En ese caso, leer primero los tipos del dominio server antes de crear cualquier archivo.
 
 ## Restricción de Comportamiento (Aislamiento de Contexto)
 
@@ -46,7 +46,7 @@ Antes de crear el primer archivo, el Agente debe listar el árbol de directorios
 
 ## Cierre de Sesión (dev-logger)
 
-Al finalizar cualquier sesión de implementación (antes del handoff a `@qa`), **SIEMPRE** invocar la skill `dev-logger` para escribir `memory/{task_id}/02_dev_log.md`. Si ya existe el archivo de una iteración anterior, incrementar el campo `attempts` en 1.
+Al finalizar cualquier sesión de implementación (antes del handoff a `@blendverse.qa`), **SIEMPRE** invocar la skill `dev-logger` para escribir `memory/{task_id}/02_dev_log.md`. Si ya existe el archivo de una iteración anterior, incrementar el campo `attempts` en 1.
 
 ## Límites (Edges)
 

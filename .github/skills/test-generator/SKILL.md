@@ -2,7 +2,7 @@
 
 ## Propósito
 
-Guía al agente `@tester` en el análisis de reglas de negocio y la generación de tests completos (no stubs) para las cuatro capas de un dominio DDD: Entity, Use Case, Service y Controller en el backend, y Hooks en el frontend.
+Guía al agente `@blendverse.tester` en el análisis de reglas de negocio y la generación de tests completos (no stubs) para las cuatro capas de un dominio DDD: Entity, Use Case, Service y Controller en el backend, y Hooks en el frontend.
 
 ---
 
@@ -507,7 +507,7 @@ cd packages/server && npx vitest run 2>&1
 cd packages/app && npx vitest run 2>&1
 ```
 
-Todos los tests generados deben pasar (0 failed). Si alguno falla, corregirlo antes de hacer handoff a `@qa`. No se requiere flag `--coverage` ni alcanzar umbrales de porcentaje.
+Todos los tests generados deben pasar (0 failed). Si alguno falla, corregirlo antes de hacer handoff a `@blendverse.qa`. No se requiere flag `--coverage` ni alcanzar umbrales de porcentaje.
 
 ---
 

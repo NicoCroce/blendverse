@@ -6,38 +6,38 @@
 
 ## Resumen de Artefactos
 
-| Tipo        | Nombre                    | Invocación                        | Propósito resumido                                     |
-| ----------- | ------------------------- | --------------------------------- | ------------------------------------------------------ |
-| Instrucción | `copilot-instructions.md` | Automática (global)               | Reglas universales, Director orquestador y flujo       |
-| Instrucción | `server.instructions.md`  | Automática (`packages/server/**`) | Arquitectura Hexagonal/DDD del backend                 |
-| Instrucción | `app.instructions.md`     | Automática (`packages/app/**`)    | Arquitectura por dominios del frontend                 |
-| Instrucción | `memory.instructions.md`  | Automática (`memory/**`)          | Schema frontmatter, break-loop y estructura de memoria |
-| Agente      | `@analyst`                | `@analyst` en chat                | Analista UX · genera `01_requirements.md`              |
-| Agente      | `@back`                   | `@back` en chat                   | DDD Specialist · genera dominios de servidor           |
-| Agente      | `@front`                  | `@front` en chat                  | React Specialist · genera dominios de frontend         |
-| Agente      | `@qa`                     | `@qa` en chat                     | QA Híbrido · valida tsc + ESLint + estructura          |
-| Agente      | `@reviewer`               | `@reviewer` en chat               | Crítico de Estándares · checklist 12 ítems             |
-| Skill       | `back-ddd-generator`      | automática / `@back`              | Templates completos para un dominio DDD en server      |
-| Skill       | `front-ddd-generator`     | automática / `@front`             | Templates completos para un dominio React/tRPC         |
-| Skill       | `cross-domain-relations`  | automática / `/cross-domain`      | Patrón para relacionar dominios sin acoplamiento       |
-| Skill       | `sequelize-associations`  | automática / `@back`              | Associations, eager loading y tipado en Sequelize v6   |
-| Skill       | `usecases-migration`      | automática / `/migrate-usecases`  | Mover UseCases de Domain/ → Application/               |
-| Skill       | `commit-conventions`      | automática                        | Commits Conventional, Husky, lint-staged               |
-| Skill       | `requirements-analyst`    | automática / `@analyst`           | Template `01_requirements.md` con User Stories         |
-| Skill       | `dev-logger`              | automática / `@back` · `@front`   | Template `02_dev_log.md` al cerrar sesión de coder     |
-| Skill       | `qa-runner`               | automática / `@qa`                | Secuencia tsc + lint + estructura → `03_qa_report.md`  |
-| Skill       | `code-reviewer`           | automática / `@reviewer`          | Checklist 12 ítems → `04_review_log.md`                |
-| Prompt      | `/start-task`             | `/start-task`                     | Kickoff del flujo orquestado completo                  |
-| Prompt      | `/qa-check`               | `/qa-check`                       | Trigger manual de @qa sobre el código actual           |
-| Prompt      | `/new-domain-server`      | `/new-domain-server`              | Crea un dominio DDD completo en `packages/server`      |
-| Prompt      | `/new-domain-app`         | `/new-domain-app`                 | Crea un dominio front en `packages/app`                |
-| Prompt      | `/new-component`          | `/new-component`                  | Crea un componente React reutilizable                  |
-| Prompt      | `/new-usecase`            | `/new-usecase`                    | Agrega un use case a un dominio existente              |
-| Prompt      | `/new-hook`               | `/new-hook`                       | Agrega un React Query hook a un dominio existente      |
-| Prompt      | `/migrate-usecases`       | `/migrate-usecases`               | Ejecuta la migración de UseCases Domain→Application    |
-| Prompt      | `/cross-domain`           | `/cross-domain`                   | Conecta dos dominios con inyección de use cases        |
-| Hook        | `block-destructive`       | Automático (PreToolUse)           | Bloquea comandos destructivos irreversibles            |
-| Hook        | `format-on-edit`          | Automático (PostToolUse)          | Ejecuta `pnpm format` tras editar/crear archivos       |
+| Tipo        | Nombre                    | Invocación                                            | Propósito resumido                                      |
+| ----------- | ------------------------- | ----------------------------------------------------- | ------------------------------------------------------- |
+| Instrucción | `copilot-instructions.md` | Automática (global)                                   | Reglas universales, Director orquestador y flujo        |
+| Instrucción | `server.instructions.md`  | Automática (`packages/server/**`)                     | Arquitectura Hexagonal/DDD del backend                  |
+| Instrucción | `app.instructions.md`     | Automática (`packages/app/**`)                        | Arquitectura por dominios del frontend                  |
+| Instrucción | `memory.instructions.md`  | Automática (`memory/**`)                              | Schema frontmatter, break-loop y estructura de memoria  |
+| Agente      | `@blendverse.analyst`     | `@blendverse.analyst` en chat                         | Analista UX · genera `01_requirements.md`               |
+| Agente      | `@blendverse.back`        | `@blendverse.back` en chat                            | DDD Specialist · genera dominios de servidor            |
+| Agente      | `@blendverse.front`       | `@blendverse.front` en chat                           | React Specialist · genera dominios de frontend          |
+| Agente      | `@blendverse.qa`          | `@blendverse.qa` en chat                              | QA Híbrido · valida tsc + ESLint + estructura           |
+| Agente      | `@blendverse.reviewer`    | `@blendverse.reviewer` en chat                        | Crítico de Estándares · checklist 12 ítems              |
+| Skill       | `back-ddd-generator`      | automática / `@blendverse.back`                       | Templates completos para un dominio DDD en server       |
+| Skill       | `front-ddd-generator`     | automática / `@blendverse.front`                      | Templates completos para un dominio React/tRPC          |
+| Skill       | `cross-domain-relations`  | automática / `/cross-domain`                          | Patrón para relacionar dominios sin acoplamiento        |
+| Skill       | `sequelize-associations`  | automática / `@blendverse.back`                       | Associations, eager loading y tipado en Sequelize v6    |
+| Skill       | `usecases-migration`      | automática / `/migrate-usecases`                      | Mover UseCases de Domain/ → Application/                |
+| Skill       | `commit-conventions`      | automática                                            | Commits Conventional, Husky, lint-staged                |
+| Skill       | `requirements-analyst`    | automática / `@blendverse.analyst`                    | Template `01_requirements.md` con User Stories          |
+| Skill       | `dev-logger`              | automática / `@blendverse.back` · `@blendverse.front` | Template `02_dev_log.md` al cerrar sesión de coder      |
+| Skill       | `qa-runner`               | automática / `@blendverse.qa`                         | Secuencia tsc + lint + estructura → `03_qa_report.md`   |
+| Skill       | `code-reviewer`           | automática / `@blendverse.reviewer`                   | Checklist 12 ítems → `04_review_log.md`                 |
+| Prompt      | `/start-task`             | `/start-task`                                         | Kickoff del flujo orquestado completo                   |
+| Prompt      | `/qa-check`               | `/qa-check`                                           | Trigger manual de @blendverse.qa sobre el código actual |
+| Prompt      | `/new-domain-server`      | `/new-domain-server`                                  | Crea un dominio DDD completo en `packages/server`       |
+| Prompt      | `/new-domain-app`         | `/new-domain-app`                                     | Crea un dominio front en `packages/app`                 |
+| Prompt      | `/new-component`          | `/new-component`                                      | Crea un componente React reutilizable                   |
+| Prompt      | `/new-usecase`            | `/new-usecase`                                        | Agrega un use case a un dominio existente               |
+| Prompt      | `/new-hook`               | `/new-hook`                                           | Agrega un React Query hook a un dominio existente       |
+| Prompt      | `/migrate-usecases`       | `/migrate-usecases`                                   | Ejecuta la migración de UseCases Domain→Application     |
+| Prompt      | `/cross-domain`           | `/cross-domain`                                       | Conecta dos dominios con inyección de use cases         |
+| Hook        | `block-destructive`       | Automático (PreToolUse)                               | Bloquea comandos destructivos irreversibles             |
+| Hook        | `format-on-edit`          | Automático (PostToolUse)                              | Ejecuta `pnpm format` tras editar/crear archivos        |
 
 ---
 
@@ -72,34 +72,34 @@ Documenta la estructura de un dominio frontend: archivos de entity, service tRPC
 
 ## Agentes
 
-### `@back` — Backend DDD Specialist
+### `@blendverse.back` — Backend DDD Specialist
 
-**Ruta:** `.github/agents/back.agent.md`  
-**Invocación:** `@back <tarea>` en el chat.
+**Ruta:** `.github/agents/blendverse.blendverse.back.agent.md`  
+**Invocación:** `@blendverse.back <tarea>` en el chat.
 
 Agente autónomo para el servidor. Solo trabaja en `packages/server/`. Para cualquier creación de dominio ejecuta mandatoriamente la skill `back-ddd-generator`. Tiene acceso también a `usecases-migration` y `cross-domain-relations`.
 
-**Handoff disponible:** Al finalizar un dominio de servidor, puede derivar automáticamente a `@front` para crear la capa de presentación.
+**Handoff disponible:** Al finalizar un dominio de servidor, puede derivar automáticamente a `@blendverse.front` para crear la capa de presentación.
 
 **Flujo típico:**
 
 1. El usuario describe la entidad y sus atributos.
-2. `@back` ejecuta el protocolo de preguntas de la skill.
+2. `@blendverse.back` ejecuta el protocolo de preguntas de la skill.
 3. Lista el árbol de archivos y espera aprobación.
 4. Crea los archivos en orden: Domain → Application → Infrastructure → app.ts → index.ts.
 5. Actualiza `register.ts` y `Router.ts`.
 6. Invoca skill `dev-logger` para escribir `02_dev_log.md`.
-7. Hace handoff a `@qa`.
-8. (Opcional, si tarea full-stack) Hace handoff a `@front` antes del QA.
+7. Hace handoff a `@blendverse.qa`.
+8. (Opcional, si tarea full-stack) Hace handoff a `@blendverse.front` antes del QA.
 
 ---
 
-### `@front` — Frontend React Specialist
+### `@blendverse.front` — Frontend React Specialist
 
-**Ruta:** `.github/agents/front.agent.md`  
-**Invocación:** `@front <tarea>` en el chat.
+**Ruta:** `.github/agents/blendverse.front.agent.md`  
+**Invocación:** `@blendverse.front <tarea>` en el chat.
 
-Agente autónomo para el frontend. Solo trabaja en `packages/app/`. Ejecuta mandatoriamente `front-ddd-generator` al crear dominios. Antes de cualquier creación lee los tipos del dominio servidor. Tiene handoff hacia `@back` cuando se necesita modificar la lógica de negocio y hacia `@qa` al finalizar la implementación.
+Agente autónomo para el frontend. Solo trabaja en `packages/app/`. Ejecuta mandatoriamente `front-ddd-generator` al crear dominios. Antes de cualquier creación lee los tipos del dominio servidor. Tiene handoff hacia `@blendverse.back` cuando se necesita modificar la lógica de negocio y hacia `@blendverse.qa` al finalizar la implementación.
 
 **Flujo típico:**
 
@@ -109,14 +109,14 @@ Agente autónomo para el frontend. Solo trabaja en `packages/app/`. Ejecuta mand
 4. Actualiza `Routes.tsx` y opcionalmente `MenuAccess.tsx`.
 5. Verifica errores.
 6. Invoca skill `dev-logger` para escribir `02_dev_log.md`.
-7. Hace handoff a `@qa`.
+7. Hace handoff a `@blendverse.qa`.
 
 ---
 
-### `@analyst` — Analista Funcional y UX
+### `@blendverse.analyst` — Analista Funcional y UX
 
-**Ruta:** `.github/agents/analyst.agent.md`  
-**Invocación:** `@analyst <requerimiento>` en el chat.
+**Ruta:** `.github/agents/blendverse.analyst.agent.md`  
+**Invocación:** `@blendverse.analyst <requerimiento>` en el chat.
 
 Primer eslabón del flujo orquestado. Transforma el input del usuario en `memory/{task_id}/01_requirements.md` con User Stories, criterios de aceptación y propuestas UX. No genera código.
 
@@ -126,14 +126,14 @@ Primer eslabón del flujo orquestado. Transforma el input del usuario en `memory
 2. Lee las instrucciones del proyecto.
 3. Ejecuta la skill `requirements-analyst`.
 4. Escribe `memory/{task_id}/01_requirements.md`.
-5. Hace handoff a `@back` o `@front` según el tipo de tarea.
+5. Hace handoff a `@blendverse.back` o `@blendverse.front` según el tipo de tarea.
 
 ---
 
-### `@qa` — QA Híbrido
+### `@blendverse.qa` — QA Híbrido
 
-**Ruta:** `.github/agents/qa.agent.md`  
-**Invocación:** `@qa` en el chat, o via handoff desde `@back`/`@front`.
+**Ruta:** `.github/agents/blendverse.qa.agent.md`  
+**Invocación:** `@blendverse.qa` en el chat, o via handoff desde `@blendverse.back`/`@blendverse.front`.
 
 Agente de validación estática. Ejecuta TypeScript compiler + ESLint + verificación de estructura de carpetas. No genera tests — los documenta como pendientes. Activa el self-correction loop si detecta errores.
 
@@ -144,14 +144,14 @@ Agente de validación estática. Ejecuta TypeScript compiler + ESLint + verifica
 3. Ejecuta `tsc --noEmit` y `pnpm lint`.
 4. Verifica estructura de carpetas.
 5. Escribe `memory/{task_id}/03_qa_report.md`.
-6. Si PASS → handoff a `@reviewer`. Si FAIL → handoff al Coder.
+6. Si PASS → handoff a `@blendverse.reviewer`. Si FAIL → handoff al Coder.
 
 ---
 
-### `@reviewer` — Crítico de Estándares
+### `@blendverse.reviewer` — Crítico de Estándares
 
-**Ruta:** `.github/agents/reviewer.agent.md`  
-**Invocación:** `@reviewer` en el chat, o via handoff desde `@qa`.
+**Ruta:** `.github/agents/blendverse.reviewer.agent.md`  
+**Invocación:** `@blendverse.reviewer` en el chat, o via handoff desde `@blendverse.qa`.
 
 Último filtro antes del cierre de tarea. Solo actúa si `03_qa_report.md` tiene `status: PASS`. Verifica 12 ítems de arquitectura, tipado, seguridad y convenciones.
 
@@ -180,7 +180,7 @@ Define el sistema de memoria multi-agente: schema YAML frontmatter obligatorio p
 
 **Ruta:** `.github/skills/back-ddd-generator/SKILL.md`
 
-Genera un dominio DDD completo en el servidor con todos los templates necesarios. Se activa automáticamente cuando `@back` recibe una tarea de creación.
+Genera un dominio DDD completo en el servidor con todos los templates necesarios. Se activa automáticamente cuando `@blendverse.back` recibe una tarea de creación.
 
 **Protocolos incluidos:**
 
@@ -196,7 +196,7 @@ Genera un dominio DDD completo en el servidor con todos los templates necesarios
 
 **Ruta:** `.github/skills/front-ddd-generator/SKILL.md`
 
-Genera un dominio completo en el frontend con todos los templates necesarios. Se activa automáticamente cuando `@front` recibe una tarea de creación.
+Genera un dominio completo en el frontend con todos los templates necesarios. Se activa automáticamente cuando `@blendverse.front` recibe una tarea de creación.
 
 **Protocolos incluidos:**
 
@@ -277,10 +277,10 @@ Referencia completa para Conventional Commits, Husky pre-commit hooks, lint-stag
 
 ### `/new-domain-server`
 
-**Ruta:** `.github/prompts/new-domain-server.prompt.md`  
+**Ruta:** `.github/prompts/blendverse.new-domain-server.prompt.md`  
 **Modo:** `agent`
 
-Crea un dominio DDD completo en `packages/server`. Invoca al agente `@back` con la skill `back-ddd-generator`.
+Crea un dominio DDD completo en `packages/server`. Invoca al agente `@blendverse.back` con la skill `back-ddd-generator`.
 
 **Variables:** `{{domainName}}`, `{{entityName}}`, `{{attributes}}`
 
@@ -290,10 +290,10 @@ Crea un dominio DDD completo en `packages/server`. Invoca al agente `@back` con 
 
 ### `/new-domain-app`
 
-**Ruta:** `.github/prompts/new-domain-app.prompt.md`  
+**Ruta:** `.github/prompts/blendverse.new-domain-app.prompt.md`  
 **Modo:** `agent`
 
-Crea un dominio completo en `packages/app`. Invoca al agente `@front` con la skill `front-ddd-generator`. Requiere que el dominio backend ya exista.
+Crea un dominio completo en `packages/app`. Invoca al agente `@blendverse.front` con la skill `front-ddd-generator`. Requiere que el dominio backend ya exista.
 
 **Variables:** `{{domainName}}`, `{{serverDomain}}`, `{{entityName}}`
 
@@ -303,7 +303,7 @@ Crea un dominio completo en `packages/app`. Invoca al agente `@front` con la ski
 
 ### `/new-component`
 
-**Ruta:** `.github/prompts/new-component.prompt.md`  
+**Ruta:** `.github/prompts/blendverse.new-component.prompt.md`  
 **Modo:** `agent`
 
 Crea un componente React reutilizable en la capa correcta de `packages/app/src/Application/Components/`. Verifica si ya existe antes de crear uno nuevo.
@@ -316,7 +316,7 @@ Crea un componente React reutilizable en la capa correcta de `packages/app/src/A
 
 ### `/new-usecase`
 
-**Ruta:** `.github/prompts/new-usecase.prompt.md`  
+**Ruta:** `.github/prompts/blendverse.new-usecase.prompt.md`  
 **Modo:** `agent`
 
 Agrega un use case nuevo a un dominio del servidor ya existente.
@@ -329,7 +329,7 @@ Agrega un use case nuevo a un dominio del servidor ya existente.
 
 ### `/new-hook`
 
-**Ruta:** `.github/prompts/new-hook.prompt.md`  
+**Ruta:** `.github/prompts/blendverse.new-hook.prompt.md`  
 **Modo:** `agent`
 
 Agrega un hook de React Query a un dominio frontend ya existente.
@@ -342,7 +342,7 @@ Agrega un hook de React Query a un dominio frontend ya existente.
 
 ### `/migrate-usecases`
 
-**Ruta:** `.github/prompts/migrate-usecases.prompt.md`  
+**Ruta:** `.github/prompts/blendverse.migrate-usecases.prompt.md`  
 **Modo:** `agent`
 
 Ejecuta la migración completa de la carpeta `UseCases` de un dominio aplicando el protocolo de la skill `usecases-migration`.
@@ -355,7 +355,7 @@ Ejecuta la migración completa de la carpeta `UseCases` de un dominio aplicando 
 
 ### `/cross-domain`
 
-**Ruta:** `.github/prompts/cross-domain.prompt.md`  
+**Ruta:** `.github/prompts/blendverse.cross-domain.prompt.md`  
 **Modo:** `agent`
 
 Conecta dos dominios del servidor mediante inyección de use cases siguiendo el patrón de `cross-domain-relations`.
@@ -402,7 +402,7 @@ Ejecuta automáticamente `pnpm format` (Prettier) cada vez que el agente crea o 
 | ----------- | ---------------------- | ----------------------------- |
 | Skill       | `kebab-case/SKILL.md`  | `back-ddd-generator/SKILL.md` |
 | Prompt      | `kebab-case.prompt.md` | `new-domain-server.prompt.md` |
-| Agente      | `name.agent.md`        | `back.agent.md`               |
+| Agente      | `name.agent.md`        | `blendverse.back.agent.md`    |
 | Instrucción | `name.instructions.md` | `server.instructions.md`      |
 | Hook        | `name.json`            | `block-destructive.json`      |
 
@@ -413,16 +413,16 @@ Ejecuta automáticamente `pnpm format` (Prettier) cada vez que el agente crea o 
 ### Flujo Full-Stack: Crear un dominio nuevo de punta a punta
 
 ```
-1. Usuario: @back /new-domain-server domainName=Products entityName=Product ...
-2. @back: Protocolo de preguntas → árbol de archivos → (espera aprobación)
-3. @back: Crea Domain/ → Application/ → Infrastructure/ → app.ts → index.ts
-4. @back: Actualiza register.ts y Router.ts
-5. @back: Verifica errores → Hace handoff a @front
-6. @front: Lee interfaces y tipos del server
-7. @front: /new-domain-app domainName=Products serverDomain=Products ...
-8. @front: Crea entity → service → hooks → pages → routes → router → index.ts
-9. @front: Actualiza Routes.tsx y MenuAccess.tsx
-10. @front: Verifica errores
+1. Usuario: @blendverse.back /new-domain-server domainName=Products entityName=Product ...
+2. @blendverse.back: Protocolo de preguntas → árbol de archivos → (espera aprobación)
+3. @blendverse.back: Crea Domain/ → Application/ → Infrastructure/ → app.ts → index.ts
+4. @blendverse.back: Actualiza register.ts y Router.ts
+5. @blendverse.back: Verifica errores → Hace handoff a @blendverse.front
+6. @blendverse.front: Lee interfaces y tipos del server
+7. @blendverse.front: /new-domain-app domainName=Products serverDomain=Products ...
+8. @blendverse.front: Crea entity → service → hooks → pages → routes → router → index.ts
+9. @blendverse.front: Actualiza Routes.tsx y MenuAccess.tsx
+10. @blendverse.front: Verifica errores
 ```
 
 ### Flujo: Agregar relación entre dominios existentes
@@ -451,23 +451,23 @@ Ejecuta automáticamente `pnpm format` (Prettier) cada vez que el agente crea o 
 
 ### `/start-task`
 
-**Ruta:** `.github/prompts/start-task.prompt.md`  
+**Ruta:** `.github/prompts/blendverse.start-task.prompt.md`  
 **Modo:** `agent`
 
-Kickoff del flujo orquestado completo. Actúa como Director del Proyecto: genera el `task_id`, registra la tarea en `memory/history_log.json`, delega a `@analyst` y muestra al usuario la cadena de ejecución completa.
+Kickoff del flujo orquestado completo. Actúa como Director del Proyecto: genera el `task_id`, registra la tarea en `memory/history_log.json`, delega a `@blendverse.analyst` y muestra al usuario la cadena de ejecución completa.
 
 **Variables:** `{{userRequest}}`
 
-**Flujo:** genera task_id → actualiza history_log.json → invoca @analyst → informa al usuario la cadena `analyst → coder → qa → reviewer → cierre`.
+**Flujo:** genera task_id → actualiza history_log.json → invoca @blendverse.analyst → informa al usuario la cadena `analyst → coder → qa → reviewer → cierre`.
 
 ---
 
 ### `/qa-check`
 
-**Ruta:** `.github/prompts/qa-check.prompt.md`  
+**Ruta:** `.github/prompts/blendverse.qa-check.prompt.md`  
 **Modo:** `agent`
 
-Trigger manual del agente `@qa` sobre el código actual. Útil para re-validar después de cambios manuales o para ejecutar QA de forma independiente sin iniciar una tarea nueva.
+Trigger manual del agente `@blendverse.qa` sobre el código actual. Útil para re-validar después de cambios manuales o para ejecutar QA de forma independiente sin iniciar una tarea nueva.
 
 **Variables:** `{{taskId}}`, `{{scope}}` (`server` | `app` | `both`)
 
@@ -480,7 +480,7 @@ Trigger manual del agente `@qa` sobre el código actual. Útil para re-validar d
 ### `requirements-analyst`
 
 **Ruta:** `.github/skills/requirements-analyst/SKILL.md`  
-**Usada por:** `@analyst`
+**Usada por:** `@blendverse.analyst`
 
 Template y protocolo para generar `memory/{task_id}/01_requirements.md`. Define el protocolo de análisis (5 preguntas internas), el template con frontmatter + alcance + User Stories + criterios de aceptación + propuestas UX + dependencias cross-domain + estimación de complejidad. Incluye reglas de calidad (criterios verificables, máx. 3 User Stories por tarea).
 
@@ -489,16 +489,16 @@ Template y protocolo para generar `memory/{task_id}/01_requirements.md`. Define 
 ### `dev-logger`
 
 **Ruta:** `.github/skills/dev-logger/SKILL.md`  
-**Usada por:** `@back`, `@front`
+**Usada por:** `@blendverse.back`, `@blendverse.front`
 
-Template y protocolo para generar `memory/{task_id}/02_dev_log.md` al finalizar una sesión de implementación. Documenta archivos creados/modificados, decisiones técnicas y deuda técnica conocida. Debe invocarse siempre como último paso antes del handoff a `@qa`.
+Template y protocolo para generar `memory/{task_id}/02_dev_log.md` al finalizar una sesión de implementación. Documenta archivos creados/modificados, decisiones técnicas y deuda técnica conocida. Debe invocarse siempre como último paso antes del handoff a `@blendverse.qa`.
 
 ---
 
 ### `qa-runner`
 
 **Ruta:** `.github/skills/qa-runner/SKILL.md`  
-**Usada por:** `@qa`
+**Usada por:** `@blendverse.qa`
 
 Secuencia de validación estática: `tsc --noEmit` → `pnpm lint` → verificación de estructura de carpetas contra las instrucciones del proyecto. Define la tabla de determinación de status (`PASS`/`FAIL`), el template de `03_qa_report.md` con sección obligatoria de tests pendientes y reglas de calidad del reporte.
 
@@ -507,7 +507,7 @@ Secuencia de validación estática: `tsc --noEmit` → `pnpm lint` → verificac
 ### `code-reviewer`
 
 **Ruta:** `.github/skills/code-reviewer/SKILL.md`  
-**Usada por:** `@reviewer`
+**Usada por:** `@blendverse.reviewer`
 
 Checklist de 12 ítems categorizados en Arquitectura Hexagonal (3), TypeScript y Tipado (3), Validación y Seguridad OWASP (3) y Convenciones/Mantenibilidad (3). Distingue ítems críticos (🔴, bloquean aprobación) de recomendados (🟡, generan feedback sin bloquear). Define el template de `04_review_log.md` con checklist completo y sección de feedback con ejemplo de código.
 
@@ -520,10 +520,10 @@ Checklist de 12 ítems categorizados en Arquitectura Hexagonal (3), TypeScript y
 ```
 memory/
   TASK-YYYYMMDD-N/         ← subcarpeta por tarea
-    01_requirements.md     ← @analyst
-    02_dev_log.md          ← @back / @front
-    03_qa_report.md        ← @qa
-    04_review_log.md       ← @reviewer
+    01_requirements.md     ← @blendverse.analyst
+    02_dev_log.md          ← @blendverse.back / @blendverse.front
+    03_qa_report.md        ← @blendverse.qa
+    04_review_log.md       ← @blendverse.reviewer
   history_log.json         ← índice global (Director)
   BLOCKED.md               ← break-loop (máx. 3 intentos)
 ```
@@ -531,15 +531,15 @@ memory/
 ### Self-Correction Loop
 
 ```
-@analyst → 01_requirements.md
+@blendverse.analyst → 01_requirements.md
      ↓
-@back / @front → código + 02_dev_log.md
+@blendverse.back / @blendverse.front → código + 02_dev_log.md
      ↓
-@qa → 03_qa_report.md
-    ├── FAIL (attempts < 3) → @back / @front (incrementa attempts)
+@blendverse.qa → 03_qa_report.md
+    ├── FAIL (attempts < 3) → @blendverse.back / @blendverse.front (incrementa attempts)
     ├── FAIL (attempts = 3) → BLOCKED.md + notificar humano
-    └── PASS → @reviewer → 04_review_log.md
-                  ├── REJECTED (attempts < 3) → @back / @front
+    └── PASS → @blendverse.reviewer → 04_review_log.md
+                  ├── REJECTED (attempts < 3) → @blendverse.back / @blendverse.front
                   ├── REJECTED (attempts = 3) → BLOCKED.md
                   └── APPROVED → Director → history_log.json COMPLETED
 ```

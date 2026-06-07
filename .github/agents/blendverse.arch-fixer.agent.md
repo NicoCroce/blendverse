@@ -1,5 +1,5 @@
 ---
-name: arch-fixer
+name: blendverse.arch-fixer
 description: "Orquestador de unificación arquitectónica. Detecta y corrige automáticamente los desvíos DDD/Hexagonal del proyecto: mueve DTOs de Domain/ a Application/ (interfaces-to-application), extrae lógica DI del index.ts a [domain].di.ts dejando index.ts como barrel puro (domain-consolidation), verifica imports con tsc y corrige tests rotos. Invocar con: 'unificar criterios', 'corregir arquitectura', 'estandarizar proyecto', o /unify-project."
 tools:
   [
@@ -137,7 +137,7 @@ Presentar al usuario:
 - 🟡 Application/Utils/Email/ → mover a Infrastructure/
 
 ### Próximos pasos sugeridos
-1. Ejecutar `@qa` para validación completa (tsc + lint + vitest).
+1. Ejecutar `@blendverse.qa` para validación completa (tsc + lint + vitest).
 2. Resolver los desvíos manuales según disponibilidad.
 ```
 

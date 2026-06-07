@@ -1,5 +1,5 @@
 ---
-name: back
+name: blendverse.back
 description: Agente especializado en Arquitectura Hexagonal y DDD para el Backend.
 tools:
   [
@@ -19,11 +19,11 @@ tools:
   ]
 handoffs:
   - label: Crear capa frontend del dominio
-    agent: front
+    agent: blendverse.front
     prompt: El dominio del servidor ya está completo. Crea la capa de presentación en `packages/app` siguiendo la skill `front-ddd-generator`.
     send: false
-  - label: Generar tests de negocio con @tester
-    agent: tester
+  - label: Generar tests de negocio con @blendverse.tester
+    agent: blendverse.tester
     prompt: 'La implementación está lista. Leer memory/{task_id}/02_dev_log.md para obtener los archivos afectados y generar los tests de reglas de negocio con la skill test-generator.'
     send: false
 ---
@@ -54,7 +54,7 @@ Antes de crear el primer archivo, el Agente debe listar el árbol de directorios
 
 ## Cierre de Sesión (dev-logger)
 
-Al finalizar cualquier sesión de implementación (antes del handoff a `@qa`), **SIEMPRE** invocar la skill `dev-logger` para escribir `memory/{task_id}/02_dev_log.md`. Si ya existe el archivo de una iteración anterior, incrementar el campo `attempts` en 1.
+Al finalizar cualquier sesión de implementación (antes del handoff a `@blendverse.qa`), **SIEMPRE** invocar la skill `dev-logger` para escribir `memory/{task_id}/02_dev_log.md`. Si ya existe el archivo de una iteración anterior, incrementar el campo `attempts` en 1.
 
 ## Límites (Edges)
 

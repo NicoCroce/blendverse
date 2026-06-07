@@ -2,13 +2,13 @@
 
 ## Propósito
 
-Guía a los agentes `@back` y `@front` para registrar un log detallado al final de cada sesión de implementación (`memory/{task_id}/02_dev_log.md`). Este archivo es la entrada principal de `@qa` y `@reviewer`.
+Guía a los agentes `@blendverse.back` y `@blendverse.front` para registrar un log detallado al final de cada sesión de implementación (`memory/{task_id}/02_dev_log.md`). Este archivo es la entrada principal de `@blendverse.qa` y `@blendverse.reviewer`.
 
 ---
 
 ## Cuándo invocar esta skill
 
-Esta skill debe ejecutarse **siempre como último paso** de cualquier sesión de `@back` o `@front`, inmediatamente después de verificar que no hay errores de TypeScript en los archivos creados.
+Esta skill debe ejecutarse **siempre como último paso** de cualquier sesión de `@blendverse.back` o `@blendverse.front`, inmediatamente después de verificar que no hay errores de TypeScript en los archivos creados.
 
 ---
 

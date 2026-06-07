@@ -14,7 +14,7 @@ tools:
   ]
 ---
 
-Actúa como el agente `@back`. Carga y sigue estrictamente la skill `usecases-migration`.
+Actúa como el agente `@blendverse.back`. Carga y sigue estrictamente la skill `usecases-migration`.
 
 El usuario quiere mover los UseCases del dominio (o dominios) indicados desde `Domain/UseCases/` hacia `Application/UseCases/`.
 

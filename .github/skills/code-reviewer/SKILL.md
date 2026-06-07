@@ -2,7 +2,7 @@
 
 ## Propósito
 
-Guía al agente `@reviewer` en la revisión de estándares de arquitectura, seguridad y convenciones del proyecto, y en la generación del reporte `memory/{task_id}/04_review_log.md`.
+Guía al agente `@blendverse.reviewer` en la revisión de estándares de arquitectura, seguridad y convenciones del proyecto, y en la generación del reporte `memory/{task_id}/04_review_log.md`.
 
 ---
 
@@ -117,7 +117,7 @@ date: 'YYYY-MM-DD'
 2. **Si `status: REJECTED`**, la sección de Feedback es **obligatoria** con ejemplo de código correcto.
 3. **No rechazar** por ítems 🟡 — solo generar feedback en "Deuda Técnica".
 4. **`attempts`** comienza en `1` y se incrementa en cada re-revisión.
-5. **Si `attempts >= 3`**, no escribir el reporte — ejecutar el Protocolo Break-Loop definido en `@reviewer`.
+5. **Si `attempts >= 3`**, no escribir el reporte — ejecutar el Protocolo Break-Loop definido en `@blendverse.reviewer`.
 
 ```
 

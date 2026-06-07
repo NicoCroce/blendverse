@@ -17,7 +17,7 @@ tools:
   ]
 ---
 
-Actuá como el agente `@arch-fixer`. Ejecutá el protocolo completo de unificación arquitectónica del proyecto.
+Actuá como el agente `@blendverse.arch-fixer`. Ejecutá el protocolo completo de unificación arquitectónica del proyecto.
 
 **Objetivo:** detectar y corregir todos los desvíos de arquitectura DDD/Hexagonal en `packages/server/src/domains/`, verificar que los imports queden correctos tras cada corrección y reparar los tests rotos por los cambios.
 

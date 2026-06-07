@@ -1,6 +1,6 @@
 ---
 name: interfaces-to-application
-description: Migra los DTOs de Input/Output de un dominio del server desde `Domain/[entity].interfaces.ts` hacia `Application/[domain].types.ts`, convirtiendo las interfaces manuales al patrón z.infer<typeof Schema>. Actualiza todos los imports afectados y verifica que no haya errores TypeScript antes de avanzar al siguiente dominio. Usar como parte del flujo del agente @arch-fixer o cuando se detecte un desvío B1 en arch-audit.
+description: Migra los DTOs de Input/Output de un dominio del server desde `Domain/[entity].interfaces.ts` hacia `Application/[domain].types.ts`, convirtiendo las interfaces manuales al patrón z.infer<typeof Schema>. Actualiza todos los imports afectados y verifica que no haya errores TypeScript antes de avanzar al siguiente dominio. Usar como parte del flujo del agente @blendverse.arch-fixer o cuando se detecte un desvío B1 en arch-audit.
 ---
 
 # Interfaces to Application

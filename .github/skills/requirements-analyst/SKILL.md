@@ -2,7 +2,7 @@
 
 ## Propósito
 
-Guía al agente `@analyst` para transformar el input del usuario en un documento de requerimientos estructurado (`memory/{task_id}/01_requirements.md`), listo para ser consumido por los agentes de desarrollo.
+Guía al agente `@blendverse.analyst` para transformar el input del usuario en un documento de requerimientos estructurado (`memory/{task_id}/01_requirements.md`), listo para ser consumido por los agentes de desarrollo.
 
 ---
 

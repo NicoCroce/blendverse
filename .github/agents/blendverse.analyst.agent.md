@@ -1,6 +1,6 @@
 ---
-name: analyst
-description: Analista Funcional y UX. Desglosa los requerimientos del usuario, define User Stories con criterios de aceptación y propone mejoras de UX. Primer eslabón del flujo orquestado — su output alimenta a @back o @front.
+name: blendverse.analyst
+description: Analista Funcional y UX. Desglosa los requerimientos del usuario, define User Stories con criterios de aceptación y propone mejoras de UX. Primer eslabón del flujo orquestado — su output alimenta a @blendverse.back o @blendverse.front.
 tools:
   [
     'read/readFile',
@@ -11,11 +11,11 @@ tools:
   ]
 handoffs:
   - label: Dominio de servidor (tarea backend o full-stack)
-    agent: back
+    agent: blendverse.back
     prompt: 'Los requerimientos están listos. Leer memory/{task_id}/01_requirements.md como contexto inicial y proceder con la implementación siguiendo la skill back-ddd-generator.'
     send: false
   - label: Dominio de frontend únicamente
-    agent: front
+    agent: blendverse.front
     prompt: 'Los requerimientos están listos. Leer memory/{task_id}/01_requirements.md como contexto inicial y proceder con la implementación siguiendo la skill front-ddd-generator.'
     send: false
 ---

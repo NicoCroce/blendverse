@@ -1,6 +1,6 @@
 ---
 agent: agent
-description: Inicia el flujo orquestado completo para una nueva tarea. Genera el task_id, delega a @analyst para crear los requerimientos y orquesta la cadena Analyst → Coder → QA → Reviewer.
+description: Inicia el flujo orquestado completo para una nueva tarea. Genera el task_id, delega a @blendverse.analyst para crear los requerimientos y orquesta la cadena Analyst → Coder → QA → Reviewer.
 tools: [read/readFile, edit/createFile, edit/editFiles, edit/createDirectory]
 ---
 
@@ -19,9 +19,9 @@ Actúa como el **Director del Proyecto**. Tu responsabilidad es iniciar el flujo
    - `created_at`: timestamp actual ISO 8601
    - `agents_chain`: `[]`
 
-### 2. Delegar a @analyst
+### 2. Delegar a @blendverse.analyst
 
-Invocar el agente `@analyst` con el siguiente contexto:
+Invocar el agente `@blendverse.analyst` con el siguiente contexto:
 
 > **task_id activo:** `{task_id_generado}`
 >
@@ -39,10 +39,10 @@ Informar al usuario del flujo que se va a ejecutar:
 📋 Tarea iniciada: {task_id}
 
 Cadena de ejecución:
-  1. @analyst  → 01_requirements.md
-  2. @back / @front → código + 02_dev_log.md
-  3. @qa       → 03_qa_report.md
-  4. @reviewer → 04_review_log.md
+  1. @blendverse.analyst  → 01_requirements.md
+  2. @blendverse.back / @blendverse.front → código + 02_dev_log.md
+  3. @blendverse.qa       → 03_qa_report.md
+  4. @blendverse.reviewer → 04_review_log.md
   5. Director  → cierre en history_log.json
 ```
 

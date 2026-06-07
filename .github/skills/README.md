@@ -7,7 +7,7 @@ Este directorio contiene skills documentadas para ayudar en el desarrollo del pr
 ### 1. back-ddd-generator
 
 **Ubicación:** `back-ddd-generator/SKILL.md`  
-**Invocación:** `@back` o `/new-domain-server`  
+**Invocación:** `@blendverse.back` o `/new-domain-server`  
 **Descripción:** Genera un dominio DDD completo en el servidor: entidad, interfaces, repositorio, use cases, servicio, controlador, modelo Sequelize, implementación de repositorio, rutas tRPC y registro DI.
 
 **Temas cubiertos:**
@@ -21,7 +21,7 @@ Este directorio contiene skills documentadas para ayudar en el desarrollo del pr
 ### 2. front-ddd-generator
 
 **Ubicación:** `front-ddd-generator/SKILL.md`  
-**Invocación:** `@front` o `/new-domain-app`  
+**Invocación:** `@blendverse.front` o `/new-domain-app`  
 **Descripción:** Genera un dominio completo en el frontend React/tRPC: entity types, service tRPC, rutas, router, hooks (query + mutation + cache), páginas vacías y actualización de los archivos globales.
 
 **Temas cubiertos:**

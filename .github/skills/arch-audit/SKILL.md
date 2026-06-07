@@ -1,6 +1,6 @@
 ---
 name: arch-audit
-description: Auditoría de arquitectura del proyecto. Escanea todos los dominios del server y del frontend y produce un reporte tabular de desvíos respecto a las convenciones DDD/Hexagonal del proyecto. Usar antes de ejecutar cualquier skill de corrección (interfaces-to-application, domain-consolidation) o cuando el usuario pida "auditar arquitectura", "ver qué está mal" o como primer paso del agente @arch-fixer.
+description: Auditoría de arquitectura del proyecto. Escanea todos los dominios del server y del frontend y produce un reporte tabular de desvíos respecto a las convenciones DDD/Hexagonal del proyecto. Usar antes de ejecutar cualquier skill de corrección (interfaces-to-application, domain-consolidation) o cuando el usuario pida "auditar arquitectura", "ver qué está mal" o como primer paso del agente @blendverse.arch-fixer.
 ---
 
 # Arch Audit
@@ -120,7 +120,7 @@ Fecha: [fecha]
 
 ---
 
-## Salida al Agente @arch-fixer
+## Salida al Agente @blendverse.arch-fixer
 
 Al finalizar el reporte, listar explícitamente los dominios **aptos para corrección automática** (tienen `*.interfaces.ts` en `Domain/` y/o `*.app.ts` en raíz) en este formato para que el agente los procese:
 
