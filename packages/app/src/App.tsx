@@ -3,7 +3,6 @@ import { Toaster } from './Application/Components/ui/sonner';
 
 import { AllRoutes } from './Infrastructure';
 
-import './App.css';
 import { ChangePasswordModal } from './Domains/Users/Components/ChangePassword/ChangePasswordModal';
 import { useChangeTheme } from './Application/Hooks/useChangeTheme';
 import { usePublicPages } from './Application/Hooks/usePublicPages';
