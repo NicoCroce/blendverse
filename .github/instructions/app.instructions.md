@@ -244,3 +244,16 @@ Antes de crear cualquier componente nuevo, verificar en `packages/app/src/Applic
 1. No debes llamar un servicio (TRPC, o de la carpeta Service) desde un componente tsx.
 2. No debes escribir grandes bloqeues de código directamente en \*.page. Debes colocarlo en la carpeta `Components` del dominio.
 3. Evita utilizar `magics strings`.
+4. **Nunca uses `interface X extends Y {}`** sin declarar al menos un member propio — esto genera el error ESLint `'An interface declaring no members is equivalent to its supertype.'`. En su lugar usá un `type` alias:
+
+   ❌ **PROHIBIDO:**
+
+   ```typescript
+   interface ActionsCertificateListPageProps extends FilterButtonProps {}
+   ```
+
+   ✅ **CORRECTO:**
+
+   ```typescript
+   type ActionsCertificateListPageProps = FilterButtonProps;
+   ```

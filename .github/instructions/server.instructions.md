@@ -117,11 +117,11 @@ export interface EntityRepository {
 
 Las interfaces en la capa Domain **nunca deben estar vacías** ni ser equivalentes a su supertype. Siempre deben declarar al menos un member propio.
 
-❌ **PROHIBIDO** — Interface vacía:
+❌ **PROHIBIDO** — Interface vacía (equivalente a su supertype):
 
 ```typescript
 export interface IGetUserRepository extends IRequestContext {
-  // vacía = error
+  // vacía = error ESLint: 'An interface declaring no members is equivalent to its supertype.'
 }
 ```
 
@@ -133,7 +133,13 @@ export interface IGetUserRepository extends IRequestContext {
 }
 ```
 
-**Razonamiento:** Una interface que solo hereda no suma información de tipos. Si no tienes properties propias que agregar, no necesitás una interface separada — usá directamente el tipo heredado en el parámetro.
+✅ **CORRECTO** — Si no hay members propios, usá `type` alias:
+
+```typescript
+export type IGetUserRepository = IRequestContext;
+```
+
+**Razonamiento:** Una interface que solo hereda sin agregar members no suma información de tipos. En ese caso, reemplazala por un `type` alias (`type X = Y`). Nunca uses `interface X extends Y {}` sin members propios.
 
 ## Application Layer
 

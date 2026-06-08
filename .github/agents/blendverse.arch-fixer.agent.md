@@ -55,6 +55,22 @@ Seguir su protocolo completo incluyendo la confirmación por dominio.
 Cargar la skill `domain-consolidation` para este dominio.
 Seguir su protocolo completo incluyendo la confirmación por dominio.
 
+#### 2b-bis. Corrección B4 — Router local sin prefijo `_`
+
+Verificar `Infrastructure/Routes/Router.ts` del dominio. Si la variable local del router **no** tiene el prefijo `_`, aplicar la corrección:
+
+```typescript
+// ❌ Antes
+const AuthRouter = () => router(AuthRoutes());
+export type TAuthRouter = ReturnType<typeof AuthRouter>;
+
+// ✅ Después
+const _AuthRouter = () => router(AuthRoutes());
+export type TAuthRouter = ReturnType<typeof _AuthRouter>;
+```
+
+Regla: la variable **nunca** se exporta ni se usa fuera del archivo; el prefijo `_` satisface la regla ESLint `@typescript-eslint/no-unused-vars` (patrón `/^_/`). El tipo exportado `T[Domain]Router` debe actualizar su referencia a la nueva variable.
+
 #### 2c. Verificación de imports post-corrección (OBLIGATORIO)
 
 Después de cada dominio, ejecutar:
@@ -148,5 +164,6 @@ Presentar al usuario:
 - **Nunca** eliminar un archivo antes de que su contenido esté copiado al destino.
 - **Nunca** procesar más de un dominio a la vez.
 - **Nunca** corregir tests que fallaban antes de la migración.
+- **B4:** La variable local del router (`const _[Domain]Router`) **nunca** debe exportarse. Solo se exporta el `type T[Domain]Router`.
 - **Nunca** modificar archivos en `packages/app/` desde este agente (los desvíos D1 del frontend se reportan pero no se corrigen automáticamente por su mayor impacto).
 - Si el usuario responde `n` a cualquier confirmación: detenerse y reportar el estado actual.
