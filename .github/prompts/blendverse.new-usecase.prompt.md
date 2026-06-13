@@ -8,12 +8,18 @@ Actúa como el agente `@blendverse.back`. Vas a agregar un nuevo caso de uso a u
 
 **Pasos obligatorios:**
 
-1. Lee los siguientes archivos del dominio `{{domain}}`:
-   - `Domain/{{entity}}.interfaces.ts` → para ver las interfaces existentes
-   - `Domain/{{entity}}.repository.ts` → para ver los métodos de repositorio disponibles
-   - `Application/UseCases/index.ts` → para ver los use cases existentes
-   - `Application/{{domain}}.service.ts` → para ver cómo inyectar el nuevo use case
-   - `{{domainLower}}.di.ts` → para ver el registro Awilix actual
+1. Lee los siguientes archivos de `packages/server/src/domains/{{domain}}/`:
+
+   **Capa Application:**
+   - `Application/{{domainLower}}.types.ts` → tipos de entrada/salida de los use cases
+   - `Application/UseCases/index.ts` → use cases existentes
+   - `Application/{{domain}}.service.ts` → cómo está inyectado el servicio
+
+   **Capa Domain:**
+   - `Domain/{{entity}}.repository.ts` → métodos de repositorio disponibles
+
+   **Raíz del dominio:**
+   - `{{domainLower}}.di.ts` → registro Awilix actual
 
 2. Crea el nuevo use case:
    - Archivo: `Application/UseCases/{{useCaseName}}.usecase.ts`
@@ -21,7 +27,7 @@ Actúa como el agente `@blendverse.back`. Vas a agregar un nuevo caso de uso a u
    - Usa `AppError` si necesita lanzar errores de dominio
 
 3. Si el use case necesita un nuevo método de repositorio:
-   - Agregar la interfaz en `Domain/{{entity}}.interfaces.ts`
+   - Agregar/actualizar el tipo en `Application/{{domainLower}}.types.ts`
    - Agregar el método abstracto en `Domain/{{entity}}.repository.ts`
    - Implementar el método en `Infrastructure/Database/{{entity}}Repository.implementation.ts`
 

@@ -39,7 +39,7 @@ Primero, en el dominio de la tabla intermedia, crear un caso de uso que devuelva
 import { IUseCase } from '@server/Application';
 import { Customerusers } from '../../Domain/Customeruserss.entity';
 import { CustomeruserssRepository } from '../../Domain/Customeruserss.repository';
-import { IGetAllCustomeruserssByCustomerId } from '../../Domain/Customeruserss.interfaces';
+import { IGetAllCustomeruserssByCustomerId } from '../customeruserss.types';
 
 export class GetAllUsersByCustomerId implements IUseCase<Customerusers[]> {
   constructor(
@@ -60,7 +60,7 @@ export class GetAllUsersByCustomerId implements IUseCase<Customerusers[]> {
 }
 ```
 
-**Interfaz del Caso de Uso**: `packages/server/src/domains/Customeruserss/Domain/Customeruserss.interfaces.ts`
+**Tipos del Caso de Uso**: `packages/server/src/domains/Customeruserss/Application/customeruserss.types.ts`
 
 ```typescript
 export interface IGetAllCustomeruserssByCustomerId extends IRequestContext {
@@ -159,7 +159,7 @@ export class GetEmailsByUsersId implements IUseCase<string[]> {
 }
 ```
 
-**Interfaz**: `packages/server/src/domains/Users/Domain/User.interfaces.ts`
+**Tipos**: `packages/server/src/domains/Users/Application/users.types.ts`
 
 ```typescript
 export interface IGetEmailsByUsersId extends IRequestContext {
@@ -475,7 +475,7 @@ Cuando necesites relacionar dominios:
 
 ### Interfaces y Tipos
 
-- [ ] ¿La interfaz del caso de uso está definida en `Domain/[Domain].interfaces.ts`?
+- [ ] ¿El tipo del caso de uso está definido en `Application/[domain].types.ts`?
 - [ ] ¿Creaste una interfaz específica del repositorio si la firma no coincide con las existentes?
 - [ ] ¿Los tipos de parámetros coinciden entre caso de uso y repositorio?
 - [ ] ¿Se importó la interfaz del repositorio en la implementación?

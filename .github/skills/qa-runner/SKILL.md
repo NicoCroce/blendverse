@@ -64,10 +64,10 @@ Para cada archivo en `affected_files`, verificar que se encuentra en la capa cor
 domains/{domain}/
   Domain/
     {Entity}.entity.ts
-    {Entity}.interfaces.ts
     {Entity}.repository.ts
     index.ts
   Application/
+    {domain}.types.ts
     UseCases/
       GetAll{Entities}.usecase.ts
       Get{Entity}.usecase.ts

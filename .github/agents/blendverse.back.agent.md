@@ -16,15 +16,17 @@ tools:
     edit/createFile,
     edit/editFiles,
     search/fileSearch,
+    search/grepSearch,
+    diagnostics/getErrors,
   ]
 handoffs:
-  - label: Crear capa frontend del dominio
+  - label: Implementación server completa → Frontend (full-stack)
     agent: blendverse.front
-    prompt: El dominio del servidor ya está completo. Crea la capa de presentación en `packages/app` siguiendo la skill `front-ddd-generator`.
+    prompt: 'El backend completó la implementación y los tests pasan. Leer memory/{task_id}/01_requirements.md y proceder con la implementación del dominio frontend siguiendo la skill front-ddd-generator. Al finalizar, hacer handoff a @blendverse.qa.'
     send: false
-  - label: Generar tests de negocio con @blendverse.tester
-    agent: blendverse.tester
-    prompt: 'La implementación está lista. Leer memory/{task_id}/02_dev_log.md para obtener los archivos afectados y generar los tests de reglas de negocio con la skill test-generator.'
+  - label: Implementación server completa → QA (back-only)
+    agent: blendverse.qa
+    prompt: 'El backend completó la implementación y los tests pasan. Ejecutar validación estática completa (tsc + lint + vitest smoke) con la skill qa-runner.'
     send: false
 ---
 
@@ -51,6 +53,24 @@ Antes de crear el primer archivo, el Agente debe listar el árbol de directorios
 ## Herramientas y Reporte de Progreso
 
 1. **Planificación:** Antes de crear archivos, describe brevemente la estructura de carpetas que vas a generar.
+
+## Generación y Ejecución de Tests
+
+Al finalizar la implementación del dominio, **antes de hacer handoff**, generar y ejecutar los tests del servidor:
+
+1. Para cada capa con lógica de negocio, crear los archivos `.spec.ts` correspondientes siguiendo la skill `test-generator`:
+   - `{Entity}.entity.spec.ts` → capa Domain
+   - `{Action}{Entity}.usecase.spec.ts` → por cada use case
+   - `{Domain}.service.spec.ts` → capa Application
+   - `{Domain}.controller.spec.ts` → capa Infrastructure
+2. Usar `grepSearch` para extraer las reglas de negocio reales de cada archivo antes de escribir el test.
+3. Ejecutar los tests:
+   ```bash
+   cd packages/server && npx vitest run 2>&1
+   ```
+4. Todos los tests deben pasar (0 failed) antes de hacer handoff. Si alguno falla, corregirlo antes de continuar.
+5. **Nunca uses `any`** — los mocks deben estar tipados con `as never` o con el tipo real.
+6. **Multi-tenant:** incluir tests que verifiquen que `ownerId` se propaga correctamente al repositorio.
 
 ## Cierre de Sesión (dev-logger)
 

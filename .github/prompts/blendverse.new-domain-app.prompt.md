@@ -10,12 +10,11 @@ El usuario quiere crear un nuevo dominio en `packages/app`. El dominio backend e
 
 **Antes de escribir código:**
 
-1. Lee `packages/server/src/domains/{{serverDomain}}/Domain/{{entityName}}.interfaces.ts` para obtener la interfaz `I{{entityName}}`.
-2. Lee `packages/server/src/domains/{{serverDomain}}/Infrastructure/Routes/{{serverDomain}}.routes.ts` para obtener el tipo `T{{serverDomain}}Router`.
-3. Lista el árbol de archivos completo y espera aprobación.
-4. Crea los archivos en orden: entity → service → routes → router → hooks → pages → index.ts.
-5. Actualiza `Routes.tsx` (y `MenuAccess.tsx` si corresponde).
-6. Verifica que no haya errores de TypeScript en los archivos creados.
+1. Lee `packages/server/src/domains/{{serverDomain}}/Infrastructure/Routes/{{serverDomain}}.routes.ts` para obtener el tipo `T{{serverDomain}}Router`.
+2. Lista el árbol de archivos completo y espera aprobación.
+3. Crea los archivos en orden: entity → service → routes → router → hooks → pages → index.ts.
+4. Actualiza `Routes.tsx` (y `MenuAccess.tsx` si corresponde).
+5. Verifica que no haya errores de TypeScript en los archivos creados.
 
 Dominio frontend: **{{domainName}}**
 Dominio servidor: **{{serverDomain}}**

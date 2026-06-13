@@ -162,10 +162,10 @@ async getCustomeruserss({ id, requestContext }: IGetCustomeruserssRepository): P
 
 ## Paso 3 — Tipar los Campos Virtuales en la Entidad
 
-Si el dominio necesita exponer datos del modelo incluido (ej. `userName`), agregalos a la interfaz `I[Entity]` y a los `values` de la entidad:
+Si el dominio necesita exponer datos del modelo incluido (ej. `userName`), agregalos al tipo `I[Entity]` en `Application/[domain].types.ts` y a los `values` de la entidad:
 
 ```typescript
-// Domain/Customeruserss.interfaces.ts
+// Application/customeruserss.types.ts
 export interface ICustomeruserss {
   id?: number;
   id_propietario: number;

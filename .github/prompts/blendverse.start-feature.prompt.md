@@ -26,7 +26,11 @@ Esperar confirmación antes de continuar.
 
 Invocar `@speckit.specify` con la descripción de la feature.
 
+** Siempre que la implementación a realizar no esté relacionada con un dominio existe, pregunta el nombre. **
+
 Output esperado: `specs/{feature}/spec.md`
+
+** Esperar confirmación antes de continuar. Debes darle la posibilidad de iterar, corregir y agregar todo lo necesario sobre el `spec` antes de continuar. Siempre pregunta todas las dudas que puedas tener y compórtate en `modo plan` **
 
 ## Fase 3 — Aclaración (condicional)
 
@@ -34,6 +38,10 @@ Revisar si `spec.md` tiene ambigüedades o requisitos poco definidos.
 
 - Si los hay → invocar `@speckit.clarify`. Esperar respuestas del usuario.
 - Si no los hay → continuar directamente a Fase 4.
+
+### Restricciones
+
+** Esperar confirmación antes de continuar. Debes darle la posibilidad de iterar, corregir y agregar todo lo necesario sobre el `spec` antes de continuar. Siempre pregunta todas las dudas que puedas tener y compórtate en `modo plan` **
 
 ## Fase 4 — Diseño Técnico
 
@@ -45,15 +53,23 @@ Output esperado en `specs/{feature}/`:
 - `data-model.md` (entidades, si aplica)
 - `contracts/` (interfaces, si aplica)
 
+### Restricciones
+
+** Esperar confirmación antes de continuar. Debes darle la posibilidad de iterar, corregir y agregar todo lo necesario sobre el `plan` antes de continuar. Siempre pregunta todas las dudas que puedas tener y compórtate en `modo plan` **
+
 ## Fase 5 — Desglose de Tareas
 
 Invocar `@speckit.tasks` para generar `tasks.md` ordenado por user stories.
 
 Output esperado: `specs/{feature}/tasks.md`
 
+### Restricciones
+
+** Esperar confirmación antes de continuar. Debes darle la posibilidad de iterar, corregir y agregar todo lo necesario sobre el las `tasks` antes de continuar. Siempre pregunta todas las dudas que puedas tener y compórtate en `modo plan` **
+
 ## Fase 6 — Handoff a Blendverse
 
-Una vez completadas las fases Speckit, presentar al usuario el resumen:
+Una vez completadas y aprobadas por el usuario todas las fases Speckit, presentar al usuario el resumen:
 
 ```
 ✅ Pipeline Speckit completado:
@@ -62,20 +78,21 @@ Una vez completadas las fases Speckit, presentar al usuario el resumen:
    - tasks.md    → tareas ordenadas por user story
 
 📁 Artefactos en: specs/{feature}/
-
-⚡ Siguiente paso: implementación DDD con Blendverse
 ```
 
-Luego invocar `@blendverse.analyst` con el siguiente contexto:
+Luego, **sin esperar intervención del usuario**:
 
-> Los artefactos de diseño Speckit están listos en `specs/{feature}/`.
-> Leer `spec.md` como fuente de user stories y criterios de aceptación,
-> y `plan.md` para el diseño técnico. Generar `memory/{task_id}/01_requirements.md`
-> y hacer handoff a `@blendverse.back` o `@blendverse.front` según corresponda.
+1. Leer `memory/history_log.json` para determinar el próximo `task_id` con formato `TASK-YYYYMMDD-N`.
+2. Crear la carpeta `memory/{task_id}/`.
+3. Leer `specs/{feature}/spec.md` y `specs/{feature}/tasks.md`.
+4. Escribir `memory/{task_id}/01_requirements.md` siguiendo el template de la skill `requirements-analyst`, consolidando la información de los artefactos Speckit sin análisis adicional ni preguntas.
+5. Invocar directamente `@blendverse.implement` — el orquestador detectará el alcance e iniciará la cadena `back → front → qa` de forma autónoma.
 
 ## Notas
 
-- `speckit.implement` está bloqueado en este proyecto — la implementación la
-  realizan exclusivamente los agentes Blendverse especializados en DDD.
-- Si el usuario quiere saltear las fases de diseño (ya tiene `spec.md` y `plan.md`),
-  puede invocar directamente `@blendverse.analyst` sin este prompt.
+- **DETENTE ESTRICTAMENTE después de cada fase (1–5) y espera la confirmación explícita del usuario. NO pases a la siguiente fase sin que el usuario diga 'ok' o apruebe la fase anterior.**
+- La Fase 6 es completamente automática — no requiere intervención del usuario.
+- `speckit.implement` redirige automáticamente a `@blendverse.implement` — la implementación la realizan exclusivamente los agentes Blendverse especializados en DDD.
+- Si el usuario quiere saltear las fases de diseño (ya tiene `spec.md`, `plan.md` y `tasks.md`), puede invocar directamente `@blendverse.implement` — éste generará `01_requirements.md` inline si no existe.
+- Recuerda detenerte en cada Fase (1–5) para poder iterar sobre la misma.
+- Todas las fases 1–5 se comportarán como modo `plan`.

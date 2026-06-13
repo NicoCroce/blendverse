@@ -11,7 +11,7 @@ tools:
   ]
 handoffs:
   - label: APPROVED → Director cierra tarea
-    agent: ''
+    agent: agent
     prompt: 'La revisión fue APPROVED. Actualizar memory/history_log.json marcando la tarea como COMPLETED con timestamp de cierre.'
     send: false
   - label: REJECTED → Coder (backend)

@@ -35,7 +35,7 @@ Para cada carpeta encontrada, verificar la presencia de los siguientes ítems:
 | ¿Tiene `Domain/` con `.repository.ts`?      | `ls packages/server/src/domains/[Domain]/Domain/`                     |
 | ¿Tiene `Application/` con `.service.ts`?    | `ls packages/server/src/domains/[Domain]/Application/`                |
 | ¿Tiene `Application/[domain].types.ts`?     | buscar archivo `.types.ts` en `Application/`                          |
-| ¿Tiene `Domain/[entity].interfaces.ts`?     | buscar archivo `.interfaces.ts` en `Domain/` ← **DESVÍO**             |
+| ¿Tiene archivos de tipos en `Domain/`?      | buscar tipos legacy en `Domain/` ← **DESVÍO**                         |
 | ¿Tiene `[domain].di.ts` en raíz?            | buscar `*.di.ts` en la raíz del dominio ← **CANDIDATO CONSOLIDACIÓN** |
 | ¿Está registrado en `register.ts`?          | leer `packages/server/src/domains/register.ts`                        |
 | ¿Tiene `Infrastructure/Database/` completa? | `ls packages/server/src/domains/[Domain]/Infrastructure/Database/`    |
@@ -81,7 +81,7 @@ Fecha: [fecha]
 
 ### Server — packages/server/src/domains/
 
-| Dominio     | *.interfaces.ts en Domain | *.di.ts en raíz | Registrado | Infrastructure completa | Estado         |
+| Dominio     | Tipos legacy en Domain | *.di.ts en raíz | Registrado | Infrastructure completa | Estado         |
 |-------------|--------------------------|-----------------|------------|------------------------|----------------|
 | Auth        | ✗ DESVÍO (B1)            | ✓ CONSOLIDAR    | ✓          | ✓                      | ⚠️  2 desvíos  |
 | Users       | ✗ DESVÍO (B1)            | ✓ CONSOLIDAR    | ✓          | ✓                      | ⚠️  2 desvíos  |
@@ -122,7 +122,7 @@ Fecha: [fecha]
 
 ## Salida al Agente @blendverse.arch-fixer
 
-Al finalizar el reporte, listar explícitamente los dominios **aptos para corrección automática** (tienen `*.interfaces.ts` en `Domain/` y/o `*.di.ts` en raíz) en este formato para que el agente los procese:
+Al finalizar el reporte, listar explícitamente los dominios **aptos para corrección automática** (tienen tipos legacy en `Domain/` y/o `*.di.ts` en raíz) en este formato para que el agente los procese:
 
 ```
 DOMINIOS APTOS PARA CORRECCIÓN:

@@ -13,11 +13,11 @@ Los ítems marcados con 🟡 son **recomendados** — un fallo genera feedback p
 
 ### Arquitectura Hexagonal
 
-| #   | Criterio                                                                          | Nivel | Cómo verificar                                                                  |
-| --- | --------------------------------------------------------------------------------- | ----- | ------------------------------------------------------------------------------- |
-| 1   | La capa `Domain/` no importa de `Infrastructure/` ni de `Application/`            | 🔴    | Revisar `import` statements en `.entity.ts`, `.interfaces.ts`, `.repository.ts` |
-| 2   | Los Use Cases no importan repositorios directamente — solo la interfaz abstracta  | 🔴    | Revisar imports en `*.usecase.ts`                                               |
-| 3   | Los archivos globales de registro (`register.ts`, `Router.ts`) están actualizados | 🔴    | Verificar presencia del nuevo dominio en ambos archivos                         |
+| #   | Criterio                                                                          | Nivel | Cómo verificar                                                 |
+| --- | --------------------------------------------------------------------------------- | ----- | -------------------------------------------------------------- |
+| 1   | La capa `Domain/` no importa de `Infrastructure/` ni de `Application/`            | 🔴    | Revisar `import` statements en `.entity.ts` y `.repository.ts` |
+| 2   | Los Use Cases no importan repositorios directamente — solo la interfaz abstracta  | 🔴    | Revisar imports en `*.usecase.ts`                              |
+| 3   | Los archivos globales de registro (`register.ts`, `Router.ts`) están actualizados | 🔴    | Verificar presencia del nuevo dominio en ambos archivos        |
 
 ### TypeScript y Tipado
 

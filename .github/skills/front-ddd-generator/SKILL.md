@@ -25,7 +25,7 @@ description: Genera un dominio completo en el frontend React/tRPC: entity types,
 
 Esta skill asume que el dominio ya fue creado con `back-ddd-generator`. Necesitas leer de:
 
-- `packages/server/src/domains/[Domain]/Domain/[Entity].interfaces.ts` → para los tipos `I[Entity]`
+- `packages/server/src/domains/[Domain]/Application/[domain].types.ts` → para los tipos `I[Entity]`
 - `packages/server/src/domains/[Domain]/Infrastructure/Routes/[Domain].routes.ts` → para el tipo `T[Domain]Router`
 
 ---

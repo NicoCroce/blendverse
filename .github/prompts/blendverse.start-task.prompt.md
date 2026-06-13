@@ -29,7 +29,7 @@ Invocar el agente `@blendverse.analyst` con el siguiente contexto:
 > {{userRequest}}
 >
 > Cargar y seguir la skill `requirements-analyst`. Crear la carpeta `memory/{task_id}/` y escribir `01_requirements.md`.
-> Al finalizar, hacer handoff al agente Coder correspondiente (back o front) pasando el `task_id`.
+> Al finalizar, hacer handoff al agente Coder correspondiente (back y front) pasando el `task_id`.
 
 ### 3. Instrucciones para el resto de la cadena
 

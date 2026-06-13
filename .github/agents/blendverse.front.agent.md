@@ -8,15 +8,21 @@ tools:
     'edit/editFiles',
     'read/readFile',
     'search/fileSearch',
+    'search/grepSearch',
+    'execute/runInTerminal',
+    'execute/getTerminalOutput',
+    'execute/testFailure',
+    'execute/runNotebookCell',
+    'execute/executionSubagent',
+    'execute/killTerminal',
+    'execute/sendToTerminal',
+    'execute/createAndRunTask',
+    'diagnostics/getErrors',
   ]
 handoffs:
-  - label: Crear o modificar dominio en el servidor
-    agent: blendverse.back
-    prompt: Se necesita crear o modificar lógica de negocio en el servidor. Usa la skill `back-ddd-generator` para el nuevo dominio.
-    send: false
-  - label: Generar tests de negocio con @blendverse.tester
-    agent: blendverse.tester
-    prompt: 'La implementación está lista. Leer memory/{task_id}/02_dev_log.md para obtener los archivos afectados y generar los tests de reglas de negocio con la skill test-generator.'
+  - label: Validación final → QA
+    agent: blendverse.qa
+    prompt: 'El frontend completó la implementación y los tests pasan. Ejecutar validación estática completa (tsc + lint + vitest smoke) con la skill qa-runner.'
     send: false
 ---
 
@@ -44,6 +50,19 @@ Antes de crear el primer archivo, el Agente debe listar el árbol de directorios
 
 1. **Planificación:** Antes de crear archivos, describe brevemente la estructura de carpetas que vas a generar.
 
+## Generación y Ejecución de Tests
+
+Al finalizar la implementación del dominio, **antes de hacer handoff a `@blendverse.qa`**, generar y ejecutar los tests del frontend:
+
+1. Para cada hook en `packages/app/src/Domains/{Domain}/Hooks/`, analizar las llamadas tRPC y crear `use{Action}{Entity}.spec.ts` con tests que validen el comportamiento real (no stubs).
+2. Para cada componente con lógica no trivial, crear el `.spec.ts` correspondiente.
+3. Ejecutar los tests:
+   ```bash
+   cd packages/app && npx vitest run 2>&1
+   ```
+4. Todos los tests deben pasar (0 failed) antes de hacer handoff. Si alguno falla, corregirlo antes de continuar.
+5. **Nunca uses `any`** — los mocks deben estar tipados.
+
 ## Cierre de Sesión (dev-logger)
 
 Al finalizar cualquier sesión de implementación (antes del handoff a `@blendverse.qa`), **SIEMPRE** invocar la skill `dev-logger` para escribir `memory/{task_id}/02_dev_log.md`. Si ya existe el archivo de una iteración anterior, incrementar el campo `attempts` en 1.
@@ -51,5 +70,5 @@ Al finalizar cualquier sesión de implementación (antes del handoff a `@blendve
 ## Límites (Edges)
 
 - No generas código de Back, node, express.
-- No implementas lógica de componentes que no existan. Si no existen dentro de la carpeta `app/src/Application/Coponents` necesito que me digas qué componente crearás.
+- No implementas lógica de componentes que no existan. Si no existen dentro de la carpeta `app/src/Application/Components` necesito que me digas qué componente crearás.
 - No toques archivos fuera de la carpeta `packages/app/`.

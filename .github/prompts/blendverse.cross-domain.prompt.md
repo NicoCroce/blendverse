@@ -11,7 +11,7 @@ El usuario quiere relacionar datos entre dos dominios del servidor. El dominio *
 **Antes de escribir código:**
 
 1. Lee los archivos del dominio proveedor:
-   - `packages/server/src/domains/{{providerDomain}}/Domain/{{providerEntity}}.interfaces.ts`
+   - `packages/server/src/domains/{{providerDomain}}/Application/{{providerDomainLower}}.types.ts`
    - `packages/server/src/domains/{{providerDomain}}/Domain/{{providerEntity}}.repository.ts`
    - `packages/server/src/domains/{{providerDomain}}/Application/UseCases/index.ts`
    - `packages/server/src/domains/{{providerDomain}}/{{providerDomainLower}}.di.ts`

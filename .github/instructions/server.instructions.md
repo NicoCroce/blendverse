@@ -117,11 +117,11 @@ export interface EntityRepository {
 
 Las interfaces en la capa Domain **nunca deben estar vacías** ni ser equivalentes a su supertype. Siempre deben declarar al menos un member propio.
 
-❌ **PROHIBIDO** — Interface vacía (equivalente a su supertype):
+❌ **PROHIBIDO** — Interface vacía:
 
 ```typescript
 export interface IGetUserRepository extends IRequestContext {
-  // vacía = error ESLint: 'An interface declaring no members is equivalent to its supertype.'
+  // vacía = error
 }
 ```
 
@@ -133,13 +133,7 @@ export interface IGetUserRepository extends IRequestContext {
 }
 ```
 
-✅ **CORRECTO** — Si no hay members propios, usá `type` alias:
-
-```typescript
-export type IGetUserRepository = IRequestContext;
-```
-
-**Razonamiento:** Una interface que solo hereda sin agregar members no suma información de tipos. En ese caso, reemplazala por un `type` alias (`type X = Y`). Nunca uses `interface X extends Y {}` sin members propios.
+**Razonamiento:** Una interface que solo hereda no suma información de tipos. Si no tienes properties propias que agregar, no necesitás una interface separada — usá directamente el tipo heredado en el parámetro.
 
 ## Application Layer
 
@@ -288,7 +282,7 @@ export const entityApp = {
 | Carpeta dominio      | PascalCase                             | `Articles/`                            |
 | Entidad clase        | PascalCase                             | `Article`                              |
 | Archivo entidad      | `[Entity].entity.ts`                   | `Article.entity.ts`                    |
-| Archivo interfaces   | `[Entity].interfaces.ts`               | `Articles.interfaces.ts`               |
+| Archivo tipos        | `[domain].types.ts`                    | `articles.types.ts`                    |
 | Repositorio abstract | `[Entity].repository.ts`               | `Articles.repository.ts`               |
 | Use Case archivo     | `[Action][Entity].usecase.ts`          | `CreateArticle.usecase.ts`             |
 | Use Case clase       | PascalCase                             | `CreateArticle`                        |

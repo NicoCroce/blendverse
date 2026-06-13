@@ -1,6 +1,6 @@
 ---
 name: interfaces-to-application
-description: Migra los DTOs de Input/Output de un dominio del server desde `Domain/[entity].interfaces.ts` hacia `Application/[domain].types.ts`, convirtiendo las interfaces manuales al patrón z.infer<typeof Schema>. Actualiza todos los imports afectados y verifica que no haya errores TypeScript antes de avanzar al siguiente dominio. Usar como parte del flujo del agente @blendverse.arch-fixer o cuando se detecte un desvío B1 en arch-audit.
+description: Migra los DTOs de Input/Output de un dominio del server desde archivos de tipos legacy en `Domain/` hacia `Application/[domain].types.ts`, convirtiendo las interfaces manuales al patrón z.infer<typeof Schema>. Actualiza todos los imports afectados y verifica que no haya errores TypeScript antes de avanzar al siguiente dominio. Usar como parte del flujo del agente @blendverse.arch-fixer o cuando se detecte un desvío B1 en arch-audit.
 ---
 
 # Interfaces to Application
@@ -10,7 +10,7 @@ description: Migra los DTOs de Input/Output de un dominio del server desde `Doma
 - **UN DOMINIO A LA VEZ.** Nunca proceses dos dominios en paralelo.
 - **VERIFICACIÓN OBLIGATORIA** con `diagnostics/getErrors` antes de avanzar al siguiente dominio.
 - Solo modificás archivos dentro de `packages/server/src/domains/[Domain]/`.
-- Si el dominio **no tiene** `Domain/[entity].interfaces.ts`, reportar "sin desvío" y saltar.
+- Si el dominio **no tiene** archivos de tipos legacy en `Domain/`, reportar "sin desvío" y saltar.
 
 ## Herramientas Requeridas
 
@@ -25,7 +25,7 @@ description: Migra los DTOs de Input/Output de un dominio del server desde `Doma
 
 ### Paso 0 — Verificación previa
 
-1. Verificar que existe `Domain/[entity].interfaces.ts`. Si no existe: reportar "sin desvío" y terminar.
+1. Verificar si existe un archivo de tipos legacy en `Domain/`. Si no existe: reportar "sin desvío" y terminar.
 2. Leer el archivo completo.
 3. Leer `Infrastructure/Controllers/[Domain].controller.ts` para identificar los Zod schemas existentes.
 4. Leer `Application/[Domain].service.ts` para ver qué tipos usa.
@@ -36,7 +36,7 @@ Presentar al usuario:
 
 ```
 Dominio: [Domain]
-Archivo origen: Domain/[entity].interfaces.ts
+Archivo origen: Domain/[legacy-types].ts
 Archivo destino: Application/[domain].types.ts
 Interfaces encontradas: IGetAll, ICreate, IGetById, IUpdate, IDelete, ...
 Zod schemas en controller: CreateSchema, UpdateSchema, ...
@@ -122,12 +122,12 @@ Remover el export del archivo de interfaces eliminado:
 export * from './[Entity].interfaces';
 ```
 
-### Paso 5 — Eliminar `Domain/[entity].interfaces.ts`
+### Paso 5 — Eliminar archivo de tipos legacy en `Domain/`
 
 Solo después de que todos los imports en el paso 3 estén actualizados correctamente.
 
 ```bash
-rm packages/server/src/domains/[Domain]/Domain/[entity].interfaces.ts
+rm packages/server/src/domains/[Domain]/Domain/[archivo-tipado-legacy].ts
 ```
 
 ### Paso 6 — Verificación
@@ -158,7 +158,7 @@ Si hay errores de TypeScript:
 
 ## Qué NO hacer
 
-- ❌ No eliminar `[entity].interfaces.ts` antes de actualizar todos los imports.
+- ❌ No eliminar el archivo de tipos legacy antes de actualizar todos los imports.
 - ❌ No inventar Zod schemas si no hay validación previa — usar el tipo inline en ese caso.
 - ❌ No modificar `Domain/[Entity].entity.ts` ni `Domain/[Entity].repository.ts`.
 - ❌ No tocar archivos de Infrastructure ni de otros dominios.

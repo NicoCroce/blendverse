@@ -56,7 +56,6 @@ Antes de crear el primer archivo, lista para el usuario el árbol de carpetas y 
 packages/server/src/domains/[Domain]/
 ├── Domain/
 │   ├── [Entity].entity.ts
-│   ├── [Entity].interfaces.ts
 │   ├── [Entity].repository.ts
 │   └── index.ts
 ├── Application/
@@ -67,6 +66,7 @@ packages/server/src/domains/[Domain]/
 │   │   ├── Update[Entity].usecase.ts
 │   │   ├── Delete[Entity].usecase.ts
 │   │   └── index.ts
+│   ├── [domain].types.ts
 │   ├── [Domain].service.ts
 │   └── index.ts
 ├── Infrastructure/
@@ -142,48 +142,51 @@ export class [Entity] {
 
 ---
 
-## Template: `Domain/[Entity].interfaces.ts`
+## Template: `Application/[domain].types.ts`
+
+> ⚠️ **IMPORTANTE:** Los DTOs de entrada/salida de los use cases viven en `Application/[domain].types.ts`, NO en `Domain/`. Solo `[Entity].entity.ts` y `[Entity].repository.ts` pertenecen a `Domain/`.
 
 ```typescript
 import { IPagination, IRequestContext } from '@server/Application';
+import z from 'zod';
 
-// Interfaz plana de la entidad (usada en entity.create() y en el repo)
-export interface I[Entity] {
+// ─── Tipo plano de la entidad (fuente de verdad para entity.create()) ────────
+export type I[Entity] = {
   id?: number;
   id_propietario: number;
   // [fields con tipos]
-}
+};
 
-// --- Interfaces de entrada para Use Cases ---
+// ─── Schemas Zod (fuente de verdad para validación en controller) ────────────
+export const Create[Entity]Schema = z.object({
+  id_propietario: z.number(),
+  // [fields obligatorios]
+});
 
-export interface IGetAll[Entities] extends IRequestContext {
+export const Update[Entity]Schema = z.object({
+  id: z.number(),
+  id_propietario: z.number(),
+  // [fields actualizables]
+});
+
+// ─── Tipos derivados para Use Cases ─────────────────────────────────────────
+export type IGetAll[Entities] = IRequestContext & {
   input?: {
     // filtros de búsqueda opcionales
   } & IPagination;
-}
+};
 
-export interface IGet[Entity] extends IRequestContext {
-  input: number; // id
-}
+export type IGet[Entity] = IRequestContext & { input: number }; // id
 
-export interface ICreate[Entity] extends IRequestContext {
-  input: {
-    id_propietario: number;
-    // [fields obligatorios]
-  };
-}
+export type ICreate[Entity] = IRequestContext & {
+  input: z.infer<typeof Create[Entity]Schema>;
+};
 
-export interface IUpdate[Entity] extends IRequestContext {
-  input: {
-    id: number;
-    id_propietario: number;
-    // [fields actualizables]
-  };
-}
+export type IUpdate[Entity] = IRequestContext & {
+  input: z.infer<typeof Update[Entity]Schema>;
+};
 
-export interface IDelete[Entity] extends IRequestContext {
-  input: number; // id
-}
+export type IDelete[Entity] = IRequestContext & { input: number }; // id
 ```
 
 ---
@@ -238,8 +241,15 @@ export interface [Entity]Repository {
 
 ```typescript
 export * from './[Entity].entity';
-export * from './[Entity].interfaces';
 export * from './[Entity].repository';
+```
+
+## Template: `Application/index.ts`
+
+```typescript
+export * from './[domain].types';
+export * from './[Domain].service';
+export * from './UseCases';
 ```
 
 ---
@@ -249,7 +259,7 @@ export * from './[Entity].repository';
 ```typescript
 import { IUseCase } from '@server/Application';
 import { [Entity]Repository } from '../../Domain/[Entity].repository';
-import { IGetAll[Entities] } from '../../Domain/[Entity].interfaces';
+import { IGetAll[Entities] } from '../[domain].types';
 import { IGetAll[Entities]RepositoryResponse } from '../../Domain/[Entity].repository';
 
 export class GetAll[Entities] implements IUseCase<IGetAll[Entities]RepositoryResponse> {
@@ -271,7 +281,7 @@ export class GetAll[Entities] implements IUseCase<IGetAll[Entities]RepositoryRes
 ```typescript
 import { AppError, IUseCase } from '@server/Application';
 import { [Entity]Repository } from '../../Domain/[Entity].repository';
-import { IGet[Entity] } from '../../Domain/[Entity].interfaces';
+import { IGet[Entity] } from '../[domain].types';
 import { [Entity] } from '../../Domain/[Entity].entity';
 
 export class Get[Entity] implements IUseCase<[Entity]> {
@@ -292,7 +302,7 @@ export class Get[Entity] implements IUseCase<[Entity]> {
 ```typescript
 import { IUseCase } from '@server/Application';
 import { [Entity]Repository } from '../../Domain/[Entity].repository';
-import { ICreate[Entity] } from '../../Domain/[Entity].interfaces';
+import { ICreate[Entity] } from '../[domain].types';
 import { [Entity] } from '../../Domain/[Entity].entity';
 
 export class Create[Entity] implements IUseCase<[Entity]> {
@@ -312,7 +322,7 @@ export class Create[Entity] implements IUseCase<[Entity]> {
 ```typescript
 import { IUseCase } from '@server/Application';
 import { [Entity]Repository } from '../../Domain/[Entity].repository';
-import { IUpdate[Entity] } from '../../Domain/[Entity].interfaces';
+import { IUpdate[Entity] } from '../[domain].types';
 import { [Entity] } from '../../Domain/[Entity].entity';
 
 export class Update[Entity] implements IUseCase<[Entity]> {
@@ -332,7 +342,7 @@ export class Update[Entity] implements IUseCase<[Entity]> {
 ```typescript
 import { IUseCase } from '@server/Application';
 import { [Entity]Repository } from '../../Domain/[Entity].repository';
-import { IDelete[Entity] } from '../../Domain/[Entity].interfaces';
+import { IDelete[Entity] } from '../[domain].types';
 
 export class Delete[Entity] implements IUseCase<number> {
   constructor(private readonly [entity]Repository: [Entity]Repository) {}

@@ -26,7 +26,7 @@ Monorepo de e-commerce B2B multi-tenant. La empresa puede tener múltiples propi
 4. **Conventional Commits** — `feat(articles): add price calculation use case`.
 5. **Nunca toques archivos de otro paquete** salvo los archivos de registro global indicados en cada skill.
 6. **Nunca importes el repositorio de otro dominio** — importá su caso de uso (ver skill `cross-domain-relations`).
-7. **Vitest + Playwright** — El proyecto usa Vitest para tests unitarios e integración en ambos paquetes y Playwright para E2E. El agente `@blendverse.qa` genera y ejecuta los tests en su flujo. No generes archivos de test fuera del flujo de `@blendverse.qa`.
+7. **Vitest + Playwright** — El proyecto usa Vitest para tests unitarios e integración en ambos paquetes y Playwright para E2E. Los agentes `@blendverse.back` y `@blendverse.front` generan y ejecutan los tests de su dominio al finalizar la implementación. `@blendverse.qa` ejecuta la validación final (tsc + lint + vitest). No generes archivos de test fuera del flujo orquestado.
 
 ## Path Aliases
 
@@ -41,7 +41,7 @@ Cuando el Chat base recibe un requerimiento nuevo, actúa como **Director del Pr
 
 1. **Determinar el task_id** — leer `memory/history_log.json` y generar el próximo `TASK-YYYYMMDD-N`.
 2. **Invocar `@blendverse.analyst`** — pasa el requerimiento del usuario y el `task_id` generado.
-3. **Supervisar la cadena** — una vez que `@blendverse.analyst` entrega `01_requirements.md`, guiar al usuario para invocar `@blendverse.back` o `@blendverse.front` (Coder), luego `@blendverse.qa`, luego `@blendverse.reviewer`.
+3. **Supervisar la cadena** — una vez que `@blendverse.analyst` entrega `01_requirements.md`, guiar al usuario para invocar `@blendverse.implement` (Orquestador), que coordinará back/front → `@blendverse.qa` → `@blendverse.reviewer`.
 4. **Cerrar la tarea** — cuando `@blendverse.reviewer` entrega `status: APPROVED`, actualizar `memory/history_log.json` con `status: COMPLETED` y `closed_at`.
 
 Flujo completo:
@@ -49,11 +49,12 @@ Flujo completo:
 ```
 @blendverse.analyst → 01_requirements.md
     ↓
-@blendverse.back / @blendverse.front → código + 02_dev_log.md
+@blendverse.implement → detecta alcance (back / front / full-stack)
     ↓
-@blendverse.tester → tests por regla de negocio + 05_test_log.md
+@blendverse.back  → código + tests + vitest run + 02_dev_log.md
+@blendverse.front → código + tests + vitest run + 02_dev_log.md
     ↓
-@blendverse.qa → 03_qa_report.md
+@blendverse.qa → tsc + lint + vitest smoke + 03_qa_report.md
     ├── FAIL (máx. 3 intentos) → @blendverse.back / @blendverse.front
     └── PASS → @blendverse.reviewer → 04_review_log.md
                   ├── REJECTED (máx. 3 intentos) → @blendverse.back / @blendverse.front
@@ -68,15 +69,16 @@ Todos los agentes leen y escriben en la carpeta `memory/` de la raíz del monore
 
 ## Agentes Disponibles
 
-| Agente                   | Rol                       | Cuándo invocarlo                                                          |
-| ------------------------ | ------------------------- | ------------------------------------------------------------------------- |
-| `@blendverse.analyst`    | Analista Funcional y UX   | Inicio de cualquier tarea nueva — genera requerimientos                   |
-| `@blendverse.back`       | Coder Backend (DDD)       | Implementar dominios del servidor                                         |
-| `@blendverse.front`      | Coder Frontend (React)    | Implementar dominios del frontend                                         |
-| `@blendverse.tester`     | Especialista en Tests     | Analizar reglas de negocio y generar tests sobre archivos con lógica real |
-| `@blendverse.qa`         | QA Híbrido                | Validar código (tsc + lint + vitest) tras cada sesión de Coder            |
-| `@blendverse.reviewer`   | Crítico de Estándares     | Revisar arquitectura y convenciones tras QA PASS                          |
-| `@blendverse.arch-fixer` | Unificador Arquitectónico | Corregir desvíos DDD/Hexagonal en dominios existentes — ver flujo abajo   |
+| Agente                   | Rol                       | Cuándo invocarlo                                                                 |
+| ------------------------ | ------------------------- | -------------------------------------------------------------------------------- |
+| `@blendverse.analyst`    | Analista Funcional y UX   | Inicio de tarea sin artefactos Speckit — genera requerimientos desde input crudo |
+| `@blendverse.implement`  | Orquestador               | Tras analyst o micro-prompt Fast-Track — coordina back/front/full-stack          |
+| `@blendverse.back`       | Coder Backend (DDD)       | Implementar dominios del servidor — invocado por implement                       |
+| `@blendverse.front`      | Coder Frontend (React)    | Implementar dominios del frontend — invocado por implement                       |
+| `@blendverse.tester`     | Especialista en Tests     | Uso standalone — regenerar tests de dominios existentes de forma aislada         |
+| `@blendverse.qa`         | QA Validador              | Validar código (tsc + lint + vitest smoke) tras back y front — no genera tests   |
+| `@blendverse.reviewer`   | Crítico de Estándares     | Revisar arquitectura y convenciones tras QA PASS                                 |
+| `@blendverse.arch-fixer` | Unificador Arquitectónico | Corregir desvíos DDD/Hexagonal en dominios existentes — ver flujo abajo          |
 
 Ante una tarea full-stack, `@blendverse.back` construye el dominio primero y hace handoff a `@blendverse.front`. Ambos hacen handoff a `@blendverse.qa` al finalizar.
 
@@ -161,13 +163,13 @@ speckit.specify       → spec.md
 speckit.clarify       → (opcional) refina spec.md
 speckit.plan          → plan.md + data-model + contracts
 speckit.tasks         → tasks.md
-                           ↓ handoff a Blendverse
+                           ↓ handoff a Blendverse (via speckit.implement)
 [IMPLEMENTACIÓN — Blendverse]
-@blendverse.analyst   → 01_requirements.md (usa spec.md como input)
-@blendverse.back      → código servidor DDD
-@blendverse.front     → código React
-@blendverse.tester    → tests de reglas de negocio
-@blendverse.qa        → tsc + lint + vitest
+micro-prompt speckit-to-blendverse  → 01_requirements.md (desde artefactos Speckit)
+@blendverse.implement → detecta alcance y coordina coders
+@blendverse.back      → código servidor DDD + tests + vitest run
+@blendverse.front     → código React + tests + vitest run
+@blendverse.qa        → tsc + lint + vitest smoke
 @blendverse.reviewer  → checklist 12 ítems
 speckit.git.commit    → commit automático
 ```
@@ -175,15 +177,22 @@ speckit.git.commit    → commit automático
 **Comando para arrancar el pipeline completo de punta a punta:**
 `/blendverse.start-feature "descripción de la feature"`
 
-Este prompt orquesta Speckit hasta `tasks.md` y luego hace handoff automático a `@blendverse.analyst`,
-sin modificar ningún archivo de Speckit.
+Este prompt orquesta Speckit hasta `tasks.md`, ejecuta el micro-prompt `speckit-to-blendverse`
+y hace handoff a `@blendverse.implement`, sin modificar ningún archivo de Speckit.
 
-> **`speckit.implement` está bloqueado** — configurado en `.github/hooks/block-destructive.json`.
+> **`speckit.implement`** redirige automáticamente a `@blendverse.implement`.
 > Para gobernanza y principios no negociables ver `.specify/memory/constitution.md`.
 
 <!-- SPECKIT START -->
 
 For additional context about technologies to be used, project structure,
-shell commands, and other important information, read the current plan
+shell commands, and other important information, read the current plan:
+`specs/multiempresas-usuarios/plan.md`
+
+Key artifacts for the active feature (multiempresas-usuarios):
+
+- Plan: `specs/multiempresas-usuarios/plan.md`
+- Data model: `specs/multiempresas-usuarios/data-model.md`
+- API contracts: `specs/multiempresas-usuarios/contracts/empresas-usuarios.contracts.ts`
 
 <!-- SPECKIT END -->
