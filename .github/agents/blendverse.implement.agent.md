@@ -12,18 +12,18 @@ tools:
     'edit/createDirectory',
   ]
 handoffs:
-  - label: Implementar dominio servidor (fallback manual — back-only o full-stack)
+  - label: Implementar dominio servidor (fallback — back-only o full-stack)
     agent: blendverse.back
-    prompt: 'Leer el 01_requirements.md más reciente en memory/ como contexto inicial y proceder con la implementación del dominio servidor siguiendo la skill back-ddd-generator. Al finalizar implementación y tests, escribir 02_dev_log.md y hacer handoff a @blendverse.front (full-stack) o @blendverse.qa (back-only).'
-    send: false
-  - label: Implementar dominio frontend (fallback manual — front-only o segundo paso full-stack)
+    prompt: 'Leer el 01_requirements.md más reciente en memory/ como contexto inicial y proceder con la implementación del dominio servidor siguiendo la skill back-ddd-generator. Incluir obligatoriamente la generación y ejecución de tests (.spec.ts para todas las capas con lógica de negocio, vitest run: 0 failed). Al finalizar, escribir 02_dev_log.md y hacer handoff a @blendverse.front (full-stack) o @blendverse.qa (back-only).'
+    send: true
+  - label: Implementar dominio frontend (fallback — front-only o segundo paso full-stack)
     agent: blendverse.front
-    prompt: 'Leer el 01_requirements.md más reciente en memory/ como contexto inicial y proceder con la implementación del dominio frontend siguiendo la skill front-ddd-generator. Al finalizar implementación y tests, actualizar 02_dev_log.md y hacer handoff a @blendverse.qa.'
-    send: false
-  - label: Validación final → QA (fallback manual)
+    prompt: 'Leer el 01_requirements.md más reciente en memory/ como contexto inicial y proceder con la implementación del dominio frontend siguiendo la skill front-ddd-generator. Incluir obligatoriamente la generación y ejecución de tests (.spec.ts para hooks y componentes con lógica, vitest run: 0 failed). Al finalizar, actualizar 02_dev_log.md y hacer handoff a @blendverse.qa.'
+    send: true
+  - label: Validación final → QA (fallback)
     agent: blendverse.qa
     prompt: 'Back y/o front completaron su implementación incluyendo tests. Ejecutar validación estática completa (tsc + lint + vitest smoke) leyendo el 02_dev_log.md más reciente en memory/ para los archivos afectados.'
-    send: false
+    send: true
 ---
 
 # Agente Orquestador de Implementación
@@ -64,22 +64,22 @@ Resolver `{task_id}` con el valor real del Paso 1 antes de construir cada prompt
 #### Si es back-only:
 
 1. Invocar `@blendverse.back` con el prompt:
-   > Leer `memory/{task_id}/01_requirements.md` como contexto inicial y proceder con la implementación del dominio servidor siguiendo la skill `back-ddd-generator`. Al finalizar implementación y tests (vitest run: 0 failed), escribir `memory/{task_id}/02_dev_log.md`.
+   > Leer `memory/{task_id}/01_requirements.md` como contexto inicial y proceder con la implementación del dominio servidor siguiendo la skill `back-ddd-generator`. **Incluir obligatoriamente la generación y ejecución de tests** (.spec.ts para todas las capas con lógica de negocio — entity, use cases, service, controller — usando datos concretos, no stubs ni `it.todo`; `vitest run` debe pasar con 0 failed). Al finalizar, escribir `memory/{task_id}/02_dev_log.md`.
 2. Al completar, invocar `@blendverse.qa` con el prompt:
    > Ejecutar validación estática completa (tsc + lint + vitest smoke) leyendo `memory/{task_id}/02_dev_log.md` para los archivos afectados. Usar la skill `qa-runner`.
 
 #### Si es front-only:
 
 1. Invocar `@blendverse.front` con el prompt:
-   > Leer `memory/{task_id}/01_requirements.md` como contexto inicial y proceder con la implementación del dominio frontend siguiendo la skill `front-ddd-generator`. Al finalizar implementación y tests, escribir/actualizar `memory/{task_id}/02_dev_log.md`.
+   > Leer `memory/{task_id}/01_requirements.md` como contexto inicial y proceder con la implementación del dominio frontend siguiendo la skill `front-ddd-generator`. **Incluir obligatoriamente la generación y ejecución de tests** (.spec.ts para hooks y componentes con lógica, usando datos concretos, no stubs ni `it.todo`; `vitest run` debe pasar con 0 failed). Al finalizar, escribir/actualizar `memory/{task_id}/02_dev_log.md`.
 2. Al completar, invocar `@blendverse.qa` con el mismo prompt de arriba.
 
 #### Si es full-stack:
 
 1. Invocar `@blendverse.back` con el prompt:
-   > Leer `memory/{task_id}/01_requirements.md` como contexto inicial y proceder con la implementación del dominio servidor siguiendo la skill `back-ddd-generator`. Al finalizar implementación y tests (vitest run: 0 failed), escribir `memory/{task_id}/02_dev_log.md`.
+   > Leer `memory/{task_id}/01_requirements.md` como contexto inicial y proceder con la implementación del dominio servidor siguiendo la skill `back-ddd-generator`. **Incluir obligatoriamente la generación y ejecución de tests** (.spec.ts para todas las capas con lógica de negocio — entity, use cases, service, controller — usando datos concretos, no stubs ni `it.todo`; `vitest run` debe pasar con 0 failed). Al finalizar, escribir `memory/{task_id}/02_dev_log.md`.
 2. Al completar back, invocar `@blendverse.front` con el prompt:
-   > El backend ya está implementado. Leer `memory/{task_id}/01_requirements.md` y `memory/{task_id}/02_dev_log.md` para entender qué expone el servidor. Proceder con la implementación del dominio frontend siguiendo la skill `front-ddd-generator`. Al finalizar implementación y tests, actualizar `memory/{task_id}/02_dev_log.md`.
+   > El backend ya está implementado. Leer `memory/{task_id}/01_requirements.md` y `memory/{task_id}/02_dev_log.md` para entender qué expone el servidor. Proceder con la implementación del dominio frontend siguiendo la skill `front-ddd-generator`. **Incluir obligatoriamente la generación y ejecución de tests** (.spec.ts para hooks y componentes con lógica, usando datos concretos, no stubs ni `it.todo`; `vitest run` debe pasar con 0 failed). Al finalizar, actualizar `memory/{task_id}/02_dev_log.md`.
 3. Al completar front, invocar `@blendverse.qa` con el prompt:
    > Back y front completaron. Ejecutar validación estática completa (tsc + lint + vitest smoke) leyendo `memory/{task_id}/02_dev_log.md`. Usar la skill `qa-runner`.
 

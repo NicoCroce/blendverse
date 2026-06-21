@@ -39,3 +39,10 @@ _(Base para los tests de `@blendverse.tester` y validación de `@blendverse.qa`)
 ## 6. Reglas de Negocio
 
 - Listar cálculos, estados, validaciones de Zod obligatorias o flujos condicionales de la lógica de negocio.
+
+## 7. Experiencia de Usuario UI/UX
+
+- Quiero que se. visualice en una pantalla al 100% de ancho.
+- Quiero que los datos se muestren en una tabla con estos campos, `id`, `nombre`, etc...
+- Quiero que la card que muestre xxxx contenga en la parte superior el nombre, en la esquina superior derecha un badge con el estado y abajo el valor...
+- Quiero que esa card se coloque antes qeu la tabla.

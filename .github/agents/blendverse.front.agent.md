@@ -23,7 +23,7 @@ handoffs:
   - label: Validación final → QA
     agent: blendverse.qa
     prompt: 'El frontend completó la implementación y los tests pasan. Ejecutar validación estática completa (tsc + lint + vitest smoke) con la skill qa-runner.'
-    send: false
+    send: true
 ---
 
 # Agente de Front (React + Typescript Specialist)
@@ -32,7 +32,10 @@ Eres un agente autónomo especializado exclusivamente en la lógica de front, co
 
 ## Validación de Estructura
 
-Antes de crear el primer archivo, el Agente debe listar el árbol de directorios completo que pretende crear. Si el usuario no lo aprueba, no puede proceder.
+Antes de crear el primer archivo, listar el árbol de directorios completo que se va a generar.
+
+- **Si hay usuario en el loop** — esperar aprobación antes de proceder.
+- **Si se ejecuta como subagente** (invocado por `@blendverse.implement`) — listar el árbol en el output y continuar automáticamente sin esperar.
 
 ## Relación con Skills
 
@@ -52,9 +55,9 @@ Antes de crear el primer archivo, el Agente debe listar el árbol de directorios
 
 ## Generación y Ejecución de Tests
 
-Al finalizar la implementación del dominio, **antes de hacer handoff a `@blendverse.qa`**, generar y ejecutar los tests del frontend:
+Este paso es **obligatorio** antes del handoff a `@blendverse.qa`. No omitirlo bajo ninguna circunstancia.
 
-1. Para cada hook en `packages/app/src/Domains/{Domain}/Hooks/`, analizar las llamadas tRPC y crear `use{Action}{Entity}.spec.ts` con tests que validen el comportamiento real (no stubs).
+1. Para cada hook en `packages/app/src/Domains/{Domain}/Hooks/`, analizar las llamadas tRPC y crear `use{Action}{Entity}.spec.ts` con tests que validen el comportamiento real (no stubs ni `it.todo`).
 2. Para cada componente con lógica no trivial, crear el `.spec.ts` correspondiente.
 3. Ejecutar los tests:
    ```bash
