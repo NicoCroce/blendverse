@@ -59,6 +59,8 @@ export class DisclaimerController {
         z.object({
           ownerId: z.number().optional(),
           search: z.string().optional().default(''),
+          page: z.string().optional(),
+          limit: z.string().optional(),
         }),
       )
       .query(

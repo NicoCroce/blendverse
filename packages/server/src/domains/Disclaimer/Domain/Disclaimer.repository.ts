@@ -1,4 +1,4 @@
-import { IRequestContext } from '@server/Application';
+import { IRequestContext, IPaginationResponse } from '@server/Application';
 import { DisclaimerAcceptance } from './DisclaimerAcceptance.entity';
 
 export interface IGetSignatureStatusRepository extends IRequestContext {
@@ -18,6 +18,8 @@ export interface ISignDisclaimerRepository extends IRequestContext {
 export interface IGetEmployeesByCompanyRepository extends IRequestContext {
   ownerId?: number;
   search?: string;
+  page?: string;
+  limit?: string;
 }
 
 export interface IGetPendingEmployeeIdsRepository extends IRequestContext {
@@ -42,7 +44,7 @@ export interface DisclaimerRepository {
 
   getEmployeesByCompany(
     params: IGetEmployeesByCompanyRepository,
-  ): Promise<IEmployeeRecord[]>;
+  ): Promise<IPaginationResponse<IEmployeeRecord[]>>;
 
   getPendingEmployeeIds(
     params: IGetPendingEmployeeIdsRepository,

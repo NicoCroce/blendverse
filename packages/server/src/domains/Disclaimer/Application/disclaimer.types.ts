@@ -22,6 +22,8 @@ export interface IGetEmployeesByCompany extends IRequestContext {
   input: {
     ownerId?: number;
     search?: string;
+    page?: string;
+    limit?: string;
   };
 }
 

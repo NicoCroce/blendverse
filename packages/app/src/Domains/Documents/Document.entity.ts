@@ -12,6 +12,7 @@ export type TDocument = {
   requireSign: boolean;
   validationSign: string | null;
   agreedment: boolean | null;
+  canDownload: boolean;
 };
 
 export type TDocumentSearch = {

@@ -54,6 +54,10 @@ export class Document {
     return this.values;
   }
 
+  get canDownload(): boolean {
+    return this.signed !== null && this.agreedment === true;
+  }
+
   get values() {
     return {
       id: this.id,
@@ -67,6 +71,7 @@ export class Document {
       requireSign: this.requireSign,
       validationSign: this.validationSign,
       agreedment: this.agreedment,
+      canDownload: this.canDownload,
       user: this.user,
     };
   }

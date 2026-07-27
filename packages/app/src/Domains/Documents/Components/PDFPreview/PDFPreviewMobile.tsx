@@ -13,13 +13,18 @@ import { TDocumentSearch } from '../../Document.entity';
 import { useState } from 'react';
 import { SignedDetail } from '../SignedDetail';
 import { useGetDocument } from '../../Hooks';
+import { useSendDocumentToEmail } from '../../Hooks/useSendDocumentToEmail';
 import {
   Alert,
   AlertDescription,
   AlertTitle,
 } from '@app/Application/Components/ui/alert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowDown, faHourglass } from '@fortawesome/free-solid-svg-icons';
+import {
+  faArrowDown,
+  faEnvelope,
+  faHourglass,
+} from '@fortawesome/free-solid-svg-icons';
 
 /* import image from '@app/Application/Images/recibo.jpg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -28,6 +33,8 @@ import { faArrowDown, faEye } from '@fortawesome/free-solid-svg-icons'; */
 export const PDFPreviewMobile = () => {
   const { searchParams, clearParams } = useURLParams<TDocumentSearch>();
   const { currentDocument } = useGetDocument(searchParams?.id);
+  const { mutate: sendToEmail, isPending: isSendingEmail } =
+    useSendDocumentToEmail();
   const [isLoading, setIsLoading] = useState(true);
 
   const isOpen = !!searchParams?.id;
@@ -50,11 +57,23 @@ export const PDFPreviewMobile = () => {
         <Container className="p-4 h-full">
           <SignDocument />
           <SignedDetail />
-          {(currentDocument.signed || !currentDocument.requireSign) && (
-            <Button>
-              <FontAwesomeIcon icon={faArrowDown} />
-              <a href={currentDocument.file as string}>Descargar PDF</a>
-            </Button>
+          {currentDocument.canDownload && (
+            <Container row className="gap-2">
+              <Button>
+                <FontAwesomeIcon icon={faArrowDown} />
+                <a href={currentDocument.file as string}>Descargar PDF</a>
+              </Button>
+              <Button
+                variant="outline"
+                disabled={isSendingEmail}
+                onClick={() =>
+                  sendToEmail({ documentId: Number(searchParams?.id) })
+                }
+              >
+                <FontAwesomeIcon icon={faEnvelope} />
+                Enviar a mi email
+              </Button>
+            </Container>
           )}
           {isLoading && (
             <Alert className="max-w-lg">

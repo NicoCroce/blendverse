@@ -4,6 +4,7 @@ import {
   GetDocuments,
   GetDocumentsByCompany,
   GetStatisticsDocuments,
+  SendDocumentToEmail,
   SignDocument,
   ViewDocument,
 } from './UseCases';
@@ -13,10 +14,12 @@ import {
   IGetDocumentsByCompany,
   IGetStatisticsDocuments,
   IGetStatisticsDocumentsResponse,
+  ISendDocumentToEmail,
   ISignDocument,
   IViewDocument,
 } from './documents.types';
 import { SendEmailService } from '@server/Application/Services/SendEmail.service';
+import axios from 'axios';
 
 export class DocumentsService {
   constructor(
@@ -26,6 +29,7 @@ export class DocumentsService {
     private readonly _viewDocument: ViewDocument,
     private readonly _getDocumentsByCompany: GetDocumentsByCompany,
     private readonly _getStatisticsDocuments: GetStatisticsDocuments,
+    private readonly _sendDocumentToEmail: SendDocumentToEmail,
     private readonly sendEmailService: SendEmailService,
   ) {}
 
@@ -83,6 +87,29 @@ export class DocumentsService {
       input,
       requestContext,
     });
+  }
+
+  async sendDocumentToEmail({ input, requestContext }: ISendDocumentToEmail) {
+    const document = await executeUseCase({
+      useCase: this._sendDocumentToEmail,
+      input,
+      requestContext,
+    });
+
+    const fileUrl = document.values.file as string;
+    const response = await axios.get<ArrayBuffer>(fileUrl, {
+      responseType: 'arraybuffer',
+    });
+    const pdfBuffer = Buffer.from(response.data);
+
+    await this.sendEmailService.sendDocumentToEmail({
+      documentId: document.values.id,
+      documentTitle: document.values.title,
+      pdfBuffer,
+      requestContext,
+    });
+
+    return document.values;
   }
 
   async getStatisticsDocuments({

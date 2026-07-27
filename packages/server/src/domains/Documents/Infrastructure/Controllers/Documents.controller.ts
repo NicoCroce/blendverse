@@ -67,6 +67,18 @@ export class DocumentsController {
       ),
     );
 
+  sendDocumentToEmail = protectedProcedure
+    .input(
+      z.object({
+        documentId: z.number(),
+      }),
+    )
+    .mutation(
+      executeService(
+        this.documentsService.sendDocumentToEmail.bind(this.documentsService),
+      ),
+    );
+
   getStatisticsDocuments = protectedProcedure.query(
     executeService(
       this.documentsService.getStatisticsDocuments.bind(this.documentsService),

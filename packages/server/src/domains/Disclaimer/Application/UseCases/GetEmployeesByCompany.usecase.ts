@@ -1,9 +1,9 @@
-import { IUseCase } from '@server/Application';
+import { IUseCase, IPaginationResponse } from '@server/Application';
 import { DisclaimerRepository, IEmployeeRecord } from '../../Domain';
 import { IGetEmployeesByCompany } from '../disclaimer.types';
 
 export class GetEmployeesByCompany implements IUseCase<
-  IEmployeeRecord[],
+  IPaginationResponse<IEmployeeRecord[]>,
   IGetEmployeesByCompanyInput
 > {
   constructor(private readonly disclaimerRepository: DisclaimerRepository) {}
@@ -11,12 +11,14 @@ export class GetEmployeesByCompany implements IUseCase<
   async execute({
     input,
     requestContext,
-  }: IGetEmployeesByCompany): Promise<IEmployeeRecord[]> {
+  }: IGetEmployeesByCompany): Promise<IPaginationResponse<IEmployeeRecord[]>> {
     const ownerId = input.ownerId ?? requestContext.values.ownerId;
 
     return this.disclaimerRepository.getEmployeesByCompany({
       ownerId,
       search: input.search || '',
+      page: input.page,
+      limit: input.limit,
       requestContext,
     });
   }
@@ -25,4 +27,6 @@ export class GetEmployeesByCompany implements IUseCase<
 export interface IGetEmployeesByCompanyInput {
   ownerId?: number;
   search?: string;
+  page?: string;
+  limit?: string;
 }

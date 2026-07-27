@@ -20,16 +20,15 @@ export const EditDelete = ({ editPath, onDelete }: EditDeleteProps) => (
   >
     <Link
       to={editPath}
-      className="py-1 px-2 bg-accent text-primary rounded-full"
+      className="inline-flex items-center justify-center h-control w-control bg-accent text-primary rounded-full"
     >
       <FontAwesomeIcon icon={faEdit} />
     </Link>
     <AlertDialogCancelConfirm onConfirm={onDelete}>
       <AlertDialogTrigger asChild>
-        <FontAwesomeIcon
-          icon={faTrash}
-          className="cursor-pointer text-red-800 p-2 px-[9px] bg-destructive-foreground rounded-full"
-        />
+        <span className="cursor-pointer text-red-800 inline-flex items-center justify-center h-control w-control bg-destructive-foreground rounded-full">
+          <FontAwesomeIcon icon={faTrash} />
+        </span>
       </AlertDialogTrigger>
     </AlertDialogCancelConfirm>
   </Container>

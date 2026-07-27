@@ -1,4 +1,4 @@
-import { executeUseCase } from '@server/Application';
+import { executeUseCase, IPaginationResponse } from '@server/Application';
 import { DisclaimerAcceptance, IEmployeeRecord } from '../Domain';
 import {
   IGetDisclaimerText,
@@ -62,7 +62,7 @@ export class DisclaimerService {
   async getEmployeesByCompany({
     input,
     requestContext,
-  }: IGetEmployeesByCompany): Promise<IEmployeeRecord[]> {
+  }: IGetEmployeesByCompany): Promise<IPaginationResponse<IEmployeeRecord[]>> {
     return executeUseCase({
       useCase: this._getEmployeesByCompany,
       input,

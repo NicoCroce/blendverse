@@ -18,7 +18,10 @@ export const SignedDetail = () => {
     <AlertMessage
       variant="info"
       title={title}
-      description={currentDocument.reasonSignatureNonConformity ?? undefined}
+      description={
+        currentDocument.reasonSignatureNonConformity ??
+        'Al haber firmado el documento bajo conformidad, podés descargarlo o enviártelo por mail'
+      }
     />
   );
 };

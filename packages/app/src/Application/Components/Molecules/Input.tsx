@@ -41,7 +41,7 @@ const InputPassword = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
       />
       <Button
         variant="ghost"
-        className="absolute right-0 top-[2px] p-[13px]"
+        className="absolute right-px top-px p-3.25 h-[calc(var(--height-control)-1px)]!"
         onClick={() => setShow((prev) => !prev)}
         type="button"
       >

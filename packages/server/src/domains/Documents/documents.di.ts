@@ -7,6 +7,7 @@ import {
   GetDocuments,
   GetDocumentsByCompany,
   GetStatisticsDocuments,
+  SendDocumentToEmail,
   SignDocument,
   ViewDocument,
 } from './Application';
@@ -22,6 +23,7 @@ export const documentsApp = {
   _viewDocument: asClass(ViewDocument),
   _getDocumentsByCompany: asClass(GetDocumentsByCompany),
   _getStatisticsDocuments: asClass(GetStatisticsDocuments),
+  _sendDocumentToEmail: asClass(SendDocumentToEmail),
 };
 
 export const documentsController = () =>

@@ -11,6 +11,8 @@ import {
 } from '../../Domain';
 import { DisclaimerAcceptanceModel } from './DisclaimerAcceptance.model';
 import { UserModel } from '@server/domains/Users/Infrastructure/Database/Users.model';
+import { IPaginationResponse } from '@server/Application';
+import { PaginationImplementation } from '@server/Infrastructure/utils/pagination';
 
 export class DisclaimerRepositoryImplementation implements DisclaimerRepository {
   private computeHash(userId: number, timestamp: string): string {
@@ -74,7 +76,11 @@ export class DisclaimerRepositoryImplementation implements DisclaimerRepository 
   async getEmployeesByCompany({
     ownerId,
     search,
-  }: IGetEmployeesByCompanyRepository): Promise<IEmployeeRecord[]> {
+    page,
+    limit,
+  }: IGetEmployeesByCompanyRepository): Promise<
+    IPaginationResponse<IEmployeeRecord[]>
+  > {
     const whereClause: Record<string | symbol, unknown> = {};
     if (ownerId !== undefined) {
       whereClause.id_propietario = ownerId;
@@ -87,6 +93,13 @@ export class DisclaimerRepositoryImplementation implements DisclaimerRepository 
       ];
     }
 
+    const { offset, createPaginatedResponse } = PaginationImplementation({
+      page,
+      limit,
+    });
+
+    const totalItems = await UserModel.count({ where: whereClause });
+
     const users = await UserModel.findAll({
       where: whereClause,
       attributes: ['id', 'nombre', 'apellido', 'email', 'renovar_clave'],
@@ -98,9 +111,12 @@ export class DisclaimerRepositoryImplementation implements DisclaimerRepository 
           attributes: ['hash_prueba', 'timestamp'],
         },
       ],
+      offset,
+      limit: limit ? Number(limit) : undefined,
+      order: [['apellido', 'ASC']],
     });
 
-    return users.map((user: UserModel) => {
+    const data = users.map((user: UserModel) => {
       const disclaimer =
         (
           user as unknown as {
@@ -128,6 +144,8 @@ export class DisclaimerRepositoryImplementation implements DisclaimerRepository 
         estado_firma,
       };
     });
+
+    return createPaginatedResponse(data, totalItems);
   }
 
   async getPendingEmployeeIds({

@@ -41,6 +41,12 @@ export type IGetDocumentsByCompanyResponse = Array<{
   documents: Document[];
 }>;
 
+export interface ISendDocumentToEmail extends IRequestContext {
+  input: {
+    documentId: number;
+  };
+}
+
 export interface IGetStatisticsDocumentsResponse {
   total: number;
   pending: number;

@@ -26,6 +26,12 @@ interface ISendEmailsToAdmin<Targs> extends IRequestContext {
   templateArgs: Targs;
 }
 
+interface ISendDocumentToEmail extends IRequestContext {
+  documentId: number;
+  documentTitle: string;
+  pdfBuffer: Buffer;
+}
+
 interface INotifyLicenseStatusChange extends IRequestContext {
   certificate: Certificate;
   newStatus: 'aprobado' | 'rechazado';
@@ -91,6 +97,35 @@ export class SendEmailService {
         currentUser: '',
       },
     });
+  }
+
+  async sendDocumentToEmail({
+    documentId,
+    documentTitle,
+    pdfBuffer,
+    requestContext,
+  }: ISendDocumentToEmail) {
+    try {
+      const currentUser = await this.getCurrentUser(requestContext);
+
+      await this.mailNotificationService.sendOne({
+        to: currentUser.values.mail,
+        subject: `Documento: ${documentTitle}`,
+        html: `<p>Adjunto encontrará el documento <strong>${documentTitle}</strong> (ID: ${documentId}).</p>`,
+        attachments: [
+          {
+            filename: `${documentTitle}.pdf`,
+            content: pdfBuffer,
+            contentType: 'application/pdf',
+          },
+        ],
+      });
+    } catch (error) {
+      loggerContext(requestContext.values).error(
+        error,
+        'Failed to send document to email',
+      );
+    }
   }
 
   async signDocument({

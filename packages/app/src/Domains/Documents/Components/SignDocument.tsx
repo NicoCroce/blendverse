@@ -1,5 +1,5 @@
 import { Button, Container, useURLParams } from '@app/Application';
-import { TDocumentSearch, VALIDATED } from '../Document.entity';
+import { TDocumentSearch } from '../Document.entity';
 import { useGetDocument } from '../Hooks';
 import { faThumbsDown, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmWithPassword } from '@app/Application/Components/Molecules';
@@ -15,9 +15,14 @@ export const SignDocument = () => {
   );
 
   if (!currentDocument) return null;
-  if (searchParams?.state === VALIDATED) return null;
 
+  const alreadySigned = !!currentDocument.signed;
+  const showSignButtons =
+    !alreadySigned || (alreadySigned && !currentDocument.agreedment);
   const disabled = !currentDocument.requireSign;
+
+  // Si ya firmó bajo conformidad, no mostrar nada de firma
+  if (!showSignButtons) return null;
 
   const signDocument = (password: string, reason: string) =>
     mutate(
@@ -34,32 +39,36 @@ export const SignDocument = () => {
 
   return (
     <>
-      <Container row className="flex-wrap">
-        <Button
-          disabled={disabled}
-          variant="outline"
-          icon={faThumbsDown}
-          showIcon
-          onClick={() => setSign('disagreement')}
-          className="flex-auto"
-        >
-          Firmo sin conformidad
-        </Button>
-        <Button
-          disabled={disabled}
-          icon={faThumbsUp}
-          showIcon
-          onClick={() => setSign('agreement')}
-          className="flex-auto"
-        >
-          Firmo con conformidad
-        </Button>
-      </Container>
+      {showSignButtons && (
+        <Container row className="flex-wrap">
+          {!alreadySigned && !currentDocument.agreedment && (
+            <Button
+              disabled={disabled}
+              variant="outline"
+              icon={faThumbsDown}
+              showIcon
+              onClick={() => setSign('disagreement')}
+              className="flex-auto"
+            >
+              Firmo sin conformidad
+            </Button>
+          )}
+          <Button
+            disabled={disabled}
+            icon={faThumbsUp}
+            showIcon
+            onClick={() => setSign('agreement')}
+            className="flex-auto"
+          >
+            Firmo con conformidad
+          </Button>
+        </Container>
+      )}
       <ConfirmWithPassword
         onConfirm={signDocument}
         textDescription="Ingresando su constraseña confirma la firma de este documento"
         isLoading={isPending}
-        isOpen={sign ? true : false}
+        isOpen={!!sign}
         onCloseDialog={onCloseDialog}
         signType={sign === 'agreement' ? 'agreement' : 'disagreement'}
       />
