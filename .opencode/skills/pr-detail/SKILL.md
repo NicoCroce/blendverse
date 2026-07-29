@@ -14,7 +14,7 @@ Generar un archivo `pr-detail.md` con el detalle conciso de un Pull Request, com
 1. **Siempre comparar `main` con la rama actual** — `git diff main...HEAD` y `git log main..HEAD`.
 2. **Generar el archivo en la raíz del proyecto** como `pr-detail.md`.
 3. **No escribir más de ~40 líneas** en el markdown — ser conciso pero informativo.
-4. **No incluir issue/PR numbers ni labels** — esto es un detalle técnico, no el PR final.
+4. **No incluir issue/PR numbers ni labels** — esto es un detalle técnico, pero también quiero que te centres en las funcionalidades cambiadas.
 5. **No incluir Co-Authored-By, firmas, ni metadatos de IA.**
 
 ## Output — `pr-detail.md`
