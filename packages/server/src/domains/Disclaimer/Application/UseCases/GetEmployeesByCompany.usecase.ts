@@ -19,6 +19,8 @@ export class GetEmployeesByCompany implements IUseCase<
       search: input.search || '',
       page: input.page,
       limit: input.limit,
+      withoutSegments: input.withoutSegments,
+      segmentIds: input.segmentIds,
       requestContext,
     });
   }
@@ -29,4 +31,6 @@ export interface IGetEmployeesByCompanyInput {
   search?: string;
   page?: string;
   limit?: string;
+  withoutSegments?: boolean;
+  segmentIds?: number[];
 }

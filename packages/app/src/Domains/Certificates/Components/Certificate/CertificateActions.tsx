@@ -12,6 +12,7 @@ import { useDeleteCertificate } from '../../Hooks/useDeleteCertificate';
 import { useUpdateCertificateStatus } from '../../Hooks/useUpdateCertificateStatus';
 import { ICertificate } from '../../Certificate.entity';
 import { CertificateStatus } from '@server/domains/Certificates/Domain/Certificate.types';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 type MutableStatus = Exclude<CertificateStatus, 'eliminado'>;
 
@@ -54,14 +55,17 @@ export const CertificateActions = ({
         message="¿Estás seguro de que deseas eliminar esta licencia?"
       >
         <AlertDialogTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={isDeleting}
-            className="w-full"
-          >
-            {isDeleting ? 'Eliminando...' : 'Eliminar'}
-          </Button>
+          <Container row justify="end">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={isDeleting}
+              icon={faTrash}
+              showIcon
+            >
+              {isDeleting ? 'Eliminando...' : 'Eliminar'}
+            </Button>
+          </Container>
         </AlertDialogTrigger>
       </AlertDialogCancelConfirm>
     );

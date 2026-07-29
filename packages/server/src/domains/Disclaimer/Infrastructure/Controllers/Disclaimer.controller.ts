@@ -61,6 +61,8 @@ export class DisclaimerController {
           search: z.string().optional().default(''),
           page: z.string().optional(),
           limit: z.string().optional(),
+          withoutSegments: z.boolean().optional().default(false),
+          segmentIds: z.array(z.number().int().positive()).optional(),
         }),
       )
       .query(

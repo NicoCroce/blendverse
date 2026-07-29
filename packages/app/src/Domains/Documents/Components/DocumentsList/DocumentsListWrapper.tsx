@@ -28,11 +28,13 @@ import { FiltersDocumentsForm } from '../FiltersDocumentsForm';
 interface DocumentsListWrapperProps {
   service: TuseGetDocuments | TuseGetDocumentsByCompany;
   segmented?: boolean;
+  filteredUserIds?: Set<number>;
 }
 
 export const DocumentsListWrapper = ({
   service,
   segmented = false,
+  filteredUserIds,
 }: DocumentsListWrapperProps) => {
   const { searchParams, updateParams } = useURLParams<TDocumentSearch>();
   const isState = (searchParams?.state || PENDING) as TStateDocument;
@@ -80,6 +82,7 @@ export const DocumentsListWrapper = ({
           <DocumentsListByUser
             openFilters={handleFilters}
             service={service as TuseGetDocumentsByCompany}
+            filteredUserIds={filteredUserIds}
           />
         ) : (
           <DocumentsList

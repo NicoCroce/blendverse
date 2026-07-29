@@ -23,18 +23,20 @@ export const CertificateListPage = () => {
     setFiltersIsOpen((prevState) => !prevState);
   };
 
+  if (isError) {
+    return <EmptyScreenError message={error?.message} />;
+  }
+
+  if (data && Object.keys(data).length === 0)
+    return <EmptyScreenFilter onClick={handleFilters} />;
+
   return (
     <Page
       title="Licencias"
       headerRight={<ActionsCertificateListPage onClick={handleFilters} />}
     >
       <>
-        {isError ? (
-          <EmptyScreenError message={error?.message} />
-        ) : data && Object.keys(data).length === 0 ? (
-          <EmptyScreenFilter onClick={handleFilters} />
-        ) : (
-          data &&
+        {data &&
           Object.entries(data).map(([year, certificates]) => {
             const list = certificates as ICertificate[];
             return (
@@ -58,8 +60,7 @@ export const CertificateListPage = () => {
                 </Container>
               </Container>
             );
-          })
-        )}
+          })}
         <FiltersSheet
           open={filtersIsOpen}
           closeSheet={handleFilters}

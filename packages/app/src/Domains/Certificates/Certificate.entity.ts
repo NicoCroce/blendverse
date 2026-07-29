@@ -15,4 +15,5 @@ export type TCertificatesSearch = {
   type?: string;
   year?: string;
   status?: CertificateStatus;
+  segmentos?: string;
 };

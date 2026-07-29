@@ -69,6 +69,11 @@ export const useEmpleadosPage = () => {
     setSelectedIds(pendingIds);
   }, [employees]);
 
+  const handleCancelSelection = useCallback(() => {
+    setSelectionMode(false);
+    setSelectedIds(new Set());
+  }, []);
+
   const handleConfirmReminders = useCallback(() => {
     if (selectedIds.size === 0) return;
     sendReminders.mutate(
@@ -99,6 +104,7 @@ export const useEmpleadosPage = () => {
     selectionMode,
     selectedIds,
     handleActivateSelection,
+    handleCancelSelection,
     handleConfirmReminders,
     sendReminders,
     employees,

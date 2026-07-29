@@ -9,6 +9,7 @@ import { userprofileApp } from './Userprofiles';
 import { themeApp } from './Themes';
 import { empresasUsuariosApp } from './Empresas_usuarios';
 import { disclaimerApp } from './Disclaimer';
+import { segmentsApp } from './Segments';
 
 export const registerDomains = () => ({
   ...ownersysApp,
@@ -22,4 +23,5 @@ export const registerDomains = () => ({
   ...themeApp,
   ...empresasUsuariosApp,
   ...disclaimerApp,
+  ...segmentsApp,
 });

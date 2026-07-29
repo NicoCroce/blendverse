@@ -24,7 +24,7 @@ export const Statistics = () => {
         />
 
         <Container className="flex-1" justify="center">
-          <Container row className="flex-wrap gap-3 p-4 w-full" align="center">
+          <div className="grid grid-cols-2 auto-rows-fr gap-3 p-4 w-full">
             <StatCard
               icon={<FileText size={20} />}
               label="Total de documentos"
@@ -42,16 +42,18 @@ export const Statistics = () => {
               bgClass="bg-amber-50 dark:bg-amber-950/30"
               progressColor="bg-amber-500"
             />
-            <StatCard
-              icon={<CheckCircle2 size={20} />}
-              label="Documentos validados"
-              value={statistics?.validated}
-              total={statistics?.total}
-              colorClass="text-emerald-600"
-              bgClass="bg-emerald-50 dark:bg-emerald-950/30"
-              progressColor="bg-emerald-500"
-            />
-          </Container>
+            <div className="col-span-2">
+              <StatCard
+                icon={<CheckCircle2 size={20} />}
+                label="Documentos validados"
+                value={statistics?.validated}
+                total={statistics?.total}
+                colorClass="text-emerald-600"
+                bgClass="bg-emerald-50 dark:bg-emerald-950/30"
+                progressColor="bg-emerald-500"
+              />
+            </div>
+          </div>
         </Container>
       </Container>
     </Card>

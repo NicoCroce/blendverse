@@ -17,6 +17,12 @@ export const useGetCertificatesByCompany = () => {
       year: searchParams?.year
         ? Number(searchParams.year) || undefined
         : undefined,
+      segmentos: searchParams?.segmentos
+        ? searchParams.segmentos
+            .split(',')
+            .map(Number)
+            .filter((n) => !isNaN(n))
+        : undefined,
     }) ||
     undefined;
 

@@ -17,6 +17,7 @@ import {
 } from '@app/Application/Components/ui/toggle-group';
 import clsx from 'clsx';
 import { CertificateStatus } from '@server/domains/Certificates/Domain/Certificate.types';
+import { SegmentsFilter } from '@app/Domains/Segments';
 
 const buttonGroupActiveClass =
   'data-[state=on]:!bg-primary data-[state=on]:!text-secondary';
@@ -120,9 +121,9 @@ export const FiltersCertificatesForm = ({
   const cleanFilters = () => setFormState({ ...initialState });
 
   return (
-    <form className="grid gap-4 py-4" onSubmit={handleApplyFilters}>
+    <form className="grid gap-6 py-4" onSubmit={handleApplyFilters}>
       {isAdmin && (
-        <Container>
+        <Container space="small">
           <Label htmlFor="employee">Nombre</Label>
           <Input
             id="employee"
@@ -133,7 +134,7 @@ export const FiltersCertificatesForm = ({
           />
         </Container>
       )}
-      <Container>
+      <Container space="small">
         <Label>Tipo</Label>
         <ToggleGroup
           type="single"
@@ -156,7 +157,7 @@ export const FiltersCertificatesForm = ({
           ))}
         </ToggleGroup>
       </Container>
-      <Container>
+      <Container space="small">
         <Label htmlFor="date">Fecha</Label>
         <Input
           id="date"
@@ -167,7 +168,7 @@ export const FiltersCertificatesForm = ({
           onChange={handleChangeFilters}
         />
       </Container>
-      <Container>
+      <Container space="small">
         <Label>Año</Label>
         <Select value={formState.year ?? ''} onValueChange={handleYearChange}>
           <SelectTrigger className="col-span-3">
@@ -183,7 +184,7 @@ export const FiltersCertificatesForm = ({
           </SelectContent>
         </Select>
       </Container>
-      <Container>
+      <Container space="small">
         <Label>Estado</Label>
         <ToggleGroup
           type="single"
@@ -202,6 +203,10 @@ export const FiltersCertificatesForm = ({
             </ToggleGroupItem>
           ))}
         </ToggleGroup>
+      </Container>
+      <Container space="small">
+        <Label>Segmentos</Label>
+        <SegmentsFilter />
       </Container>
       <SheetFooter className="mt-16">
         <Container row className="w-full sm:justify-end">

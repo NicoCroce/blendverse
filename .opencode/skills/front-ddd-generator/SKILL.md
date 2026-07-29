@@ -362,6 +362,19 @@ export * from './Pages';
 
 ---
 
+## Convenciones de UI
+
+### Button
+
+- Por defecto NO pasar el atributo `size`. El tamaño default del tema es el correcto.
+- NO agregar un componente `<Icon>` dentro del `<Button>`. Usar los atributos `icon` y `showIcon`:
+
+```tsx
+<Button onClick={() => null} icon={faEdit} showIcon />
+```
+
+---
+
 ## Archivos Globales a Actualizar
 
 ### 1. `packages/app/src/Infrastructure/Routes.tsx`

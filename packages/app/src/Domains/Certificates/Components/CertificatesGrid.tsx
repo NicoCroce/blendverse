@@ -13,19 +13,18 @@ export const CertificatesGrid = ({
   year,
 }: CertificatesGridProps) => {
   return (
-    <Container className="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-4">
-      {certificatesList &&
-        certificatesList.map((certificate) => (
-          <div key={certificate.id} className="min-w-0 h-full">
-            <Certificate
-              data={certificate}
-              year={year}
-              actions={
-                <CertificateActions certificate={certificate} variant="owner" />
-              }
-            />
-          </div>
-        ))}
+    <Container className="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-4 ">
+      {certificatesList?.map((certificate) => (
+        <div key={certificate.id} className="min-w-0 h-full">
+          <Certificate
+            data={certificate}
+            year={year}
+            actions={
+              <CertificateActions certificate={certificate} variant="owner" />
+            }
+          />
+        </div>
+      ))}
     </Container>
   );
 };

@@ -4,13 +4,14 @@ import { TStateDocument } from './Document.types';
 
 type TFilters = {
   filters: {
-    requireSign?: boolean | null; // Si rquiere firma, si es null retora todo.
+    requireSign?: boolean | null;
     type?: string;
     title?: string;
     date?: Date | null;
-    signed?: boolean | null; // si fue firmado, si es null retora todo.
+    signed?: boolean | null;
     view?: boolean | null;
     state?: TStateDocument;
+    segmentos?: number[];
   };
 };
 

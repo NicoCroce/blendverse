@@ -11,8 +11,10 @@ import {
 } from '../../Domain';
 import { DisclaimerAcceptanceModel } from './DisclaimerAcceptance.model';
 import { UserModel } from '@server/domains/Users/Infrastructure/Database/Users.model';
+import { UsuariosSegmentosModel } from '@server/domains/Segments/Infrastructure/Database/UsuariosSegmentos.model';
 import { IPaginationResponse } from '@server/Application';
 import { PaginationImplementation } from '@server/Infrastructure/utils/pagination';
+import { sequelize } from '@server/Infrastructure/Database';
 
 export class DisclaimerRepositoryImplementation implements DisclaimerRepository {
   private computeHash(userId: number, timestamp: string): string {
@@ -78,6 +80,8 @@ export class DisclaimerRepositoryImplementation implements DisclaimerRepository 
     search,
     page,
     limit,
+    withoutSegments,
+    segmentIds,
   }: IGetEmployeesByCompanyRepository): Promise<
     IPaginationResponse<IEmployeeRecord[]>
   > {
@@ -91,6 +95,43 @@ export class DisclaimerRepositoryImplementation implements DisclaimerRepository 
         { apellido: { [Op.like]: `%${search}%` } },
         { email: { [Op.like]: `%${search}%` } },
       ];
+    }
+
+    if (segmentIds && segmentIds.length > 0) {
+      const rows = (await UsuariosSegmentosModel.findAll({
+        where: { id_segmento: { [Op.in]: segmentIds } },
+        attributes: [
+          'id_usuario',
+          [
+            sequelize.fn(
+              'COUNT',
+              sequelize.fn('DISTINCT', sequelize.col('id_segmento')),
+            ),
+            'segCount',
+          ],
+        ],
+        group: ['id_usuario'],
+        raw: true,
+      })) as unknown as { id_usuario: number; segCount: number }[];
+      const ids = rows
+        .filter((row) => row.segCount === segmentIds.length)
+        .map((row) => row.id_usuario);
+      if (ids.length > 0) {
+        whereClause.id = { [Op.in]: ids };
+      } else {
+        whereClause.id = { [Op.in]: [] };
+      }
+    }
+
+    if (withoutSegments) {
+      const usersWithSegments = await UsuariosSegmentosModel.findAll({
+        attributes: ['id_usuario'],
+        group: ['id_usuario'],
+      });
+      const ids = usersWithSegments.map((us) => us.id_usuario);
+      if (ids.length > 0) {
+        whereClause.id = { [Op.notIn]: ids };
+      }
     }
 
     const { offset, createPaginatedResponse } = PaginationImplementation({

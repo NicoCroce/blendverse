@@ -117,6 +117,52 @@ export const useGetEntities = () => {
 };
 ```
 
+### Filtros auto-contenidos con URL Params — SIEMPRE usar esta forma
+
+**Regla:** cualquier componente de filtro debe ser **self-contained** usando `useURLParams` internamente. No recibe props `value`/`onChange`. El estado del filtro vive en la URL, no en el componente padre.
+
+```tsx
+// ✅ Correcto — el filtro lee y escribe directo en la URL
+<SegmentsFilter />
+
+// ❌ Nunca — props externas con useState en la página
+<SegmentsFilter value={segmentIds} onChange={setSegmentIds} />
+```
+
+**Arrays en URL params:** se serializan como string comma-separated (`?segmentos=1,2,3`):
+
+```typescript
+const segmentIds = useMemo(() => {
+  const raw = searchParams?.segmentos;
+  if (!raw) return [];
+  return raw
+    .split(',')
+    .map(Number)
+    .filter((n) => !isNaN(n));
+}, [searchParams?.segmentos]);
+```
+
+**Contrapartida en hooks de query:** todo hook que consuma params desde `useURLParams` debe parsear los arrays de string a `number[]` antes de enviarlos al server. Ejemplo:
+
+```typescript
+export const useGetEntities = () => {
+  const { searchParams } = useURLParams<TEntitySearch>();
+  const { id, segmentos: rawSegmentos, ...rest } = searchParams || {};
+
+  const segmentos = rawSegmentos
+    ? rawSegmentos
+        .split(',')
+        .map(Number)
+        .filter((n) => !isNaN(n))
+    : undefined;
+
+  return EntityService.getAll.useQuery({
+    ...rest,
+    ...(segmentos && segmentos.length > 0 ? { segmentos } : {}),
+  });
+};
+```
+
 ### Hook de Mutation (crear)
 
 ```typescript
@@ -152,6 +198,52 @@ export const useCacheEntities = () => {
     getData: () => queryClient.getQueryData(key),
     invalidate: () => queryClient.invalidateQueries({ queryKey: key }),
   };
+};
+```
+
+### Invalidación de Cache en Mutations — SIEMPRE
+
+**Regla:** toda mutation debe invalidar la cache de las queries relacionadas en su `onSuccess`. Esto se hace a nivel del hook en `queries.ts` para que todos los consumidores se beneficien automáticamente, sin depender de que cada componente lo recuerde.
+
+```typescript
+// ✅ Correcto — invalidación en el hook, todos los consumidores la heredan
+export const useUpdateEntity = () => {
+  const utils = entityTRPC.useUtils();
+  return EntityService.update.useMutation({
+    onSuccess: () => {
+      utils.[domain].[procedure].invalidate();
+    },
+  });
+};
+
+// ❌ Incorrecto — sin invalidación, el listado muestra datos stale
+export const useUpdateEntity = () =>
+  EntityService.update.useMutation();
+```
+
+**Ejemplo real** usando `useUtils()` de tRPC:
+
+```typescript
+export const useUpdateSegmentType = () => {
+  const utils = segmentsTRPC.useUtils();
+  return segmentsService.updateType.useMutation({
+    onSuccess: () => {
+      utils.segments.getTypes.invalidate();
+    },
+  });
+};
+```
+
+**Alternativa** con custom cache hook (equivalente):
+
+```typescript
+export const useUpdateEntity = () => {
+  const cache = useCacheEntities();
+  return EntityService.update.useMutation({
+    onSuccess: () => {
+      cache.invalidate();
+    },
+  });
 };
 ```
 
@@ -209,6 +301,15 @@ const form = useForm<z.infer<typeof formSchema>>({
   resolver: zodResolver(formSchema),
   defaultValues: { field1: '', field2: 0 },
 });
+```
+
+## Button
+
+- Por defecto NO pasar el atributo `size`. El tamaño default del tema es el correcto.
+- NO agregar un componente `<Icon>` dentro del `<Button>`. Usar los atributos `icon` y `showIcon`:
+
+```tsx
+<Button onClick={() => null} icon={faEdit} showIcon />
 ```
 
 ## Componentes Compartidos

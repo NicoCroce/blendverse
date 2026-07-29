@@ -45,24 +45,42 @@ export const useAddLicense = () => {
   };
 
   const appendFiles = async (id: number, files: FileList) => {
-    const formData = new FormData();
+    const fileList = Array.from(files);
+    const total = fileList.length;
 
-    // Añadir múltiples archivos
-    /* if (files && files instanceof FileList) {
-      for (let i = 0; i < files.length; i++) {
-        formData.append('files', files[i]);
+    toast.info(total === 1 ? 'Cargando archivo' : `Cargando ${total} archivos`);
+
+    let uploaded = 0;
+    let failed = 0;
+
+    // El endpoint acepta un archivo por request y los va agregando al
+    // certificado, por eso se sube cada archivo por separado.
+    for (const file of fileList) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        await ApiService.uploadFile(`/express/load/${id}`, formData);
+        uploaded += 1;
+      } catch {
+        failed += 1;
       }
-    } */
+    }
 
-    formData.append('file', files[0]);
+    if (uploaded > 0) {
+      toast.success(
+        uploaded === 1
+          ? '1 archivo cargado correctamente'
+          : `${uploaded} archivos cargados correctamente`,
+      );
+    }
 
-    toast.info('Cargando imágnes');
-
-    try {
-      await ApiService.uploadFile(`/express/load/${id}`, formData);
-      toast.success(`Imágenes cargadas correctamente`);
-    } catch {
-      toast.error(`Imágenes no cargadas`);
+    if (failed > 0) {
+      toast.error(
+        failed === 1
+          ? '1 archivo no pudo cargarse'
+          : `${failed} archivos no pudieron cargarse`,
+      );
     }
   };
 

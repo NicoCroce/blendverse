@@ -30,25 +30,35 @@ const SkeletonLoader = () => (
 interface DocumentsListProps {
   openFilters: () => void;
   service: TuseGetDocumentsByCompany;
+  filteredUserIds?: Set<number>;
 }
 
 export const DocumentsListByUser = ({
   openFilters,
   service,
+  filteredUserIds,
 }: DocumentsListProps) => {
   const { data, isLoading } = service;
   const [query, setQuery] = useState('');
 
   const filteredData = useMemo(() => {
     if (!data) return data;
+    let result = data;
+    if (filteredUserIds && filteredUserIds.size > 0) {
+      result = result.filter((entry) => filteredUserIds.has(entry.userId));
+    }
+    if (result.length === 0) return result;
     const trimmed = query.trim().toLowerCase();
-    if (!trimmed) return data;
-    return data.filter((entry) => entry.user.toLowerCase().includes(trimmed));
-  }, [data, query]);
+    if (!trimmed) return result;
+    return result.filter((entry) => entry.user.toLowerCase().includes(trimmed));
+  }, [data, query, filteredUserIds]);
 
   if (isLoading) {
     return <SkeletonLoader />;
   }
+
+  const hasSegmentFilter =
+    filteredUserIds !== undefined && filteredUserIds.size > 0;
 
   if (data && !data.length) return <EmptyScreenFilter onClick={openFilters} />;
 
@@ -114,7 +124,11 @@ export const DocumentsListByUser = ({
         </ScrollArea>
       ) : (
         <Container className="py-10 text-center">
-          <Text.Muted>No se encontraron empleados para «{query}».</Text.Muted>
+          <Text.Muted>
+            {hasSegmentFilter
+              ? 'No hay empleados en los segmentos seleccionados'
+              : `No se encontraron empleados para «${query}».`}
+          </Text.Muted>
         </Container>
       )}
     </>

@@ -20,6 +20,7 @@ export type TDocumentSearch = {
   title?: string;
   type?: string;
   id?: string;
+  segmentos?: string;
 };
 
 export const VALIDATED: TStateDocument = 'validados';

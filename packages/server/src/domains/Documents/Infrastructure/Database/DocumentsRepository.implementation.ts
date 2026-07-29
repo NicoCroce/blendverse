@@ -13,6 +13,8 @@ import { DocumentsFilters } from './DocumentsFilters';
 import { Documentos } from './';
 import { DocumentsTypesModel } from '@server/domains/DocumentsTypes/Infrastructure';
 import { UserModel } from '@server/domains/Users';
+import { UsuariosSegmentosModel } from '@server/domains/Segments/Infrastructure/Database/UsuariosSegmentos.model';
+import { Op, IncludeOptions } from 'sequelize';
 
 export class DocumentsRepositoryImplementation implements DocumentRepository {
   async getDocuments({
@@ -21,6 +23,23 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
   }: IGetDocumentsRepository): Promise<Document[]> {
     const { whereCondition, filterValidated, whereConditionSisTipoDocumentos } =
       DocumentsFilters(filters);
+
+    const include: IncludeOptions[] = [
+      {
+        model: DocumentsTypesModel,
+        attributes: ['denominacion', 'requiere_firma'],
+        where: whereConditionSisTipoDocumentos,
+      },
+    ];
+
+    if (filters.segmentos && filters.segmentos.length > 0) {
+      include.push({
+        model: UsuariosSegmentosModel,
+        required: true,
+        where: { id_segmento: { [Op.in]: filters.segmentos } },
+        attributes: [],
+      });
+    }
 
     const documents = await Documentos.findAll({
       attributes: [
@@ -39,13 +58,7 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
         ...whereCondition,
         ...filterValidated,
       },
-      include: [
-        {
-          model: DocumentsTypesModel,
-          attributes: ['denominacion', 'requiere_firma'],
-          where: whereConditionSisTipoDocumentos,
-        },
-      ],
+      include,
     });
 
     return documents?.map((document) =>
@@ -140,21 +153,34 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
     const { whereCondition, filterValidated, whereConditionSisTipoDocumentos } =
       DocumentsFilters(filters);
 
+    const userInclude: IncludeOptions = {
+      model: UserModel,
+      as: 'User',
+      required: true,
+      where: {
+        id_propietario: ownerId,
+      },
+      attributes: ['id', 'nombre', 'apellido'],
+    };
+
+    if (filters.segmentos && filters.segmentos.length > 0) {
+      userInclude.include = [
+        {
+          model: UsuariosSegmentosModel,
+          required: true,
+          where: { id_segmento: { [Op.in]: filters.segmentos } },
+          attributes: [],
+        },
+      ];
+    }
+
     const allDocuments = await Documentos.findAll({
       where: {
         ...whereCondition,
         ...filterValidated,
       },
       include: [
-        {
-          model: UserModel,
-          as: 'User',
-          required: true,
-          where: {
-            id_propietario: ownerId,
-          },
-          attributes: ['id', 'nombre', 'apellido'],
-        },
+        userInclude,
         {
           model: DocumentsTypesModel,
           attributes: ['denominacion', 'requiere_firma'],

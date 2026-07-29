@@ -63,7 +63,7 @@ export const LicensesListByUser = ({
                   <List.Li key={userId}>
                     <Accordion type="single" collapsible defaultValue="item-0">
                       <AccordionItem value={`item-${index}`}>
-                        <Container className="sticky top-0 bg-slate-50">
+                        <Container className="sticky top-0 bg-slate-50 z-10">
                           <AccordionTrigger className="px-4 cursor-pointer">
                             <Container row align="center">
                               <FontAwesomeIcon icon={faUser} />

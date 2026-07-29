@@ -15,6 +15,7 @@ import {
 } from '@app/Application/Components/ui/toggle-group';
 import { useGetDocumentsTypes } from '../../Hooks/useGetDocumentsTypes';
 import clsx from 'clsx';
+import { SegmentsFilter } from '@app/Domains/Segments';
 
 const initialState: TDocumentSearch = {
   title: '',
@@ -57,9 +58,9 @@ export const FiltersDocumentsForm = () => {
   const cleanFilters = () => setFormState(initialState);
 
   return (
-    <form className="grid gap-4 py-4" onSubmit={handleApplyFilters}>
-      <Container>
-        <Label htmlFor="title">Nombre</Label>
+    <form className="grid gap-6 py-4" onSubmit={handleApplyFilters}>
+      <Container space="small">
+        <Label htmlFor="title">Nombre del documento</Label>
         <Input
           id="title"
           name="title"
@@ -68,7 +69,7 @@ export const FiltersDocumentsForm = () => {
           onChange={handleChangeFilters}
         />
       </Container>
-      <Container>
+      <Container space="small">
         <Label>Estado</Label>
         <ToggleGroup
           type="single"
@@ -85,7 +86,7 @@ export const FiltersDocumentsForm = () => {
           </ToggleGroupItem>
         </ToggleGroup>
       </Container>
-      <Container>
+      <Container space="small">
         <Label>Tipo</Label>
         <ToggleGroup
           type="single"
@@ -106,8 +107,13 @@ export const FiltersDocumentsForm = () => {
         </ToggleGroup>
       </Container>
 
+      <Container space="small">
+        <Label>Segmentos</Label>
+        <SegmentsFilter />
+      </Container>
+
       <SheetFooter className="mt-16">
-        <Container row className="w-full">
+        <Container row className="w-full" justify="end">
           <Button
             variant="outline"
             onClick={cleanFilters}

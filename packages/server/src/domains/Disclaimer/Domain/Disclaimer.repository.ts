@@ -20,6 +20,8 @@ export interface IGetEmployeesByCompanyRepository extends IRequestContext {
   search?: string;
   page?: string;
   limit?: string;
+  withoutSegments?: boolean;
+  segmentIds?: number[];
 }
 
 export interface IGetPendingEmployeeIdsRepository extends IRequestContext {

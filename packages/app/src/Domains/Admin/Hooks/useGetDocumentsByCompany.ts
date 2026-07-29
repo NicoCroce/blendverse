@@ -4,14 +4,22 @@ import { documentsService, TDocumentSearch } from '@app/Domains/Documents';
 export const useGetDocumentsByCompany = () => {
   const { searchParams } = useURLParams<TDocumentSearch>();
 
-  const { id, ...filterSearchParams } = searchParams || {};
+  const { id, segmentos: rawSegmentos, ...rest } = searchParams || {};
+
+  const segmentos = rawSegmentos
+    ? rawSegmentos
+        .split(',')
+        .map(Number)
+        .filter((n) => !isNaN(n))
+    : undefined;
 
   return documentsService.getAllByCompany.useQuery(
     {
-      ...filterSearchParams,
+      ...rest,
+      ...(segmentos && segmentos.length > 0 ? { segmentos } : {}),
     },
     {
-      staleTime: 3000, // Los datos no se refetchan durante 3 segundos
+      staleTime: 3000,
     },
   );
 };

@@ -11,6 +11,7 @@ export interface IGetDocuments extends IRequestContext {
     signed?: boolean | null;
     view?: boolean | null;
     state?: TStateDocument;
+    segmentos?: number[];
   };
 }
 

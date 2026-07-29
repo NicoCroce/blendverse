@@ -3,8 +3,15 @@ import {
   DOCUMENTS_DASHBOARD,
   LICENSES_DASHBOARD,
   EMPLEADOS_DASHBOARD,
+  SEGMENTS_DASHBOARD,
+  USER_SEGMENTS_DASHBOARD,
 } from './Admin.routes';
-import { DocumentsCompanyPage, LicensesCompanyPage } from './Pages';
+import {
+  DocumentsCompanyPage,
+  LicensesCompanyPage,
+  SegmentsCompanyPage,
+  UserSegmentsPage,
+} from './Pages';
 import { EmpleadosPage } from './Empleados';
 
 export const AdminRouter = [
@@ -22,5 +29,15 @@ export const AdminRouter = [
     key="empleados-dashboard"
     path={EMPLEADOS_DASHBOARD}
     element={<EmpleadosPage />}
+  />,
+  <Route
+    key="segments-dashboard"
+    path={SEGMENTS_DASHBOARD}
+    element={<SegmentsCompanyPage />}
+  />,
+  <Route
+    key="user-segments-dashboard"
+    path={USER_SEGMENTS_DASHBOARD}
+    element={<UserSegmentsPage />}
   />,
 ];

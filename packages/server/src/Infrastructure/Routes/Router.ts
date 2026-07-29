@@ -11,6 +11,7 @@ import { OwnersysRoutes } from '@server/domains/Ownersyss';
 import { ThemeRoutes } from '@server/domains/Themes';
 import { EmpresasUsuariosRoutes } from '@server/domains/Empresas_usuarios';
 import { DisclaimerRoutes } from '@server/domains/Disclaimer';
+import { SegmentsRoutes } from '@server/domains/Segments';
 
 const MainRouter = () => {
   const AllRouters = {
@@ -24,6 +25,7 @@ const MainRouter = () => {
     ...ThemeRoutes(),
     ...EmpresasUsuariosRoutes(),
     ...DisclaimerRoutes(),
+    ...SegmentsRoutes(),
   };
   return router(AllRouters);
 };

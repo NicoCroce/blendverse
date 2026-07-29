@@ -13,9 +13,13 @@ import { FiltersCertificatesForm } from '@app/Domains/Certificates';
 
 interface LicensesListSearchProps {
   service: TuseGetCertificatesByCompany;
+  filteredUserIds?: Set<number>;
 }
 
-export const LicensesListSearch = ({ service }: LicensesListSearchProps) => {
+export const LicensesListSearch = ({
+  service,
+  filteredUserIds,
+}: LicensesListSearchProps) => {
   const { data, availableYears } = service;
   const [query, setQuery] = useState('');
   const [filtersIsOpen, setFiltersIsOpen] = useState(false);
@@ -26,17 +30,29 @@ export const LicensesListSearch = ({ service }: LicensesListSearchProps) => {
 
   const filteredData = useMemo(() => {
     if (!data) return data;
-    const trimmed = query.trim().toLowerCase();
-    if (!trimmed) return data;
     const result: typeof data = {};
     for (const userId of Object.keys(data)) {
-      const user = data[Number(userId)].user;
+      const numUserId = Number(userId);
+      if (
+        filteredUserIds &&
+        filteredUserIds.size > 0 &&
+        !filteredUserIds.has(numUserId)
+      ) {
+        continue;
+      }
+      result[numUserId] = data[numUserId];
+    }
+    const trimmed = query.trim().toLowerCase();
+    if (!trimmed) return result;
+    const queryFiltered: typeof data = {};
+    for (const userId of Object.keys(result)) {
+      const user = result[Number(userId)].user;
       if (user.toLowerCase().includes(trimmed)) {
-        result[Number(userId)] = data[Number(userId)];
+        queryFiltered[Number(userId)] = result[Number(userId)];
       }
     }
-    return result;
-  }, [data, query]);
+    return queryFiltered;
+  }, [data, query, filteredUserIds]);
 
   const isEmptyScreen = data && !Object.keys(data).length;
 

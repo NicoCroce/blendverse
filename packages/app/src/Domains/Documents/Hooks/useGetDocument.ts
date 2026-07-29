@@ -21,11 +21,23 @@ export const useGetDocument = (id: string | undefined) => {
 
   // Extraemos los datos de la caché si es que existe.
   const cachedDocuments = useMemo(() => {
-    const { id: paramId, ...filterSearchParams } = searchParams || {};
+    const {
+      id: paramId,
+      segmentos: rawSegmentos,
+      ...rest
+    } = searchParams || {};
+
+    const segmentos = rawSegmentos
+      ? rawSegmentos
+          .split(',')
+          .map(Number)
+          .filter((n) => !isNaN(n))
+      : undefined;
 
     return cacheDocumentsList
       .getData({
-        ...filterSearchParams,
+        ...rest,
+        ...(segmentos && segmentos.length > 0 ? { segmentos } : {}),
       })
       ?.find((document) => document.id === Number(paramId));
   }, [cacheDocumentsList, searchParams]);
