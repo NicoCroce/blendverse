@@ -87,13 +87,7 @@ Una vez completadas y aprobadas por el usuario todas las fases Speckit, presenta
 📁 Artefactos en: specs/{feature}/
 ```
 
-Luego,**sin esperar intervención del usuario**:
-
-1. Leer `memory/history_log.json` para determinar el próximo `task_id` con formato `TASK-YYYYMMDD-N`.
-2. Crear la carpeta `memory/{task_id}/`.
-3. Leer `specs/{feature}/spec.md` y `specs/{feature}/tasks.md`.
-4. Escribir `memory/{task_id}/01_requirements.md` siguiendo el template de la skill `requirements-analyst`, consolidando la información de los artefactos Speckit sin análisis adicional ni preguntas.
-5. Invocar directamente el agente `@blendverse-implement` — el orquestador detectará el alcance e iniciará la cadena `back → front → tester → qa` de forma autónoma.
+Luego,**sin esperar intervención del usuario**, invocar directamente el agente `@blendverse-implement` — este orquestador ya sabe leer `specs/{feature}/spec.md` y `tasks.md`, generar `memory/{task_id}/01_requirements.md` inline si no existe (Paso 1 de su protocolo) y detectar el alcance para iniciar la cadena `back → front → tester → qa` de forma autónoma.
 
 ## Notas
 
@@ -102,6 +96,7 @@ Luego,**sin esperar intervención del usuario**:
 - La Fase 6 es completamente automática — no requiere intervención del usuario.
 - El agente `@speckit-implement` redirige automáticamente a el agente `@blendverse-implement` — la implementación la realizan exclusivamente los agentes Blendverse especializados en DDD.
 - Si el usuario quiere saltear las fases de diseño (ya tiene `spec.md`, `plan.md` y `tasks.md`), puede invocar directamente `@blendverse-implement` — éste generará `01_requirements.md` inline si no existe.
+- El comando `@speckit-to-blendverse` existe como transcripción standalone, pero no se usa en este pipeline: `@blendverse-implement` ya cubre ese paso internamente.
 - Recuerda detenerte en cada Fase (1–5) para poder iterar sobre la misma.
 - Todas las fases 1–5 se comportarán como modo `plan`.
 - Si alguna de las fases demora más de 5 minutos, debes indicarle al usuario por pantalla y analizar por qué está demando tanto tiempo.

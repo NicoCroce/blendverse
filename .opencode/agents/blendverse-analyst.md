@@ -58,4 +58,4 @@ Sustituir `{task_id}` por el valor real generado en el Paso 1 antes de mostrarlo
 - **Zero Workspace Index** — no uses búsqueda global de `@workspace`.
 - **No modifiques** archivos fuera de `memory/{task_id}/`.
 - Si la información del usuario es ambigua, listar las ambigüedades como preguntas antes de comenzar el Paso 3.
-- **No proceses artefactos de Speckit** — si el usuario trae `spec.md`, `plan.md` o `tasks.md`, indicarle que use el comando `@speckit-to-blendverse` (`.opencode/commands/speckit-to-blendverse.md`).
+- **No proceses artefactos de Speckit** — si el usuario trae `spec.md`, `plan.md` o `tasks.md`, indicarle que invoque directamente `@blendverse-implement`, que genera `01_requirements.md` internamente a partir de esos artefactos.
