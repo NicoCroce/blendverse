@@ -1,29 +1,19 @@
 ---
 name: qa-runner
-description: Guía al agente @blendverse-qa en la generación de tests, ejecución de validación estática (TypeScript + ESLint + Vitest + estructura de carpetas) y la generación del reporte QA.
+description: Guía al agente @blendverse-qa en la ejecución de validación estática (TypeScript + ESLint + Vitest + estructura de carpetas) y la generación del reporte QA.
 ---
 
 # Skill: qa-runner
 
 ## Propósito
 
-Guía al agente `@blendverse-qa` en la generación de tests, ejecución de validación estática (TypeScript + ESLint + Vitest + estructura de carpetas) y la generación del reporte `memory/{task_id}/03_qa_report.md`.
+Guía al agente `@blendverse-qa` en la ejecución de validación estática (TypeScript + ESLint + Vitest + estructura de carpetas) y la generación del reporte `memory/{task_id}/03_qa_report.md`.
 
 ---
 
 ## Secuencia de Validación
 
-### 0. Generación de Archivos de Test
-
-Para cada dominio en `affected_files`, crear los archivos `.spec.ts` faltantes usando los **Templates de Test** al final de esta skill. No sobreescribir tests existentes.
-
-**Archivos a generar por dominio:**
-
-| Tipo               | Ruta del archivo de test                                                                   |
-| ------------------ | ------------------------------------------------------------------------------------------ |
-| Entidad (backend)  | `packages/server/src/domains/{Domain}/Domain/{Entity}.entity.spec.ts`                      |
-| Use Case (backend) | `packages/server/src/domains/{Domain}/Application/UseCases/Create{Entity}.usecase.spec.ts` |
-| Hook (frontend)    | `packages/app/src/Domains/{Domain}/Hooks/useGet{Entities}.spec.ts`                         |
+Los tres primeros pasos (TypeScript, Linting, Vitest) son independientes entre sí — ninguno depende del resultado de otro. **Lanzar los 3 en paralelo, esperar a que terminen los 3, y recién ahí evaluar el status de cada uno.** El criterio PASS/FAIL de cada paso no cambia; solo cambia que no se esperan en serie.
 
 ### 1. Compilación TypeScript
 
@@ -41,7 +31,16 @@ cd packages/app && npx tsc --noEmit 2>&1
 
 ### 2. Linting
 
+Acotar el lint al paquete afectado en vez de correr `pnpm lint` (que lintea todo el monorepo) — mismo set de reglas ESLint, menos archivos analizados:
+
 ```bash
+# Si hay archivos solo en packages/server/
+npx eslint "packages/server/src/**/*.{js,ts,tsx}" 2>&1
+
+# Si hay archivos solo en packages/app/
+cd packages/app && npx eslint . 2>&1
+
+# Si el scope es full-stack (archivos en ambos paquetes)
 pnpm lint 2>&1
 ```
 
@@ -146,12 +145,12 @@ date: 'YYYY-MM-DD'
 
 ## Resultado General: ✅ PASS / ❌ FAIL
 
-| Paso          | Comando             | Paquete(s)           | Estado      |
-| ------------- | ------------------- | -------------------- | ----------- |
-| 1. TypeScript | `npx tsc --noEmit`  | server / app / ambos | ✅ / ❌     |
-| 2. Linting    | `pnpm lint`         | raíz del monorepo    | ✅ / ❌     |
-| 3. Tests      | `npx vitest run`    | server / app / ambos | ✅ X passed |
-| 4. Estructura | verificación manual | —                    | ✅ / ❌     |
+| Paso          | Comando                                        | Paquete(s)           | Estado      |
+| ------------- | ---------------------------------------------- | -------------------- | ----------- |
+| 1. TypeScript | `npx tsc --noEmit`                             | server / app / ambos | ✅ / ❌     |
+| 2. Linting    | `eslint` (acotado) / `pnpm lint` si full-stack | server / app / ambos | ✅ / ❌     |
+| 3. Tests      | `npx vitest run`                               | server / app / ambos | ✅ X passed |
+| 4. Estructura | verificación manual                            | —                    | ✅ / ❌     |
 
 ---
 
@@ -171,124 +170,6 @@ date: 'YYYY-MM-DD'
 
 **Acción esperada:** [Descripción concisa de qué debe corregirse]
 
-````
-
----
-
-## Templates de Test
-
-### Backend — Entidad (`{Entity}.entity.spec.ts`)
-
-```typescript
-import { describe, it, expect } from 'vitest';
-import { {Entity} } from '@server/domains/{Domain}/Domain/{Entity}.entity';
-
-describe('{Entity} entity', () => {
-  const validProps = {
-    // TODO: completar con los atributos de la entidad
-    id_propietario: 'owner-1',
-  };
-
-  describe('static create()', () => {
-    it('should create a valid entity with required fields', () => {
-      const entity = {Entity}.create(validProps);
-      expect(entity).toBeDefined();
-      expect(entity.values.id_propietario).toBe(validProps.id_propietario);
-    });
-
-    it('get values() should return all fields', () => {
-      const entity = {Entity}.create(validProps);
-      const values = entity.values;
-      expect(values).toMatchObject(validProps);
-    });
-  });
-
-  describe('toJSON()', () => {
-    it('should return a plain object', () => {
-      const entity = {Entity}.create(validProps);
-      const json = entity.toJSON();
-      expect(json).toMatchObject(validProps);
-      expect(json).not.toBeInstanceOf({Entity});
-    });
-  });
-});
-````
-
-### Backend — Use Case (`Create{Entity}.usecase.spec.ts`)
-
-```typescript
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { Create{Entity}UseCase } from '@server/domains/{Domain}/Application/UseCases/Create{Entity}.usecase';
-import type { I{Entity}Repository } from '@server/domains/{Domain}/Domain/{Entity}.repository';
-
-const mockRepository: I{Entity}Repository = {
-  create: vi.fn(),
-  getAll: vi.fn(),
-  get: vi.fn(),
-  update: vi.fn(),
-  delete: vi.fn(),
-};
-
-describe('Create{Entity}UseCase', () => {
-  beforeEach(() => vi.clearAllMocks());
-
-  it('should call repository.create() with correct data', async () => {
-    const useCase = new Create{Entity}UseCase(mockRepository);
-    const input = {
-      // TODO: completar con los campos requeridos por ICreate{Entity}
-      id_propietario: 'owner-1',
-    };
-
-    await useCase.execute(input);
-
-    expect(mockRepository.create).toHaveBeenCalledOnce();
-    expect(mockRepository.create).toHaveBeenCalledWith(
-      expect.objectContaining({ id_propietario: 'owner-1' })
-    );
-  });
-
-  it('should return the created entity data', async () => {
-    vi.mocked(mockRepository.create).mockResolvedValue(undefined);
-    const useCase = new Create{Entity}UseCase(mockRepository);
-    await expect(useCase.execute({ id_propietario: 'owner-1' })).resolves.not.toThrow();
-  });
-});
-```
-
-### Frontend — Hook (`useGet{Entities}.spec.ts`)
-
-```typescript
-import { renderHook } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import type { ReactNode } from 'react';
-import { useGet{Entities} } from '@app/Domains/{Domain}/Hooks/useGet{Entities}';
-
-vi.mock('@app/Domains/{Domain}/{Domain}.service', () => ({
-  {domain}Service: {
-    useQuery: vi.fn(() => ({
-      useQuery: vi.fn().mockReturnValue({ data: [], isLoading: false, isError: false }),
-    })),
-  },
-}));
-
-function createWrapper() {
-  const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: false } },
-  });
-  return ({ children }: { children: ReactNode }) => (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
-}
-
-describe('useGet{Entities}', () => {
-  it('should return loading state initially', () => {
-    const { result } = renderHook(() => useGet{Entities}({ id_propietario: 'owner-1' }), {
-      wrapper: createWrapper(),
-    });
-    expect(result.current).toBeDefined();
-  });
-});
 ```
 
 ---
@@ -299,5 +180,5 @@ describe('useGet{Entities}', () => {
 2. **Sección "Tests (Vitest)"** es obligatoria aunque `status: PASS`.
 3. **Si `status: FAIL`**, la sección "Contexto para el Coder" es obligatoria.
 4. **`attempts`** comienza en `1` y se incrementa en cada re-ejecución.
-5. **No sobreescribir** archivos `.spec.ts` ya existentes — solo crear los faltantes.
-6. **Si `attempts >= 3`**, no escribir el reporte — ejecutar el Protocolo Break-Loop definido en `@blendverse-qa`.
+5. **Si `attempts >= 3`**, no escribir el reporte — ejecutar el Protocolo Break-Loop definido en `@blendverse-qa`.
+```

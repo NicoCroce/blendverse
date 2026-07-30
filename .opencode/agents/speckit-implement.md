@@ -9,7 +9,7 @@ La implementación de tareas en este proyecto sigue las convenciones DDD/Hexagon
 
 **Para implementar una feature:**
 
-1. Si ya tenés los artefactos de Speckit (`spec.md`, `plan.md`, `tasks.md`): ejecutar el micro-prompt `.opencode/commands/speckit-to-blendverse.prompt.md` para generar `memory/{task_id}/01_requirements.md`.
+1. Si ya tenés los artefactos de Speckit (`spec.md`, `plan.md`, `tasks.md`): ejecutar el comando `@speckit-to-blendverse` (`.opencode/commands/speckit-to-blendverse.md`) para generar `memory/{task_id}/01_requirements.md`.
 2. Invocar `@blendverse-implement` — detectará el alcance (back/front/full-stack) y coordinará la cadena de agentes.
 
 ```

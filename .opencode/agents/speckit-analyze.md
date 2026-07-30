@@ -165,7 +165,9 @@ Use this heuristic to prioritize findings:
 
 ### 6. Produce Compact Analysis Report
 
-Output a Markdown report (no file writes) with the following structure:
+**Auto-summary heuristic:** if the detection passes (step 4) produce **zero CRITICAL or HIGH findings**, skip the full table and emit only a one-line summary instead: `✅ Sin hallazgos CRITICAL/HIGH. N hallazgos MEDIUM/LOW (ver detalle solo si se pide). Cobertura: X% requirements con tareas asociadas.` Do not render the findings table, Coverage Summary Table, or Constitution Alignment section in this case — jump directly to step 7 (Next Actions).
+
+Otherwise, output a Markdown report (no file writes) with the following structure:
 
 ## Specification Analysis Report
 
@@ -203,7 +205,9 @@ At end of report, output a concise Next Actions block:
 
 ### 8. Offer Remediation
 
-Ask the user: "Would you like me to suggest concrete remediation edits for the top N issues?" (Do NOT apply them automatically.)
+Si se emitió el resumen de una línea (sin CRITICAL/HIGH), **omitir esta pregunta** — no hay nada que remediar, continuar directo al paso 9.
+
+En caso contrario, ask the user: "Would you like me to suggest concrete remediation edits for the top N issues?" (Do NOT apply them automatically.)
 
 ### 9. Check for extension hooks
 
