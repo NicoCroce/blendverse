@@ -45,7 +45,7 @@ Crear o sobreescribir `memory/{task_id}/02_dev_log.md` con el template a continu
 
 ```markdown
 ---
-task_id: 'TASK-YYYYMMDD-N'
+task_id: 'TASK-{rama}-YYYYMMDD-N'
 agent: 'Back_Agent' # Back_Agent | Front_Agent
 status: 'IMPLEMENTED'
 attempts: 1 # incrementar en cada re-iteración

@@ -4,9 +4,11 @@ description: Micro-prompt Fast-Track. Convierte los artefactos de Speckit (spec.
 
 # Fast-Track: Speckit → Blendverse
 
+> **Nota:** Este comando no se usa en el pipeline activo (`@blendverse-start-feature`) — `@blendverse-implement` lee `spec.md`/`tasks.md` directamente sin necesidad de transcribirlos. Se conserva como utilidad standalone para invocación manual explícita.
+
 ## Instrucciones
 
-1. Leer `memory/history_log.json` para determinar el próximo `task_id` con formato `TASK-YYYYMMDD-N`.
+1. Ejecutar `git branch --show-current`, sanitizar (`/` → `-`) y leer `memory/history_log.json` para determinar el próximo `task_id` con formato `TASK-{rama-sanitizada}-YYYYMMDD-N` (ver `.opencode/instructions/memory.instructions.md`).
 2. Leer `specs/{feature}/spec.md` — extraer: descripción, alcance, user stories y criterios de aceptación.
 3. Leer `specs/{feature}/tasks.md` — extraer: alcance (back/front/full-stack), entidades y contratos de API.
 4. Crear la carpeta `memory/{task_id}/`.

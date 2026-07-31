@@ -29,7 +29,7 @@ Si la respuesta a (5) es sí, **listar las preguntas al usuario antes de escribi
 
 ```markdown
 ---
-task_id: 'TASK-YYYYMMDD-N'
+task_id: 'TASK-{rama}-YYYYMMDD-N'
 agent: 'Analyst_Agent'
 status: 'DONE'
 version: '1.0.0'

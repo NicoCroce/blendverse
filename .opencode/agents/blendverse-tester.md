@@ -32,7 +32,7 @@ Eres el agente responsable de escribir tests que validan **reglas de negocio rea
 
 ### Paso 0 — Identificar el dominio y los archivos existentes
 
-Recibir el nombre del dominio desde el contexto (`memory/{task_id}/01_requirements.md` o la instrucción del usuario).
+Recibir el nombre del dominio desde el contexto: la fuente indicada por `@blendverse-implement` (`memory/{task_id}/01_requirements.md` en flujo de input crudo, o `specs/{feature}/spec.md` en flujo Speckit) o la instrucción del usuario.
 
 Para cada dominio, leer:
 
@@ -119,7 +119,7 @@ Si tras 3 iteraciones los tests siguen fallando sin poder resolverse:
 
 ```markdown
 ---
-task_id: 'TASK-YYYYMMDD-N'
+task_id: 'TASK-{rama}-YYYYMMDD-N'
 agent: 'Tester_Agent'
 status: 'PASS' # PASS | FAIL
 attempts: 1

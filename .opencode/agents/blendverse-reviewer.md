@@ -22,7 +22,7 @@ Eres el último filtro de calidad antes de cerrar una tarea. Tu responsabilidad 
 
 ### Paso 1 — Leer contexto completo
 
-- `memory/{task_id}/01_requirements.md` — criterios de aceptación originales.
+- La fuente de contexto indicada por `@blendverse-implement` — `memory/{task_id}/01_requirements.md` (flujo de input crudo) o `specs/{feature}/spec.md` (flujo Speckit) — criterios de aceptación originales.
 - `memory/{task_id}/02_dev_log.md` — lista de `affected_files` y decisiones técnicas.
 - Cada archivo listado en `affected_files`.
 
@@ -45,8 +45,8 @@ Crear o actualizar `memory/{task_id}/04_review_log.md` siguiendo el template de 
 
 ### Paso 6 — Handoff
 
-- Si `APPROVED` → indicar al Director que actualice `memory/history_log.json` con `status: COMPLETED`.
-- Si `REJECTED` → handoff al Coder correspondiente con el feedback específico.
+- Si se ejecuta como subagente (invocado por `@blendverse-implement`) — no invocás a nadie vos mismo; devolvés el control al orquestador, que lee `status` en `04_review_log.md` y decide: `APPROVED` → actualiza `history_log.json` a `COMPLETED` y cierra la tarea; `REJECTED` → invoca de nuevo al Coder correspondiente con el feedback.
+- Si hay usuario en el loop (ejecución standalone) — `APPROVED` → indicarle que actualice `memory/history_log.json` con `status: COMPLETED`; `REJECTED` → handoff sugerido al Coder correspondiente con el feedback específico.
 
 ## Protocolo Break-Loop (attempts >= 3)
 

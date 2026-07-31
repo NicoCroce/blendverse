@@ -62,17 +62,17 @@ Output esperado: `specs/{feature}/tasks.md`
 
 ### Restricciones
 
-**Esperar confirmación antes de continuar. Debes darle la posibilidad de iterar, corregir y agregar todo lo necesario sobre el las `tasks` antes de continuar. Siempre pregunta todas las dudas que puedas tener y compórtate en `modo plan`**
+**Esperar confirmación antes de continuar. Debes darle la posibilidad de iterar, corregir y agregar todo lo necesario sobre las `tasks` antes de continuar. Siempre pregunta todas las dudas que puedas tener y compórtate en `modo plan`**
 
 ## Fase 5 — Análisis de Consistencia
 
 Invocar el agente `@speckit-analyze` para generar un reporte para asegurar que todos los documentos y artefactos sean consistentes entre sí.
 
-Output esperado: Debes idicarle qué comando de `speckit` debe ejecutar si es neceario hacer un cambio.
+Output esperado: Debes indicarle qué comando de `speckit` debe ejecutar si es necesario hacer un cambio.
 
 ### Restricciones
 
-**Esperar confirmación antes de continuar. Debes darle la posibilidad de iterar, corregir y agregar todo lo necesario sobre el las `tasks` antes de continuar. Siempre pregunta todas las dudas que puedas tener y compórtate en `modo plan`**
+**Esperar confirmación antes de continuar. Debes darle la posibilidad de iterar, corregir y agregar todo lo necesario sobre el reporte de consistencia antes de continuar. Siempre pregunta todas las dudas que puedas tener y compórtate en `modo plan`**
 
 ## Fase 6 — Handoff a Blendverse
 
@@ -87,16 +87,21 @@ Una vez completadas y aprobadas por el usuario todas las fases Speckit, presenta
 📁 Artefactos en: specs/{feature}/
 ```
 
-Luego,**sin esperar intervención del usuario**, invocar directamente el agente `@blendverse-implement` — este orquestador ya sabe leer `specs/{feature}/spec.md` y `tasks.md`, generar `memory/{task_id}/01_requirements.md` inline si no existe (Paso 1 de su protocolo) y detectar el alcance para iniciar la cadena `back → front → tester → qa` de forma autónoma.
+Luego,**sin esperar intervención del usuario**, invocar directamente el agente `@blendverse-implement` pasándole `{{feature}}` explícitamente en el prompt, por ejemplo:
+
+> La feature a implementar es `{{feature}}`. Los artefactos de diseño están en `specs/{{feature}}/` (`spec.md`, `plan.md`, `tasks.md`). Resolvé el `task_id` (Paso 1 de tu protocolo) y procedé con la cadena `back → front → tester → qa → reviewer` de forma autónoma.
+
+Este orquestador ya sabe leer `specs/{{feature}}/spec.md` y `tasks.md` directamente (sin transcribirlos a `memory/`), detectar el alcance e iniciar la cadena completa hasta el cierre de la tarea.
 
 ## Notas
 
 -**DETENTE ESTRICTAMENTE después de cada fase (1–5) y espera la confirmación explícita del usuario. NO pases a la siguiente fase sin que el usuario diga 'ok' o apruebe la fase anterior.**
 
-- La Fase 6 es completamente automática — no requiere intervención del usuario.
+- La Fase 6 es completamente automática — no requiere intervención del usuario, e incluye el paso final de `@blendverse-reviewer` y el cierre de la tarea en `history_log.json`.
 - El agente `@speckit-implement` redirige automáticamente a el agente `@blendverse-implement` — la implementación la realizan exclusivamente los agentes Blendverse especializados en DDD.
-- Si el usuario quiere saltear las fases de diseño (ya tiene `spec.md`, `plan.md` y `tasks.md`), puede invocar directamente `@blendverse-implement` — éste generará `01_requirements.md` inline si no existe.
-- El comando `@speckit-to-blendverse` existe como transcripción standalone, pero no se usa en este pipeline: `@blendverse-implement` ya cubre ese paso internamente.
+- Si el usuario quiere saltear las fases de diseño (ya tiene `spec.md`, `plan.md` y `tasks.md`), puede invocar directamente `@blendverse-implement` indicándole la `{feature}` — éste lee los artefactos Speckit directamente, sin transcribirlos.
+- El comando `@speckit-to-blendverse` existe como transcripción standalone, pero no se usa en este pipeline: `@blendverse-implement` lee los artefactos Speckit directamente, sin necesidad de transcripción.
+- Invocar `@speckit-clarify`, `@speckit-plan`, `@speckit-tasks` o `@speckit-analyze` puede disparar un prompt de auto-commit definido en `.specify/extensions.yml` (`before_clarify`, `before_plan`, `before_tasks`, `before_analyze`) preguntando si confirmar cambios pendientes antes de esa fase — es un comportamiento esperado de Speckit, no un error del pipeline.
 - Recuerda detenerte en cada Fase (1–5) para poder iterar sobre la misma.
 - Todas las fases 1–5 se comportarán como modo `plan`.
 - Si alguna de las fases demora más de 5 minutos, debes indicarle al usuario por pantalla y analizar por qué está demando tanto tiempo.

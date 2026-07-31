@@ -7,34 +7,39 @@ applyTo: 'memory/**'
 
 ## Estructura de Carpetas
 
-Cada tarea recibe su propia subcarpeta con el formato `TASK-YYYYMMDD-N`:
+Cada tarea recibe su propia subcarpeta con el formato `TASK-{rama}-YYYYMMDD-N`:
 
 ```
 memory/
-  TASK-20260517-1/
-    01_requirements.md    ← @analyst
+  TASK-feat-segments-20260517-1/
+    01_requirements.md    ← @analyst (SOLO si el origen es input crudo; ver nota abajo)
     02_dev_log.md         ← @back o @front
     03_qa_report.md       ← @qa
     04_review_log.md      ← @reviewer
-  history_log.json        ← índice global cronológico (actualizado por el Director)
+    05_test_log.md        ← @tester
+  history_log.json        ← índice global cronológico (actualizado por @blendverse-implement al cerrar)
   BLOCKED.md              ← se crea SOLO si se alcanza el break-loop (attempts >= 3)
 ```
 
+> **`01_requirements.md` es opcional.** Solo se genera cuando el origen de la tarea es input crudo (vía `@blendverse-analyst`). Cuando el origen es Speckit, los agentes leen `specs/{feature}/spec.md` y `tasks.md` **directamente** — no se transcribe ni se copia su contenido a `memory/`. En ambos casos, `02_dev_log.md` en adelante siempre vive en `memory/{task_id}/`, porque esos archivos no tienen equivalente en Speckit.
+
 ## Convención de IDs de Tarea
 
-- Formato: `TASK-YYYYMMDD-N` donde `N` es un número secuencial (1, 2, 3…)
-- Ejemplo: `TASK-20260517-1`
-- Para obtener el próximo ID: leer `memory/history_log.json`; si no existe, el primero es `TASK-YYYYMMDD-1`
+- Formato: `TASK-{rama-sanitizada}-YYYYMMDD-N` donde:
+  - `{rama-sanitizada}` es el nombre de la rama git activa (`git branch --show-current`) con cada `/` reemplazado por `-` (ej. `feat/segments` → `feat-segments`).
+  - `N` es un número secuencial (1, 2, 3…) para esa rama.
+- Ejemplo: rama `feat/segments` → `TASK-feat-segments-20260517-1`
+- Para obtener el próximo ID: leer `memory/history_log.json`; si no existe ninguna entrada `IN_PROGRESS` para la rama sanitizada actual, el primero del día es `TASK-{rama-sanitizada}-YYYYMMDD-1`.
 
 ## Frontmatter Obligatorio
 
-Todos los archivos de memoria **deben** comenzar con un bloque YAML frontmatter. Un archivo sin frontmatter es inválido y no puede ser procesado por el Director.
+Todos los archivos de memoria **deben** comenzar con un bloque YAML frontmatter. Un archivo sin frontmatter es inválido y no puede ser procesado por el orquestador (`@blendverse-implement`).
 
-### Schema — `01_requirements.md`
+### Schema — `01_requirements.md` (solo flujo de input crudo)
 
 ```yaml
 ---
-task_id: 'TASK-YYYYMMDD-N'
+task_id: 'TASK-{rama}-YYYYMMDD-N'
 agent: 'Analyst_Agent'
 status: 'DONE' # DONE | IN_PROGRESS
 version: '1.0.0'
@@ -46,7 +51,7 @@ date: 'YYYY-MM-DD'
 
 ```yaml
 ---
-task_id: 'TASK-YYYYMMDD-N'
+task_id: 'TASK-{rama}-YYYYMMDD-N'
 agent: 'Back_Agent' # Back_Agent | Front_Agent
 status: 'IMPLEMENTED' # IMPLEMENTED | IN_PROGRESS
 attempts: 1 # número de iteraciones del Coder (máx. 3)
@@ -62,7 +67,7 @@ affected_files:
 
 ```yaml
 ---
-task_id: 'TASK-YYYYMMDD-N'
+task_id: 'TASK-{rama}-YYYYMMDD-N'
 agent: 'QA_Agent'
 status: 'PASS' # PASS | FAIL
 attempts: 1 # número de ejecuciones de QA (máx. 3)
@@ -74,7 +79,7 @@ date: 'YYYY-MM-DD'
 
 ```yaml
 ---
-task_id: 'TASK-YYYYMMDD-N'
+task_id: 'TASK-{rama}-YYYYMMDD-N'
 agent: 'Reviewer_Agent'
 status: 'APPROVED' # APPROVED | REJECTED
 attempts: 1
@@ -86,7 +91,7 @@ date: 'YYYY-MM-DD'
 
 ```yaml
 ---
-task_id: 'TASK-YYYYMMDD-N'
+task_id: 'TASK-{rama}-YYYYMMDD-N'
 agent: 'Tester_Agent'
 status: 'PASS' # PASS | FAIL
 attempts: 1 # número de iteraciones del Tester (máx. 3)
@@ -98,7 +103,7 @@ date: 'YYYY-MM-DD'
 
 ```yaml
 ---
-task_id: 'TASK-YYYYMMDD-N'
+task_id: 'TASK-{rama}-YYYYMMDD-N'
 agent: 'QA_Agent' # o "Reviewer_Agent" o "Tester_Agent"
 blocked_at: 'YYYY-MM-DD HH:MM'
 attempts: 3
@@ -119,7 +124,7 @@ El campo `attempts` en el frontmatter lleva el conteo de iteraciones por agente.
 
 ## Registro Global `history_log.json`
 
-El Director (Chat base) actualiza este archivo al abrir y cerrar cada tarea.
+`@blendverse-implement` actualiza este archivo: crea la entrada con `status: IN_PROGRESS` al resolver un `task_id` nuevo (Paso 1 de su protocolo), y la cierra con `status: COMPLETED` cuando `@blendverse-reviewer` aprueba (o `BLOCKED` si se activa el break-loop).
 
 > **Regla de rotación:** Mantener un máximo de **10 entradas** en el array. Cuando se agregue la entrada número 11, eliminar la entrada más antigua con `status: COMPLETED`. Las entradas con `status: IN_PROGRESS` o `BLOCKED` nunca se eliminan.
 

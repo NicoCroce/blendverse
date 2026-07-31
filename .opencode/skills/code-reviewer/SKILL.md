@@ -61,7 +61,7 @@ Los ítems marcados con 🟡 son **recomendados** — un fallo genera feedback p
 
 ````markdown
 ---
-task_id: 'TASK-YYYYMMDD-N'
+task_id: 'TASK-{rama}-YYYYMMDD-N'
 agent: 'Reviewer_Agent'
 status: 'APPROVED' # APPROVED | REJECTED
 attempts: 1 # incrementar en cada re-revisión

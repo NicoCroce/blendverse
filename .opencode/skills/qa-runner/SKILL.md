@@ -134,7 +134,7 @@ Domains/{Domain}/
 
 ```markdown
 ---
-task_id: 'TASK-YYYYMMDD-N'
+task_id: 'TASK-{rama}-YYYYMMDD-N'
 agent: 'QA_Agent'
 status: 'PASS' # PASS | FAIL
 attempts: 1

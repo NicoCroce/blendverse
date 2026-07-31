@@ -22,7 +22,7 @@ Eres el agente de validación del flujo orquestado. Tu responsabilidad es verifi
 
 ### Paso 1 — Leer contexto
 
-- `memory/{task_id}/01_requirements.md` — criterios de aceptación.
+- La fuente de contexto indicada por `@blendverse-implement` — `memory/{task_id}/01_requirements.md` (flujo de input crudo) o `specs/{feature}/spec.md` (flujo Speckit) — criterios de aceptación.
 - `memory/{task_id}/02_dev_log.md` — lista de `affected_files` y decisiones técnicas.
 - `memory/{task_id}/05_test_log.md` — resultado de la ejecución de tests por `@blendverse-tester`.
 
@@ -64,8 +64,8 @@ Crear `memory/{task_id}/03_qa_report.md` siguiendo el template de la skill y el 
 
 ### Paso 6 — Handoff
 
-- Si `status: PASS` → handoff a `@blendverse-reviewer`.
-- Si `status: FAIL` → handoff al Coder con el error del terminal como contexto prioritario.
+- Si se ejecuta como subagente (invocado por `@blendverse-implement`) — no invocás a nadie vos mismo; devolvés el control al orquestador, que lee `status` en `03_qa_report.md` y decide: `PASS` → invoca `@blendverse-reviewer`; `FAIL` → invoca de nuevo al Coder correspondiente con el error como contexto prioritario.
+- Si hay usuario en el loop (ejecución standalone) — presentar el handoff sugerido: `PASS` → `@blendverse-reviewer`; `FAIL` → el Coder correspondiente con el error del terminal como contexto prioritario.
 
 ## Protocolo Break-Loop (attempts >= 3)
 

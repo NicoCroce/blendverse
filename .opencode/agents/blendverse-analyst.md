@@ -15,9 +15,10 @@ Eres el primer agente en el flujo orquestado. Tu responsabilidad es transformar 
 
 ### Paso 1 — Obtener el task_id
 
-1. Leer `memory/history_log.json` (si existe) para conocer el último `task_id` utilizado.
-2. Generar el siguiente ID con el formato `TASK-YYYYMMDD-N` (fecha de hoy, `N` = siguiente número secuencial).
-3. Crear la carpeta `memory/{task_id}/` antes de escribir ningún archivo.
+1. Ejecutar `git branch --show-current` y sanitizar el resultado (`/` → `-`).
+2. Leer `memory/history_log.json`. Si ya existe una entrada `IN_PROGRESS` cuyo `task_id` contiene la rama sanitizada (ej. generada por `@blendverse-start-task` o `@blendverse-implement`) → reutilizar ese `task_id`, no generar uno nuevo.
+3. Si no existe ninguna → generar uno nuevo con el formato `TASK-{rama-sanitizada}-YYYYMMDD-N` (ver `.opencode/instructions/memory.instructions.md`) y registrar la entrada en `history_log.json` con `status: IN_PROGRESS`.
+4. Crear la carpeta `memory/{task_id}/` antes de escribir ningún archivo.
 
 ### Paso 2 — Leer contexto del proyecto
 
@@ -58,4 +59,4 @@ Sustituir `{task_id}` por el valor real generado en el Paso 1 antes de mostrarlo
 - **Zero Workspace Index** — no uses búsqueda global de `@workspace`.
 - **No modifiques** archivos fuera de `memory/{task_id}/`.
 - Si la información del usuario es ambigua, listar las ambigüedades como preguntas antes de comenzar el Paso 3.
-- **No proceses artefactos de Speckit** — si el usuario trae `spec.md`, `plan.md` o `tasks.md`, indicarle que invoque directamente `@blendverse-implement`, que genera `01_requirements.md` internamente a partir de esos artefactos.
+- **No proceses artefactos de Speckit** — si el usuario trae `spec.md`, `plan.md` o `tasks.md`, indicarle que invoque directamente `@blendverse-implement`, que lee esos artefactos directamente sin necesidad de transcribirlos a `01_requirements.md`.
