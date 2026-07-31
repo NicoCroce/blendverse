@@ -95,13 +95,13 @@ cd packages/app && npx vitest run 2>&1
 
 Todos los tests generados deben pasar (0 failed). Si alguno falla, corregirlo antes de devolver el control a `@blendverse-implement`.
 
-### Paso 4 — Escribir `05_test_log.md`
+### Paso 4 — Escribir `05_test_log.md` y espejar en Engram
 
-Crear `memory/{task_id}/05_test_log.md` siguiendo el template al final de este archivo.
+Crear `memory/{task_id}/05_test_log.md` siguiendo el template al final de este archivo. Tras escribir el archivo, invocar la skill `engram-sync` para espejarlo en Engram: `mem_save` con `topic_key: task/{task_id}/test-log`, `status: PASS` o `FAIL`, `attempts`, `agent: Tester_Agent`, `capture_prompt: false`.
 
 ### Paso 5 — Cierre de Sesión
 
-Una vez que los tests pasan, escribir `memory/{task_id}/05_test_log.md` y devolver el control al agente que te invocó (`@blendverse-implement`). **No invoques directamente a `@blendverse-qa`**; el orquestador se encarga de coordinar la validación estática.
+Una vez que los tests pasan, escribir `memory/{task_id}/05_test_log.md` (y su espejo en Engram según el Paso 4) y devolver el control al agente que te invocó (`@blendverse-implement`). **No invoques directamente a `@blendverse-qa`**; el orquestador se encarga de coordinar la validación estática.
 
 ---
 

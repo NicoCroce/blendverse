@@ -175,3 +175,12 @@ El campo `attempts` en el frontmatter lleva el conteo de iteraciones por agente.
 4. **Cada agente escribe únicamente su archivo designado**; no modifica archivos de otros agentes.
 5. **Rutas relativas** — siempre usar la ruta desde la raíz del monorepo (ej. `packages/server/src/...`).
 6. **Brevedad obligatoria en reportes** — los cuerpos de `03_qa_report.md` y `04_review_log.md` deben contener solo lo necesario para que el siguiente agente actúe: si el resultado es `PASS`/`APPROVED`, omitir el output de terminal (solo registrar el estado); si es `FAIL`/`REJECTED`, incluir únicamente el error concreto y el archivo afectado.
+
+## Espejo en Engram (`engram-sync`)
+
+Cada artefacto de memoria se espeja en Engram (skill `engram-sync`) para recuperación entre sesiones:
+
+- **Quién:** cada agente espeja su propio artefacto en su paso de cierre; `@blendverse-implement` espeja `registration` (Paso 1) y `status` (Paso 4).
+- **Topic keys:** `task/{task_id}/registration`, `task/{task_id}/dev-log`, `task/{task_id}/test-log`, `task/{task_id}/qa-report`, `task/{task_id}/review-log`, `task/{task_id}/status`.
+- **Regla de oro:** los archivos de `memory/` siguen siendo la **fuente de verdad**. Engram es un espejo de estado; si se contradicen, gana el archivo y se corrige el espejo.
+- **`capture_prompt: false`** en todos los espejos (son artefactos automatizados, no decisiones humanas).

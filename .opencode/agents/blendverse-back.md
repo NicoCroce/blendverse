@@ -44,9 +44,9 @@ La generación y ejecución de tests **no** la realiza este agente. Tu responsab
 - `@blendverse-implement` se encarga de coordinar el siguiente paso: invocar a `@blendverse-tester` para generar y ejecutar los tests correspondientes.
 - No invoques directamente a `@blendverse-tester` ni a `@blendverse-qa` desde este agente.
 
-## Cierre de Sesión (dev-logger)
+## Cierre de Sesión (dev-logger + engram-sync)
 
-Al finalizar cualquier sesión de implementación, **SIEMPRE** invocar la skill `dev-logger` para escribir `memory/{task_id}/02_dev_log.md`. Si ya existe el archivo de una iteración anterior, incrementar el campo `attempts` en 1.
+Al finalizar cualquier sesión de implementación, **SIEMPRE** invocar la skill `dev-logger` para escribir `memory/{task_id}/02_dev_log.md`. Si ya existe el archivo de una iteración anterior, incrementar el campo `attempts` en 1. Inmediatamente después, invocar la skill `engram-sync` para espejar `02_dev_log.md` en Engram: `mem_save` con `topic_key: task/{task_id}/dev-log`, `status: IMPLEMENTED`, `attempts`, `agent: Back_Agent`, `capture_prompt: false`.
 
 ## Límites (Edges)
 

@@ -58,9 +58,9 @@ Para cada archivo en `affected_files`, verificar que se encuentra en la capa cor
 
 Cargar la skill para determinar el status final (`PASS` / `FAIL`) y formatear el reporte completo con los resultados de compilación, linting, tests y estructura.
 
-### Paso 5 — Escribir `03_qa_report.md`
+### Paso 5 — Escribir `03_qa_report.md` y espejar en Engram
 
-Crear `memory/{task_id}/03_qa_report.md` siguiendo el template de la skill y el schema de frontmatter de `.opencode/instructions/memory.instructions.md`.
+Crear `memory/{task_id}/03_qa_report.md` siguiendo el template de la skill y el schema de frontmatter de `.opencode/instructions/memory.instructions.md`. Tras escribir el archivo, invocar la skill `engram-sync` para espejarlo en Engram: `mem_save` con `topic_key: task/{task_id}/qa-report`, `status: PASS` o `FAIL`, `attempts`, `agent: QA_Agent`, `capture_prompt: false`.
 
 ### Paso 6 — Handoff
 

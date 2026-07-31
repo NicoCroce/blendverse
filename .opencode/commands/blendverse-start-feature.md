@@ -16,6 +16,15 @@ a Blendverse para la implementación DDD especializada.
 
 Feature a implementar: `{{feature}}`
 
+## Pre-flight — Sync a Engram (resume)
+
+1. Invocar la skill `engram-sync`.
+2. Consultar Engram (Patrón 1) por `feature/{{feature}}/pipeline`.
+   - Si existe un pipeline `IN_PROGRESS` con `current_phase: N` → informar al usuario: "Se detectó un pipeline en curso para `{{feature}}` en la fase N. ¿Reanudamos desde ahí o empezamos de cero?". Si reanuda, **verificar en disco** que los artefactos de las fases previas existen en `specs/{{feature}}/` y continuar desde la fase N (las fases anteriores se consideran aprobadas). Si reinicia, sobrescribir el `pipeline` y comenzar desde la Fase 1.
+   - Si `status: COMPLETED` → el diseño ya terminó; avisar al usuario y ofrecer ir directo a la Fase 6 (handoff) o arrancar un pipeline nuevo.
+   - Si no existe → registrar el pipeline inicial con `mem_save`: `topic_key: feature/{{feature}}/pipeline`, `status: IN_PROGRESS`, `current_phase: 1`, `branch` (rama actual), `capture_prompt: false`.
+3. Todos los espejos de fase usan `capture_prompt: false` (ver skill).
+
 ## Fase 1 — Especificación
 
 Invocar el agente `@speckit-specify` con la descripción de la feature.
@@ -29,6 +38,13 @@ Output esperado: `specs/{feature}/spec.md`
 
 **Esperar confirmación antes de continuar. Debes darle la posibilidad de iterar, corregir y agregar todo lo necesario sobre el `spec` antes de continuar. Siempre pregunta todas las dudas que puedas tener y compórtate en `modo plan`**
 
+### Sync a Engram
+
+Tras la confirmación del usuario, invocar la skill `engram-sync` y guardar:
+
+- `topic_key: feature/{{feature}}/spec` → `status: APPROVED`, resumen de user stories y criterios de aceptación, dudas/decisiones de alcance, `Where: specs/{{feature}}/spec.md`.
+- Actualizar `feature/{{feature}}/pipeline` → `current_phase: 2` (agregar la fase aprobada a `approved_phases`).
+
 ## Fase 2 — Aclaración (condicional)
 
 Revisar `spec.md` contra la misma taxonomía de cobertura que usa `@speckit-clarify` (Alcance Funcional, Dominio/Datos, UX, Calidad No-Funcional, Integraciones, Edge Cases, Restricciones, Terminología, Señales de Completitud) y marcar cada categoría como `Clear` / `Partial` / `Missing`.
@@ -39,6 +55,13 @@ Revisar `spec.md` contra la misma taxonomía de cobertura que usa `@speckit-clar
 ### Restricciones
 
 **Esperar confirmación antes de continuar. Debes darle la posibilidad de iterar, corregir y agregar todo lo necesario sobre el `spec` antes de continuar. Siempre pregunta todas las dudas que puedas tener y compórtate en `modo plan`**
+
+### Sync a Engram
+
+Tras decidir el resultado de esta fase (ejecutada o salteada), invocar la skill `engram-sync` y guardar:
+
+- `topic_key: feature/{{feature}}/clarify` → `status: APPROVED` (si se ejecutó, con preguntas hechas y respuestas del usuario) o `status: SKIPPED` (si todas las categorías quedaron en `Clear`).
+- Actualizar `feature/{{feature}}/pipeline` → `current_phase: 3`.
 
 ## Fase 3 — Diseño Técnico
 
@@ -54,6 +77,13 @@ Output esperado en `specs/{feature}/`:
 
 **Esperar confirmación antes de continuar. Debes darle la posibilidad de iterar, corregir y agregar todo lo necesario sobre el `plan` antes de continuar. Siempre pregunta todas las dudas que puedas tener y compórtate en `modo plan`**
 
+### Sync a Engram
+
+Tras la confirmación del usuario, invocar la skill `engram-sync` y guardar:
+
+- `topic_key: feature/{{feature}}/plan` → `status: APPROVED`, resumen de stack, estructura y fases, `Where: specs/{{feature}}/plan.md` (+ `data-model.md` y `contracts/` si aplica).
+- Actualizar `feature/{{feature}}/pipeline` → `current_phase: 4`.
+
 ## Fase 4 — Desglose de Tareas
 
 Invocar el agente `@speckit-tasks` para generar `tasks.md` ordenado por user stories.
@@ -64,6 +94,13 @@ Output esperado: `specs/{feature}/tasks.md`
 
 **Esperar confirmación antes de continuar. Debes darle la posibilidad de iterar, corregir y agregar todo lo necesario sobre las `tasks` antes de continuar. Siempre pregunta todas las dudas que puedas tener y compórtate en `modo plan`**
 
+### Sync a Engram
+
+Tras la confirmación del usuario, invocar la skill `engram-sync` y guardar:
+
+- `topic_key: feature/{{feature}}/tasks` → `status: APPROVED`, cantidad de user stories y de tareas, `Where: specs/{{feature}}/tasks.md`.
+- Actualizar `feature/{{feature}}/pipeline` → `current_phase: 5`.
+
 ## Fase 5 — Análisis de Consistencia
 
 Invocar el agente `@speckit-analyze` para generar un reporte para asegurar que todos los documentos y artefactos sean consistentes entre sí.
@@ -73,6 +110,13 @@ Output esperado: Debes indicarle qué comando de `speckit` debe ejecutar si es n
 ### Restricciones
 
 **Esperar confirmación antes de continuar. Debes darle la posibilidad de iterar, corregir y agregar todo lo necesario sobre el reporte de consistencia antes de continuar. Siempre pregunta todas las dudas que puedas tener y compórtate en `modo plan`**
+
+### Sync a Engram
+
+Tras la confirmación del usuario, invocar la skill `engram-sync` y guardar:
+
+- `topic_key: feature/{{feature}}/consistency` → `status: APPROVED`, inconsistencias detectadas y resueltas, comandos `speckit` ejecutados, `Where: specs/{{feature}}/`.
+- Actualizar `feature/{{feature}}/pipeline` → `current_phase: 6`.
 
 ## Fase 6 — Handoff a Blendverse
 
@@ -87,9 +131,16 @@ Una vez completadas y aprobadas por el usuario todas las fases Speckit, presenta
 📁 Artefactos en: specs/{feature}/
 ```
 
+### Sync a Engram
+
+Antes de delegar, invocar la skill `engram-sync` y guardar:
+
+- Actualizar `feature/{{feature}}/pipeline` → `status: COMPLETED` (registrar todas las fases aprobadas).
+- `topic_key: feature/{{feature}}/handoff` → `status: HANDOFF`, `Where: specs/{{feature}}/`, indicando que el control pasa a `@blendverse-implement` (el `task_id` lo resolverá ese agente).
+
 Luego,**sin esperar intervención del usuario**, invocar directamente el agente `@blendverse-implement` pasándole `{{feature}}` explícitamente en el prompt, por ejemplo:
 
-> La feature a implementar es `{{feature}}`. Los artefactos de diseño están en `specs/{{feature}}/` (`spec.md`, `plan.md`, `tasks.md`). Resolvé el `task_id` (Paso 1 de tu protocolo) y procedé con la cadena `back → front → tester → qa → reviewer` de forma autónoma.
+> La feature a implementar es `{{feature}}`. Los artefactos de diseño están en `specs/{{feature}}/` (`spec.md`, `plan.md`, `tasks.md`). Resolvé el `task_id` (Paso 1 de tu protocolo) y procedé con la cadena `back → front → tester → qa → reviewer` de forma autónoma. Usá la skill `engram-sync` para registrar la tarea en Engram y retomar si hay una tarea en curso.
 
 Este orquestador ya sabe leer `specs/{{feature}}/spec.md` y `tasks.md` directamente (sin transcribirlos a `memory/`), detectar el alcance e iniciar la cadena completa hasta el cierre de la tarea.
 
@@ -105,3 +156,4 @@ Este orquestador ya sabe leer `specs/{{feature}}/spec.md` y `tasks.md` directame
 - Recuerda detenerte en cada Fase (1–5) para poder iterar sobre la misma.
 - Todas las fases 1–5 se comportarán como modo `plan`.
 - Si alguna de las fases demora más de 5 minutos, debes indicarle al usuario por pantalla y analizar por qué está demando tanto tiempo.
+- Cada fase aprobada se espeja en Engram (skill `engram-sync`). Si el pipeline se interrumpe entre sesiones, el pre-flight detecta `feature/{feature}/pipeline` en `IN_PROGRESS` y ofrece reanudar desde `current_phase`.

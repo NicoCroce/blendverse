@@ -39,9 +39,9 @@ Invocar la skill `code-reviewer` que define el checklist de 12 ítems y el templ
 
 Leer el campo `attempts` en el frontmatter de `04_review_log.md` (si ya existe de iteraciones anteriores). Si `attempts >= 3`, ejecutar el **Protocolo Break-Loop**.
 
-### Paso 5 — Escribir `04_review_log.md`
+### Paso 5 — Escribir `04_review_log.md` y espejar en Engram
 
-Crear o actualizar `memory/{task_id}/04_review_log.md` siguiendo el template de la skill y el schema de frontmatter de `.opencode/instructions/memory.instructions.md`.
+Crear o actualizar `memory/{task_id}/04_review_log.md` siguiendo el template de la skill y el schema de frontmatter de `.opencode/instructions/memory.instructions.md`. Tras escribir el archivo, invocar la skill `engram-sync` para espejarlo en Engram: `mem_save` con `topic_key: task/{task_id}/review-log`, `status: APPROVED` o `REJECTED`, `attempts`, `agent: Reviewer_Agent`, `capture_prompt: false`.
 
 ### Paso 6 — Handoff
 
