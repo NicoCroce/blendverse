@@ -1,183 +1,254 @@
 <!--
 SYNC IMPACT REPORT
-Version change: N/A → 1.0.0 (primera ratificación)
-Modified principles: ninguno — primera versión
+Version change: 1.0.0 → 2.0.0 (MAJOR — redefinición de los principios IV y V, reemplazo de
+la fuente de verdad operacional y ampliación material de los principios I, II, III, VI y VII)
+
+Modified principles:
+  - I. Arquitectura Hexagonal / DDD — agregada regla de barrel de dominio (solo
+    `./Infrastructure/Routes`, nunca `./Infrastructure` completo) y referencia a las
+    instrucciones normativas `.opencode/instructions/*`
+  - II. Multi-Tenant Obligatorio — prohibición explícita de `id_propietario` en los
+    schemas Zod de entrada del controller (nunca como input del cliente)
+  - III. TypeScript Estricto + Zod — los templates de `back-ddd-generator` y
+    `front-ddd-generator` son la implementación normativa; un template que contradiga
+    `inferRouterOutputs` / `z.infer` es un desvío
+  - IV. Flujo de Agentes Orquestado (renombrado) — pipeline reescrito con
+    `@blendverse-implement` como orquestador, doble fuente de contexto (input crudo vs
+    Speckit sin transcripción) y espejo de estado en Engram
+  - V. Tests por Regla de Negocio — removida la cláusula de stubs de `@qa` (contradice
+    el rol actual); `@blendverse-qa` no crea ni regenera tests; se explicitan los
+    archivos sin lógica de negocio que no requieren tests
+  - VI. Conventional Commits + Linting Gates — tipos de commit alineados con commitlint
+    (`@commitlint/config-conventional`) y el skill `commit-conventions`; agregada regla
+    anti-attribución IA en commits
+  - VII. Aislamiento de Dominios — clarificado que el frontend SÍ importa tipos de
+    `@server` (unidireccional server → app); el server nunca importa de app
+
 Added sections:
-  - Core Principles (I–VII)
-  - Stack Tecnológico y Path Aliases
-  - Pipeline de Calidad — Agentes y Skills
-  - Governance
-Removed sections: N/A
+  - Fuente de Verdad Operacional (`.opencode/` reemplaza `.github/copilot-instructions.md`)
+  - Mecánica de persistencia multi-agente (`memory/` + espejo Engram)
+
+Removed sections:
+  - Referencias a `.github/copilot-instructions.md` (archivo eliminado del repo)
+  - Tabla de agentes con handles cortos sin mapeo a los agentes reales
+
 Templates requiring updates:
-  ✅ .specify/templates/plan-template.md — Constitution Check actualizado con los 7 principios
-  ✅ .github/instructions/memory.instructions.md — schema 05_test_log.md agregado + Tester_Agent en history_log
-  ✅ .github/agents/back.agent.md — handoff directo a @qa reemplazado por handoff a @tester
-  ✅ .github/agents/front.agent.md — handoff directo a @qa reemplazado por handoff a @tester
-  ✅ .github/agents/tester.agent.md — prompt del handoff a @qa actualizado para mencionar 05_test_log.md
-Follow-up TODOs:
-  - RATIFICATION_DATE aproximada (2026-05-17, inferida desde memory/history_log.json). Actualizar si se conoce la fecha exacta.
+  ✅ .specify/templates/plan-template.md — Constitution Check alineado con v2.0.0
+     (handles `blendverse-*`, flujo dual, Pr. IV)
+  ✅ .specify/templates/tasks-template.md — tests obligatorios (Pr. V), generados por
+     `@blendverse-tester` tras la implementación
+  ✅ .specify/templates/spec-template.md — verificado, sin cambios requeridos
+
+Resolved TODOs (2026-07-31):
+  ✅ .opencode/skills/back-ddd-generator — template del `index.ts` público corregido:
+     exporta solo `./Domain`, `./Application`, `./Infrastructure/Routes` y `./[domain].di`
+     (nunca `./Infrastructure` completo); se agregó la regla al Checklist Final
+  ✅ .specify/extensions/agent-context/agent-context-config.yml — `context_file` ahora
+     apunta a `AGENTS.md` (archivo de instrucciones que opencode lee en la raíz del repo)
+  ✅ .specify/init-options.json y .specify/integration.json — integración actualizada a
+     "opencode" (integración válida del workflow Speckit)
+
+Follow-up TODOs (artefactos que contradicen esta constitución — corregir en tareas
+separadas):
+  - ⚠ .opencode/skills/commit-conventions — permite `--no-verify` en emergencias
+    (contradice Pr. VI); el skill DEBE reflejar la prohibición
+  - ⚠ .opencode/skills/front-ddd-generator — template `[Entity].entity.ts` usa
+    `T[Entity] = I[Entity]` importando del server (contradice Pr. III y el desvío D1
+    de `arch-audit`); debe derivar con `inferRouterOutputs`
+  - ⚠ .opencode/skills/back-ddd-generator — template de `[domain].types.ts` declara
+    `id_propietario` en los schemas Zod de entrada (contradice Pr. II)
+  - ⚠ Dominios existentes del server (`Auth`, `Users`, `Documents`, etc.) siguen
+    usando `export * from './Infrastructure'` y varias relaciones importan
+    `UserModel`/`ProfileModel` desde el barrel del dominio; requieren refactor a
+    rutas directas de `Infrastructure/Database` (tarea para `@blendverse-arch-fixer`)
 -->
 
 # MacroGest Core Constitution
+
+## Project Identity
+
+- Project Name: MacroGest Core
+- Architecture Focus: Modular Monolith with Domain-Driven Design (DDD) and Hexagonal Architecture
+- Version: 2.0.0
+- Ratified: 2026-05-17
+- Last Amended: 2026-07-31
 
 ## Core Principles
 
 ### I. Arquitectura Hexagonal / DDD (NON-NEGOTIABLE)
 
-Todo dominio del servidor DEBE seguir la estructura de 5 capas:
-`Domain/` (entidad + puerto de repositorio) → `Application/` (use cases + tipos + servicio) →
-`Infrastructure/` (controller tRPC + modelo Sequelize + implementación de repositorio + rutas),
-con un archivo `[domain].di.ts` de registro Awilix en la raíz del dominio.
-
-- Los DTOs de Input/Output DEBEN residir en `Application/[domain].types.ts` como `z.infer<typeof Schema>`.
-  Ninguna interface de DTO manual pertenece a la capa `Domain/`.
-- Los repositorios son **puertos abstractos** — solo se inyectan vía Awilix; no se importan directamente entre dominios.
-- Las specs (`.spec.ts` / `.spec.tsx`) residen en una carpeta `specs/` dentro de la capa que contiene los archivos fuente testeados.
-- `index.ts` en cada capa es un barrel puro (solo re-exports). Toda lógica DI va en `[domain].di.ts`.
+- Mínimo 5 capas: Domain, Infrastructure, Application, Presentation, DI.
+- Múltiples dominios separados en `packages/server/src/domains/[Domain]/`, cada uno con su propio `Application/`, `Domain/`, `Infrastructure/`, `Presentation/` y `Infrastructure/Routes/`.
+- DTOs de entrada/salida definidos con Zod (`z.infer<typeof Schema>`) en `Application/[domain].types.ts`.
+- Repositorios son puertos abstractos definidos en Domain e implementados en Infrastructure, inyectados mediante Awilix.
+- Los specs aislados viven dentro de su capa, en una carpeta `specs/` que espeja la estructura del dominio (especificación formal del contrato y del comportamiento por cada capa).
+- El `index.ts` público de cada dominio es un barrel puro que SOLO re-exporta `./Infrastructure/Routes`; toda la lógica de DI (Awilix) vive en `[domain].di.ts` (nunca `./Infrastructure` completo, nunca lógica en `index.ts`).
+- La arquitectura queda formalmente definida por las instrucciones normativas `.opencode/instructions/server.instructions.md` y `.opencode/instructions/app.instructions.md`, junto con las skills de generación `back-ddd-generator` y `front-ddd-generator`.
 
 ### II. Multi-Tenant Obligatorio (NON-NEGOTIABLE)
 
-Toda query al repositorio DEBE filtrar por `requestContext.values.ownerId`. Ningún dato cruza fronteras de tenant.
+- Toda query DEBE filtrar por `RequestContext.values.ownerId`.
+- El `ownerId` se obtiene EXCLUSIVAMENTE de `RequestContext` (inyectado en `[domain].di.ts`), NUNCA de parámetros del cliente.
+- Prohibido declarar `id_propietario` en los schemas Zod de entrada del controller; el cliente nunca lo envía.
+- El incumplimiento es CRITICAL en la revisión y desencadena la corrección de la tarea.
+- Los tests de negocio deben incluir al menos un caso multi-tenant (datos de otro owner NO visibles).
 
-- `ownerId` se obtiene exclusivamente de `RequestContext.values.ownerId` — nunca de parámetros del cliente.
-- El cumplimiento multi-tenant es verificado por `@reviewer` como ítem crítico en cada revisión.
-- Los tests del agente `@tester` DEBEN incluir al menos un caso que valide la propagación correcta del `ownerId`.
+### III. TypeScript Estricto + Zod (NON-NEGOTIABLE)
 
-### III. TypeScript Estricto + Zod como Fuente de Verdad
-
-`any` está **prohibido** en todo el codebase. Todos los tipos deben ser explícitos.
-
-- **Backend:** Zod valida en el controlador (`procedure.input()`). Los tipos de Input/Output se derivan con `z.infer<>`.
-- **Frontend:** Los tipos de entidad se derivan con `inferRouterOutputs<TDomainRouter>`.
-  Solo `TEntitySearch` (parámetros de URL/filtros) se define manualmente.
-- Nunca duplicar definiciones de tipos entre capas; si el schema ya existe como Zod en el controller, derivar de él.
+- Prohibido el uso de `any` explícito.
+- Backend: validación con Zod en `procedure.input`; los tipos se derivan con `z.infer`.
+- Frontend: los tipos se derivan con `inferRouterOutputs<typeof T[Domain]Router>`; solo se escribe manualmente `TEntitySearch`.
+- Nunca duplicar tipos: derivar del contrato tRPC/Zod siempre que sea posible.
+- Los templates de `back-ddd-generator` / `front-ddd-generator` son la implementación normativa de este principio; si un template contradice esta regla (ej. `T[Entity] = I[Entity]` en lugar de `inferRouterOutputs`), el template DEBE corregirse.
 
 ### IV. Flujo de Agentes Orquestado (NON-NEGOTIABLE)
 
-Toda nueva feature DEBE transitar por el pipeline completo en este orden:
+El trabajo se ejecuta mediante un pipeline de agentes orquestado. Todo desarrollo pasa por la cadena y se cierra en `memory/history_log.json`; nadie salta el flujo.
 
 ```
-@analyst → 01_requirements.md
-    ↓
-@back / @front → código + 02_dev_log.md
-    ↓
-@tester → tests + 05_test_log.md
-    ↓
-@qa → 03_qa_report.md
-    ├── FAIL (máx. 3 intentos) → @back / @front
-    └── PASS → @reviewer → 04_review_log.md
-                  ├── REJECTED (máx. 3 intentos) → @back / @front
-                  └── APPROVED → Director cierra en history_log.json
+Input crudo              Input Speckit
+@blendverse-analyst      specs/{feature}/{spec,plan,tasks}.md
+→ 01_requirements.md     (sin transcripción, se consume directo)
+         │
+         ▼
+@blendverse-implement   (orquestador: task_id, alcance, resume_point)
+         │
+         ▼
+@blendverse-back / @blendverse-front   → código + 02_dev_log.md
+         │
+         ▼
+@blendverse-tester       → tests + 05_test_log.md
+         │
+         ▼
+@blendverse-qa           → 03_qa_report.md
+   ├── FAIL (máx. 3) → coder (incremento de attempts)
+   └── PASS → @blendverse-reviewer → 04_review_log.md
+         ├── REJECTED (máx. 3) → coder
+         └── APPROVED → @blendverse-implement cierra en history_log.json
 ```
 
-- Ningún código llega a producción sin un `status: APPROVED` en `04_review_log.md`.
-- Si cualquier agente alcanza `attempts: 3` sin resolución, se activa el Break-Loop:
-  crear `memory/BLOCKED.md` y detener toda ejecución automática hasta intervención humana.
-- Los agentes Speckit (`speckit.*`) gestionan planificación y branching; no reemplazan a los agentes de dominio.
+- Dos fuentes de contexto válidas: (1) input crudo del usuario, transformado por `@blendverse-analyst` en `01_requirements.md`; (2) artefactos Speckit (`spec.md`, `plan.md`, `tasks.md`), consumidos directamente SIN transcripción ni duplicación.
+- `@blendverse-implement` detecta el alcance (back-only, front-only, full-stack) desde los artefactos de diseño, invoca la cadena como subagentes sin intervención del usuario y cierra la tarea en `history_log.json`.
+- Ciclos de corrección acotados: `@blendverse-qa` y `@blendverse-reviewer` reenvían al coder (máx. 3 intentos cada uno); el límite se registra en `memory/BLOCKED.md`.
+- Convención de `task_id`: `TASK-{rama-sanitizada}-YYYYMMDD-N` (la rama se sanitiza reemplazando `/` por `-`).
 
-### V. Tests por Regla de Negocio
+### V. Tests por Regla de Negocio (NON-NEGOTIABLE)
 
-Los tests validan **reglas de negocio reales** con datos concretos — no stubs genéricos.
-El objetivo no es el porcentaje de cobertura sino que cada regla relevante tenga al menos un test.
-
-- El agente `@tester` analiza el código fuente por capas (Entity, Use Case, Service, Controller, Hooks)
-  y genera tests completos sin `TODO` pendientes antes de hacer handoff a `@qa`.
-- `@qa` puede crear stubs mínimos (`it.todo`) solo si `@tester` no corrió antes; nunca sobreescribe tests existentes.
-- Los archivos de spec DEBEN compilar y ejecutarse sin errores antes del handoff a `@qa`.
+- Los tests se escriben por regla de negocio REAL extraída del código fuente, con datos concretos — no stubs ni mocks de bodega.
+- Los genera y ejecuta `@blendverse-tester` después de la implementación (registro en `05_test_log.md`); 0 tests fallidos antes del handoff a QA.
+- `@blendverse-qa` NO crea ni regenera tests: solo ejecuta validación estática (TypeScript + ESLint + Vitest smoke) sobre los tests ya generados.
+- Los archivos sin lógica de negocio (modelo Sequelize, rutas, DI, barrels, schemas de presentación) no requieren tests propios.
+- Los specs aislados deben compilar y pasar antes del handoff a `@blendverse-reviewer`.
 
 ### VI. Conventional Commits + Linting Gates (NON-NEGOTIABLE)
 
-Todos los commits DEBEN seguir el formato Conventional Commits: `<type>(<scope>): <subject>`.
+- Formato obligatorio: `<type>(<scope>): <subject>` (Conventional Commits).
+- Tipos permitidos (alineados con `@commitlint/config-conventional` y el skill `commit-conventions`): `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`, `ci`, `build`, `revert`.
+- El scope indica el dominio o área afectada.
+- Gates automáticos de calidad: Husky 9 (hooks pre-commit / commit-msg) + lint-staged + commitlint en CI. Prohibido esquivarlos con `--no-verify`.
+- Prohibida la atribución IA en commits (sin "Co-Authored-By").
 
-- Husky ejecuta `lint-staged` (ESLint + Prettier) y `commitlint` en cada commit. `--no-verify` está **prohibido**.
-- El `<scope>` DEBE coincidir con el nombre del dominio afectado (ej. `feat(articles): add price calculation`).
-- Tipos válidos: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `ci`.
+### VII. Aislamiento de Dominios (NON-NEGOTIABLE)
 
-### VII. Aislamiento de Dominios
-
-Ningún dominio importa el repositorio de otro dominio. La comunicación entre dominios es EXCLUSIVAMENTE
-vía casos de uso (ver skill `cross-domain-relations`).
-
-- El código de `packages/server/` no importa de `packages/app/` y viceversa,
-  salvo los archivos de registro global explicitados en cada skill.
-- La inyección de dependencias es responsabilidad exclusiva de Awilix en `[domain].di.ts`.
-- La capa `Application/` global de cada paquete contiene únicamente lógica transversal (tipos base, hooks compartidos, contexto).
-  Infraestructura (email, imágenes, etc.) NO pertenece a `Application/`.
+- No se importan repositorios de otros dominios; se usan casos de uso de otros dominios vía inyección de dependencias (patrón `cross-domain-relations`).
+- El server NUNCA importa de `@app`.
+- El frontend SÍ importa tipos y entidades de `@server` (por ejemplo `T[Domain]Router`) — relación unidireccional y permitida.
+- Toda inyección de dependencias se hace con Awilix en `[domain].di.ts`.
+- `Application/` global es transversal (datasource, logger, tenancy, helpers); la infraestructura de negocio no vive en `Application/`.
 
 ## Stack Tecnológico y Path Aliases
 
-| Capa     | Tecnologías                                                                                    |
-| -------- | ---------------------------------------------------------------------------------------------- |
-| Monorepo | pnpm workspaces, TypeScript 5.x strict                                                         |
-| Backend  | Express, tRPC v11, Sequelize v6 (MySQL), Awilix (DI), Zod, Pino                                |
-| Frontend | React 18, Vite, TanStack Query, React Router v6, React Hook Form + Zod, Radix UI, Tailwind CSS |
-| Calidad  | ESLint 9, Prettier, Husky, lint-staged, Commitlint (Conventional Commits)                      |
-| Tests    | Vitest (unit + integration), Playwright (E2E)                                                  |
+| Categoría | Stack                                                                                                  |
+| --------- | ------------------------------------------------------------------------------------------------------ |
+| Monorepo  | pnpm workspaces, TypeScript 6.x estricto                                                               |
+| Backend   | Express 5, tRPC v11, Sequelize v6 (MySQL), Awilix 13, Zod 4, Pino 10                                   |
+| Frontend  | React 19, Vite 8, TanStack Query v5, React Router v7, React Hook Form + Zod, Radix UI, Tailwind CSS v4 |
+| Calidad   | ESLint 10, Prettier 3, Husky 9, lint-staged 16, Commitlint 20 (Conventional Commits)                   |
+| Tests     | Vitest 2 (unit + integration), Playwright (E2E)                                                        |
 
-| Alias       | Resuelve a              |
-| ----------- | ----------------------- |
-| `@server/*` | `packages/server/src/*` |
-| `@app/*`    | `packages/app/src/*`    |
+Path aliases:
+
+| Alias                      | Ruta                                    |
+| -------------------------- | --------------------------------------- |
+| `@server`                  | `packages/server/src`                   |
+| `@app`                     | `packages/app/src`                      |
+| `@server/domains/[Domain]` | `packages/server/src/domains/[Domain]/` |
+| `@app/domains/[Domain]`    | `packages/app/src/Domains/[Domain]/`    |
 
 ## Pipeline de Calidad — Agentes y Skills
 
 ### Agentes del Proyecto
 
-| Agente        | Rol                       | Skill principal                                                   |
-| ------------- | ------------------------- | ----------------------------------------------------------------- |
-| `@analyst`    | Analista Funcional y UX   | `requirements-analyst`                                            |
-| `@back`       | Coder Backend (DDD)       | `back-ddd-generator`                                              |
-| `@front`      | Coder Frontend (React)    | `front-ddd-generator`                                             |
-| `@tester`     | Generador de Tests        | `test-generator`                                                  |
-| `@qa`         | Validación estática       | `qa-runner`                                                       |
-| `@reviewer`   | Crítico de Estándares     | `code-reviewer`                                                   |
-| `@arch-fixer` | Corrección arquitectónica | `arch-audit`, `interfaces-to-application`, `domain-consolidation` |
+| Agente                   | Rol                                                                                                  | Skill de referencia                                               |
+| ------------------------ | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `@blendverse-implement`  | Orquestador full-stack: alcance, cadena back→front→tester→qa→reviewer y cierre en `history_log.json` | `engram-sync`                                                     |
+| `@blendverse-analyst`    | Analista Funcional y UX: input crudo → User Stories con criterios de aceptación                      | `requirements-analyst`                                            |
+| `@blendverse-back`       | Coder Backend (Hexagonal + DDD)                                                                      | `back-ddd-generator`                                              |
+| `@blendverse-front`      | Coder Frontend (React)                                                                               | `front-ddd-generator`                                             |
+| `@blendverse-tester`     | Generador y ejecutor de tests por regla de negocio                                                   | `test-generator`                                                  |
+| `@blendverse-qa`         | Validación estática (TypeScript + ESLint + Vitest smoke + estructura)                                | `qa-runner`                                                       |
+| `@blendverse-reviewer`   | Crítico de Estándares (arquitectura, seguridad, convenciones)                                        | `code-reviewer`                                                   |
+| `@blendverse-arch-fixer` | Corrección automática de desvíos DDD/Hexagonal detectados por auditoría                              | `arch-audit`, `interfaces-to-application`, `domain-consolidation` |
 
 ### Skills de Arquitectura
 
-| Skill                       | Propósito                                                   |
-| --------------------------- | ----------------------------------------------------------- |
-| `back-ddd-generator`        | Genera dominio DDD completo en el servidor                  |
-| `front-ddd-generator`       | Genera dominio completo en el frontend                      |
-| `cross-domain-relations`    | Patrón para relacionar datos entre dominios vía use cases   |
-| `sequelize-associations`    | Asociaciones y eager loading en Sequelize v6                |
-| `usecases-migration`        | Mueve `UseCases` de `Domain/` a `Application/`              |
-| `arch-audit`                | Audita desvíos DDD/Hexagonal en todos los dominios          |
-| `interfaces-to-application` | Migra DTOs de `Domain/` a `Application/[domain].types.ts`   |
-| `domain-consolidation`      | Extrae lógica DI de `index.ts` a `[domain].di.ts`           |
-| `test-generator`            | Analiza reglas de negocio y genera tests completos por capa |
-| `commit-conventions`        | Convenciones de commits, Husky y lint-staged                |
+| Skill                       | Uso                                                                         |
+| --------------------------- | --------------------------------------------------------------------------- |
+| `back-ddd-generator`        | Generar un dominio del server desde cero (estructura + DI)                  |
+| `front-ddd-generator`       | Generar un módulo frontend React desde cero                                 |
+| `sequelize-associations`    | Asociaciones y eager loading en Sequelize v6                                |
+| `cross-domain-relations`    | Relaciones entre dominios vía casos de uso e inyección de dependencias      |
+| `interfaces-to-application` | Migrar DTOs legacy de `Domain/` a `Application/[domain].types.ts` (z.infer) |
+| `domain-consolidation`      | Extraer DI de `index.ts` hacia `[domain].di.ts`                             |
+| `usecases-migration`        | Mover `UseCases/` de `Domain/` a `Application/`                             |
+| `arch-audit`                | Detectar desvíos DDD/Hexagonal en server y frontend                         |
 
 ### Skills de Flujo de Agentes
 
-| Skill                  | Propósito                                                       |
-| ---------------------- | --------------------------------------------------------------- |
-| `requirements-analyst` | Template de `01_requirements.md` (usado por `@analyst`)         |
-| `dev-logger`           | Template de `02_dev_log.md` (usado por `@back`/`@front`)        |
-| `qa-runner`            | Secuencia de validación + `03_qa_report.md` (usado por `@qa`)   |
-| `code-reviewer`        | Checklist 12 ítems + `04_review_log.md` (usado por `@reviewer`) |
+| Skill                  | Uso                                                                                  |
+| ---------------------- | ------------------------------------------------------------------------------------ |
+| `requirements-analyst` | Generar `memory/{task_id}/01_requirements.md`                                        |
+| `test-generator`       | Extraer reglas de negocio y generar tests con datos concretos                        |
+| `dev-logger`           | Registrar `memory/{task_id}/02_dev_log.md` al final de cada sesión de implementación |
+| `qa-runner`            | Generar `memory/{task_id}/03_qa_report.md`                                           |
+| `code-reviewer`        | Generar `memory/{task_id}/04_review_log.md`                                          |
+| `engram-sync`          | Espejar en Engram cada fase del pipeline y permitir resume entre sesiones            |
+| `commit-conventions`   | Mensajes de commit y hooks Husky/lint-staged/commitlint                              |
+| `pr-detail`            | Generar el detalle de PR comparando main vs la rama actual                           |
+
+### Mecánica de persistencia multi-agente
+
+- `memory/{task_id}/` contiene los artefactos de la tarea: `01_requirements.md` (opcional, solo flujo crudo), `02_dev_log.md`, `03_qa_report.md`, `04_review_log.md`, `05_test_log.md`.
+- `memory/history_log.json` es el registro autoritativo del estado de cada tarea (todo agente actualiza el que le corresponde).
+- Engram es un espejo del estado para retomar pipelines entre sesiones; los archivos en disco mandan. Si un espejo contradice un artefacto en disco, se corrige el espejo.
+- El break-loop se registra en `memory/BLOCKED.md` cuando un ciclo alcanza `attempts >= 3`.
+
+## Fuente de Verdad Operacional
+
+- Fuente de verdad operacional: `.opencode/` — agentes, instructions, skills y commands viven en `.opencode/agents`, `.opencode/instructions`, `.opencode/skills` y `.opencode/commands`.
+- `.specify/memory/constitution.md` es la fuente de verdad de principios; prevalece sobre cualquier práctica ad-hoc o instrucción desactualizada.
+- Instrucciones normativas: `.opencode/instructions/server.instructions.md` (backend), `.opencode/instructions/app.instructions.md` (frontend) y `.opencode/instructions/memory.instructions.md` (memoria).
+- Cualquier referencia a rutas `.github/` (copilot, agents, instructions) en configuraciones es un residuo obsoleto y debe corregirse a `.opencode/`.
 
 ## Governance
 
-Esta constitución define los estándares no negociables del proyecto MacroGest Core.
-Prevalece sobre cualquier práctica ad-hoc o convención implícita.
+### Versioning Policy
 
-**Reglas de Enmienda (Semver):**
+- Esta constitución usa **Semantic Versioning** (MAJOR.MINOR.PATCH).
+- MAJOR (breaking): se modifica, elimina o redefine un principio existente.
+- MINOR (non-breaking): se agregan principios nuevos o una guía no contradictoria.
+- PATCH (tipo): se corrigen typos o se agregan aclaraciones que no cambian el significado.
+- Cualquier cambio de versión DEBE actualizar el `Sync Impact Report` del header.
 
-- MAJOR (X.0.0): Remoción o redefinición incompatible de un principio — requiere justificación documentada y plan de migración.
-- MINOR (1.X.0): Nuevo principio o sección añadida; ampliación material de guía existente.
-- PATCH (1.0.X): Clarificaciones, correcciones de redacción, sin cambios semánticos.
+### Amendment Procedure
 
-**Cumplimiento:**
+- El Director (Chat base) inicia los cambios vía `/speckit.constitution`.
+- Cada enmienda requiere justificación documentada, bump de versión según la política semver y propagación a los templates dependientes (`plan`, `spec`, `tasks`) y a `.opencode/` (agents, instructions, skills, commands) cuando corresponda.
 
-- Todo PR debe verificar cumplimiento con los principios I, II, III y VII antes de ser aprobado.
-- El agente `@reviewer` aplica el checklist de `code-reviewer` como guardián final de esta constitución en cada tarea.
-- Los desvíos detectados por `arch-audit` deben corregirse antes de añadir nuevas features al dominio afectado.
-- El Director (Chat base) es responsable de mantener `memory/history_log.json` como registro cronológico fidedigno.
+### Compliance Review Expectations
 
-Para guía de desarrollo en tiempo de ejecución y flujo de agentes unificado (Speckit + Blendverse) ver `.github/copilot-instructions.md`.
-
-> **Fuente de verdad operacional**: `.github/copilot-instructions.md` — flujo de agentes, comandos del día a día e integración Speckit/Blendverse.
-> **Fuente de verdad de principios**: este archivo — define los 7 principios NON-NEGOTIABLE, stack y gobernanza.
-
-**Version**: 1.0.0 | **Ratified**: 2026-05-17 | **Last Amended**: 2026-06-06
+- Todo PR verifica el cumplimiento de los principios I–VII; el `@blendverse-reviewer` es el guardián final y puede rechazar la tarea.
+- `@blendverse-arch-fixer` (vía `/unify-project`) corrige los desvíos que detecta `arch-audit`.
+- El Director mantiene `memory/history_log.json`; los agentes del pipeline actualizan los artefactos que les corresponden.
+- Los espejos de Engram se corrigen si contradicen los archivos en disco.
+- Los commits cumplen Conventional Commits sin atribución IA.

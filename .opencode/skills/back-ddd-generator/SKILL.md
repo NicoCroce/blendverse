@@ -667,10 +667,13 @@ export const [domain]Controller = () =>
 
 ## Template: `index.ts` (barrel público)
 
+> ⚠️ **ENCAPSULAMIENTO HEXAGONAL (server.instructions.md, restricción 4):** Nunca uses `export * from './Infrastructure'` en el `index.ts` de dominio. Solo está permitido `export * from './Infrastructure/Routes'`. Exponer Controllers o modelos Sequelize rompe el encapsulamiento hexagonal. El resolver del controller (`[domain]Controller`) sale a través de `[domain].di.ts`, no de `./Infrastructure`.
+
 ```typescript
 export * from './Domain';
 export * from './Application';
-export * from './Infrastructure';
+export * from './Infrastructure/Routes';
+export * from './[domain].di';
 ```
 
 ---
@@ -722,4 +725,5 @@ Tras crear todos los archivos, ejecuta `diagnostics/getErrors` y verifica:
 - [ ] El `[domain].di.ts` exporta todos los use cases con prefijo `_`
 - [ ] `register.ts` incluye el nuevo dominio
 - [ ] `Router.ts` incluye las nuevas rutas
+- [ ] El `index.ts` público exporta SOLO `./Domain`, `./Application`, `./Infrastructure/Routes` y `./[domain].di` (nunca `./Infrastructure` completo)
 - [ ] El repositorio filtra por `ownerId` en cada método que corresponde
