@@ -1,7 +1,7 @@
 import { Op, WhereOptions } from 'sequelize';
 import { Documentos } from './';
 import { Literal } from 'sequelize/lib/utils';
-import { IGetDocumentsRepository } from '../../Domain';
+import { IGetDocumentsRepository, TStateDocument } from '../../Domain';
 import { DocumentsTypesModel } from '@server/domains/DocumentsTypes/Infrastructure';
 
 export const DocumentsFilters = (
@@ -25,41 +25,55 @@ export const DocumentsFilters = (
     whereConditionSisTipoDocumentos.requiere_firma =
       filters.requireSign || false;
 
-  const filterValidated: WhereOptions<Documentos> =
-    filters.state === 'validados'
-      ? ({
-          [Op.or]: [
-            {
-              firmado: {
-                [Op.not]: null, // Document signed
-              },
-            },
-            {
-              [Op.and]: [
-                { '$DocumentsTypesModel.requiere_firma$': false }, // Doesn't require signature
-                { visualizado: { [Op.not]: null } }, // And has been viewed
-              ],
-            },
+  const filterState: Record<TStateDocument, WhereOptions<Documentos>> = {
+    validados: {
+      [Op.or]: [
+        {
+          firmado: {
+            [Op.not]: null, // Document signed
+          },
+        },
+        {
+          [Op.and]: [
+            { '$DocumentsTypesModel.requiere_firma$': false }, // Doesn't require signature
+            { visualizado: { [Op.not]: null } }, // And has been viewed
           ],
-        } as WhereOptions<Documentos>)
-      : filters.state === 'pendientes'
-        ? ({
-            [Op.or]: [
-              {
-                [Op.and]: [
-                  { '$DocumentsTypesModel.requiere_firma$': true },
-                  { firmado: { [Op.is]: null } },
-                ],
-              },
-              {
-                [Op.and]: [
-                  { '$DocumentsTypesModel.requiere_firma$': false },
-                  { visualizado: { [Op.is]: null } },
-                ],
-              },
-            ],
-          } as WhereOptions<Documentos>)
-        : {};
+        },
+      ],
+    } as WhereOptions<Documentos>,
+    pendientes: {
+      [Op.or]: [
+        {
+          [Op.and]: [
+            { '$DocumentsTypesModel.requiere_firma$': true },
+            { firmado: { [Op.is]: null } },
+          ],
+        },
+        {
+          [Op.and]: [
+            { '$DocumentsTypesModel.requiere_firma$': false },
+            { visualizado: { [Op.is]: null } },
+          ],
+        },
+      ],
+    } as WhereOptions<Documentos>,
+    bajo_conformidad: {
+      [Op.and]: [
+        { firmado: { [Op.not]: null } },
+        { firma_bajo_acuerdo: { [Op.eq]: true } },
+      ],
+    } as WhereOptions<Documentos>,
+    sin_conformidad: {
+      [Op.and]: [
+        { firmado: { [Op.not]: null } },
+        { firma_bajo_acuerdo: { [Op.eq]: false } },
+      ],
+    } as WhereOptions<Documentos>,
+  };
+
+  const filterValidated: WhereOptions<Documentos> = filters.state
+    ? filterState[filters.state]
+    : {};
 
   return {
     whereCondition,
