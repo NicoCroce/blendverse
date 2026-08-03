@@ -157,7 +157,7 @@ Antes de delegar, invocar la skill `engram-sync` y guardar:
 
 Luego,**sin esperar intervención del usuario**, invocar directamente el agente `@blendverse-implement` pasándole `{{feature}}` explícitamente en el prompt, por ejemplo:
 
-> La feature a implementar es `{{feature}}`. Los artefactos de diseño están en `specs/{{feature}}/` (`spec.md`, `plan.md`, `tasks.md` y, si aplica, `frontend-design.md`). Resolvé el `task_id` (Paso 1 de tu protocolo) y procedé con la cadena `back → front → tester → qa → reviewer` de forma autónoma. El agente `@blendverse-front` debe leer y aplicar `frontend-design.md` como brief visual al implementar la capa de presentación. Usá la skill `engram-sync` para registrar la tarea en Engram y retomar si hay una tarea en curso.
+> La feature a implementar es `{{feature}}`. Los artefactos de diseño están en `specs/{{feature}}/` (`spec.md`, `plan.md`, `tasks.md` y, si aplica, `frontend-design.md`). Resolvé el `task_id` (Paso 1 de tu protocolo) y procedé con la cadena `back → front → tester → qa → reviewer` de forma autónoma. El agente `@blendverse-front` debe leer y aplicar `frontend-design.md` como brief visual al implementar la capa de presentación. Usá la skill `engram-sync` para registrar la tarea en Engram y retomar si hay una tarea en curso. Una vez que `@blendverse-reviewer` apruebe (todas las validaciones corregidas) y la tarea quede cerrada, ejecutá el Paso 5 de tu protocolo: invocá el agente `pr-detail` para generar `pr-detail.md`, pusheá la rama y abrí el PR contra `main` con `gh pr create`, reportando la URL al usuario.
 
 Este orquestador ya sabe leer `specs/{{feature}}/spec.md` y `tasks.md` directamente (sin transcribirlos a `memory/`), detectar el alcance e iniciar la cadena completa hasta el cierre de la tarea.
 
@@ -165,7 +165,8 @@ Este orquestador ya sabe leer `specs/{{feature}}/spec.md` y `tasks.md` directame
 
 -**DETENTE ESTRICTAMENTE después de cada fase (1–5) y espera la confirmación explícita del usuario. NO pases a la siguiente fase sin que el usuario diga 'ok' o apruebe la fase anterior.**
 
-- La Fase 6 es completamente automática — no requiere intervención del usuario, e incluye el paso final de `@blendverse-reviewer` y el cierre de la tarea en `history_log.json`.
+- La Fase 6 es completamente automática — no requiere intervención del usuario, e incluye el paso final de `@blendverse-reviewer`, el cierre de la tarea en `history_log.json` y la apertura del PR a `main`.
+- Al cierre exitoso de la tarea (Fase 6), `@blendverse-implement` ejecuta su Paso 5: genera `pr-detail.md` con la skill `pr-detail`, pushea la rama y abre el PR contra `main` (requiere `gh` autenticado). El PR solo se crea cuando todas las validaciones (QA + reviewer) pasaron.
 - El agente `@speckit-implement` redirige automáticamente a el agente `@blendverse-implement` — la implementación la realizan exclusivamente los agentes Blendverse especializados en DDD.
 - Si el usuario quiere saltear las fases de diseño (ya tiene `spec.md`, `plan.md` y `tasks.md`), puede invocar directamente `@blendverse-implement` indicándole la `{feature}` — éste lee los artefactos Speckit directamente, sin transcribirlos.
 - El comando `@speckit-to-blendverse` existe como transcripción standalone, pero no se usa en este pipeline: `@blendverse-implement` lee los artefactos Speckit directamente, sin necesidad de transcripción.

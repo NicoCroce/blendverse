@@ -1,5 +1,5 @@
 ---
-description: Orquestador de implementación full-stack. Detecta el alcance (back-only, front-only, full-stack) desde los artefactos de diseño e invoca directamente la cadena back → front → tester → qa → reviewer como subagentes sin intervención del usuario, y cierra la tarea en `history_log.json`. Espeja el progreso en Engram (skill engram-sync) y retoma cadenas interrumpidas. Punto de entrada desde el flujo Speckit (via speckit-implement) y desde el flujo crudo (via blendverse-analyst).
+description: Orquestador de implementación full-stack. Detecta el alcance (back-only, front-only, full-stack) desde los artefactos de diseño e invoca directamente la cadena back → front → tester → qa → reviewer como subagentes sin intervención del usuario, cierra la tarea en `history_log.json` y, una vez aprobada, genera `pr-detail.md` y abre el PR a `main`. Espeja el progreso en Engram (skill engram-sync) y retoma cadenas interrumpidas. Punto de entrada desde el flujo Speckit (via speckit-implement) y desde el flujo crudo (via blendverse-analyst).
 mode: subagent
 permission:
   read: allow
@@ -48,7 +48,7 @@ Solo si la tarea ya estaba `IN_PROGRESS` en Engram (Paso 1.4) o existe `memory/{
    - `qa` → los tests ya pasaron; arrancar en `@blendverse-qa`.
    - `reviewer` → QA ya pasó; arrancar en `@blendverse-reviewer`.
    - `retry-coder` → QA falló (`03_qa_report.md` con `status: FAIL`) o Reviewer rechazó (`04_review_log.md` con `status: REJECTED`); arrancar en el/los Coder con el feedback correspondiente y continuar tester → qa (→ reviewer si el rechazo fue de review).
-   - `close` → la cadena terminó (`review-log` APPROVED); solo cerrar la tarea (Paso 4) sin re-invocar agentes.
+   - `close` → la cadena terminó (`review-log` APPROVED); cerrar la tarea (Paso 4) sin re-invocar agentes de la cadena y, si el espejo `task/{task_id}/status` aún no tiene `pr_url`, ejecutar el Paso 5 (crear el PR).
 4. Si no hay registro previo ni artefactos en `memory/{task_id}/` → `resume_point: start`.
 
 ### Paso 2 — Detectar el alcance
@@ -106,7 +106,7 @@ Aplicar `resume_point` del Paso 1.5: **solo ejecutar los eslabones que aún falt
 - **`qa`** → ejecutar únicamente `@blendverse-qa` con el prompt de la cadena completa.
 - **`reviewer`** → ejecutar únicamente `@blendverse-reviewer` (el Paso 4 ya contempla la lectura de `03_qa_report.md`).
 - **`retry-coder`** → leer el feedback (error concreto de `03_qa_report.md` si QA falló, o feedback por ítem de `04_review_log.md` si Reviewer rechazó), invocar `@blendverse-back` y/o `@blendverse-front` según el alcance con el prompt de la cadena completa **+ "QA/review falló con el siguiente error: {feedback}. Corregir e incrementar `attempts` en `02_dev_log.md`."**, y continuar con tester → qa (→ reviewer si el rechazo fue de review).
-- **`close`** → no invocar ningún agente; ir directo al Paso 4.
+- **`close`** → no invocar ningún agente; ir directo al Paso 4 y, si el espejo `task/{task_id}/status` no tiene `pr_url`, ejecutar también el Paso 5 (crear el PR).
 
 ### Paso 4 — Reviewer y cierre (común a los 3 escenarios)
 
@@ -115,6 +115,28 @@ Aplicar `resume_point` del Paso 1.5: **solo ejecutar los eslabones que aún falt
 3. Leer `memory/{task_id}/04_review_log.md`. Si `status: APPROVED` → actualizar `memory/history_log.json`: setear `status: COMPLETED` y `closed_at` en la entrada de `{task_id}`. Espejar el cierre en Engram: `mem_save` con `topic_key: task/{task_id}/status`, `status: COMPLETED`, resumen de la cadena de agentes (`agents_chain`), `capture_prompt: false`. Informar al usuario: `✅ Tarea {task_id} completada y aprobada.`
 4. Si `status: REJECTED` → `task` → el/los Coder correspondientes con el feedback de `04_review_log.md`, y repetir desde el punto 1 (tester → qa → reviewer) hasta `APPROVED` o hasta que `@blendverse-reviewer` active su propio Protocolo Break-Loop (`attempts >= 3`).
 5. Si se activa el Protocolo Break-Loop en cualquier agente (`BLOCKED.md`) → espejar en Engram `task/{task_id}/status` con `status: BLOCKED` y detener toda ejecución.
+
+### Paso 5 — PR de la feature (solo si todas las validaciones pasaron)
+
+Se ejecuta **únicamente** cuando `04_review_log.md` tiene `status: APPROVED` y la tarea quedó cerrada en el Paso 4. Abre el PR contra `main` con el detalle generado por `pr-detail`.
+
+1. Verificar el estado del árbol con `git status`. Si quedan archivos sin commitear, crear un commit conventional (skill `commit-conventions`) antes de continuar.
+2. Actualizar `main` local y pushear la rama:
+   ```bash
+   git fetch origin main
+   git push -u origin $(git branch --show-current)
+   ```
+3. Invocar la herramienta `task` con `subagent_type: pr-detail`:
+   > Generar el archivo `pr-detail.md` en la raíz del proyecto comparando `main` con la rama actual (seguir la skill `pr-detail`).
+4. Extraer el título del encabezado `# PR:` de `pr-detail.md` y crear el PR contra `main`:
+   ```bash
+   gh pr create --base main --head $(git branch --show-current) --title "<título del pr-detail.md>" --body-file pr-detail.md
+   ```
+
+   - Si `gh` no está disponible o falla → informar al usuario con la URL compare `https://github.com/NicoCroce/gestDoc/compare/main...<rama>?expand=1` y el contenido de `pr-detail.md` para que cree el PR manualmente.
+5. Eliminar `pr-detail.md` (artefacto derivado, no se commitea).
+6. Actualizar el espejo de cierre en Engram: `mem_save` con `topic_key: task/{task_id}/status`, `status: COMPLETED`, `pr_url` (la URL del PR abierto) y `capture_prompt: false`.
+7. Informar al usuario: `✅ PR abierto: {pr_url}`.
 
 **Fallback:** Si la herramienta `task` no está disponible o falla, presentar los handoff buttons del frontmatter. El usuario hace click en cada uno para continuar la cadena.
 
