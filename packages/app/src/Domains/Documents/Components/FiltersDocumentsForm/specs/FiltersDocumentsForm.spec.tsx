@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Sheet } from '@app/Application/Components/ui/sheet';
 import { renderWithProviders } from '@app/test/renderWithProviders';
@@ -99,5 +99,65 @@ describe('FiltersDocumentsForm', () => {
       'data-state',
       'on',
     );
+  });
+
+  // US1/FR-006: si la URL trae un estado, el selector lo refleja (restauración)
+  it('T8.1: restaura la selección de estado desde la URL', () => {
+    hasPermissionMock.mockReturnValue(false);
+
+    renderWithProviders(
+      <Sheet>
+        <FiltersDocumentsForm />
+      </Sheet>,
+      { initialEntries: ['/?state=bajo_conformidad'] },
+    );
+
+    expect(
+      screen.getByRole('radio', { name: 'Firmados bajo conformidad' }),
+    ).toHaveAttribute('data-state', 'on');
+  });
+
+  // US1/FR-009: "Limpiar filtros" vuelve el selector a "Pendientes"
+  it('T8.2: limpiar filtros vuelve el estado a "Pendientes"', () => {
+    hasPermissionMock.mockReturnValue(false);
+
+    renderWithProviders(
+      <Sheet>
+        <FiltersDocumentsForm />
+      </Sheet>,
+      { initialEntries: ['/?state=sin_conformidad'] },
+    );
+
+    expect(
+      screen.getByRole('radio', { name: 'Firmados sin conformidad' }),
+    ).toHaveAttribute('data-state', 'on');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Limpiar filtros' }));
+
+    expect(screen.getByRole('radio', { name: 'Pendientes' })).toHaveAttribute(
+      'data-state',
+      'on',
+    );
+    expect(
+      screen.getByRole('radio', { name: 'Firmados sin conformidad' }),
+    ).toHaveAttribute('data-state', 'off');
+  });
+
+  // US3 (FR-007): URL con state=validados no rompe el selector (valor legacy sin opción de UI)
+  it('T8.3: state=validados en la URL no rompe el selector (US3)', () => {
+    hasPermissionMock.mockReturnValue(false);
+
+    renderWithProviders(
+      <Sheet>
+        <FiltersDocumentsForm />
+      </Sheet>,
+      { initialEntries: ['/?state=validados'] },
+    );
+
+    // El form no arroja error y el selector sigue presente con sus 3 opciones
+    expect(
+      screen.getByRole('radio', { name: 'Pendientes' }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText('Validados')).not.toBeInTheDocument();
   });
 });
