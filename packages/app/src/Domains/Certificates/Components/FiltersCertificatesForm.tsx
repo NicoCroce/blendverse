@@ -17,7 +17,7 @@ import {
 } from '@app/Application/Components/ui/toggle-group';
 import clsx from 'clsx';
 import { CertificateStatus } from '@server/domains/Certificates/Domain/Certificate.types';
-import { SegmentsFilter } from '@app/Domains/Segments';
+import { SegmentsFilterField } from '@app/Domains/Segments';
 
 const buttonGroupActiveClass =
   'data-[state=on]:!bg-primary data-[state=on]:!text-secondary';
@@ -204,10 +204,7 @@ export const FiltersCertificatesForm = ({
           ))}
         </ToggleGroup>
       </Container>
-      <Container space="small">
-        <Label>Segmentos</Label>
-        <SegmentsFilter />
-      </Container>
+      <SegmentsFilterField />
       <SheetFooter className="mt-16">
         <Container row className="w-full sm:justify-end">
           <Button

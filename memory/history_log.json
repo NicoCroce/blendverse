@@ -10,6 +10,17 @@
       "spec": "specs/multiempresas-usuarios/spec.md",
       "plan": "specs/multiempresas-usuarios/plan.md",
       "tasks": "specs/multiempresas-usuarios/tasks.md"
+    },
+    {
+      "task_id": "TASK-feat-segments-filter-access-20260803-1",
+      "feature": "segments-filter-access",
+      "branch": "feat/segments-filter-access",
+      "status": "COMPLETED",
+      "created_at": "2026-08-03",
+      "closed_at": "2026-08-03",
+      "spec": "specs/segments-filter-access/spec.md",
+      "plan": "specs/segments-filter-access/plan.md",
+      "tasks": "specs/segments-filter-access/tasks.md"
     }
   ]
 }

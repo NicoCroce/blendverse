@@ -2,7 +2,7 @@ import { Input } from '@app/Application';
 import { Checkbox } from '@app/Application/Components/ui/checkbox';
 import { Cross2Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { cn } from '@app/Application/lib/utils';
-import { SegmentsFilter } from '../SegmentsFilter';
+import { SegmentsFilterField } from '../SegmentsFilterField';
 
 export const UserSegmentsToolbar = ({
   search,
@@ -50,7 +50,7 @@ export const UserSegmentsToolbar = ({
       Sin segmento asignado
     </label>
     <div className="w-full sm:w-64">
-      <SegmentsFilter />
+      <SegmentsFilterField showLabel={false} />
     </div>
   </div>
 );

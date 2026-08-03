@@ -15,7 +15,7 @@ import {
 } from '@app/Application/Components/ui/toggle-group';
 import { useGetDocumentsTypes } from '../../Hooks/useGetDocumentsTypes';
 import clsx from 'clsx';
-import { SegmentsFilter } from '@app/Domains/Segments';
+import { SegmentsFilterField } from '@app/Domains/Segments';
 
 const initialState: TDocumentSearch = {
   title: '',
@@ -107,10 +107,7 @@ export const FiltersDocumentsForm = () => {
         </ToggleGroup>
       </Container>
 
-      <Container space="small">
-        <Label>Segmentos</Label>
-        <SegmentsFilter />
-      </Container>
+      <SegmentsFilterField />
 
       <SheetFooter className="mt-16">
         <Container row className="w-full" justify="end">
