@@ -1,4 +1,3 @@
-/* global localStorage, sessionStorage */
 import { expect, test } from '@playwright/test';
 const successfulLoginResponse = {
   result: {

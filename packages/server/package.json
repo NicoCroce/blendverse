@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "build": "rm tsconfig.tsbuildinfo && npx tsc && tsc-alias",
+    "build": "rm -f tsconfig.tsbuildinfo && npx tsc && tsc-alias",
     "dev": "tsx watch src/index.ts",
     "ts": "tsc -v",
     "test": "vitest run",
