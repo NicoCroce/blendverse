@@ -154,8 +154,8 @@ git add <archivos-corregidos>
 # Commit normal (Husky ejecutará validaciones automáticamente)
 git commit -m "feat(domain): add new functionality"
 
-# Saltar hooks solo en casos excepcionales (NO RECOMENDADO)
-git commit --no-verify -m "feat: emergency fix"
+# ⚠️ PROHIBIDO: `git commit --no-verify` (constitución Pr. VI). Si un commit no pasa
+# las validaciones, se corrige el error; nunca se saltan los hooks.
 ```
 
 ### 4. Después de un Merge con Conflictos
@@ -199,13 +199,13 @@ git commit -m "chore: merge <branch> into <current-branch>"
 
 ### Problema: Necesito hacer commit urgente sin validaciones
 
-**Solución (usar con precaución):**
+**Solución:**
 
-```bash
-git commit --no-verify -m "fix: emergency hotfix"
-```
+`--no-verify` está PROHIBIDO (constitución Pr. VI). Los hooks existen para mantener la calidad del código y no tienen ruta de escape.
 
-⚠️ **Advertencia:** Solo usar `--no-verify` en casos excepcionales. Los hooks existen para mantener calidad del código.
+1. Corregir los errores que bloquean el commit
+2. `git add <archivos-corregidos>`
+3. Reintentar el commit
 
 ## Configuración para Nuevos Desarrolladores
 
@@ -249,6 +249,7 @@ pnpm prettier --write "packages/**/*.{ts,tsx}"
 4. **Commitlint** valida el formato del mensaje
 5. El formato **Conventional Commits** es obligatorio
 6. Los **merge commits** deben usar el type `chore`
+7. **`git commit --no-verify` está PROHIBIDO** (constitución Pr. VI)
 
 ## Ejemplos de Workflow Completo
 

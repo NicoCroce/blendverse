@@ -25,8 +25,7 @@ description: Genera un dominio completo en el frontend React/tRPC: entity types,
 
 Esta skill asume que el dominio ya fue creado con `back-ddd-generator`. Necesitas leer de:
 
-- `packages/server/src/domains/[Domain]/Application/[domain].types.ts` → para los tipos `I[Entity]`
-- `packages/server/src/domains/[Domain]/Infrastructure/Routes/[Domain].routes.ts` → para el tipo `T[Domain]Router`
+- `packages/server/src/domains/[Domain]/Infrastructure/Routes/[Domain].routes.ts` → para el tipo `T[Domain]Router` (el contrato tRPC del dominio)
 
 ---
 
@@ -90,11 +89,16 @@ Archivos globales a actualizar:
 
 ## Template: `[Entity].entity.ts`
 
+> ⚠️ **DERIVAR DEL CONTRATO, NUNCA DEL INTERNO (constitución Pr. III):** no importes `I[Entity]` del server ni definas `T[Entity] = I[Entity]` — es el desvío D1 de `arch-audit` (segunda fuente de verdad que se desincroniza del contrato real). Deriva con `inferRouterOutputs`: el tipo ES la salida que tRPC devuelve por la red. `get` devuelve `[Entity] | null`, por eso se envuelve en `NonNullable`.
+
 ```typescript
-import { I[Entity] } from '@server/domains/[Domain]';
+import { inferRouterOutputs } from '@trpc/server';
+import { T[Domain]Router } from '@server/domains/[Domain]';
 import { TPagination } from '@app/Application';
 
-export type T[Entity] = I[Entity];
+type T[Domain]RouterOutput = inferRouterOutputs<T[Domain]Router>;
+
+export type T[Entity] = NonNullable<T[Domain]RouterOutput['get']>;
 
 export type T[Entity]Search = {
   // campos de búsqueda opcionales según los filtros del dominio
@@ -401,6 +405,7 @@ Agregar la entrada de menú siguiendo el patrón de las entradas existentes.
 Tras crear todos los archivos, ejecuta `diagnostics/getErrors` y verifica:
 
 - [ ] No hay errores de TypeScript
+- [ ] `[Entity].entity.ts` deriva los tipos con `inferRouterOutputs` (nunca `I[Entity]` del server — desvío D1)
 - [ ] `[Domain].service.ts` importa el tipo correcto del dominio server
 - [ ] Todos los hooks usan `[Domain]Service` (no instancias directas de tRPC)
 - [ ] `Routes.tsx` incluye el nuevo `[Domain]Router`

@@ -47,16 +47,17 @@ Resolved TODOs (2026-07-31):
      apunta a `AGENTS.md` (archivo de instrucciones que opencode lee en la raíz del repo)
   ✅ .specify/init-options.json y .specify/integration.json — integración actualizada a
      "opencode" (integración válida del workflow Speckit)
+  ✅ .opencode/skills/back-ddd-generator — templates de `[domain].types.ts` y use cases
+     corregidos: `id_propietario` eliminado de los schemas Zod de entrada y asignado en
+     el use case desde `requestContext.values.ownerId` (Pr. II)
+  ✅ .opencode/skills/commit-conventions — eliminadas las referencias a `--no-verify`;
+     el skill ahora documenta la prohibición (Pr. VI)
+  ✅ .opencode/skills/front-ddd-generator — template `[Entity].entity.ts` convertido a
+     `inferRouterOutputs<T[Domain]Router>` con `NonNullable` (Pr. III); el desvío D1 de
+     `arch-audit` desaparece de los dominios nuevos
 
 Follow-up TODOs (artefactos que contradicen esta constitución — corregir en tareas
 separadas):
-  - ⚠ .opencode/skills/commit-conventions — permite `--no-verify` en emergencias
-    (contradice Pr. VI); el skill DEBE reflejar la prohibición
-  - ⚠ .opencode/skills/front-ddd-generator — template `[Entity].entity.ts` usa
-    `T[Entity] = I[Entity]` importando del server (contradice Pr. III y el desvío D1
-    de `arch-audit`); debe derivar con `inferRouterOutputs`
-  - ⚠ .opencode/skills/back-ddd-generator — template de `[domain].types.ts` declara
-    `id_propietario` en los schemas Zod de entrada (contradice Pr. II)
   - ⚠ Dominios existentes del server (`Auth`, `Users`, `Documents`, etc.) siguen
     usando `export * from './Infrastructure'` y varias relaciones importan
     `UserModel`/`ProfileModel` desde el barrel del dominio; requieren refactor a

@@ -158,14 +158,14 @@ export type I[Entity] = {
 };
 
 // ─── Schemas Zod (fuente de verdad para validación en controller) ────────────
+// ⚠️ NUNCA declarar `id_propietario` en los schemas de entrada (constitución Pr. II):
+// el tenant proviene de `requestContext.values.ownerId`, jamás del cliente.
 export const Create[Entity]Schema = z.object({
-  id_propietario: z.number(),
   // [fields obligatorios]
 });
 
 export const Update[Entity]Schema = z.object({
   id: z.number(),
-  id_propietario: z.number(),
   // [fields actualizables]
 });
 
@@ -309,7 +309,10 @@ export class Create[Entity] implements IUseCase<[Entity]> {
   constructor(private readonly [entity]Repository: [Entity]Repository) {}
 
   async execute({ input, requestContext }: ICreate[Entity]): Promise<[Entity]> {
-    const new[Entity] = [Entity].create({ ...input });
+    const new[Entity] = [Entity].create({
+      ...input,
+      id_propietario: requestContext.values.ownerId,
+    });
     return this.[entity]Repository.create[Entity]({ [entity]: new[Entity], requestContext });
   }
 }
@@ -329,7 +332,10 @@ export class Update[Entity] implements IUseCase<[Entity]> {
   constructor(private readonly [entity]Repository: [Entity]Repository) {}
 
   async execute({ input, requestContext }: IUpdate[Entity]): Promise<[Entity]> {
-    const entity = [Entity].create({ ...input });
+    const entity = [Entity].create({
+      ...input,
+      id_propietario: requestContext.values.ownerId,
+    });
     return this.[entity]Repository.update[Entity]({ [entity]: entity, requestContext });
   }
 }
@@ -725,5 +731,6 @@ Tras crear todos los archivos, ejecuta `diagnostics/getErrors` y verifica:
 - [ ] El `[domain].di.ts` exporta todos los use cases con prefijo `_`
 - [ ] `register.ts` incluye el nuevo dominio
 - [ ] `Router.ts` incluye las nuevas rutas
+- [ ] `id_propietario` NO aparece en los schemas Zod de entrada; se asigna desde `requestContext.values.ownerId` en los use cases de create/update
 - [ ] El `index.ts` público exporta SOLO `./Domain`, `./Application`, `./Infrastructure/Routes` y `./[domain].di` (nunca `./Infrastructure` completo)
 - [ ] El repositorio filtra por `ownerId` en cada método que corresponde

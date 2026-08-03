@@ -65,7 +65,22 @@ Tras decidir el resultado de esta fase (ejecutada o salteada), invocar la skill 
 
 ## Fase 3 — Diseño Técnico
 
-Invocar el agente `@speckit-plan` para generar los artefactos de diseño.
+### 3.1 — Dirección de diseño frontend (condicional)
+
+Determinar si la feature tiene alcance frontend leyendo `spec.md` (user stories que mencionen UI, pantallas, componentes, o categoría UX cubierta).
+
+- Si es **back-only** → saltear este paso y continuar directo al plan técnico.
+- Si es **front-only** o **full-stack** → invocar la skill `frontend-design` (`.agents/skills/frontend-design/SKILL.md`) con `spec.md` como brief y producir `specs/{feature}/frontend-design.md`:
+  - **Grounding del brief**: subject concreto, audiencia y el único job de la página.
+  - **Token system**: paleta de 4–6 hex nombrados, roles de tipografía (display + body + utility), concepto de layout, y el elemento firma único.
+  - **Self-critique**: revisión del plan contra el brief, señalando qué se descartó por ser default genérico y por qué.
+  - Aplicar la revisión antes de fijar el artefacto (no quedarse con la primera pasada).
+
+Output esperado: `specs/{feature}/frontend-design.md`
+
+### 3.2 — Plan técnico
+
+Invocar el agente `@speckit-plan` para generar los artefactos de diseño técnico. Si existe `specs/{feature}/frontend-design.md`, indicarle que lo lea para alinear la sección frontend del plan (tokens, tipografías, layout) con la dirección visual.
 
 Output esperado en `specs/{feature}/`:
 
@@ -75,13 +90,14 @@ Output esperado en `specs/{feature}/`:
 
 ### Restricciones
 
-**Esperar confirmación antes de continuar. Debes darle la posibilidad de iterar, corregir y agregar todo lo necesario sobre el `plan` antes de continuar. Siempre pregunta todas las dudas que puedas tener y compórtate en `modo plan`**
+**Esperar confirmación antes de continuar. Debes darle la posibilidad de iterar, corregir y agregar todo lo necesario sobre el `plan` y el `frontend-design` antes de continuar. Siempre pregunta todas las dudas que puedas tener y compórtate en `modo plan`**
 
 ### Sync a Engram
 
 Tras la confirmación del usuario, invocar la skill `engram-sync` y guardar:
 
 - `topic_key: feature/{{feature}}/plan` → `status: APPROVED`, resumen de stack, estructura y fases, `Where: specs/{{feature}}/plan.md` (+ `data-model.md` y `contracts/` si aplica).
+- `topic_key: feature/{{feature}}/frontend-design` → `status: APPROVED` (si aplica) o `status: SKIPPED` (si back-only), resumen de paleta, tipografías y elemento firma, `Where: specs/{feature}/frontend-design.md`.
 - Actualizar `feature/{{feature}}/pipeline` → `current_phase: 4`.
 
 ## Fase 4 — Desglose de Tareas
@@ -126,6 +142,7 @@ Una vez completadas y aprobadas por el usuario todas las fases Speckit, presenta
 ✅ Pipeline Speckit completado:
    - spec.md     → user stories con criterios de aceptación
    - plan.md     → diseño técnico + stack
+   - frontend-design.md → dirección visual (tokens, tipografías, firma) — si aplica
    - tasks.md    → tareas ordenadas por user story
 
 📁 Artefactos en: specs/{feature}/
@@ -140,7 +157,7 @@ Antes de delegar, invocar la skill `engram-sync` y guardar:
 
 Luego,**sin esperar intervención del usuario**, invocar directamente el agente `@blendverse-implement` pasándole `{{feature}}` explícitamente en el prompt, por ejemplo:
 
-> La feature a implementar es `{{feature}}`. Los artefactos de diseño están en `specs/{{feature}}/` (`spec.md`, `plan.md`, `tasks.md`). Resolvé el `task_id` (Paso 1 de tu protocolo) y procedé con la cadena `back → front → tester → qa → reviewer` de forma autónoma. Usá la skill `engram-sync` para registrar la tarea en Engram y retomar si hay una tarea en curso.
+> La feature a implementar es `{{feature}}`. Los artefactos de diseño están en `specs/{{feature}}/` (`spec.md`, `plan.md`, `tasks.md` y, si aplica, `frontend-design.md`). Resolvé el `task_id` (Paso 1 de tu protocolo) y procedé con la cadena `back → front → tester → qa → reviewer` de forma autónoma. El agente `@blendverse-front` debe leer y aplicar `frontend-design.md` como brief visual al implementar la capa de presentación. Usá la skill `engram-sync` para registrar la tarea en Engram y retomar si hay una tarea en curso.
 
 Este orquestador ya sabe leer `specs/{{feature}}/spec.md` y `tasks.md` directamente (sin transcribirlos a `memory/`), detectar el alcance e iniciar la cadena completa hasta el cierre de la tarea.
 
@@ -157,3 +174,5 @@ Este orquestador ya sabe leer `specs/{{feature}}/spec.md` y `tasks.md` directame
 - Todas las fases 1–5 se comportarán como modo `plan`.
 - Si alguna de las fases demora más de 5 minutos, debes indicarle al usuario por pantalla y analizar por qué está demando tanto tiempo.
 - Cada fase aprobada se espeja en Engram (skill `engram-sync`). Si el pipeline se interrumpe entre sesiones, el pre-flight detecta `feature/{feature}/pipeline` en `IN_PROGRESS` y ofrece reanudar desde `current_phase`.
+- La Fase 3.1 es **condicional al alcance UI**: para features back-only no se genera `frontend-design.md` y el espejo en Engram queda como `SKIPPED`. El artefacto define una **dirección visual** (tokens de color/tipografía/layout y elemento firma), no un mockup.
+- La evaluación de `tsc` + `eslint` (skill `qa-runner`) y el fix automático de inconsistencias **no** ocurren en las Fases 1–5 (no hay código aún): ocurren en la cadena del handoff (Fase 6). `@blendverse-qa` valida estáticamente y escribe `03_qa_report.md`; `@blendverse-implement` re-invoca al Coder (`back`/`front`) con el error concreto hasta `PASS`. El tope de 3 intentos lo cuenta QA leyendo `attempts` del `02_dev_log.md` (que incrementa el Coder): si `attempts >= 3` ejecuta el Protocolo Break-Loop → `BLOCKED`.
