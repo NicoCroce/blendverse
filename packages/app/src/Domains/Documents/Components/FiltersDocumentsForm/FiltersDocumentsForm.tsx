@@ -13,8 +13,6 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from '@app/Application/Components/ui/toggle-group';
-import { useGetDocumentsTypes } from '../../Hooks/useGetDocumentsTypes';
-import clsx from 'clsx';
 import { SegmentsFilterField } from '@app/Domains/Segments';
 
 const initialState: TDocumentSearch = {
@@ -32,8 +30,8 @@ export const FiltersDocumentsForm = () => {
     ...initialState,
     ...searchParams,
   });
-  const { data: documentsTypes } = useGetDocumentsTypes();
-
+  /*   const { data: documentsTypes } = useGetDocumentsTypes();
+   */
   const handleChangeFilters = ({
     target: { name, value },
   }: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,9 +42,9 @@ export const FiltersDocumentsForm = () => {
     setFormState((prev) => ({ ...prev, state: value as TStateDocument }));
   };
 
-  const handleType = (value: string) => {
+  /*   const handleType = (value: string) => {
     setFormState((prev) => ({ ...prev, type: value }));
-  };
+  }; */
 
   const handleApplyFilters = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -86,7 +84,8 @@ export const FiltersDocumentsForm = () => {
           </ToggleGroupItem>
         </ToggleGroup>
       </Container>
-      <Container space="small">
+      {/* NOTE: En un futuro puede ser que se implemente por tipo de documentos por el momneto solo son recibos. */}
+      {/*  <Container space="small">
         <Label>Tipo</Label>
         <ToggleGroup
           type="single"
@@ -105,7 +104,7 @@ export const FiltersDocumentsForm = () => {
             </ToggleGroupItem>
           ))}
         </ToggleGroup>
-      </Container>
+      </Container> */}
 
       <SegmentsFilterField />
 
