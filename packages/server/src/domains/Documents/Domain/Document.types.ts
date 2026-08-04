@@ -1,4 +1,8 @@
-export type TStateDocument = 'validados' | 'pendientes';
+export type TStateDocument =
+  | 'pendientes'
+  | 'bajo_conformidad'
+  | 'sin_conformidad'
+  | 'validados'; // legacy: reemplazado por bajo_conformidad / sin_conformidad
 
 export interface IDocument {
   id: number;

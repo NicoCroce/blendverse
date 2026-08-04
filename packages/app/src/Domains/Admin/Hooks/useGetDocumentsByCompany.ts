@@ -1,10 +1,14 @@
 import { useURLParams } from '@app/Application';
-import { documentsService, TDocumentSearch } from '@app/Domains/Documents';
+import {
+  documentsService,
+  normalizeState,
+  TDocumentSearch,
+} from '@app/Domains/Documents';
 
 export const useGetDocumentsByCompany = () => {
   const { searchParams } = useURLParams<TDocumentSearch>();
 
-  const { id, segmentos: rawSegmentos, ...rest } = searchParams || {};
+  const { id, segmentos: rawSegmentos, state, ...rest } = searchParams || {};
 
   const segmentos = rawSegmentos
     ? rawSegmentos
@@ -16,6 +20,7 @@ export const useGetDocumentsByCompany = () => {
   return documentsService.getAllByCompany.useQuery(
     {
       ...rest,
+      state: normalizeState(state),
       ...(segmentos && segmentos.length > 0 ? { segmentos } : {}),
     },
     {

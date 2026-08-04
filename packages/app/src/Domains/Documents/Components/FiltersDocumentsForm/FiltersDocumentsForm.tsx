@@ -1,28 +1,17 @@
 import { Button, Container, useURLParams } from '@app/Application';
 import { Input } from '@app/Application/Components/ui/input';
 import { Label } from '@app/Application/Components/ui/label';
-import {
-  PENDING,
-  VALIDATED,
-  TDocumentSearch,
-  TStateDocument,
-} from '../../Document.entity';
+import { PENDING, TDocumentSearch } from '../../Document.entity';
 import { useState } from 'react';
 import { SheetClose, SheetFooter } from '@app/Application/Components/ui/sheet';
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from '@app/Application/Components/ui/toggle-group';
 import { SegmentsFilterField } from '@app/Domains/Segments';
+import { DocumentsStateFilterField } from '../DocumentsStateFilterField';
 
 const initialState: TDocumentSearch = {
   title: '',
   state: PENDING,
   type: '',
 };
-
-const buttonGroupActiveClass =
-  'data-[state=on]:!bg-primary data-[state=on]:!text-secondary';
 
 export const FiltersDocumentsForm = () => {
   const { searchParams, updateParams } = useURLParams<TDocumentSearch>();
@@ -36,10 +25,6 @@ export const FiltersDocumentsForm = () => {
     target: { name, value },
   }: React.ChangeEvent<HTMLInputElement>) => {
     setFormState((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleState = (value: string) => {
-    setFormState((prev) => ({ ...prev, state: value as TStateDocument }));
   };
 
   /*   const handleType = (value: string) => {
@@ -67,23 +52,12 @@ export const FiltersDocumentsForm = () => {
           onChange={handleChangeFilters}
         />
       </Container>
-      <Container space="small">
-        <Label>Estado</Label>
-        <ToggleGroup
-          type="single"
-          variant="outline"
-          className="justify-start gap-4"
-          onValueChange={handleState}
-          value={formState.state}
-        >
-          <ToggleGroupItem value={PENDING} className={buttonGroupActiveClass}>
-            Pendientes
-          </ToggleGroupItem>
-          <ToggleGroupItem value={VALIDATED} className={buttonGroupActiveClass}>
-            Validados
-          </ToggleGroupItem>
-        </ToggleGroup>
-      </Container>
+      <DocumentsStateFilterField
+        value={formState.state ?? PENDING}
+        onChange={(value) =>
+          setFormState((prev) => ({ ...prev, state: value }))
+        }
+      />
       {/* NOTE: En un futuro puede ser que se implemente por tipo de documentos por el momneto solo son recibos. */}
       {/*  <Container space="small">
         <Label>Tipo</Label>

@@ -15,7 +15,9 @@ const params = z.object({
     .default(null),
   signed: z.boolean().nullable().default(null),
   view: z.boolean().nullable().default(null),
-  state: z.enum(['validados', 'pendientes']).default('pendientes'),
+  state: z
+    .enum(['pendientes', 'bajo_conformidad', 'sin_conformidad', 'validados'])
+    .default('pendientes'),
   segmentos: z.array(z.number()).optional().default([]),
 });
 export class DocumentsController {
