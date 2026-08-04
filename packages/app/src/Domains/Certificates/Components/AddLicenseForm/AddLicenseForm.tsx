@@ -94,7 +94,10 @@ export const AddLicenseForm = () => {
             ></SelectField>
 
             <Container>
-              <Container row justify="between" className="[&>*]:flex-1">
+              <Container
+                justify="between"
+                className="flex-col md:flex-row md:[&>*]:flex-1"
+              >
                 <FormField
                   name="startDate"
                   control={formLicense.control}

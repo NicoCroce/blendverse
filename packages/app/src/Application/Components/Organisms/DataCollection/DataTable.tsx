@@ -13,17 +13,9 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { Skeleton } from '../../ui/skeleton';
-import { Container } from '../../Layout';
-import { Button, Select, TOptions } from '../../Molecules';
-import { usePagination } from '@app/Application/Hooks';
 import { IPaginationPages } from '@app/Application/Helpers';
-import { Badge } from '../../ui/badge';
+import { DataTablePagination } from './DataTablePagination';
 
-const limitOptions: TOptions[] = [
-  { label: '10', value: '10' },
-  { label: '20', value: '20' },
-  { label: '50', value: '50' },
-];
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -36,14 +28,6 @@ export const DataTable = <TData, TValue>({
   pagination: { totalPages, totalItems },
 }: DataTableProps<TData, TValue>) => {
   'use no memo';
-  const {
-    currentPage,
-    handleChangePage,
-    handlePage,
-    currentLimit,
-    handleChangeLimit,
-  } = usePagination(totalPages);
-
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
@@ -95,40 +79,7 @@ export const DataTable = <TData, TValue>({
           )}
         </TableBody>
       </Table>
-      <Container row justify="between" className="mt-4 border-t p-2">
-        <Select
-          options={limitOptions}
-          placeholder="Resultados"
-          onValueChange={handleChangeLimit}
-          defaultValue={String(currentLimit)}
-        />
-        <Container row>
-          <Button
-            onClick={() => handleChangePage(Number(currentPage) - 1)}
-            disabled={handlePage.startPage}
-            variant="outline"
-          >
-            {'<'}
-          </Button>
-          <Badge className="justify-center" variant="secondary">
-            {currentPage === totalPages ? (
-              <span>{currentPage}</span>
-            ) : (
-              <span>
-                {currentPage} ... {totalPages}
-              </span>
-            )}
-          </Badge>
-          <Button
-            onClick={() => handleChangePage(Number(currentPage) + 1)}
-            disabled={handlePage.lastPage}
-            variant="outline"
-          >
-            {'>'}
-          </Button>
-        </Container>
-        <Badge variant="secondary">Total: {totalItems}</Badge>
-      </Container>
+      <DataTablePagination totalPages={totalPages} totalItems={totalItems} />
     </div>
   );
 };

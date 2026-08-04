@@ -1,9 +1,11 @@
 import { Container, Page, Input } from '@app/Application';
 import { DataTable } from '@app/Application/Components/Organisms/DataCollection/DataTable';
+import { DataTablePagination } from '@app/Application/Components/Organisms/DataCollection/DataTablePagination';
 import { Button } from '@app/Application/Components';
 import { Skeleton } from '@app/Application/Components/ui/skeleton';
 import { Cross2Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { StatisticsEmpleados } from '@app/Domains/Admin/Components/StatisticsEmpleados';
+import { EmployeeCards } from './EmployeeCards';
 import { useEmpleadosPage } from './useEmpleadosPage';
 
 const TableSkeleton = () => (
@@ -19,6 +21,24 @@ const TableSkeleton = () => (
         <Skeleton className="h-4 w-1/3" />
         <Skeleton className="h-5 w-20 rounded-full" />
         <Skeleton className="h-5 w-24 rounded-full" />
+      </div>
+    ))}
+  </div>
+);
+
+const CardsSkeleton = () => (
+  <div className="flex flex-col gap-2 md:hidden">
+    {Array.from({ length: 5 }).map((_, i) => (
+      <div key={i} className="flex items-start gap-3 rounded-md border p-3">
+        <Skeleton className="size-5 rounded-sm shrink-0" />
+        <div className="flex-1 space-y-2">
+          <Skeleton className="h-4 w-2/3" />
+          <Skeleton className="h-3 w-full" />
+          <div className="space-y-1.5 pt-1">
+            <Skeleton className="h-3.5 w-full" />
+            <Skeleton className="h-3.5 w-full" />
+          </div>
+        </div>
       </div>
     ))}
   </div>
@@ -48,6 +68,7 @@ export const EmpleadosPage = () => {
     handleActivateSelection,
     handleCancelSelection,
     handleConfirmReminders,
+    handleToggleSelection,
     sendReminders,
     selectedIds,
     employees,
@@ -85,7 +106,7 @@ export const EmpleadosPage = () => {
             Enviar recordatorios
           </Button>
         ) : (
-          <Container row space="small">
+          <Container row space="small" className="flex-wrap">
             <Button
               variant="outline"
               onClick={handleConfirmReminders}
@@ -104,13 +125,34 @@ export const EmpleadosPage = () => {
       </div>
 
       {isLoading ? (
-        <TableSkeleton />
+        <>
+          <div className="hidden md:block">
+            <TableSkeleton />
+          </div>
+          <CardsSkeleton />
+        </>
       ) : employees.length > 0 ? (
-        <DataTable
-          columns={columns}
-          data={employees}
-          pagination={paginationMeta}
-        />
+        <>
+          <div className="hidden md:block">
+            <DataTable
+              columns={columns}
+              data={employees}
+              pagination={paginationMeta}
+            />
+          </div>
+          <div className="md:hidden">
+            <EmployeeCards
+              employees={employees}
+              selectionMode={selectionMode}
+              selectedIds={selectedIds}
+              onToggleSelection={handleToggleSelection}
+            />
+            <DataTablePagination
+              totalPages={paginationMeta.totalPages}
+              totalItems={paginationMeta.totalItems}
+            />
+          </div>
+        </>
       ) : (
         <EmptyState search={search} />
       )}

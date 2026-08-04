@@ -106,6 +106,7 @@ export const useEmpleadosPage = () => {
     handleActivateSelection,
     handleCancelSelection,
     handleConfirmReminders,
+    handleToggleSelection,
     sendReminders,
     employees,
     paginationMeta,

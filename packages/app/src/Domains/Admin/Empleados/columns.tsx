@@ -1,6 +1,17 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Badge } from '@app/Application/Components/ui/badge';
 import { Checkbox } from '@app/Application/Components/ui/checkbox';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faCircleCheck,
+  faCircleExclamation,
+} from '@fortawesome/free-solid-svg-icons';
+import { Text } from '@app/Application';
+
+const OkIcon = () => <FontAwesomeIcon icon={faCircleCheck} color="green" />;
+const NotIcon = () => (
+  <FontAwesomeIcon icon={faCircleExclamation} className="text-amber-700" />
+);
 
 export interface IEmployeeRecord {
   id: number;
@@ -17,6 +28,15 @@ interface EmployeeColumnsOptions {
   onToggleSelection: (id: number) => void;
   onToggleAll: () => void;
 }
+
+export const getRenovarClaveVariant = (needsRenewal: boolean) =>
+  needsRenewal ? 'secondary' : 'default';
+
+export const getEstadoFirmaVariant = (estado: string) => {
+  if (estado === 'Firmado') return 'default';
+  if (estado === 'Corrupto') return 'destructive';
+  return 'secondary';
+};
 
 export const employeeColumns = (
   options: EmployeeColumnsOptions,
@@ -66,28 +86,39 @@ export const employeeColumns = (
     },
     {
       accessorKey: 'renovar_clave',
-      header: 'Renovar clave',
+      header: 'Contraseña actualizada',
       cell: ({ row }) => {
         const needsRenewal = row.getValue('renovar_clave') as boolean;
         return (
-          <Badge variant={needsRenewal ? 'secondary' : 'default'}>
-            {needsRenewal ? 'Debe renovar' : 'OK'}
+          <Badge variant="secondary">
+            {needsRenewal ? (
+              <Text>
+                <OkIcon /> Actualizada
+              </Text>
+            ) : (
+              <Text>
+                <NotIcon /> Debe renovar
+              </Text>
+            )}
           </Badge>
         );
       },
     },
     {
       accessorKey: 'estado_firma',
-      header: 'Acepto términos',
+      header: 'Términos firmados',
       cell: ({ row }) => {
-        const estado = row.getValue('estado_firma') as string;
-        const getVariant = (state: string): string => {
-          if (state === 'Firmado') return 'default';
-          if (state === 'Corrupto') return 'destructive';
-          return 'secondary';
-        };
-        const variant = getVariant(estado);
-        return <Badge variant={variant as never}>{estado}</Badge>;
+        const estado = row.getValue(
+          'estado_firma',
+        ) as IEmployeeRecord['estado_firma'];
+        const Icon = estado === 'Firmado' ? <OkIcon /> : <NotIcon />;
+        return (
+          <Badge variant="secondary">
+            <Text>
+              {Icon} {estado}
+            </Text>
+          </Badge>
+        );
       },
     },
   );

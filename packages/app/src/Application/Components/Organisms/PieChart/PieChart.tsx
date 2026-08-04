@@ -18,6 +18,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/Application/Components/ui/chart';
+import { cn } from '@/Application/lib/utils';
 import { Text } from '../../Molecules';
 import { Container } from '../../Layout';
 
@@ -58,6 +59,7 @@ interface PieChartComponentProps {
   header?: TText;
   footer?: TText;
   labelCenter?: string;
+  className?: string;
 }
 
 export const PieChartComponent = ({
@@ -66,6 +68,7 @@ export const PieChartComponent = ({
   header,
   footer,
   labelCenter,
+  className,
 }: PieChartComponentProps) => {
   const chartConfig = useMemo(() => buildChartConfig(chartData), [chartData]);
 
@@ -79,7 +82,9 @@ export const PieChartComponent = ({
   );
 
   return (
-    <Card className="border-0 shadow-none flex flex-col">
+    <Card
+      className={cn('border-0 shadow-none flex flex-col w-[40%]', className)}
+    >
       {header && (
         <CardHeader className="items-center pb-0">
           {header.title && <CardTitle>{header.title}</CardTitle>}
@@ -92,7 +97,7 @@ export const PieChartComponent = ({
         {chartData.length !== 0 ? (
           <ChartContainer
             config={chartConfig}
-            className="mx-auto aspect-square max-h-[250px]"
+            className="mx-auto aspect-square max-h-62.5"
           >
             <PieChart>
               <ChartTooltip

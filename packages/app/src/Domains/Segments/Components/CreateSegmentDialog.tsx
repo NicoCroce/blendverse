@@ -57,16 +57,18 @@ export const CreateSegmentDialog = () => {
           />
         </Container>
         <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="outline">Cancelar</Button>
-          </DialogClose>
-          <Button
-            onClick={handleCreate}
-            disabled={!newName.trim() || createMutation.isPending}
-            isLoading={createMutation.isPending}
-          >
-            Crear
-          </Button>
+          <Container row justify="end">
+            <DialogClose asChild>
+              <Button variant="outline">Cancelar</Button>
+            </DialogClose>
+            <Button
+              onClick={handleCreate}
+              disabled={!newName.trim() || createMutation.isPending}
+              isLoading={createMutation.isPending}
+            >
+              Crear
+            </Button>
+          </Container>
         </DialogFooter>
       </DialogContent>
     </Dialog>
