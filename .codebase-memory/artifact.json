@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
-  "commit": "6ef904a5aa5a3d9845f8f5730d2733e17eb63322",
-  "indexed_at": "2026-08-05T01:14:22Z",
+  "commit": "5fda46b6591be6947c59a23ee9e7fc64fa26f90f",
+  "indexed_at": "2026-08-05T03:15:26Z",
   "project": "Users-nicocroce-Personal-Macrosistemas-gestDoc",
-  "nodes": 3423,
-  "edges": 8261,
-  "original_size": 11403264,
-  "compressed_size": 1711551,
+  "nodes": 627,
+  "edges": 847,
+  "original_size": 3604480,
+  "compressed_size": 431427,
   "compression_level": 3
 }

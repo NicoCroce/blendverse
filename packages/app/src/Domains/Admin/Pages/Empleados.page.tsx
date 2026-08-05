@@ -1,4 +1,4 @@
-import { Container, Page, Input } from '@app/Application';
+import { Container, Page, Input, useDevice } from '@app/Application';
 import { DataTable } from '@app/Application/Components/Organisms/DataCollection/DataTable';
 import { DataTablePagination } from '@app/Application/Components/Organisms/DataCollection/DataTablePagination';
 import { Button } from '@app/Application/Components';
@@ -26,6 +26,7 @@ export const EmpleadosPage = () => {
     columns,
     isLoading,
   } = useEmpleadosPage();
+  const { isMobile } = useDevice();
 
   return (
     <Page title="Empleados">
@@ -75,22 +76,14 @@ export const EmpleadosPage = () => {
       </Container>
 
       {isLoading ? (
-        <>
-          <div className="hidden md:block">
-            <TableSkeleton />
-          </div>
+        isMobile ? (
           <CardsSkeleton />
-        </>
+        ) : (
+          <TableSkeleton />
+        )
       ) : employees.length > 0 ? (
-        <>
-          <div className="hidden md:block">
-            <DataTable
-              columns={columns}
-              data={employees}
-              pagination={paginationMeta}
-            />
-          </div>
-          <div className="md:hidden">
+        isMobile ? (
+          <>
             <EmployeeCards
               employees={employees}
               selectionMode={selectionMode}
@@ -101,8 +94,14 @@ export const EmpleadosPage = () => {
               totalPages={paginationMeta.totalPages}
               totalItems={paginationMeta.totalItems}
             />
-          </div>
-        </>
+          </>
+        ) : (
+          <DataTable
+            columns={columns}
+            data={employees}
+            pagination={paginationMeta}
+          />
+        )
       ) : (
         <EmpleadosEmptyState search={search} />
       )}

@@ -289,38 +289,41 @@ export const EntityRouter = [
 
 ## Responsive — Mobile First
 
-**Regla:** una misma página soporta dos presentaciones (tabla en desktop, cards en mobile) con UN solo hook de lógica. El hook orquesta datos, búsqueda, paginación, modo selección y acciones; la página solo elige la presentación por breakpoint con `md:`.
+**Regla:** una misma página soporta dos presentaciones (tabla en desktop, cards en mobile) con UN solo hook de lógica. El hook orquesta datos, búsqueda, paginación, modo selección y acciones; la página elige la presentación con `useDevice()` y ternarios.
+
+**PROHIBIDO usar `hidden md:block` / `md:hidden` para elegir presentación.** Con CSS `hidden` ambas ramas se montan en React: los dos componentes corren sus hooks, efectos y lógica aunque CSS los oculte — renderizado duplicado sin necesidad. El hook `useDevice()` (breakpoint 768px, store global) solo monta el componente que corresponde al dispositivo.
 
 Patrón de referencia: `Admin/Pages/Empleados.page.tsx` + `Admin/Hooks/useEmpleadosPage.ts` + `Admin/Components/EmployeeCards.tsx`.
 
 ```tsx
+const { isMobile } = useDevice(); // de @app/Application
+
 {isLoading ? (
-  <>
-    <div className="hidden md:block">
-      <TableSkeleton />
-    </div>
-    <CardsSkeleton /> {/* internamente md:hidden */}
-  </>
+  isMobile ? (
+    <CardsSkeleton />
+  ) : (
+    <TableSkeleton />
+  )
 ) : items.length > 0 ? (
-  <>
-    <div className="hidden md:block">
-      <DataTable columns={columns} data={items} pagination={paginationMeta} />
-    </div>
-    <div className="md:hidden">
+  isMobile ? (
+    <>
       <ItemCards items={items} selectionMode={selectionMode} ... />
       <DataTablePagination totalPages={paginationMeta.totalPages} totalItems={paginationMeta.totalItems} />
-    </div>
-  </>
+    </>
+  ) : (
+    <DataTable columns={columns} data={items} pagination={paginationMeta} />
+  )
 ) : (
   <EmptyState search={search} />
 )}
 ```
 
-- **Desktop (≥ `md`):** `DataTable` con el layout actual, sin cambios de comportamiento.
-- **Mobile (< `md`):** lista de cards con el mismo contrato de datos (página, selección, acciones).
-- **Skeletons:** uno por presentación (`TableSkeleton` con `hidden md:block`, `CardsSkeleton` con `md:hidden`).
+- **Desktop (≥ 768px):** `DataTable` con el layout actual, sin cambios de comportamiento.
+- **Mobile (< 768px):** lista de cards con el mismo contrato de datos (página, selección, acciones).
+- **Skeletons:** uno por presentación, elegido con el mismo ternario. No llevan `md:hidden` interno.
 - **Empty state:** componente extraído, compartido por ambas presentaciones.
 - **NO dupliques lógica:** selección, búsqueda, paginación y mutations viven en un único hook (ej. `useEmpleadosPage`), nunca en la página ni en los componentes de presentación.
+- Los componentes de presentación (cards, skeletons) NO declaran responsive internamente: la decisión vive en la página.
 
 ## Formularios
 
