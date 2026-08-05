@@ -1,17 +1,8 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Badge } from '@app/Application/Components/ui/badge';
 import { Checkbox } from '@app/Application/Components/ui/checkbox';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faCircleCheck,
-  faCircleExclamation,
-} from '@fortawesome/free-solid-svg-icons';
 import { Text } from '@app/Application';
-
-const OkIcon = () => <FontAwesomeIcon icon={faCircleCheck} color="green" />;
-const NotIcon = () => (
-  <FontAwesomeIcon icon={faCircleExclamation} className="text-amber-700" />
-);
+import { OkIcon, NotIcon } from './StatusIcons';
 
 export interface IEmployeeRecord {
   id: number;

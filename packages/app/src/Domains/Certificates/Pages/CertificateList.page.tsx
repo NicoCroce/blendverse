@@ -41,8 +41,19 @@ export const CertificateListPage = () => {
             const list = certificates as TCertificate[];
             return (
               <Container key={year} block className="mt-10 first:mt-0">
-                <div className="flex items-end justify-between gap-4 pb-3 border-b">
-                  <div className="flex items-baseline gap-3">
+                <Container
+                  row
+                  align="end"
+                  justify="between"
+                  space="medium"
+                  className="pb-3 border-b"
+                >
+                  <Container
+                    row
+                    align="baseline"
+                    space="small"
+                    className="gap-3"
+                  >
                     <span className="text-3xl font-semibold tracking-tight tabular-nums text-foreground">
                       {year}
                     </span>
@@ -50,8 +61,8 @@ export const CertificateListPage = () => {
                       {list.length}{' '}
                       {list.length === 1 ? 'licencia' : 'licencias'}
                     </span>
-                  </div>
-                </div>
+                  </Container>
+                </Container>
                 <Container block className="mt-6">
                   <CertificatesGrid
                     certificatesList={list}

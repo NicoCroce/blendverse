@@ -1,32 +1,5 @@
-import { cn } from '@app/Application/lib/utils';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
-
-const StatCard = ({
-  label,
-  value,
-  icon,
-  className,
-}: {
-  label: string;
-  value: string | number;
-  icon: React.ReactNode;
-  className?: string;
-}) => (
-  <div
-    className={cn(
-      'flex items-center gap-3 rounded-lg border bg-card p-4 shadow-sm',
-      className,
-    )}
-  >
-    <div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
-      {icon}
-    </div>
-    <div className="min-w-0">
-      <p className="text-2xl font-semibold tracking-tight">{value}</p>
-      <p className="text-xs text-muted-foreground truncate">{label}</p>
-    </div>
-  </div>
-);
+import { UserSegmentsStatCard } from './UserSegmentsStatCard';
 
 export const UserSegmentsStats = ({
   totalEmployees,
@@ -40,7 +13,7 @@ export const UserSegmentsStats = ({
   segmentFilterLength: number;
 }) => (
   <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-    <StatCard
+    <UserSegmentsStatCard
       label="Total empleados"
       value={totalEmployees}
       icon={
@@ -59,12 +32,12 @@ export const UserSegmentsStats = ({
         </svg>
       }
     />
-    <StatCard
+    <UserSegmentsStatCard
       label="Empleados filtrados"
       value={totalItems}
       icon={<MagnifyingGlassIcon className="size-5" />}
     />
-    <StatCard
+    <UserSegmentsStatCard
       label="Tipos de segmento"
       value={totalSegmentTypes}
       icon={
@@ -88,7 +61,7 @@ export const UserSegmentsStats = ({
         </svg>
       }
     />
-    <StatCard
+    <UserSegmentsStatCard
       label="Segmentos seleccionados"
       value={segmentFilterLength || 'Todos'}
       icon={

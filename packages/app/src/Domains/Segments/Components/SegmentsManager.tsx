@@ -48,16 +48,24 @@ export const SegmentsManager = () => {
       {segments && segments.length > 0 ? (
         <div className="space-y-2">
           {segments.map((seg) => (
-            <div
+            <Container
+              row
+              align="center"
+              justify="between"
               key={seg.id}
-              className="group flex items-center justify-between rounded-xl border bg-card px-5 py-4 shadow-sm transition-all hover:shadow-md hover:border-primary/20"
+              className="group rounded-xl border bg-card px-5 py-4 shadow-sm transition-all hover:shadow-md hover:border-primary/20"
             >
-              <div className="flex items-center gap-4 min-w-0 flex-1">
+              <Container
+                row
+                align="center"
+                space="medium"
+                className="min-w-0 flex-1"
+              >
                 <span className="flex size-2 shrink-0 rounded-full bg-primary/40" />
                 <div className="min-w-0 flex-1">
                   <SegmentInlineName segment={seg} />
                 </div>
-              </div>
+              </Container>
 
               <AlertDialog
                 open={deleteTarget?.id === seg.id}
@@ -96,7 +104,7 @@ export const SegmentsManager = () => {
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
-            </div>
+            </Container>
           ))}
         </div>
       ) : (

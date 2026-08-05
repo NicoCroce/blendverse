@@ -1,5 +1,5 @@
 import { useMemo, useCallback } from 'react';
-import { Text, Button } from '@app/Application';
+import { Text, Button, Container } from '@app/Application';
 import { Badge } from '@app/Application/Components/ui/badge';
 import { Skeleton } from '@app/Application/Components/ui/skeleton';
 import {
@@ -79,15 +79,15 @@ export const UserSegmentSheet = ({
   let assignedSegmentsContent: React.ReactNode;
   if (segsLoading) {
     assignedSegmentsContent = (
-      <div className="flex gap-2 flex-wrap">
+      <Container row space="small" className="flex-wrap">
         <Skeleton className="h-7 w-20 rounded-full" />
         <Skeleton className="h-7 w-16 rounded-full" />
         <Skeleton className="h-7 w-24 rounded-full" />
-      </div>
+      </Container>
     );
   } else if (userSegments && userSegments.length > 0) {
     assignedSegmentsContent = (
-      <div className="flex flex-wrap gap-2">
+      <Container row space="small" className="flex-wrap">
         {userSegments.map((seg) => (
           <Badge
             key={seg.id}
@@ -106,7 +106,7 @@ export const UserSegmentSheet = ({
             </button>
           </Badge>
         ))}
-      </div>
+      </Container>
     );
   } else {
     assignedSegmentsContent = (
@@ -117,10 +117,10 @@ export const UserSegmentSheet = ({
   let addSegmentContent: React.ReactNode;
   if (segsLoading) {
     addSegmentContent = (
-      <div className="flex gap-2 flex-wrap">
+      <Container row space="small" className="flex-wrap">
         <Skeleton className="h-9 w-24 rounded-md" />
         <Skeleton className="h-9 w-20 rounded-md" />
-      </div>
+      </Container>
     );
   } else if (available.length === 0) {
     addSegmentContent = (
@@ -132,7 +132,7 @@ export const UserSegmentSheet = ({
     );
   } else {
     addSegmentContent = (
-      <div className="flex flex-wrap gap-2">
+      <Container row space="small" className="flex-wrap">
         {available.map((seg) => (
           <Button
             key={seg.id}
@@ -145,7 +145,7 @@ export const UserSegmentSheet = ({
             {seg.nombre}
           </Button>
         ))}
-      </div>
+      </Container>
     );
   }
 
@@ -161,7 +161,7 @@ export const UserSegmentSheet = ({
 
         <div className="mt-6 space-y-6">
           <div>
-            <div className="flex items-center justify-between mb-3">
+            <Container row align="center" justify="between" className="mb-3">
               <Text className="text-sm font-medium text-foreground">
                 Segmentos asignados
               </Text>
@@ -170,7 +170,7 @@ export const UserSegmentSheet = ({
                   {userSegments.length}
                 </Badge>
               )}
-            </div>
+            </Container>
 
             {assignedSegmentsContent}
           </div>

@@ -9,7 +9,7 @@ import {
 import { MagnifyingGlassIcon, Cross2Icon } from '@radix-ui/react-icons';
 import { Document } from '../Document';
 import { ScrollArea } from '@app/Application/Components/ui/scroll-area';
-import { Skeleton } from '@app/Application/Components/ui/skeleton';
+import { DocumentsListSkeleton } from './DocumentsListSkeleton';
 
 import {
   Accordion,
@@ -18,14 +18,6 @@ import {
   AccordionTrigger,
 } from '@app/Application/Components/ui/accordion';
 import { TuseGetDocumentsByCompany } from '@app/Domains/Admin';
-
-const SkeletonLoader = () => (
-  <Container space="small">
-    {Array.from({ length: 4 }).map((_, index) => (
-      <Skeleton key={index} className="h-32 w-full rounded-xl" />
-    ))}
-  </Container>
-);
 
 interface DocumentsListProps {
   openFilters: () => void;
@@ -54,7 +46,7 @@ export const DocumentsListByUser = ({
   }, [data, query, filteredUserIds]);
 
   if (isLoading) {
-    return <SkeletonLoader />;
+    return <DocumentsListSkeleton />;
   }
 
   const hasSegmentFilter =

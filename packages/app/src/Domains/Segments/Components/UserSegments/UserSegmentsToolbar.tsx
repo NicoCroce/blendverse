@@ -1,4 +1,4 @@
-import { Input } from '@app/Application';
+import { Input, Container } from '@app/Application';
 import { Checkbox } from '@app/Application/Components/ui/checkbox';
 import { Cross2Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { cn } from '@app/Application/lib/utils';
@@ -15,7 +15,7 @@ export const UserSegmentsToolbar = ({
   withoutSegments: boolean;
   onWithoutSegmentsChange: (value: boolean) => void;
 }) => (
-  <div className="flex flex-col sm:flex-row gap-3">
+  <Container row className="flex-col sm:flex-row gap-3">
     <div className="relative flex-1">
       <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
       <Input
@@ -52,5 +52,5 @@ export const UserSegmentsToolbar = ({
     <div className="w-full sm:w-64">
       <SegmentsFilterField showLabel={false} />
     </div>
-  </div>
+  </Container>
 );

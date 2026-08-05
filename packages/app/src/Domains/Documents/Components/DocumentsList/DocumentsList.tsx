@@ -1,16 +1,8 @@
-import { Container, EmptyScreenFilter, List, Text } from '@app/Application';
+import { EmptyScreenFilter, List, Text } from '@app/Application';
 import { TuseGetDocuments } from '../../Hooks/useGetDocuments';
 import { Document } from '../Document';
 import { ScrollArea } from '@app/Application/Components/ui/scroll-area';
-import { Skeleton } from '@app/Application/Components/ui/skeleton';
-
-const SkeletonLoader = () => (
-  <Container space="small">
-    {Array.from({ length: 4 }).map((_, index) => (
-      <Skeleton key={index} className="h-32 w-full rounded-xl" />
-    ))}
-  </Container>
-);
+import { DocumentsListSkeleton } from './DocumentsListSkeleton';
 
 interface DocumentsListProps {
   openFilters: () => void;
@@ -21,7 +13,7 @@ export const DocumentsList = ({ openFilters, service }: DocumentsListProps) => {
   const { data, isLoading } = service;
 
   if (isLoading) {
-    return <SkeletonLoader />;
+    return <DocumentsListSkeleton />;
   }
 
   if (!data?.length) return <EmptyScreenFilter onClick={openFilters} />;

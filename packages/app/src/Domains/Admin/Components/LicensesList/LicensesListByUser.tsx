@@ -1,6 +1,5 @@
 import { Container, List, Text, Title } from '@app/Application';
 import { ScrollArea } from '@app/Application/Components/ui/scroll-area';
-import { Skeleton } from '@app/Application/Components/ui/skeleton';
 
 import {
   Accordion,
@@ -14,14 +13,7 @@ import { CertificateActions } from '@app/Domains/Certificates/Components/Certifi
 import { uuid } from '@app/Application/Helpers/uuid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
-
-const SkeletonLoader = () => (
-  <Container space="small">
-    {Array.from({ length: 4 }).map((_, index) => (
-      <Skeleton key={index} className="h-32 w-full rounded-xl" />
-    ))}
-  </Container>
-);
+import { LicensesListSkeleton } from './LicensesListSkeleton';
 
 type TServiceData = NonNullable<TuseGetCertificatesByCompany['data']>;
 
@@ -39,7 +31,7 @@ export const LicensesListByUser = ({
   const { isLoading } = service;
 
   if (isLoading) {
-    return <SkeletonLoader />;
+    return <LicensesListSkeleton />;
   }
 
   const dataToIterate: TServiceData | undefined = filteredData ?? service.data;

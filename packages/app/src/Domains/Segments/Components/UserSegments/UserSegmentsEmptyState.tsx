@@ -1,4 +1,4 @@
-import { Text } from '@app/Application';
+import { Text, Container } from '@app/Application';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 
 const EMPTY_STATE_CONTENT = {
@@ -58,12 +58,17 @@ export const UserSegmentsEmptyState = ({
       : content.title;
 
   return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
-      <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-muted">
+    <Container align="center" justify="center" className="py-16 text-center">
+      <Container
+        row
+        align="center"
+        justify="center"
+        className="mb-4 size-16 rounded-full bg-muted"
+      >
         <MagnifyingGlassIcon className="size-6 text-muted-foreground" />
-      </div>
+      </Container>
       <Text className="text-base font-medium">{title}</Text>
       <Text.Muted className="mt-1 max-w-sm">{content.description}</Text.Muted>
-    </div>
+    </Container>
   );
 };

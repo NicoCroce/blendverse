@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Badge } from '@app/Application/Components/ui/badge';
 import { Skeleton } from '@app/Application/Components/ui/skeleton';
-import { Button } from '@app/Application';
+import { Button, Container } from '@app/Application';
 import { DataTable } from '@app/Application/Components/Organisms/DataCollection/DataTable';
 import { useGetUserSegments } from '../../Hooks/useGetUserSegments';
 import { UserSegmentsEmptyState } from './UserSegmentsEmptyState';
@@ -16,22 +16,22 @@ const SegmentBadgesCell = ({ userId }: { userId: number }) => {
 
   if (segsLoading) {
     return (
-      <div className="flex gap-1">
+      <Container row className="gap-1">
         <Skeleton className="h-5 w-16 rounded-full" />
         <Skeleton className="h-5 w-12 rounded-full" />
-      </div>
+      </Container>
     );
   }
 
   if (userSegments && userSegments.length > 0) {
     return (
-      <div className="flex flex-wrap gap-1">
+      <Container row className="flex-wrap gap-1">
         {userSegments.map((seg) => (
           <Badge key={seg.id} variant="secondary" className="text-xs">
             {seg.nombre}
           </Badge>
         ))}
-      </div>
+      </Container>
     );
   }
 
@@ -41,7 +41,7 @@ const SegmentBadgesCell = ({ userId }: { userId: number }) => {
 };
 
 const EmployeeCell = ({ row }: CellContext<Employee, unknown>) => (
-  <div className="flex items-center gap-3">
+  <Container row align="center" className="gap-3">
     <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold text-muted-foreground">
       {row.original.nombre.charAt(0).toUpperCase()}
       {row.original.apellido.charAt(0).toUpperCase()}
@@ -54,7 +54,7 @@ const EmployeeCell = ({ row }: CellContext<Employee, unknown>) => (
         {row.original.email}
       </p>
     </div>
-  </div>
+  </Container>
 );
 
 const EmailCell = ({ row }: CellContext<Employee, unknown>) => (

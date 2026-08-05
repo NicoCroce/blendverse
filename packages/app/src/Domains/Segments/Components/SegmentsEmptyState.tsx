@@ -1,9 +1,18 @@
-import { Text } from '@app/Application';
+import { Text, Container } from '@app/Application';
 import { CreateSegmentDialog } from './CreateSegmentDialog';
 
 export const SegmentsEmptyState = () => (
-  <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed py-20 px-6 text-center">
-    <div className="mb-5 flex size-14 items-center justify-center rounded-full bg-muted">
+  <Container
+    align="center"
+    justify="center"
+    className="rounded-xl border-2 border-dashed py-20 px-6 text-center"
+  >
+    <Container
+      row
+      align="center"
+      justify="center"
+      className="mb-5 size-14 rounded-full bg-muted"
+    >
       <svg
         className="size-6 text-muted-foreground"
         fill="none"
@@ -22,12 +31,12 @@ export const SegmentsEmptyState = () => (
           d="M6 6h.008v.008H6V6Z"
         />
       </svg>
-    </div>
+    </Container>
     <Text className="text-base font-medium">Todavía no hay segmentos</Text>
     <Text.Muted className="mt-1 mb-5 max-w-xs">
       Los segmentos agrupan usuarios para organizar el acceso a documentos. Creá
       el primero para empezar.
     </Text.Muted>
     <CreateSegmentDialog />
-  </div>
+  </Container>
 );

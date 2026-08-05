@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Container } from '@app/Application';
 
 type EmpresaItem = {
   id: number;
@@ -31,9 +32,14 @@ export const EmpresaCard = ({
       className="flex h-full flex-col items-center gap-2 rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md disabled:opacity-50 cursor-pointer w-full"
     >
       {showFallback ? (
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-2xl font-semibold text-blue-600">
+        <Container
+          row
+          align="center"
+          justify="center"
+          className="h-16 w-16 rounded-full bg-blue-100 text-2xl font-semibold text-blue-600"
+        >
           {inicial}
-        </div>
+        </Container>
       ) : (
         <img
           src={empresa.logo!}

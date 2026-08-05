@@ -1,28 +1,7 @@
-import { Card, CardContent } from '@app/Application/Components/ui/card';
+import { Container } from '@app/Application';
 import { useGetStatisticsEmpleados } from '../Hooks/useGetStatisticsEmpleados';
 import { cn } from '@app/Application/lib/utils';
-
-const StatCard = ({
-  label,
-  value,
-  className,
-  children,
-}: {
-  label: string;
-  value: string | number;
-  className?: string;
-  children?: React.ReactNode;
-}) => (
-  <Card className={cn('border shadow-sm', className)}>
-    <CardContent className="p-5">
-      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-        {label}
-      </p>
-      <p className="mt-1 text-3xl font-semibold tracking-tight">{value}</p>
-      {children && <div className="mt-3">{children}</div>}
-    </CardContent>
-  </Card>
-);
+import { EmpleadosStatCard } from './EmpleadosStatCard';
 
 export const StatisticsEmpleados = () => {
   const { total, dataChartRenovacionClave, dataChartEstadoFirma } =
@@ -45,9 +24,9 @@ export const StatisticsEmpleados = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <StatCard label="Empleados" value={total} />
+      <EmpleadosStatCard label="Empleados" value={total} />
 
-      <StatCard
+      <EmpleadosStatCard
         label="Renovar clave"
         value={necesitaRenovar}
         className={cn(
@@ -56,7 +35,7 @@ export const StatisticsEmpleados = () => {
             : 'border-l-4 border-l-green-500',
         )}
       >
-        <div className="flex items-center gap-4 text-xs">
+        <Container row align="center" space="medium" className="text-xs">
           <span className="flex items-center gap-1.5">
             <span className="size-2 rounded-full bg-green-500" />
             <span className="text-muted-foreground">{okRenovar} OK</span>
@@ -67,10 +46,10 @@ export const StatisticsEmpleados = () => {
               {necesitaRenovar} pendientes
             </span>
           </span>
-        </div>
-      </StatCard>
+        </Container>
+      </EmpleadosStatCard>
 
-      <StatCard
+      <EmpleadosStatCard
         label="Aceptación de términos"
         value={`${firmados} firmados`}
         className={cn(
@@ -81,7 +60,7 @@ export const StatisticsEmpleados = () => {
               : 'border-l-4 border-l-green-500',
         )}
       >
-        <div className="flex items-center gap-3 text-xs flex-wrap">
+        <Container row align="center" className="gap-3 text-xs flex-wrap">
           <span className="flex items-center gap-1.5">
             <span className="size-2 rounded-full bg-green-500" />
             <span className="text-muted-foreground">{firmados} firmados</span>
@@ -98,8 +77,8 @@ export const StatisticsEmpleados = () => {
               </span>
             </span>
           )}
-        </div>
-      </StatCard>
+        </Container>
+      </EmpleadosStatCard>
     </div>
   );
 };
