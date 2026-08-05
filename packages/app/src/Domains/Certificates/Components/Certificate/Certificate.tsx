@@ -17,10 +17,10 @@ import {
   XCircle,
 } from 'lucide-react';
 import { CertificateDateRange } from './CertificateDateRange';
-import { ICertificate } from '../../Certificate.entity';
+import { TCertificate } from '../../Certificate.entity';
 
 interface CertificateProps {
-  data: ICertificate;
+  data: TCertificate;
   year: number;
   actions?: React.ReactNode;
 }

@@ -1,6 +1,6 @@
 import { useURLParams } from '@app/Application';
 import {
-  documentsService,
+  DocumentsService,
   normalizeState,
   TDocumentSearch,
 } from '@app/Domains/Documents';
@@ -17,7 +17,7 @@ export const useGetDocumentsByCompany = () => {
         .filter((n) => !isNaN(n))
     : undefined;
 
-  return documentsService.getAllByCompany.useQuery(
+  return DocumentsService.getAllByCompany.useQuery(
     {
       ...rest,
       state: normalizeState(state),

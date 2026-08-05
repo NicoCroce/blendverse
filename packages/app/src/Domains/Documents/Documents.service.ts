@@ -3,7 +3,7 @@ import { TDocumentsTypeRouter } from '@server/domains/DocumentsTypes';
 import { createTRPCReact } from '@trpc/react-query';
 
 export const _documentsService = createTRPCReact<TDocumentRouter>();
-export const documentsService = _documentsService.documents;
+export const DocumentsService = _documentsService.documents;
 
 export const _documentsTypesService = createTRPCReact<TDocumentsTypeRouter>();
-export const documentsTypesService = _documentsTypesService.documentsType;
+export const DocumentsTypesService = _documentsTypesService.documentsType;

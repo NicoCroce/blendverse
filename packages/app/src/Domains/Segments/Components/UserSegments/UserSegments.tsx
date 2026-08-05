@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react';
 import { Container } from '@app/Application';
 import { TooltipProvider } from '@app/Application/Components/ui/tooltip';
-import { useGetSegmentTypes } from '../../Application/segments.queries';
-import { useGetEmployees } from '@app/Domains/Disclaimer/hooks/useDisclaimer';
+import { useGetSegmentTypes } from '../../Hooks/useGetSegmentTypes';
+import { useGetEmployees } from '@app/Domains/Admin';
 import { useURLParams } from '@app/Application/Hooks/useURLParams';
 import type { TPagination, IPaginationPages } from '@app/Application/Helpers';
 import { UserSegmentsStats } from './UserSegmentsStats';

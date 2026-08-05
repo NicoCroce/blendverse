@@ -12,11 +12,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@app/Application/Components/ui/alert-dialog';
-import {
-  useGetSegmentTypes,
-  useDeleteSegmentType,
-} from '../Application/segments.queries';
-import type { TSegmentType } from '../Domain/segments.types';
+import { useGetSegmentTypes } from '../Hooks/useGetSegmentTypes';
+import { useDeleteSegmentType } from '../Hooks/useDeleteSegmentType';
+import type { TSegmentType } from '../Segments.entity';
 import { SegmentsLoadingSkeleton } from './SegmentsLoadingSkeleton';
 import { SegmentsEmptyState } from './SegmentsEmptyState';
 import { SegmentInlineName } from './SegmentInlineName';

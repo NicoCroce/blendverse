@@ -10,7 +10,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { useSignDisclaimer } from './hooks/useDisclaimer';
+import { useSignDisclaimer } from './Hooks/useDisclaimer';
 
 const formSchema = z.object({
   password: z.string().min(1, 'Debe ingresar su contraseña'),

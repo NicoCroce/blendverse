@@ -1,3 +1,5 @@
+export * from './useEmployeeActions';
+export * from './useEmpleadosPage';
 export * from './useGetCertificatesByCompany';
 export * from './useGetDocumentsByCompany';
 export * from './useGetMonthlyStatisticsCertificates';

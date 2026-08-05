@@ -3,7 +3,7 @@ import { Badge } from '@app/Application/Components/ui/badge';
 import { Skeleton } from '@app/Application/Components/ui/skeleton';
 import { Button } from '@app/Application';
 import { DataTable } from '@app/Application/Components/Organisms/DataCollection/DataTable';
-import { useGetUserSegments } from '../../Application/segments.queries';
+import { useGetUserSegments } from '../../Hooks/useGetUserSegments';
 import { UserSegmentsEmptyState } from './UserSegmentsEmptyState';
 import type { Employee } from './types';
 import type { ColumnDef, CellContext } from '@tanstack/react-table';

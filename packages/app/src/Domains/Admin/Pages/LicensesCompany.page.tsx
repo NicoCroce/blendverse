@@ -7,7 +7,7 @@ import {
   MonthlyLicensesChart,
   StatisticsCertificates,
 } from '../Components';
-import { useGetUsersBySegments } from '@app/Domains/Segments/Application/segments.queries';
+import { useGetUsersBySegments } from '@app/Domains/Segments';
 
 type LicensesCompanyParams = {
   segmentos?: string;

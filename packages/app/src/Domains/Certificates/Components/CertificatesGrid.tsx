@@ -1,10 +1,10 @@
 import { Container } from '@app/Application/Components';
 import { Certificate } from './Certificate/Certificate';
 import { CertificateActions } from './Certificate/CertificateActions';
-import { ICertificate } from '../Certificate.entity';
+import { TCertificate } from '../Certificate.entity';
 
 export interface CertificatesGridProps {
-  certificatesList: ICertificate[];
+  certificatesList: TCertificate[];
   year: number;
 }
 

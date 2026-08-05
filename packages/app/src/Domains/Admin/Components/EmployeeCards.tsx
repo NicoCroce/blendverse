@@ -1,5 +1,5 @@
 import { Checkbox } from '@app/Application/Components/ui/checkbox';
-import { IEmployeeRecord } from './columns';
+import { IEmployeeRecord } from './EmpleadosColumns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Text } from '@app/Application';
 

@@ -3,7 +3,7 @@ import { CertificatesService } from '../Certificates.service';
 import { z } from 'zod';
 import { formSchemeAddLicense } from '../Components/AddLicenseForm';
 import ApiService from '@app/Infrastructure/Services/AxiosApi';
-import { ICertificate } from '../Certificate.entity';
+import { TCertificate } from '../Certificate.entity';
 
 export const useAddLicense = () => {
   const { mutate, isPending } = CertificatesService.addCertificate.useMutation({
@@ -16,7 +16,7 @@ export const useAddLicense = () => {
 
   const mutateAddLicence = (
     data: z.infer<typeof formSchemeAddLicense>,
-  ): Promise<ICertificate> => {
+  ): Promise<TCertificate> => {
     const { startDate, endDate, returnDate, type, requiresRest } = data;
 
     // Crear una promesa que se resolverá con los datos de la respuesta

@@ -1,8 +1,8 @@
 import { TDataPieChart } from '@app/Application/Components/Organisms/PieChart/PieChart';
-import { documentsService } from '@app/Domains/Documents';
+import { DocumentsService } from '@app/Domains/Documents';
 
 export const useGetStatisticsDocuments = () => {
-  const response = documentsService.getStatistics.useQuery();
+  const response = DocumentsService.getStatistics.useQuery();
 
   const dataChart: TDataPieChart[] = [
     {

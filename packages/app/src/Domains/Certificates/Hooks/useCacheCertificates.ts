@@ -1,4 +1,4 @@
 import { _certificatesService } from '../Certificates.service';
 
-export const useCacheDocuments = () =>
+export const useCacheCertificates = () =>
   _certificatesService.useUtils().certificates.getAll;

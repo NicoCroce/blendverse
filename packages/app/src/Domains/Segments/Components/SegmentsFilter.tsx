@@ -23,7 +23,7 @@ import {
   faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import { cn } from '@app/Application/lib/utils';
-import { useGetSegmentTypes } from '../Application/segments.queries';
+import { useGetSegmentTypes } from '../Hooks/useGetSegmentTypes';
 
 type SegmentsFilterParams = {
   segmentos?: string;

@@ -4,7 +4,7 @@ import { CertificateStatus } from '@server/domains/Certificates/Domain/Certifica
 
 type TCertificatesOutput = inferRouterOutputs<TCertificatesRouter>;
 
-export type ICertificate =
+export type TCertificate =
   TCertificatesOutput['certificates']['addCertificate'];
 export type TCertificateType =
   TCertificatesOutput['certificates']['getCertificateTypes'][number];

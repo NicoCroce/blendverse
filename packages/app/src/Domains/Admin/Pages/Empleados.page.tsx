@@ -5,8 +5,8 @@ import { Button } from '@app/Application/Components';
 import { Skeleton } from '@app/Application/Components/ui/skeleton';
 import { Cross2Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { StatisticsEmpleados } from '@app/Domains/Admin/Components/StatisticsEmpleados';
-import { EmployeeCards } from './EmployeeCards';
-import { useEmpleadosPage } from './useEmpleadosPage';
+import { EmployeeCards } from '../Components/EmployeeCards';
+import { useEmpleadosPage } from '../Hooks/useEmpleadosPage';
 
 const TableSkeleton = () => (
   <div className="rounded-md border divide-y">

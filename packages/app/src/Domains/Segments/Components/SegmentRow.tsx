@@ -6,7 +6,7 @@ import {
 } from '@app/Application';
 import { AlertDialogTrigger } from '@radix-ui/react-alert-dialog';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
-import type { TSegmentType } from '../Domain/segments.types';
+import type { TSegmentType } from '../Segments.entity';
 
 export const SegmentRow = ({
   segment,

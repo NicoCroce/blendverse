@@ -13,7 +13,7 @@ import {
 
 import { useGetCertificates } from '../Hooks';
 import { useState } from 'react';
-import { ICertificate } from '..';
+import { TCertificate } from '..';
 
 export const CertificateListPage = () => {
   const { data, isError, error, availableYears } = useGetCertificates();
@@ -38,7 +38,7 @@ export const CertificateListPage = () => {
       <>
         {data &&
           Object.entries(data).map(([year, certificates]) => {
-            const list = certificates as ICertificate[];
+            const list = certificates as TCertificate[];
             return (
               <Container key={year} block className="mt-10 first:mt-0">
                 <div className="flex items-end justify-between gap-4 pb-3 border-b">

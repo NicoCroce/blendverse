@@ -1,11 +1,11 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useURLParams } from '@app/Application/Hooks/useURLParams';
 import { TPagination } from '@app/Application/Helpers';
-import { employeeColumns } from './columns';
+import { employeeColumns } from '../Components/EmpleadosColumns';
 import {
   useGetEmployees,
   useSendReminders,
-} from '@app/Domains/Disclaimer/hooks/useDisclaimer';
+} from '@app/Domains/Admin/Hooks/useEmployeeActions';
 
 export const useEmpleadosPage = () => {
   const [search, setSearch] = useState('');

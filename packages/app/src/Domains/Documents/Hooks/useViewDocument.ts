@@ -1,5 +1,5 @@
 import { useGlobalStore } from '@app/Application';
-import { documentsService } from '../Documents.service';
+import { DocumentsService } from '../Documents.service';
 import { useCacheDocuments } from './useCacheDocuments';
 import { useGetDocument } from './useGetDocument';
 import { useEffect } from 'react';
@@ -11,7 +11,7 @@ export const useViewDocument = () => {
     useGlobalStore('documentViewed');
   const { currentDocument } = useGetDocument(documentViewedId as string);
   const cacheDocuments = useCacheDocuments();
-  const { mutate } = documentsService.view.useMutation();
+  const { mutate } = DocumentsService.view.useMutation();
 
   useEffect(() => {
     if (documentViewedId && currentDocument && currentDocument.view === null) {

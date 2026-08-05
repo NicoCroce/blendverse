@@ -8,7 +8,7 @@ import {
 } from '../../Documents/Components';
 import { PDFPreviewMobile } from '../../Documents/Components/PDFPreview/PDFPreviewMobile';
 import { useGetDocumentsByCompany } from '../Hooks';
-import { useGetUsersBySegments } from '@app/Domains/Segments/Application/segments.queries';
+import { useGetUsersBySegments } from '@app/Domains/Segments';
 
 type DocumentsCompanyParams = {
   segmentos?: string;

@@ -1,7 +1,7 @@
 import { Modal } from '@app/Application/Components';
 import { DisclaimerForm } from './DisclaimerForm';
 import { useGlobalStore } from '@app/Application';
-import { useGetDisclaimerText } from './hooks/useDisclaimer';
+import { useGetDisclaimerText } from './Hooks/useDisclaimer';
 import { TUserLogged } from '@app/Domains/Users/User.entity';
 
 export const DisclaimerModal = () => {

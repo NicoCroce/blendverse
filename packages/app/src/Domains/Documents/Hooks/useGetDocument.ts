@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { TDocument, TDocumentSearch } from '../Document.entity';
-import { documentsService } from '../Documents.service';
+import { DocumentsService } from '../Documents.service';
 import { useCacheDocuments } from './useCacheDocuments';
 import { useURLParams } from '@app/Application';
 
@@ -8,7 +8,7 @@ export const useGetDocument = (id: string | undefined) => {
   const [currentDocument, setCurrentDocument] = useState<TDocument | null>(
     null,
   );
-  const queryDocument = documentsService.get.useQuery(Number(id), {
+  const queryDocument = DocumentsService.get.useQuery(Number(id), {
     enabled: false,
   });
   const { searchParams } = useURLParams<TDocumentSearch>();

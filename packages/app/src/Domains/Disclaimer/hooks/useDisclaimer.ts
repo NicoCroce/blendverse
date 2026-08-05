@@ -15,24 +15,3 @@ export const useSignDisclaimer = () => {
 export const useGetStatus = () => {
   return DisclaimerService.getStatus.useQuery;
 };
-
-export const useGetEmployees = () => {
-  return DisclaimerService.getEmployees.useQuery;
-};
-
-interface ISendRemindersResponse {
-  sent: number;
-  failed: number;
-  total: number;
-}
-
-export const useSendReminders = () => {
-  return DisclaimerService.sendReminders.useMutation({
-    onError: ({ message }: { message: string }) => toast.error(message),
-    onSuccess: (data: ISendRemindersResponse) => {
-      toast.success(
-        `Recordatorios enviados: ${data.sent} exitosos, ${data.failed} fallidos`,
-      );
-    },
-  });
-};

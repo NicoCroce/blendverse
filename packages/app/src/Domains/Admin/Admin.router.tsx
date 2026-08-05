@@ -11,8 +11,8 @@ import {
   LicensesCompanyPage,
   SegmentsCompanyPage,
   UserSegmentsPage,
+  EmpleadosPage,
 } from './Pages';
-import { EmpleadosPage } from './Empleados';
 
 export const AdminRouter = [
   <Route

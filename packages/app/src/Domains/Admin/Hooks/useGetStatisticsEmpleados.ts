@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { TDataPieChart } from '@app/Application/Components/Organisms/PieChart/PieChart';
-import { useGetEmployees } from '@app/Domains/Disclaimer/hooks/useDisclaimer';
-import { IEmployeeRecord } from '../Empleados/columns';
+import { useGetEmployees } from './useEmployeeActions';
+import { IEmployeeRecord } from '../Components/EmpleadosColumns';
 
 const firmColors: Record<string, string> = {
   Firmado: 'hsl(142, 71%, 45%)', // verde

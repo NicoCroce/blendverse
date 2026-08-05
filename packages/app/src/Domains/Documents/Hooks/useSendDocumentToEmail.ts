@@ -1,8 +1,8 @@
 import { toast } from 'sonner';
-import { documentsService } from '../Documents.service';
+import { DocumentsService } from '../Documents.service';
 
 export const useSendDocumentToEmail = () => {
-  return documentsService.sendToEmail.useMutation({
+  return DocumentsService.sendToEmail.useMutation({
     onSuccess: () => {
       toast.success('Documento enviado a tu email');
     },

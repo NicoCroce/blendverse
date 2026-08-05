@@ -12,7 +12,7 @@ import {
   DialogFooter,
   DialogClose,
 } from '@app/Application/Components/ui/dialog';
-import { useCreateSegmentType } from '../Application/segments.queries';
+import { useCreateSegmentType } from '../Hooks/useCreateSegmentType';
 
 export const CreateSegmentDialog = () => {
   const [createOpen, setCreateOpen] = useState(false);

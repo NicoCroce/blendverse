@@ -10,13 +10,13 @@ import {
   SheetDescription,
 } from '@app/Application/Components/ui/sheet';
 import { Cross2Icon } from '@radix-ui/react-icons';
+import { useGetSegmentTypes } from '../../Hooks/useGetSegmentTypes';
+import { useGetUserSegments } from '../../Hooks/useGetUserSegments';
 import {
-  useGetSegmentTypes,
-  useGetUserSegments,
   useAssignSegmentToUser,
   useRemoveSegmentFromUser,
-  segmentsTRPC,
-} from '../../Application/segments.queries';
+} from '../../Hooks/useUserSegmentMutations';
+import { _segmentsService as segmentsTRPC } from '../../Segments.service';
 import { _disclaimerService } from '@app/Domains/Disclaimer/Disclaimer.service';
 import type { Employee } from './types';
 
