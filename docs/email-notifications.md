@@ -1,0 +1,173 @@
+# Emails en GestDoc
+
+Documentación del sistema de envío de correos electrónicos.
+
+---
+
+## Infraestructura
+
+El envío real de emails se realiza a través de **Nodemailer** usando el servicio `MailNotificationService`.
+
+| Archivo                                                                            | Rol                                                                       |
+| ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `packages/server/src/Infrastructure/utils/Email/MailNotification.service.ts`       | Servicio de envío SMTP con Nodemailer                                     |
+| `packages/server/src/Infrastructure/utils/Email/EmailsTemplates.ts`                | Templates HTML con `{subject, body}` para cada tipo de mail               |
+| `packages/server/src/Application/Services/SendEmail.service.ts`                    | Orquestador: resuelve destinatarios, construye payloads, invoca templates |
+| `packages/server/src/domains/Disclaimer/Infrastructure/DisclaimerEmail.service.ts` | Envío de recordatorios de disclaimer (por fuera del orquestador central)  |
+
+**Variables de entorno requeridas:**
+
+| Variable             | Descripción                              |
+| -------------------- | ---------------------------------------- |
+| `EMAIL_SMTPSERVER`   | Host SMTP                                |
+| `EMAIL_SMTPPORT`     | Puerto SMTP (default: 587)               |
+| `EMAIL_SMTPUSER`     | Usuario SMTP (también usado como `from`) |
+| `EMAIL_SMTPPASSWORD` | Contraseña SMTP                          |
+
+Conexión: `secure: port === 465`, auth USER/PASS. Remitente (`from`) = `EMAIL_SMTPUSER`, sin overrides de from en ninguna llamada.
+
+### Código muerto: `EmailSender.ts`
+
+Existe `EmailSender.ts` (`packages/server/src/Infrastructure/utils/Email/EmailSender.ts`) que usa axios contra `EMAIL_HOST`, pero **nunca es importado** por ningún archivo del proyecto. Tiene hardcodeado `address: ['nicoc123@gmail.com']` y `subject: 'Gestdoc - Aviso de una nueva licencia'`. No está en uso en producción.
+
+---
+
+## Destinatarios clave: ¿quiénes son los "admins"?
+
+Definidos en `PermissionsRepository.implementation.ts:184`:
+
+```sql
+-- Conceptual: usuarios con rol id_rol = 1 de la misma empresa
+SELECT users.email
+FROM users
+JOIN users_roles ON users.id = users_roles.id_usuario
+WHERE users_roles.id_rol = 1
+  AND users.id_propietario = :ownerId
+```
+
+El rol `id_rol: 1` está **hardcodeado** en el repositorio (sin lookup por nombre). En el seed de datos, `id_rol: 1` corresponde a **Full Admin** / **Administrador**.
+
+La función `getAdmins()` se usa en `SendEmailService` para resolver los destinatarios de mails dirigidos a administradores.
+
+---
+
+## Casos de email
+
+### 1. Nueva licencia — `addLicense`
+
+| Campo                           | Detalle                                                                        |
+| ------------------------------- | ------------------------------------------------------------------------------ |
+| **Disparador**                  | Un empleado agrega una licencia a través de la app                             |
+| **Origen en código**            | `Certificates.service.ts:112` → `SendEmail.service.ts:91`                      |
+| **Destinatarios**               | **Todos los admins** de la empresa del empleado (rol `id_rol:1`, mismo owner)  |
+| **Resolución de destinatarios** | `getAdmins()` → repository con filtro `id_rol: 1 AND id_propietario = ownerId` |
+| **Asunto**                      | `[Aviso] Gestdoc - Nueva licencia de {nombre del empleado}`                    |
+| **Cuerpo**                      | Contiene nombre del empleado y motivo de la licencia                           |
+| **Template**                    | `EmailsTemplates.ts:20` — `addLicense()`                                       |
+| **Adjuntos**                    | No                                                                             |
+| **Fire-and-forget**             | No (esperado con `await`)                                                      |
+
+### 2. Estado de licencia aprobada/rechazada — `notifyLicenseStatusChange`
+
+| Campo                           | Detalle                                                                                                                             |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| **Disparador**                  | Un admin cambia el estado de una licencia a `aprobado` o `rechazado`                                                                |
+| **Origen en código**            | `Certificates.service.ts:211` → `SendEmail.service.ts:181`                                                                          |
+| **Destinatarios**               | El **empleado dueño** de la licencia (`certificate.userId`)                                                                         |
+| **Resolución de destinatarios** | `getUser(certificate.userId)` → `employee.values.mail`                                                                              |
+| **Asunto**                      | `[GestDoc] Su licencia ha sido aprobada` / `[GestDoc] Su licencia ha sido rechazada`                                                |
+| **Cuerpo**                      | Tabla con tipo, fechas de inicio/fin/reintegro, motivo, estado (con badge verde/rojo) e incluye nombre del revisor (`reviewerName`) |
+| **Template**                    | `EmailsTemplates.ts:48` — `licenseStatusChange()`                                                                                   |
+| **Adjuntos**                    | No                                                                                                                                  |
+| **Fire-and-forget**             | Sí (`this.sendEmailService.notifyLicenseStatusChange(...)` sin await, línea 211)                                                    |
+
+### 3. Firma de documento — `signDocument`
+
+Se envían **dos mails** en una misma llamada.
+
+| Campo                | Mail A — confirmación al empleado                                                          | Mail B — notificación a admins                    |
+| -------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------- |
+| **Disparador**       | Empleado firma un documento                                                                | Mismo disparador                                  |
+| **Origen en código** | `Documents.service.ts:61` → `SendEmail.service.ts:131`                                     | Mismo                                             |
+| **Destinatarios**    | El **empleado que firmó** (`currentUser.mail`)                                             | **Todos los admins** de la empresa                |
+| **Asunto**           | `[GestDoc] Has firmado el documento #{id}`                                                 | `[GestDoc] {empleado} ha firmado un documento`    |
+| **Cuerpo**           | ID del documento, tipo de firma (bajo acuerdo / sin conformidad), motivo si no conformidad | Igual contenido que mail A pero dirigido a admins |
+| **Template**         | `documentSignedEmployee()` (`EmailsTemplates.ts:136`)                                      | `documentSignedAdmin()` (`EmailsTemplates.ts:98`) |
+| **Adjuntos**         | No                                                                                         | No                                                |
+| **Fire-and-forget**  | Sí — `void this.sendEmailService.signDocument(...).catch(() => undefined)` (línea 60-68)   | Mismo                                             |
+
+### 4. Enviar documento por email — `sendDocumentToEmail`
+
+| Campo                           | Detalle                                                                   |
+| ------------------------------- | ------------------------------------------------------------------------- |
+| **Disparador**                  | Acción "enviar por email" desde la UI de admin                            |
+| **Origen en código**            | `Documents.service.ts:105` → `SendEmail.service.ts:102`                   |
+| **Destinatarios**               | El **propio usuario logueado** que ejecuta la acción (`currentUser.mail`) |
+| **Resolución de destinatarios** | `getCurrentUser(requestContext)` → `currentUser.values.mail`              |
+| **Asunto**                      | `Documento: {título}`                                                     |
+| **Cuerpo**                      | `Adjunto encontrará el documento {título} (ID: {id})`                     |
+| **Template**                    | Inline en `SendEmail.service.ts:114` (HTML plano, no usa template)        |
+| **Adjuntos**                    | Sí — PDF del documento descargado desde la URL (`document.values.file`)   |
+| **Fire-and-forget**             | No (esperado con `await`)                                                 |
+
+### 5. Recordatorio de firma de términos — `disclaimerReminder`
+
+| Campo                           | Detalle                                                                                                                                                                                                                     |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Disparador**                  | Admin pulsa "enviar recordatorios" desde el panel de administración                                                                                                                                                         |
+| **Origen en código**            | Frontend: `useSendReminders()` → tRPC → `Disclaimer.service.ts:73` → `SendReminders.usecase.ts` → `DisclaimerEmail.service.ts:14`                                                                                           |
+| **Destinatarios**               | Empleados de la empresa **pendientes de firmar** los términos y condiciones                                                                                                                                                 |
+| **Resolución de destinatarios** | `getPendingEmployeeIds()`: busca todos los usuarios del owner, cruza con `disclaimer_acceptance` filtrando los que no tienen firma válida. Luego `getEmailsByUsersId()` obtiene los emails, procesados en **batches de 50** |
+| **Asunto**                      | `[GestDoc] Recordatorio de firma de términos - {empresa}`                                                                                                                                                                   |
+| **Cuerpo**                      | Nombre del empleado, nombre de la empresa y texto completo de los términos                                                                                                                                                  |
+| **Template**                    | `EmailsTemplates.ts:175` — `disclaimerReminder()`                                                                                                                                                                           |
+| **Adjuntos**                    | No                                                                                                                                                                                                                          |
+| **Fire-and-forget**             | No. Resultado con métricas (`{sent, failed, total}`) devuelto al frontend                                                                                                                                                   |
+| **Nota**                        | **No hay cron/scheduler.** El envío es exclusivamente manual desde la UI de admin                                                                                                                                           |
+
+---
+
+## Arquitectura
+
+### Flujo de tipos de email
+
+```
+Capa Application                Capa Infrastructure
+─────────────────────          ──────────────────────
+SendEmail.service.ts    ──────> MailNotification.service.ts  (Nodemailer SMTP)
+  ├─ addLicense                    ├─ sendOne()
+  ├─ notifyLicenseStatusChange     └─ send()  (batch)
+  ├─ signDocument                EmailsTemplates.ts
+  └─ sendDocumentToEmail           ├─ addLicense()
+                                   ├─ licenseStatusChange()
+DisclaimerEmail.service.ts ────>  ├─ documentSignedAdmin()
+  └─ sendDisclaimerReminders()     ├─ documentSignedEmployee()
+                                   └─ disclaimerReminder()
+```
+
+### Capa de orquestación (`SendEmailService`)
+
+- Depende de `GetAdmins` y `GetUser` para resolver destinatarios.
+- Método privado `sendEmailToAdmins<Targs>()` — patrón genérico: obtiene currentUser + admins, aplica template, envía con Nodemailer.
+- `signDocument()` es el único caso que envía **dos mails** en una misma llamada (empleado + admins).
+
+### Capa de infraestructura (`MailNotificationService`)
+
+- Singleton Nodemailer transporter inicializado en constructor.
+- `sendOne()`: envía un mail individual.
+- `send()`: envía en lote con resiliencia parcial (no detiene el lote si un mail falla).
+- `verifyConnection()`: disponible para health checks (no está integrado en ningún endpoint).
+
+---
+
+## Observaciones
+
+1. **Rol hardcodeado.** `getAdmins()` usa `id_rol: 1` hardcodeado en `PermissionsRepository.implementation.ts:191`. Si el seed cambia o se recrea la DB, el ID podría no coincidir. Sería más robusto resolver por denominación (`'Full Admin'` o `'Administrador'`).
+
+2. **Política de errores inconsistente.** `signDocument` y `notifyLicenseStatusChange` usan fire-and-forget (no `await`, `.catch(() => undefined)`), mientras que `addLicense`, `sendDocumentToEmail` y `disclaimerReminder` esperan el resultado con `await`. Los errores se loguean pero no se reintentan ni se notifican al usuario.
+
+3. **Self-mail en `sendDocumentToEmail`.** Se envía al propio usuario logueado, no a un destinatario arbitrario. El nombre de la acción puede resultar confuso para quien lo implementa — en realidad "envía el PDF a mi propio email".
+
+4. **Código muerto.** `EmailSender.ts` usa axios contra `EMAIL_HOST` con credenciales `EMAIL_TOKEN`/`EMAIL_CUIT`. Fue reemplazado por Nodemailer (`MailNotificationService`) pero quedó en el barrel de exports. Contiene un hardcodeo de `nicoc123@gmail.com`.
+
+5. **Sin cron para recordatorios.** Los recordatorios de disclaimer son disparados exclusivamente por un admin desde la UI. No hay tarea programada. Esto implica que la funcionalidad depende de intervención humana periódica.
