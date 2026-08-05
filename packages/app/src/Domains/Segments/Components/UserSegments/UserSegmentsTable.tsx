@@ -4,7 +4,6 @@ import { Skeleton } from '@app/Application/Components/ui/skeleton';
 import { Button, Container } from '@app/Application';
 import { DataTable } from '@app/Application/Components/Organisms/DataCollection/DataTable';
 import { useGetUserSegments } from '../../Hooks/useGetUserSegments';
-import { UserSegmentsEmptyState } from './UserSegmentsEmptyState';
 import type { Employee } from './types';
 import type { ColumnDef, CellContext } from '@tanstack/react-table';
 import type { IPaginationPages } from '@app/Application/Helpers';
@@ -50,9 +49,6 @@ const EmployeeCell = ({ row }: CellContext<Employee, unknown>) => (
       <p className="truncate font-medium text-sm">
         {row.original.nombre} {row.original.apellido}
       </p>
-      <p className="truncate text-xs text-muted-foreground md:hidden">
-        {row.original.email}
-      </p>
     </div>
   </Container>
 );
@@ -86,22 +82,12 @@ const createAccionCell = (onSelect: (employee: Employee) => void) => {
 
 export const UserSegmentsTable = ({
   employees,
-  isLoading,
   paginationMeta,
   onSelectUser,
-  hasSearch,
-  searchTerm,
-  hasSegmentFilter,
-  withoutSegments,
 }: {
   employees: Employee[];
-  isLoading: boolean;
   paginationMeta: IPaginationPages;
   onSelectUser: (employee: Employee) => void;
-  hasSearch: boolean;
-  searchTerm: string;
-  hasSegmentFilter: boolean;
-  withoutSegments: boolean;
 }) => {
   const columns: ColumnDef<Employee>[] = useMemo(
     () => [
@@ -129,24 +115,7 @@ export const UserSegmentsTable = ({
     [onSelectUser],
   );
 
-  if (isLoading) return <DataTable.Skeleton />;
-
-  if (employees.length > 0) {
-    return (
-      <DataTable
-        columns={columns}
-        data={employees}
-        pagination={paginationMeta}
-      />
-    );
-  }
-
   return (
-    <UserSegmentsEmptyState
-      hasSearch={hasSearch}
-      searchTerm={searchTerm}
-      hasSegmentFilter={hasSegmentFilter}
-      withoutSegments={withoutSegments}
-    />
+    <DataTable columns={columns} data={employees} pagination={paginationMeta} />
   );
 };

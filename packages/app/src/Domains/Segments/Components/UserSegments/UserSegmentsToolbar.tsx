@@ -15,7 +15,7 @@ export const UserSegmentsToolbar = ({
   withoutSegments: boolean;
   onWithoutSegmentsChange: (value: boolean) => void;
 }) => (
-  <Container row className="flex-col sm:flex-row gap-3">
+  <Container className="flex-col sm:flex-row gap-3">
     <div className="relative flex-1">
       <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
       <Input
@@ -47,7 +47,7 @@ export const UserSegmentsToolbar = ({
         checked={withoutSegments}
         onCheckedChange={(checked) => onWithoutSegmentsChange(Boolean(checked))}
       />
-      Sin segmento asignado
+      <span className="inline">Sin segmento asignado</span>
     </label>
     <div className="w-full sm:w-64">
       <SegmentsFilterField showLabel={false} />

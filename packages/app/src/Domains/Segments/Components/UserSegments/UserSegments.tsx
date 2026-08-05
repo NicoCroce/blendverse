@@ -1,6 +1,8 @@
 import { useState, useMemo } from 'react';
-import { Container } from '@app/Application';
+import { Container, useDevice } from '@app/Application';
 import { TooltipProvider } from '@app/Application/Components/ui/tooltip';
+import { DataTable } from '@app/Application/Components/Organisms/DataCollection/DataTable';
+import { DataTablePagination } from '@app/Application/Components/Organisms/DataCollection/DataTablePagination';
 import { useGetSegmentTypes } from '../../Hooks/useGetSegmentTypes';
 import { useGetEmployees } from '@app/Domains/Admin';
 import { useURLParams } from '@app/Application/Hooks/useURLParams';
@@ -8,6 +10,11 @@ import type { TPagination, IPaginationPages } from '@app/Application/Helpers';
 import { UserSegmentsStats } from './UserSegmentsStats';
 import { UserSegmentsToolbar } from './UserSegmentsToolbar';
 import { UserSegmentsTable } from './UserSegmentsTable';
+import {
+  UserSegmentsCards,
+  UserSegmentsCardsSkeleton,
+} from './UserSegmentsCards';
+import { UserSegmentsEmptyState } from './UserSegmentsEmptyState';
 import { UserSegmentSheet } from './UserSegmentSheet';
 import type { Employee } from './types';
 
@@ -17,6 +24,8 @@ export const UserSegments = () => {
   const [search, setSearch] = useState('');
   const [withoutSegments, setWithoutSegments] = useState(false);
   const [selectedUser, setSelectedUser] = useState<Employee | null>(null);
+
+  const { isMobile } = useDevice();
 
   const { searchParams } = useURLParams<UserSegmentsQuery>();
   const page = searchParams?.page ?? '1';
@@ -81,16 +90,39 @@ export const UserSegments = () => {
           onWithoutSegmentsChange={setWithoutSegments}
         />
 
-        <UserSegmentsTable
-          employees={employees}
-          isLoading={isLoading}
-          paginationMeta={paginationMeta}
-          onSelectUser={setSelectedUser}
-          hasSearch={search.length > 0}
-          searchTerm={search}
-          hasSegmentFilter={segmentFilter.length > 0}
-          withoutSegments={withoutSegments}
-        />
+        {isLoading ? (
+          isMobile ? (
+            <UserSegmentsCardsSkeleton />
+          ) : (
+            <DataTable.Skeleton />
+          )
+        ) : employees.length > 0 ? (
+          isMobile ? (
+            <>
+              <UserSegmentsCards
+                employees={employees}
+                onSelectUser={setSelectedUser}
+              />
+              <DataTablePagination
+                totalPages={paginationMeta.totalPages}
+                totalItems={paginationMeta.totalItems}
+              />
+            </>
+          ) : (
+            <UserSegmentsTable
+              employees={employees}
+              paginationMeta={paginationMeta}
+              onSelectUser={setSelectedUser}
+            />
+          )
+        ) : (
+          <UserSegmentsEmptyState
+            hasSearch={search.length > 0}
+            searchTerm={search}
+            hasSegmentFilter={segmentFilter.length > 0}
+            withoutSegments={withoutSegments}
+          />
+        )}
 
         {selectedUser && (
           <UserSegmentSheet
