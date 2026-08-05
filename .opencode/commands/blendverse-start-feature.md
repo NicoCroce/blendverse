@@ -4,6 +4,7 @@ description: >-
   clarify → plan → tasks) y luego hace handoff a @blendverse-implement para
   iniciar la implementación. Usar cuando se quiere comenzar una feature nueva
   de punta a punta sin tocar manualmente cada agente.
+  modo: auto | plan
 ---
 
 # Start Feature — Pipeline Completo
@@ -16,6 +17,13 @@ a Blendverse para la implementación DDD especializada.
 
 Feature a implementar: `{{feature}}`
 
+Modo del pipeline: `{{modo}}` (`plan` | `auto`, default `plan`):
+
+- `plan` — comportamiento actual: detenerse tras cada fase (1–5) y esperar confirmación explícita para poder iterar sobre cada artefacto.
+- `auto` — ejecutar las fases 1→5 encadenadas, sin aprobación por fase, siempre que la feature pase la evaluación de complejidad de la Fase 0. Solo preguntar (volviendo a `modo plan`) ante dudas materiales o sugerencias explícitas del usuario. Hay un único checkpoint de revisión antes de la Fase 6.
+
+Si el usuario no indica `{{modo}}`, asumir `plan`.
+
 ## Pre-flight — Sync a Engram (resume)
 
 1. Invocar la skill `engram-sync`.
@@ -25,22 +33,44 @@ Feature a implementar: `{{feature}}`
    - Si no existe → registrar el pipeline inicial con `mem_save`: `topic_key: feature/{{feature}}/pipeline`, `status: IN_PROGRESS`, `current_phase: 1`, `branch` (rama actual), `capture_prompt: false`.
 3. Todos los espejos de fase usan `capture_prompt: false` (ver skill).
 
+## Fase 0 — Evaluación de complejidad (solo `modo auto`)
+
+Antes de arrancar, evaluar la feature contra señales concretas de baja complejidad. Se considera de baja complejidad solo si cumple TODAS:
+
+- Sigue un patrón existente del proyecto (CRUD sobre dominio existente, endpoint + hook tRPC, use case nuevo en un dominio existente).
+- No introduce integraciones externas nuevas (servicios de terceros, webhooks, APIs nuevas).
+- No modifica el data-model de una entidad existente. Si crea una entidad nueva, que no tenga relaciones cross-domain.
+- No hay ambigüedad de requisitos evidente al leer la descripción del usuario.
+
+Si cumple TODAS → continuar en `modo auto` (fases encadenadas).
+Si alguna falla o hay duda razonable → informar al usuario y pasar a `modo plan` (comportamiento actual).
+
+## Regla de interacción por fase (aplica a Fases 1–5)
+
+- **`modo plan`**: detenerse al final de cada fase y esperar confirmación explícita. Mostrar el artefacto, permitir iterar/corregir/agregar, preguntar todas las dudas y comportarse en `modo plan`. No avanzar sin 'ok'.
+- **`modo auto`**: no esperar confirmación y encadenar la fase siguiente automáticamente. Interrumpir y volver a `modo plan` solo si:
+  - Aparece una **duda material**: ambigüedad de requisito que cambia alcance, tradeoff de stack, dominio inexistente, alcance UI ambiguo.
+  - El usuario hace una **sugerencia o corrección explícita**.
+- **Invariantes (ambos modos)**: si la feature no está relacionada con un dominio existente, preguntar el nombre del dominio SIEMPRE; vigilar el tope de 5 minutos por fase; avisar antes de que dispare un auto-commit hook de Speckit.
+
 ## Fase 1 — Especificación
 
 Invocar el agente `@speckit-specify` con la descripción de la feature.
 
 > La creación de la rama de la feature ya no se invoca acá: `.specify/extensions.yml` define `before_specify` como hook mandatory, por lo que `@speckit-specify` crea la rama automáticamente antes de generar el spec. Invocarla explícitamente en una fase separada duplicaba la creación de rama.
 
-**Siempre que la implementación a realizar no esté relacionada con un dominio existe, pregunta el nombre.**
-**Quiero que muestres un detalle de lo que está definido para ser confirmado o iterado antes de avanzar**
+**Siempre que la implementación a realizar no esté relacionada con un dominio existente, preguntar el nombre (incondicional en ambos modos).**
+**Mostrar un detalle de lo definido para ser confirmado o iterado.**
 
 Output esperado: `specs/{feature}/spec.md`
 
-**Esperar confirmación antes de continuar. Debes darle la posibilidad de iterar, corregir y agregar todo lo necesario sobre el `spec` antes de continuar. Siempre pregunta todas las dudas que puedas tener y compórtate en `modo plan`**
+### Restricciones
+
+Aplicar la "Regla de interacción por fase": en `modo plan` esperar confirmación explícita; en `modo auto` continuar salvo duda material o sugerencia explícita.
 
 ### Sync a Engram
 
-Tras la confirmación del usuario, invocar la skill `engram-sync` y guardar:
+Tras completar la fase (confirmada en `plan` o encadenada en `auto`), invocar la skill `engram-sync` y guardar:
 
 - `topic_key: feature/{{feature}}/spec` → `status: APPROVED`, resumen de user stories y criterios de aceptación, dudas/decisiones de alcance, `Where: specs/{{feature}}/spec.md`.
 - Actualizar `feature/{{feature}}/pipeline` → `current_phase: 2` (agregar la fase aprobada a `approved_phases`).
@@ -54,7 +84,7 @@ Revisar `spec.md` contra la misma taxonomía de cobertura que usa `@speckit-clar
 
 ### Restricciones
 
-**Esperar confirmación antes de continuar. Debes darle la posibilidad de iterar, corregir y agregar todo lo necesario sobre el `spec` antes de continuar. Siempre pregunta todas las dudas que puedas tener y compórtate en `modo plan`**
+Aplicar la "Regla de interacción por fase": en `modo plan` esperar confirmación explícita; en `modo auto` continuar salvo duda material o sugerencia explícita.
 
 ### Sync a Engram
 
@@ -90,11 +120,11 @@ Output esperado en `specs/{feature}/`:
 
 ### Restricciones
 
-**Esperar confirmación antes de continuar. Debes darle la posibilidad de iterar, corregir y agregar todo lo necesario sobre el `plan` y el `frontend-design` antes de continuar. Siempre pregunta todas las dudas que puedas tener y compórtate en `modo plan`**
+Aplicar la "Regla de interacción por fase": en `modo plan` esperar confirmación para iterar sobre `plan.md` (y `frontend-design.md` si aplica); en `modo auto` continuar salvo duda material o sugerencia explícita.
 
 ### Sync a Engram
 
-Tras la confirmación del usuario, invocar la skill `engram-sync` y guardar:
+Tras completar la fase (confirmada en `plan` o encadenada en `auto`), invocar la skill `engram-sync` y guardar:
 
 - `topic_key: feature/{{feature}}/plan` → `status: APPROVED`, resumen de stack, estructura y fases, `Where: specs/{{feature}}/plan.md` (+ `data-model.md` y `contracts/` si aplica).
 - `topic_key: feature/{{feature}}/frontend-design` → `status: APPROVED` (si aplica) o `status: SKIPPED` (si back-only), resumen de paleta, tipografías y elemento firma, `Where: specs/{feature}/frontend-design.md`.
@@ -108,11 +138,11 @@ Output esperado: `specs/{feature}/tasks.md`
 
 ### Restricciones
 
-**Esperar confirmación antes de continuar. Debes darle la posibilidad de iterar, corregir y agregar todo lo necesario sobre las `tasks` antes de continuar. Siempre pregunta todas las dudas que puedas tener y compórtate en `modo plan`**
+Aplicar la "Regla de interacción por fase": en `modo plan` esperar confirmación para iterar sobre `tasks.md`; en `modo auto` continuar salvo duda material o sugerencia explícita.
 
 ### Sync a Engram
 
-Tras la confirmación del usuario, invocar la skill `engram-sync` y guardar:
+Tras completar la fase (confirmada en `plan` o encadenada en `auto`), invocar la skill `engram-sync` y guardar:
 
 - `topic_key: feature/{{feature}}/tasks` → `status: APPROVED`, cantidad de user stories y de tareas, `Where: specs/{{feature}}/tasks.md`.
 - Actualizar `feature/{{feature}}/pipeline` → `current_phase: 5`.
@@ -125,18 +155,18 @@ Output esperado: Debes indicarle qué comando de `speckit` debe ejecutar si es n
 
 ### Restricciones
 
-**Esperar confirmación antes de continuar. Debes darle la posibilidad de iterar, corregir y agregar todo lo necesario sobre el reporte de consistencia antes de continuar. Siempre pregunta todas las dudas que puedas tener y compórtate en `modo plan`**
+Aplicar la "Regla de interacción por fase": en `modo plan` esperar confirmación sobre el reporte de consistencia; en `modo auto` continuar salvo duda material o sugerencia explícita.
 
 ### Sync a Engram
 
-Tras la confirmación del usuario, invocar la skill `engram-sync` y guardar:
+Tras completar la fase (confirmada en `plan` o encadenada en `auto`), invocar la skill `engram-sync` y guardar:
 
 - `topic_key: feature/{{feature}}/consistency` → `status: APPROVED`, inconsistencias detectadas y resueltas, comandos `speckit` ejecutados, `Where: specs/{{feature}}/`.
 - Actualizar `feature/{{feature}}/pipeline` → `current_phase: 6`.
 
 ## Fase 6 — Handoff a Blendverse
 
-Una vez completadas y aprobadas por el usuario todas las fases Speckit, presentar al usuario el resumen:
+Presentar al usuario el resumen de artefactos:
 
 ```
 ✅ Pipeline Speckit completado:
@@ -147,6 +177,9 @@ Una vez completadas y aprobadas por el usuario todas las fases Speckit, presenta
 
 📁 Artefactos en: specs/{feature}/
 ```
+
+- En `modo plan`: las fases ya fueron aprobadas una a una; proceder directo al handoff.
+- En `modo auto`: este es el **checkpoint único de revisión**. Esperar la confirmación explícita del usuario antes de delegar. Si pide iterar sobre algún artefacto, volver a `modo plan` y re-ejecutar las fases afectadas.
 
 ### Sync a Engram
 
@@ -163,7 +196,9 @@ Este orquestador ya sabe leer `specs/{{feature}}/spec.md` y `tasks.md` directame
 
 ## Notas
 
--**DETENTE ESTRICTAMENTE después de cada fase (1–5) y espera la confirmación explícita del usuario. NO pases a la siguiente fase sin que el usuario diga 'ok' o apruebe la fase anterior.**
+- **`modo plan` (default)**: DETENTE ESTRICTAMENTE después de cada fase (1–5) y espera la confirmación explícita del usuario. NO pases a la siguiente fase sin que el usuario diga 'ok' o apruebe la fase anterior.
+- **`modo auto`**: las fases 1–5 se ejecutan encadenadas sin aprobación por fase, siempre que la feature pase la Fase 0 (baja complejidad). Interrumpir y volver a `modo plan` solo ante dudas materiales o sugerencias explícitas del usuario.
+- El checkpoint único de `modo auto` es antes de la Fase 6: presentar el resumen de artefactos y esperar confirmación antes de delegar la implementación.
 
 - La Fase 6 es completamente automática — no requiere intervención del usuario, e incluye el paso final de `@blendverse-reviewer`, el cierre de la tarea en `history_log.json` y la apertura del PR a `main`.
 - Al cierre exitoso de la tarea (Fase 6), `@blendverse-implement` ejecuta su Paso 5: genera `pr-detail.md` con la skill `pr-detail`, pushea la rama y abre el PR contra `main` (requiere `gh` autenticado). El PR solo se crea cuando todas las validaciones (QA + reviewer) pasaron.
@@ -171,9 +206,7 @@ Este orquestador ya sabe leer `specs/{{feature}}/spec.md` y `tasks.md` directame
 - Si el usuario quiere saltear las fases de diseño (ya tiene `spec.md`, `plan.md` y `tasks.md`), puede invocar directamente `@blendverse-implement` indicándole la `{feature}` — éste lee los artefactos Speckit directamente, sin transcribirlos.
 - El comando `@speckit-to-blendverse` existe como transcripción standalone, pero no se usa en este pipeline: `@blendverse-implement` lee los artefactos Speckit directamente, sin necesidad de transcripción.
 - Invocar `@speckit-clarify`, `@speckit-plan`, `@speckit-tasks` o `@speckit-analyze` puede disparar un prompt de auto-commit definido en `.specify/extensions.yml` (`before_clarify`, `before_plan`, `before_tasks`, `before_analyze`) preguntando si confirmar cambios pendientes antes de esa fase — es un comportamiento esperado de Speckit, no un error del pipeline.
-- Recuerda detenerte en cada Fase (1–5) para poder iterar sobre la misma.
-- Todas las fases 1–5 se comportarán como modo `plan`.
-- Si alguna de las fases demora más de 5 minutos, debes indicarle al usuario por pantalla y analizar por qué está demando tanto tiempo.
+- Si alguna de las fases demora más de 5 minutos, debes indicarle al usuario por pantalla y analizar por qué está demandando tanto tiempo.
 - Cada fase aprobada se espeja en Engram (skill `engram-sync`). Si el pipeline se interrumpe entre sesiones, el pre-flight detecta `feature/{feature}/pipeline` en `IN_PROGRESS` y ofrece reanudar desde `current_phase`.
 - La Fase 3.1 es **condicional al alcance UI**: para features back-only no se genera `frontend-design.md` y el espejo en Engram queda como `SKIPPED`. El artefacto define una **dirección visual** (tokens de color/tipografía/layout y elemento firma), no un mockup.
 - La evaluación de `tsc` + `eslint` (skill `qa-runner`) y el fix automático de inconsistencias **no** ocurren en las Fases 1–5 (no hay código aún): ocurren en la cadena del handoff (Fase 6). `@blendverse-qa` valida estáticamente y escribe `03_qa_report.md`; `@blendverse-implement` re-invoca al Coder (`back`/`front`) con el error concreto hasta `PASS`. El tope de 3 intentos lo cuenta QA leyendo `attempts` del `02_dev_log.md` (que incrementa el Coder): si `attempts >= 3` ejecuta el Protocolo Break-Loop → `BLOCKED`.
