@@ -16,7 +16,7 @@ export const EmployeeCards = ({
   selectedIds,
   onToggleSelection,
 }: EmployeeCardsProps) => (
-  <Container space="small" className="md:hidden">
+  <Container space="large" className="md:hidden">
     {employees.map((employee) => {
       const isSelected = selectedIds.has(employee.id);
       return (
@@ -24,7 +24,7 @@ export const EmployeeCards = ({
           row
           align="start"
           key={employee.id}
-          className="gap-3 rounded-md border bg-card p-3 data-[state=selected]:border-primary"
+          className="rounded-md border bg-card p-3 data-[state=selected]:border-primary"
           data-state={isSelected ? 'selected' : undefined}
         >
           {selectionMode && (
@@ -39,7 +39,7 @@ export const EmployeeCards = ({
           )}
           <Container className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium">
-              {employee.apellido}, {employee.nombre}
+              {employee.apellido} {employee.nombre}
             </p>
             <p className="truncate text-sm text-muted-foreground">
               {employee.email}

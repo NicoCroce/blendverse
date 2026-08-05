@@ -11,7 +11,7 @@ applyTo: 'packages/app/**'
 packages/app/src/Domains/[Domain]/
 ├── [Entity].entity.ts          # Tipos TypeScript del dominio (re-exporta de @server)
 ├── [Domain].service.ts         # Instancia tRPC React para este dominio
-├── [Domain].routes.tsx         # Constantes de URLs
+├── [Domain].routes.ts          # Constantes de URLs (sin JSX → .ts)
 ├── [Domain].router.tsx         # JSX con <Route> de React Router
 ├── Components/                 # Componentes específicos del dominio
 │   └── index.ts
@@ -68,6 +68,8 @@ Components/
 
 4. Solo importa de `ui/` cuando NO exista un wrapper en `Layout/`, `Molecules/` u `Organisms/`, o cuando necesites composición de bajo nivel que el wrapper no exponga (ej: `SelectContent`/`SelectItem` directos de `ui/select` porque el wrapper `Molecules/Select` usa una API simplificada distinta). Siempre verifica primero el barrel.
 5. El componente `Container` es estrucutral, por lo que si lo utilizas por defecto ya es flex column. Esto facilita el layout. **SI VAS A UTILIZARLO ANALIZA BIEN SU COMPORTAMIENTO PARA NO AGREGAR BLOCK INNECESARIAMENTE** También ten en cuenta `space` los valores correctos.
+
+6. Los tipos de datos usan prefijo `T` (`TEntity`, `TEntitySearch`) y SIEMPRE se derivan del router del servidor con `inferRouterOutputs`. Nunca definas interfaces manuales con prefijo `I` (ej. `ICertificate` → `TCertificate`): el frontend debe sincronizarse con el backend automáticamente cuando cambia.
 
 ### Entity (tipos)
 
@@ -249,7 +251,9 @@ export const useUpdateEntity = () => {
 
 ## Rutas
 
-### `[Domain].routes.tsx` (constantes)
+### `[Domain].routes.ts` (constantes)
+
+> Los archivos de rutas contienen SOLO constantes de URLs, no JSX. Por eso la extensión es `.ts` (no `.tsx`). El `.router.tsx` es el único que lleva JSX.
 
 ```typescript
 export const ENTITY_ROUTE = '/entities';
@@ -282,6 +286,41 @@ export const EntityRouter = [
   />,
 ];
 ```
+
+## Responsive — Mobile First
+
+**Regla:** una misma página soporta dos presentaciones (tabla en desktop, cards en mobile) con UN solo hook de lógica. El hook orquesta datos, búsqueda, paginación, modo selección y acciones; la página solo elige la presentación por breakpoint con `md:`.
+
+Patrón de referencia: `Admin/Pages/Empleados.page.tsx` + `Admin/Hooks/useEmpleadosPage.ts` + `Admin/Components/EmployeeCards.tsx`.
+
+```tsx
+{isLoading ? (
+  <>
+    <div className="hidden md:block">
+      <TableSkeleton />
+    </div>
+    <CardsSkeleton /> {/* internamente md:hidden */}
+  </>
+) : items.length > 0 ? (
+  <>
+    <div className="hidden md:block">
+      <DataTable columns={columns} data={items} pagination={paginationMeta} />
+    </div>
+    <div className="md:hidden">
+      <ItemCards items={items} selectionMode={selectionMode} ... />
+      <DataTablePagination totalPages={paginationMeta.totalPages} totalItems={paginationMeta.totalItems} />
+    </div>
+  </>
+) : (
+  <EmptyState search={search} />
+)}
+```
+
+- **Desktop (≥ `md`):** `DataTable` con el layout actual, sin cambios de comportamiento.
+- **Mobile (< `md`):** lista de cards con el mismo contrato de datos (página, selección, acciones).
+- **Skeletons:** uno por presentación (`TableSkeleton` con `hidden md:block`, `CardsSkeleton` con `md:hidden`).
+- **Empty state:** componente extraído, compartido por ambas presentaciones.
+- **NO dupliques lógica:** selección, búsqueda, paginación y mutations viven en un único hook (ej. `useEmpleadosPage`), nunca en la página ni en los componentes de presentación.
 
 ## Formularios
 
@@ -324,6 +363,22 @@ Antes de crear cualquier componente nuevo, verificar en `packages/app/src/Applic
 | `Layout/`    | Sidebar, Header, Layout wrapper                             |
 
 **Nunca dupliques un componente que ya exista. Si falta, crealo en la capa correcta.**
+
+### Componentes de dominio reutilizables — un archivo por pieza
+
+Los pieces de presentación que se repiten dentro de un dominio (skeletons, empty states, stat cards, íconos de estado) van en archivos propios dentro del `Components/` del dominio, con nombre semántico — NUNCA definidos inline en una página ni duplicados entre archivos.
+
+| Pieza                     | Archivo (ejemplo Admin)                                    |
+| ------------------------- | ---------------------------------------------------------- |
+| Skeleton tabla            | `Components/TableSkeleton.tsx`                             |
+| Skeleton cards            | `Components/CardsSkeleton.tsx`                             |
+| Skeleton lista            | `Components/LicensesList/LicensesListSkeleton.tsx`         |
+| Empty state               | `Components/EmpleadosEmptyState.tsx`                       |
+| Stat card                 | `Components/EmpleadosStatCard.tsx`                         |
+| Íconos de estado ok/error | `Components/StatusIcons.tsx` (exporta `OkIcon`, `NotIcon`) |
+| Tooltip de chart          | `Components/MonthlyLicensesChartTooltip.tsx`               |
+
+Regla: si el mismo fragmento aparece en 2+ archivos o infla una página, extraerlo a un archivo propio en el `Components/` del dominio. Si es cross-domain, en `packages/app/src/Application/Components/`.
 
 ## Archivos Globales a Actualizar al Crear un Dominio
 
