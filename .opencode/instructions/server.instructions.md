@@ -305,6 +305,77 @@ export const entityApp = {
 1. `packages/server/src/domains/register.ts` → importar y spreadeador `entityApp`
 2. `packages/server/src/Infrastructure/Routes/Router.ts` → importar y spreadeador `EntityRoutes()`
 
+## Buenas Prácticas Awilix
+
+El contenedor global (`packages/server/src/Infrastructure/di/Container.ts`) se crea con:
+
+```typescript
+createContainer({
+  injectionMode: InjectionMode.CLASSIC,
+  strict: true,
+});
+```
+
+Consecuencias normativas de esto:
+
+### 1. El nombre del parámetro del constructor ES la clave de resolución
+
+En `InjectionMode.CLASSIC` Awilix inspecciona los **nombres de los parámetros** del constructor y los resuelve contra las claves registradas. `strict: true` convierte cualquier dependencia no encontrada en `AwilixResolutionError`.
+
+```typescript
+// ❌ ERROR — AwilixResolutionError: Could not resolve 'certificateRepository'
+constructor(private readonly certificateRepository: CertificateRepository) {}
+
+// ✅ CORRECTO — el parámetro coincide con la clave registrada: 'certificatesRepository'
+constructor(private readonly certificatesRepository: CertificateRepository) {}
+```
+
+> **Regla:** la clave registrada en `[domain].di.ts` (`certificatesRepository`) y el nombre del parámetro inyectado deben ser **idénticos**. El tipo TypeScript (`CertificateRepository`, singular) es solo el tipo: no lo copies como nombre de parámetro. Antes de escribir un constructor, abrí el `.di.ts` del dominio y copiá la clave exacta. Nunca la adivines por la clase.
+
+### 2. Checklist de registro para un use case nuevo
+
+Cada clase inyectable debe recorrer este flujo en orden:
+
+1. La clase existe en `Application/UseCases/` y está exportada desde el barrel `Application/index.ts`.
+2. Está registrada en el `.di.ts` de su dominio con clave `_camelCaseUseCase: asClass(...)`.
+3. El parámetro del consumidor usa **exactamente** esa clave (`_getPendingLicenses`, no `getPendingLicenses` ni `_getPendingLicense`).
+4. El objeto `[domain]App` está spread en `registerDomains()` de `packages/server/src/domains/register.ts`. Si falta, el dominio entero queda sin resolver.
+
+### 3. Cross-domain: registra en el dominio dueño, no en el consumidor
+
+Cuando un dominio (ej. `DailyReport`) usa casos de uso de otro (`Certificates`), esos use cases **solo** viven en el `.di.ts` del dominio dueño. El consumidor los inyecta por la clave expuesta:
+
+```typescript
+// certificates.di.ts — el único lugar donde se registra
+_getPendingLicenses: asClass(GetPendingLicenses),
+
+// GenerateDailyReport.usecase.ts — solo inyecta la clave del dueño
+constructor(private readonly _getPendingLicenses: GetPendingLicenses) {}
+```
+
+Nunca registres en tu `.di.ts` un use case que pertenece a otro dominio: colisiona con el flat merge de `register.ts` y esconde quién es dueño del caso de uso.
+
+### 4. `container.resolve()` solo en puntos de entrada
+
+El único lugar permitido para `container.resolve()` son los resolvers de arranque del propio `.di.ts` (controllers, schedulers):
+
+```typescript
+export const entityController = () =>
+  container.resolve<EntityController>('entityController');
+```
+
+Use cases, services y controllers **nunca** resuelven del contenedor: se inyectan vía constructor (Awilix los instancia por `asClass`). Resolver dentro de la lógica de negocio rompe el grafo de dependencias y duplica instancias.
+
+### 5. Debugging de `AwilixResolutionError: Could not resolve 'X'`
+
+El mensaje dice la clave que faltó. Orden de verificación:
+
+1. `grep -rn "X" packages/server/src/domains/*/*.di.ts` — ¿existe la clave registrada en algún `.di.ts`? Si no existe, nunca la registraste.
+2. ¿El parámetro del constructor está escrito **igual** (camelCase, singular/plural)? El caso más común es singular/plural: `certificateRepository` vs `certificatesRepository`.
+3. ¿El `[domain]App` que la registra está spread en `register.ts`?
+4. ¿Es cross-domain? Verificá que esté registrada en el `.di.ts` del dominio **dueño** del use case.
+5. ¿Hay claves duplicadas por el flat merge? Nombres genéricos (`_create`, `_update`, `_delete`) colisionan; siempre incluir entidad/dominio.
+
 ## Convenciones de Nomenclatura
 
 | Artefacto            | Patrón                                 | Ejemplo                                |
@@ -356,3 +427,4 @@ whereClause.id_propietario = ownerId;
 7. Los nombres de los métodos, variables, class, etc. deben ser camelcase. Ej: `Rename class "Empresas_usuariosService" to match the regular expression ^\$?[A-Z][a-zA-Z0-9]*$.`.
 8. Prefer using nullish coalescing operator (`??`) instead of a ternary expression, as it is simpler to read.
 9. No definas helpers estáticos privados dentro de los repositorios si no usan el modelo Sequelize. Las funciones puras (fechas, formateo, nombres, mapeo de datos) van en `packages/server/src/Infrastructure/utils/` y se importan desde `@server/Infrastructure`. Ver sección "Utilidades compartidas".
+10. El nombre del parámetro de un constructor inyectado debe ser **idéntico** a la clave registrada en `[domain].di.ts`. Con `InjectionMode.CLASSIC` + `strict: true`, cualquier mismatch (singular/plural, typo, camelCase) lanza `AwilixResolutionError: Could not resolve '<param>'`. Nunca infieras la clave por el nombre de la clase o el tipo de la interface: abrí el `.di.ts` del dominio y copiá la clave exacta. Ver sección "Buenas Prácticas Awilix".

@@ -17,7 +17,7 @@ Usar esta skill cuando se implemente un **nuevo caso de envío de email** (nuevo
 
 - La **fuente de verdad** de casos, destinatarios e infraestructura es `docs/email-notifications.md`. Leerla antes de empezar.
 - El envío real se hace **siempre** con `MailNotificationService.sendOne()` / `send()` (Nodemailer). `EmailSender.ts` (axios/`EMAIL_HOST`) es **código muerto**: no usarlo.
-- El template va en `Infrastructure/utils/Email/EmailsTemplates.ts` con forma `{ subject, body }`. No templates inline en la capa Application.
+- El template va en `Infrastructure/utils/Email/Templates/` (un archivo `*.template.ts` por caso) con forma `{ subject, body }`, registrado en `Templates/index.ts` (`emailTemplates`). Helpers compartidos en `Templates/shared.ts` y tipos en `Templates/types.ts`. No templates inline en la capa Application.
 - Resolver destinatarios solo vía casos de uso (`GetAdmins`, `GetUser`, repos de dominio). **Nunca** consultar modelos Sequelize desde la capa Application.
 - **Actualizar `docs/email-notifications.md` con el nuevo caso es obligatorio** antes de dar la tarea por cerrada.
 
@@ -33,7 +33,7 @@ Usar esta skill cuando se implemente un **nuevo caso de envío de email** (nuevo
 ## Execution Steps
 
 1. Leer `docs/email-notifications.md` y la sección del caso más parecido al nuevo.
-2. Agregar la función template en `EmailsTemplates.ts` (interfaz de args + `{ subject, body }`) y exportarla en `emailTemplates`.
+2. Agregar la función template en `Templates/<caso>.template.ts` (interfaz de args en `Templates/types.ts` + `{ subject, body }`) y exportarla en `emailTemplates` (`Templates/index.ts`).
 3. Agregar el método al servicio que corresponda (`SendEmailService` o servicio propio del dominio) resolviendo destinatarios vía casos de uso.
 4. Invocar el método desde el service/caso de uso que dispara el email (mismo patrón que `Certificates.service` / `Documents.service`).
 5. Actualizar `docs/email-notifications.md`: agregar fila/tabla del caso nuevo (disparador, destinatarios, asunto, template, adjuntos).
@@ -48,6 +48,6 @@ Usar esta skill cuando se implemente un **nuevo caso de envío de email** (nuevo
 ## References
 
 - `../../../docs/email-notifications.md` — inventario de casos, destinatarios e infraestructura (fuente de verdad).
-- `packages/server/src/Infrastructure/utils/Email/EmailsTemplates.ts` — templates `{ subject, body }`.
+- `packages/server/src/Infrastructure/utils/Email/Templates/` — templates `{ subject, body }` (un archivo por caso), `types.ts`, `shared.ts`.
 - `packages/server/src/Application/Services/SendEmail.service.ts` — orquestador y resolución de destinatarios.
 - `packages/server/src/domains/Disclaimer/Infrastructure/DisclaimerEmail.service.ts` — patrón de envío masivo por lotes.
