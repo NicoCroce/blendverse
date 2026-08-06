@@ -41,6 +41,12 @@ const mockRepository: CertificateRepository = {
   deleteCertificate: vi.fn(),
   updateCertificateStatus: vi.fn(),
   getCertificate: vi.fn(),
+  getEmployeesOnLeaveToday: vi.fn(),
+  getPendingLicenses: vi.fn(),
+  getUpcomingVacations: vi.fn(),
+  getExpiringLicenses: vi.fn(),
+  countLicensesInProgress: vi.fn(),
+  countPendingLicenses: vi.fn(),
 };
 
 const mockGetRoleByUser = { execute: vi.fn() };

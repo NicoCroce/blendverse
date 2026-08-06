@@ -37,6 +37,17 @@ export interface IEmployeeRecord {
   estado_firma: 'Pendiente' | 'Firmado' | 'Corrupto';
 }
 
+// ── Reporte diario (daily-admin-report) ─────────────────────────────────────
+
+export type IGetPendingDisclaimerAcceptancesRepository = IRequestContext;
+export type ICountPendingDisclaimersRepository = IRequestContext;
+
+export interface IPendingDisclaimerAcceptanceRecord {
+  employeeId: number;
+  employeeName: string;
+  employeeEmail: string;
+}
+
 export interface DisclaimerRepository {
   getStatus(
     params: IGetSignatureStatusRepository,
@@ -51,4 +62,12 @@ export interface DisclaimerRepository {
   getPendingEmployeeIds(
     params: IGetPendingEmployeeIdsRepository,
   ): Promise<number[]>;
+
+  // Reporte diario (daily-admin-report)
+  getEmployeesWithoutDisclaimerAcceptance(
+    params: IGetPendingDisclaimerAcceptancesRepository,
+  ): Promise<IPendingDisclaimerAcceptanceRecord[]>;
+  countPendingDisclaimers(
+    params: ICountPendingDisclaimersRepository,
+  ): Promise<number>;
 }

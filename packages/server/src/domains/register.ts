@@ -10,6 +10,7 @@ import { themeApp } from './Themes';
 import { empresasUsuariosApp } from './Empresas_usuarios';
 import { disclaimerApp } from './Disclaimer';
 import { segmentsApp } from './Segments';
+import { dailyReportApp } from './DailyReport';
 
 export const registerDomains = () => ({
   ...ownersysApp,
@@ -24,4 +25,5 @@ export const registerDomains = () => ({
   ...empresasUsuariosApp,
   ...disclaimerApp,
   ...segmentsApp,
+  ...dailyReportApp,
 });

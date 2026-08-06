@@ -3,10 +3,12 @@ import { DocumentsService } from './Application/Documents.service';
 import { DocumentsController } from './Infrastructure/Controllers/Documents.controller';
 import { container } from '@server/Infrastructure/di/Container';
 import {
+  CountUnsignedDocuments,
   GetDocument,
   GetDocuments,
   GetDocumentsByCompany,
   GetStatisticsDocuments,
+  GetUnsignedDocuments,
   SendDocumentToEmail,
   SignDocument,
   ViewDocument,
@@ -24,6 +26,9 @@ export const documentsApp = {
   _getDocumentsByCompany: asClass(GetDocumentsByCompany),
   _getStatisticsDocuments: asClass(GetStatisticsDocuments),
   _sendDocumentToEmail: asClass(SendDocumentToEmail),
+  // Reporte diario (daily-admin-report)
+  _getUnsignedDocuments: asClass(GetUnsignedDocuments),
+  _countUnsignedDocuments: asClass(CountUnsignedDocuments),
 };
 
 export const documentsController = () =>

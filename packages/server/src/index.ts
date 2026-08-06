@@ -36,9 +36,8 @@ initMiddlewares(app);
 // Lazy load DI registration and routes after initialization
 (async () => {
   const { registerDI } = await import('./Infrastructure/di/register.js');
-  const { InstanceMainRouter } = await import(
-    './Infrastructure/Routes/Router.js'
-  );
+  const { InstanceMainRouter } =
+    await import('./Infrastructure/Routes/Router.js');
 
   registerDI(app);
 
@@ -46,6 +45,11 @@ initMiddlewares(app);
   InstanceMainRouter(app);
   relateModels();
   connect();
+
+  // Scheduler del reporte diario (todos los días a las 9:00 AM hora Argentina)
+  const { dailyReportScheduler } =
+    await import('./domains/DailyReport/dailyReport.di.js');
+  dailyReportScheduler().init();
 
   app.get('/', (_req: Request, res: Response) => {
     res.send('Express + TypeScript Server 😁');

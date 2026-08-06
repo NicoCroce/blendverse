@@ -1,6 +1,9 @@
 import {
+  ICompanyOwner,
+  ICountActiveEmployeesRepository,
   IRenewPasswordRepository,
   IChangePasswordRepository,
+  IGetAllActiveOwnersRepository,
   IGetEmailsByUsersIdRepository,
   IValidateUserRepository,
   User,
@@ -123,5 +126,32 @@ export class UsersRepositoryImplementation implements UserRepository {
     );
 
     if (!mail || !rowsAffected[0]) return null;
+  }
+
+  // ── Reporte diario (daily-admin-report) ──────────────────────────────────
+
+  async getAllActiveOwners(
+    _params: IGetAllActiveOwnersRepository,
+  ): Promise<ICompanyOwner[]> {
+    // Nota: `sis_propietarios` no tiene columna `active` (verificado en la
+    // base de datos). La consigna original asumía `WHERE active = true`;
+    // se devuelven todos los owners registrados.
+    const owners = await CompaniesModel.findAll({
+      attributes: ['id', 'denominacion'],
+      order: [['denominacion', 'ASC']],
+    });
+
+    return owners.map((owner) => ({
+      id: owner.id,
+      denominacion: owner.denominacion,
+    }));
+  }
+
+  async countActiveEmployees({
+    requestContext,
+  }: ICountActiveEmployeesRepository): Promise<number> {
+    return UserModel.count({
+      where: { id_propietario: requestContext.values.ownerId },
+    });
   }
 }

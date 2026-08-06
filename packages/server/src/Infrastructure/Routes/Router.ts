@@ -12,6 +12,7 @@ import { ThemeRoutes } from '@server/domains/Themes';
 import { EmpresasUsuariosRoutes } from '@server/domains/Empresas_usuarios';
 import { DisclaimerRoutes } from '@server/domains/Disclaimer';
 import { SegmentsRoutes } from '@server/domains/Segments';
+import { DailyReportRoutes } from '@server/domains/DailyReport';
 
 const MainRouter = () => {
   const AllRouters = {
@@ -26,6 +27,7 @@ const MainRouter = () => {
     ...EmpresasUsuariosRoutes(),
     ...DisclaimerRoutes(),
     ...SegmentsRoutes(),
+    ...DailyReportRoutes(),
   };
   return router(AllRouters);
 };

@@ -5,6 +5,8 @@ import {
 } from './Infrastructure';
 import {
   ChangePassword,
+  CountActiveEmployees,
+  GetAllActiveOwners,
   GetEmailsByUsersId,
   ValidateUserPassword,
   RenewPassword,
@@ -23,6 +25,9 @@ export const userApp = {
   _getEmailsByUsersId: asClass(GetEmailsByUsersId),
   _renewPassword: asClass(RenewPassword),
   _validateUserPassword: asClass(ValidateUserPassword),
+  // Reporte diario (daily-admin-report)
+  _getAllActiveOwners: asClass(GetAllActiveOwners),
+  _countActiveEmployees: asClass(CountActiveEmployees),
 };
 
 export const usersController = () =>

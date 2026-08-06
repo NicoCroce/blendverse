@@ -25,6 +25,16 @@ export interface IRenewPasswordRepository extends IRequestContext {
   password: string;
 }
 
+// ── Reporte diario (daily-admin-report) ─────────────────────────────────────
+
+export interface ICompanyOwner {
+  id: number;
+  denominacion: string;
+}
+
+export type IGetAllActiveOwnersRepository = IRequestContext;
+export type ICountActiveEmployeesRepository = IRequestContext;
+
 export interface UserRepository {
   getUser(params: IGetUserRepository): Promise<User | null>;
   validateUser(params: IValidateUserRepository): Promise<User | null>;
@@ -32,5 +42,12 @@ export interface UserRepository {
   getEmailsByUsersId(params: IGetEmailsByUsersIdRepository): Promise<string[]>;
   // No queda expuesto por el servicio de Users. Solo se utiliza por medio de Auth.
   renewPassword(params: IRenewPasswordRepository): Promise<void | null>;
+  // Reporte diario: owners (empresas) y empleados activos por empresa.
+  getAllActiveOwners(
+    params: IGetAllActiveOwnersRepository,
+  ): Promise<ICompanyOwner[]>;
+  countActiveEmployees(
+    params: ICountActiveEmployeesRepository,
+  ): Promise<number>;
   // ---
 }

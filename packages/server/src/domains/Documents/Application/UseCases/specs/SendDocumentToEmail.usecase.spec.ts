@@ -29,6 +29,8 @@ const mockRepository: DocumentRepository = {
   signDocument: vi.fn(),
   getDocumentsByCompany: vi.fn(),
   getStatisticsDocuments: vi.fn(),
+  getUnsignedDocuments: vi.fn(),
+  countUnsignedDocuments: vi.fn(),
 };
 
 const requestContext = new RequestContext(1, 'req-test', 10);

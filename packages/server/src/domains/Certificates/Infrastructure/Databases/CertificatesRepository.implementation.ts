@@ -1,8 +1,20 @@
 import { UserModel } from '@server/domains/Users';
+import { UsuariosSegmentosModel } from '@server/domains/Segments/Infrastructure/Database/UsuariosSegmentos.model';
+import { TiposSegmentosModel } from '@server/domains/Segments/Infrastructure/Database/TiposSegmentos.model';
 import {
   Certificate,
   CertificateRepository,
+  ICountLicensesInProgressRepository,
+  ICountPendingLicensesRepository,
+  IEmployeeOnLeaveRecord,
+  IExpiringLicenseRecord,
   IGetCertificatesRepository,
+  IGetEmployeesOnLeaveTodayRepository,
+  IGetExpiringLicensesRepository,
+  IGetPendingLicensesRepository,
+  IGetUpcomingVacationsRepository,
+  IPendingLicenseRecord,
+  IUpcomingVacationRecord,
 } from '../../Domain';
 import {
   IAddCertificateRepository,
@@ -22,7 +34,15 @@ import { CertificateModel } from './Certificates.model';
 import { CertificatesTypesModel } from './CertificatesTypes.model';
 import { CertificatesFilters } from './CertificatesFilters';
 import { Op } from 'sequelize';
-import { sequelize } from '@server/Infrastructure';
+import {
+  addDays,
+  buildEmployeeName,
+  employeeSegmentName,
+  endOfToday,
+  formatDate,
+  sequelize,
+  startOfToday,
+} from '@server/Infrastructure';
 
 export class CertificatesRepositoryImplementation implements CertificateRepository {
   async appendImages({
@@ -575,6 +595,222 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
       status: certificate.estado,
       files: certificate.archivos,
       userId: certificate.id_usuario,
+    });
+  }
+
+  // ── Reporte diario (daily-admin-report) ──────────────────────────────────
+
+  async getEmployeesOnLeaveToday({
+    requestContext,
+  }: IGetEmployeesOnLeaveTodayRepository): Promise<IEmployeeOnLeaveRecord[]> {
+    const ownerId = requestContext.values.ownerId;
+    const todayStart = startOfToday();
+    const todayEnd = endOfToday();
+
+    const certificates = await CertificateModel.findAll({
+      where: {
+        estado: 'aprobado',
+        fecha_inicio: { [Op.lte]: todayEnd },
+        fecha_fin: { [Op.gte]: todayStart },
+      },
+      include: [
+        {
+          model: UserModel,
+          as: 'User',
+          required: true,
+          where: { id_propietario: ownerId },
+          attributes: ['id', 'nombre', 'apellido'],
+        },
+        {
+          model: CertificatesTypesModel,
+          attributes: ['denominacion'],
+        },
+      ],
+      order: [[{ model: UserModel, as: 'User' }, 'apellido', 'ASC']],
+    });
+
+    return certificates.map((certificate) => ({
+      employeeId: certificate.id_usuario,
+      employeeName: buildEmployeeName(certificate.User),
+      licenseType: certificate.CertificatesTypesModel?.denominacion ?? '',
+      startDate: formatDate(certificate.fecha_inicio),
+      endDate: formatDate(certificate.fecha_fin),
+      returnDate: formatDate(certificate.fecha_reintegro),
+    }));
+  }
+
+  async getPendingLicenses({
+    requestContext,
+  }: IGetPendingLicensesRepository): Promise<IPendingLicenseRecord[]> {
+    const ownerId = requestContext.values.ownerId;
+    const todayStart = startOfToday();
+    const dayInMs = 86_400_000;
+
+    const certificates = await CertificateModel.findAll({
+      where: { estado: 'pendiente' },
+      include: [
+        {
+          model: UserModel,
+          as: 'User',
+          required: true,
+          where: { id_propietario: ownerId },
+          attributes: ['id', 'nombre', 'apellido'],
+        },
+        {
+          model: CertificatesTypesModel,
+          attributes: ['denominacion'],
+        },
+      ],
+    });
+
+    return certificates
+      .map((certificate) => ({
+        employeeId: certificate.id_usuario,
+        employeeName: buildEmployeeName(certificate.User),
+        licenseType: certificate.CertificatesTypesModel?.denominacion ?? '',
+        startDate: formatDate(certificate.fecha_inicio),
+        endDate: formatDate(certificate.fecha_fin),
+        daysSinceRequest: Math.max(
+          0,
+          Math.floor(
+            (todayStart.getTime() - new Date(certificate.createdAt).getTime()) /
+              dayInMs,
+          ),
+        ),
+      }))
+      .sort((a, b) => b.daysSinceRequest - a.daysSinceRequest);
+  }
+
+  async getUpcomingVacations({
+    requestContext,
+  }: IGetUpcomingVacationsRepository): Promise<IUpcomingVacationRecord[]> {
+    const ownerId = requestContext.values.ownerId;
+    const todayStart = startOfToday();
+    const in15Days = addDays(todayStart, 15);
+
+    const certificates = await CertificateModel.findAll({
+      where: {
+        estado: 'aprobado',
+        id_tipo_certificado: 1,
+        fecha_inicio: { [Op.between]: [todayStart, in15Days] },
+      },
+      include: [
+        {
+          model: UserModel,
+          as: 'User',
+          required: true,
+          where: { id_propietario: ownerId },
+          attributes: ['id', 'nombre', 'apellido'],
+          include: [
+            {
+              model: UsuariosSegmentosModel,
+              required: false,
+              attributes: [],
+              include: [
+                {
+                  model: TiposSegmentosModel,
+                  required: false,
+                  attributes: ['nombre'],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          model: CertificatesTypesModel,
+          where: { descripcion: { [Op.like]: '%vacaciones%' } },
+          attributes: ['denominacion'],
+        },
+      ],
+      order: [[{ model: UserModel, as: 'User' }, 'apellido', 'ASC']],
+    });
+
+    return certificates.map((certificate) => ({
+      employeeId: certificate.id_usuario,
+      employeeName: buildEmployeeName(certificate.User),
+      segmentName: employeeSegmentName(certificate.User),
+      startDate: formatDate(certificate.fecha_inicio),
+      endDate: formatDate(certificate.fecha_fin),
+    }));
+  }
+
+  async getExpiringLicenses({
+    requestContext,
+  }: IGetExpiringLicensesRepository): Promise<IExpiringLicenseRecord[]> {
+    const ownerId = requestContext.values.ownerId;
+    const todayStart = startOfToday();
+    const in7Days = addDays(todayStart, 7);
+
+    const certificates = await CertificateModel.findAll({
+      where: {
+        estado: 'aprobado',
+        fecha_fin: { [Op.between]: [todayStart, in7Days] },
+      },
+      include: [
+        {
+          model: UserModel,
+          as: 'User',
+          required: true,
+          where: { id_propietario: ownerId },
+          attributes: ['id', 'nombre', 'apellido'],
+        },
+        {
+          model: CertificatesTypesModel,
+          attributes: ['denominacion'],
+        },
+      ],
+      order: [[{ model: UserModel, as: 'User' }, 'apellido', 'ASC']],
+    });
+
+    return certificates.map((certificate) => ({
+      employeeId: certificate.id_usuario,
+      employeeName: buildEmployeeName(certificate.User),
+      licenseType: certificate.CertificatesTypesModel?.denominacion ?? '',
+      endDate: formatDate(certificate.fecha_fin),
+    }));
+  }
+
+  async countLicensesInProgress({
+    requestContext,
+  }: ICountLicensesInProgressRepository): Promise<number> {
+    const ownerId = requestContext.values.ownerId;
+    const todayStart = startOfToday();
+    const todayEnd = endOfToday();
+
+    return CertificateModel.count({
+      where: {
+        estado: 'aprobado',
+        fecha_inicio: { [Op.lte]: todayEnd },
+        fecha_fin: { [Op.gte]: todayStart },
+      },
+      include: [
+        {
+          model: UserModel,
+          as: 'User',
+          required: true,
+          where: { id_propietario: ownerId },
+          attributes: [],
+        },
+      ],
+    });
+  }
+
+  async countPendingLicenses({
+    requestContext,
+  }: ICountPendingLicensesRepository): Promise<number> {
+    const ownerId = requestContext.values.ownerId;
+
+    return CertificateModel.count({
+      where: { estado: 'pendiente' },
+      include: [
+        {
+          model: UserModel,
+          as: 'User',
+          required: true,
+          where: { id_propietario: ownerId },
+          attributes: [],
+        },
+      ],
     });
   }
 }

@@ -2,13 +2,19 @@ import { asClass } from 'awilix';
 import { CertificatesServices } from './Application';
 import {
   AddCertificate,
+  CountLicensesInProgress,
+  CountPendingLicenses,
   DeleteCertificate,
   GetCertificates,
   GetCertificatesByCompany,
   GetCertificateTypes,
+  GetEmployeesOnLeaveToday,
+  GetExpiringLicenses,
   AppendImages,
   GetMonthlyStatisticsCertificates,
+  GetPendingLicenses,
   GetStatisticsCertificates,
+  GetUpcomingVacations,
   UpdateCertificateStatus,
 } from './Application';
 import {
@@ -34,6 +40,13 @@ export const certificatesApp = {
   _deleteCertificate: asClass(DeleteCertificate),
   _updateCertificateStatus: asClass(UpdateCertificateStatus),
   getRoleByUser: asClass(GetRoleByUser),
+  // Reporte diario (daily-admin-report)
+  _getEmployeesOnLeaveToday: asClass(GetEmployeesOnLeaveToday),
+  _getPendingLicenses: asClass(GetPendingLicenses),
+  _getUpcomingVacations: asClass(GetUpcomingVacations),
+  _getExpiringLicenses: asClass(GetExpiringLicenses),
+  _countLicensesInProgress: asClass(CountLicensesInProgress),
+  _countPendingLicenses: asClass(CountPendingLicenses),
 };
 
 export const certificatesController = () =>

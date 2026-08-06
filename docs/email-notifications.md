@@ -125,6 +125,22 @@ Se envían **dos mails** en una misma llamada.
 | **Fire-and-forget**             | No. Resultado con métricas (`{sent, failed, total}`) devuelto al frontend                                                                                                                                                   |
 | **Nota**                        | **No hay cron/scheduler.** El envío es exclusivamente manual desde la UI de admin                                                                                                                                           |
 
+### 6. Reporte diario a admins — `dailyReport`
+
+| Campo                           | Detalle                                                                                                                                                                                                                                                                                                     |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Disparador**                  | Cron diario a las **9:00 AM hora Argentina** (`0 9 * * *`, timezone `America/Argentina/Buenos_Aires`) o trigger manual (tRPC `dailyReport.generateManual`)                                                                                                                                                  |
+| **Origen en código**            | `Infrastructure/Scheduler/DailyReport.scheduler.ts` → `DailyReport.service.ts` → `SendReportEmail.usecase.ts` → puerto `IDailyReportEmailSender` → `DailyReportEmailSender.implementation.ts` → `MailNotificationService.sendOne()`                                                                         |
+| **Destinatarios**               | **Todos los admins** de la empresa (rol `id_rol:1`, mismo owner), resueltos con `GetAdmins` (dominio Permissions, cross-domain)                                                                                                                                                                             |
+| **Alcance**                     | Un email por empresa activa. Se itera sobre `getAllActiveOwners()` (dominio Users). Un fallo en una empresa **no bloquea** el envío a las demás (FR-012); los errores se loguean con `ownerId` (FR-013)                                                                                                     |
+| **Resolución de destinatarios** | `_getAdmins` → `PermissionsRepository.getAdmins()` (`id_rol: 1 AND id_propietario = ownerId`). Si una empresa no tiene admins, se loguea un warning y se omite el envío                                                                                                                                     |
+| **Asunto**                      | `[GestDoc] Reporte diario — {empresa} — {fecha}`                                                                                                                                                                                                                                                            |
+| **Cuerpo**                      | Resumen estadístico (empleados activos, licencias en curso/pendientes, documentos sin firmar, términos sin aceptar) + 6 secciones detalladas: empleados de licencia hoy, licencias pendientes, documentos sin firmar, términos sin aceptar, vacaciones próximas (15 días), licencias que vencen esta semana |
+| **Template**                    | `EmailsTemplates.ts` — `dailyReport()`                                                                                                                                                                                                                                                                      |
+| **Adjuntos**                    | No                                                                                                                                                                                                                                                                                                          |
+| **Fire-and-forget**             | No. El cron espera el resultado y loguea métricas `{sent, failed, total}`                                                                                                                                                                                                                                   |
+| **Nota**                        | El scheduler se inicializa en `packages/server/src/index.ts` después de `registerDI(app)` (`dailyReportScheduler().init()`). El email viaja por el puerto hexagonal `IDailyReportEmailSender` para no acoplar la capa Application a Nodemailer                                                              |
+
 ---
 
 ## Arquitectura
@@ -142,7 +158,12 @@ SendEmail.service.ts    ──────> MailNotification.service.ts  (Nodema
                                    ├─ licenseStatusChange()
 DisclaimerEmail.service.ts ────>  ├─ documentSignedAdmin()
   └─ sendDisclaimerReminders()     ├─ documentSignedEmployee()
-                                   └─ disclaimerReminder()
+                                   ├─ disclaimerReminder()
+DailyReport (puerto hexagonal)     └─ dailyReport()
+  SendReportEmail.usecase.ts
+  → IDailyReportEmailSender
+  → DailyReportEmailSender.
+      implementation.ts ─────────> MailNotificationService.sendOne()
 ```
 
 ### Capa de orquestación (`SendEmailService`)

@@ -1,7 +1,9 @@
 import { asClass } from 'awilix';
 import {
+  CountPendingDisclaimers,
   DisclaimerService,
   GetDisclaimerText,
+  GetPendingDisclaimerAcceptances,
   GetSignatureStatus,
   SignDisclaimer,
   GetEmployeesByCompany,
@@ -26,6 +28,9 @@ export const disclaimerApp = {
   _signDisclaimer: asClass(SignDisclaimer),
   _getEmployeesByCompany: asClass(GetEmployeesByCompany),
   _sendReminders: asClass(SendReminders),
+  // Reporte diario (daily-admin-report)
+  _getPendingDisclaimerAcceptances: asClass(GetPendingDisclaimerAcceptances),
+  _countPendingDisclaimers: asClass(CountPendingDisclaimers),
 };
 
 export const disclaimerController = () =>

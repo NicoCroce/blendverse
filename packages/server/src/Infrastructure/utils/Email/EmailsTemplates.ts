@@ -191,10 +191,167 @@ const disclaimerReminder = ({
               `,
 });
 
+interface IDailyReport {
+  companyName: string;
+  date: string;
+  sections: {
+    employeesOnLeaveToday: {
+      items: Array<{
+        employeeName: string;
+        licenseType: string;
+        startDate: string;
+        endDate: string;
+        returnDate: string;
+      }>;
+      totalCount: number;
+    };
+    pendingLicenses: {
+      items: Array<{
+        employeeName: string;
+        licenseType: string;
+        startDate: string;
+        daysSinceRequest: number;
+      }>;
+      totalCount: number;
+    };
+    unsignedDocuments: {
+      items: Array<{
+        documentTitle: string;
+        employeeName: string;
+        viewStatus: string;
+      }>;
+      totalCount: number;
+    };
+    pendingDisclaimerAcceptances: {
+      items: Array<{ employeeName: string }>;
+      totalCount: number;
+    };
+    upcomingVacations: {
+      items: Array<{
+        employeeName: string;
+        segmentName: string | null;
+        startDate: string;
+        endDate: string;
+      }>;
+      totalCount: number;
+    };
+    expiringLicenses: {
+      items: Array<{
+        employeeName: string;
+        licenseType: string;
+        endDate: string;
+      }>;
+      totalCount: number;
+    };
+    statisticalSummary: {
+      activeEmployees: number;
+      licensesInProgress: number;
+      pendingLicenses: number;
+      unsignedDocuments: number;
+      pendingDisclaimerAcceptances: number;
+    };
+  };
+}
+
+const renderSection = (title: string, items: string[]): string => {
+  if (items.length === 0) return '';
+
+  const rows = items
+    .map(
+      (item) =>
+        `<tr><td style="padding: 6px 12px 6px 0; color: #111827;">${item}</td></tr>`,
+    )
+    .join('');
+
+  return `<h3 style="margin-bottom: 4px;">${title}</h3>
+          <table style="border-collapse: collapse; width: 100%; max-width: 500px; margin-bottom: 16px;">
+            ${rows}
+          </table>`;
+};
+
+const dailyReport = ({ companyName, date, sections }: IDailyReport) => {
+  const stats = sections.statisticalSummary;
+
+  return {
+    subject: `[GestDoc] Reporte diario — ${companyName} — ${date}`,
+    body: `<h1>Reporte diario</h1>
+              <p><strong>${companyName}</strong> — ${date}</p>
+              <h2>Resumen</h2>
+              <table style="border-collapse: collapse; width: 100%; max-width: 500px; margin-bottom: 16px;">
+                <tr>
+                  <td style="padding: 6px 12px 6px 0; font-weight: bold; color: #374151;">Empleados activos</td>
+                  <td style="padding: 6px 0; color: #111827;">${stats.activeEmployees}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 6px 12px 6px 0; font-weight: bold; color: #374151;">Licencias en curso</td>
+                  <td style="padding: 6px 0; color: #111827;">${stats.licensesInProgress}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 6px 12px 6px 0; font-weight: bold; color: #374151;">Licencias pendientes</td>
+                  <td style="padding: 6px 0; color: #111827;">${stats.pendingLicenses}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 6px 12px 6px 0; font-weight: bold; color: #374151;">Documentos sin firmar</td>
+                  <td style="padding: 6px 0; color: #111827;">${stats.unsignedDocuments}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 6px 12px 6px 0; font-weight: bold; color: #374151;">Términos sin aceptar</td>
+                  <td style="padding: 6px 0; color: #111827;">${stats.pendingDisclaimerAcceptances}</td>
+                </tr>
+              </table>
+              <hr>
+              ${renderSection(
+                `Empleados de licencia hoy (${sections.employeesOnLeaveToday.totalCount})`,
+                sections.employeesOnLeaveToday.items.map(
+                  (item) =>
+                    `${item.employeeName} — ${item.licenseType} (${item.startDate} al ${item.endDate}, reintegro ${item.returnDate})`,
+                ),
+              )}
+              ${renderSection(
+                `Licencias pendientes de aprobación (${sections.pendingLicenses.totalCount})`,
+                sections.pendingLicenses.items.map(
+                  (item) =>
+                    `${item.employeeName} — ${item.licenseType} (desde ${item.startDate}, ${item.daysSinceRequest} días)`,
+                ),
+              )}
+              ${renderSection(
+                `Documentos sin firmar (${sections.unsignedDocuments.totalCount})`,
+                sections.unsignedDocuments.items.map(
+                  (item) =>
+                    `${item.documentTitle} — ${item.employeeName} (${item.viewStatus})`,
+                ),
+              )}
+              ${renderSection(
+                `Términos y condiciones sin aceptar (${sections.pendingDisclaimerAcceptances.totalCount})`,
+                sections.pendingDisclaimerAcceptances.items.map(
+                  (item) => `${item.employeeName}`,
+                ),
+              )}
+              ${renderSection(
+                `Vacaciones próximas (${sections.upcomingVacations.totalCount})`,
+                sections.upcomingVacations.items.map(
+                  (item) =>
+                    `${item.employeeName}${item.segmentName ? ` (${item.segmentName})` : ''} — ${item.startDate} al ${item.endDate}`,
+                ),
+              )}
+              ${renderSection(
+                `Licencias que vencen esta semana (${sections.expiringLicenses.totalCount})`,
+                sections.expiringLicenses.items.map(
+                  (item) =>
+                    `${item.employeeName} — ${item.licenseType} (hasta ${item.endDate})`,
+                ),
+              )}
+              <hr>
+              <p>Este mail fue enviado de forma automática por <strong><a href="https://docs.macrosistemas.ar/" target="_blank" rel="nofollow">GestDoc</a></strong></p>
+              `,
+  };
+};
+
 export const emailTemplates = {
   addLicense,
   licenseStatusChange,
   documentSignedAdmin,
   documentSignedEmployee,
   disclaimerReminder,
+  dailyReport,
 };

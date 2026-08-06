@@ -30,6 +30,40 @@
       "created_at": "2026-08-03",
       "title": "Filtros por estado de conformidad en documentos (empleados y admin)",
       "closed_at": "2026-08-03"
+    },
+    {
+      "task_id": "TASK-003-daily-admin-report-20260805-1",
+      "feature": "daily-admin-report",
+      "branch": "003-daily-admin-report",
+      "status": "COMPLETED",
+      "created_at": "2026-08-05",
+      "closed_at": "2026-08-06",
+      "title": "Reporte diario por email para administradores",
+      "spec": "specs/003-daily-admin-report/spec.md",
+      "plan": "specs/003-daily-admin-report/plan.md",
+      "tasks": "specs/003-daily-admin-report/tasks.md",
+      "agents_chain": [
+        {
+          "agent": "Back_Agent",
+          "status": "IMPLEMENTED",
+          "attempts": 1
+        },
+        {
+          "agent": "Tester_Agent",
+          "status": "PASS",
+          "attempts": 2
+        },
+        {
+          "agent": "QA_Agent",
+          "status": "PASS",
+          "attempts": 2
+        },
+        {
+          "agent": "Reviewer_Agent",
+          "status": "APPROVED",
+          "attempts": 1
+        }
+      ]
     }
   ]
 }

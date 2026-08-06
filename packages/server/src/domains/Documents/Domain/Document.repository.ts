@@ -39,6 +39,19 @@ export interface IGetStatisticsDocumentsResponseRepository {
   validated: number;
 }
 
+// ── Reporte diario (daily-admin-report) ─────────────────────────────────────
+
+export type IGetUnsignedDocumentsRepository = IRequestContext;
+export type ICountUnsignedDocumentsRepository = IRequestContext;
+
+export interface IUnsignedDocumentRecord {
+  documentId: number;
+  documentTitle: string;
+  employeeId: number;
+  employeeName: string;
+  viewStatus: 'Visto' | 'No visto';
+}
+
 export interface DocumentRepository {
   getDocuments({
     filters,
@@ -64,4 +77,11 @@ export interface DocumentRepository {
   getStatisticsDocuments({
     requestContext,
   }: IGetStatisticsDocumentsRepository): Promise<IGetStatisticsDocumentsResponseRepository>;
+  // Reporte diario (daily-admin-report)
+  getUnsignedDocuments(
+    params: IGetUnsignedDocumentsRepository,
+  ): Promise<IUnsignedDocumentRecord[]>;
+  countUnsignedDocuments(
+    params: ICountUnsignedDocumentsRepository,
+  ): Promise<number>;
 }

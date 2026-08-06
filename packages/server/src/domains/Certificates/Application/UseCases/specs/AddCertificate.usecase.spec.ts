@@ -14,6 +14,12 @@ const mockRepository: CertificateRepository = {
   deleteCertificate: vi.fn(),
   updateCertificateStatus: vi.fn(),
   getCertificate: vi.fn(),
+  getEmployeesOnLeaveToday: vi.fn(),
+  getPendingLicenses: vi.fn(),
+  getUpcomingVacations: vi.fn(),
+  getExpiringLicenses: vi.fn(),
+  countLicensesInProgress: vi.fn(),
+  countPendingLicenses: vi.fn(),
 };
 
 const requestContext = new RequestContext(1, 'req-test', 10);

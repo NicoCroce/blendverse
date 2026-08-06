@@ -59,6 +59,48 @@ export interface IGetCertificateRepository extends IRequestContext {
   id: number;
 }
 
+// ── Reporte diario (daily-admin-report) ─────────────────────────────────────
+
+export type IGetEmployeesOnLeaveTodayRepository = IRequestContext;
+export type IGetPendingLicensesRepository = IRequestContext;
+export type IGetUpcomingVacationsRepository = IRequestContext;
+export type IGetExpiringLicensesRepository = IRequestContext;
+export type ICountLicensesInProgressRepository = IRequestContext;
+export type ICountPendingLicensesRepository = IRequestContext;
+
+export interface IEmployeeOnLeaveRecord {
+  employeeId: number;
+  employeeName: string;
+  licenseType: string;
+  startDate: string; // ISO 8601 (YYYY-MM-DD)
+  endDate: string; // ISO 8601 (YYYY-MM-DD)
+  returnDate: string; // ISO 8601 (YYYY-MM-DD)
+}
+
+export interface IPendingLicenseRecord {
+  employeeId: number;
+  employeeName: string;
+  licenseType: string;
+  startDate: string; // ISO 8601 (YYYY-MM-DD)
+  endDate: string; // ISO 8601 (YYYY-MM-DD)
+  daysSinceRequest: number;
+}
+
+export interface IUpcomingVacationRecord {
+  employeeId: number;
+  employeeName: string;
+  segmentName: string | null;
+  startDate: string; // ISO 8601 (YYYY-MM-DD)
+  endDate: string; // ISO 8601 (YYYY-MM-DD)
+}
+
+export interface IExpiringLicenseRecord {
+  employeeId: number;
+  employeeName: string;
+  licenseType: string;
+  endDate: string; // ISO 8601 (YYYY-MM-DD)
+}
+
 export interface CertificateRepository {
   getCertificates({
     filters,
@@ -101,4 +143,23 @@ export interface CertificateRepository {
     id,
     requestContext,
   }: IGetCertificateRepository): Promise<Certificate | null>;
+  // Reporte diario (daily-admin-report)
+  getEmployeesOnLeaveToday(
+    params: IGetEmployeesOnLeaveTodayRepository,
+  ): Promise<IEmployeeOnLeaveRecord[]>;
+  getPendingLicenses(
+    params: IGetPendingLicensesRepository,
+  ): Promise<IPendingLicenseRecord[]>;
+  getUpcomingVacations(
+    params: IGetUpcomingVacationsRepository,
+  ): Promise<IUpcomingVacationRecord[]>;
+  getExpiringLicenses(
+    params: IGetExpiringLicensesRepository,
+  ): Promise<IExpiringLicenseRecord[]>;
+  countLicensesInProgress(
+    params: ICountLicensesInProgressRepository,
+  ): Promise<number>;
+  countPendingLicenses(
+    params: ICountPendingLicensesRepository,
+  ): Promise<number>;
 }

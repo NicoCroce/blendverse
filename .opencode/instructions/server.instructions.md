@@ -251,6 +251,36 @@ export class EntityController {
 
 `Controller → Service → executeUseCase → UseCase → Repository → Sequelize Model`
 
+### Utilidades compartidas (`Infrastructure/utils/`)
+
+Las funciones puras que **no usan el modelo Sequelize** (helpers de fechas, nombres, formateo, mapeo de datos) **no viven en los repositorios**. Van en `packages/server/src/Infrastructure/utils/` y se exportan desde `@server/Infrastructure` (barrel `Infrastructure/index.ts`).
+
+✅ **CORRECTO:**
+
+```typescript
+// packages/server/src/Infrastructure/utils/dateUtils.ts
+export const formatDate = (date: Date): string => { ... };
+export const startOfToday = (): Date => { ... };
+
+// Uso en el repositorio
+import { formatDate, startOfToday } from '@server/Infrastructure';
+```
+
+❌ **PROHIBIDO** — Helpers privados estáticos dentro del repositorio:
+
+```typescript
+export class CertificatesRepositoryImplementation implements CertificateRepository {
+  // ← INCORRECTO: función pura sin Sequelize, debe ir en Infrastructure/utils/
+  private static formatDate(date: Date): string { ... }
+}
+```
+
+**Reglas:**
+
+- Si un helper se repite en 2+ repositorios o es una utilidad genérica (fechas, nombres, etc.), extraerlo a `Infrastructure/utils/` con nombre semántico (`dateUtils.ts`, `employeeUtils.ts`, etc.).
+- Los archivos nuevos en `utils/` deben agregarse al barrel `Infrastructure/index.ts`.
+- Los repositorios solo contienen lógica de persistencia/mapeo con el modelo Sequelize.
+
 ## Registro DI (Awilix)
 
 ### `[domain].di.ts`
@@ -325,3 +355,4 @@ whereClause.id_propietario = ownerId;
 6. Las claves de use cases en el registro Awilix (`_[camelCaseUseCase]`) deben incluir siempre el nombre de la entidad o dominio. Claves genéricas como `_create`, `_update`, `_delete` están prohibidas — colisionan en el contenedor DI global (flat merge en `register.ts`).
 7. Los nombres de los métodos, variables, class, etc. deben ser camelcase. Ej: `Rename class "Empresas_usuariosService" to match the regular expression ^\$?[A-Z][a-zA-Z0-9]*$.`.
 8. Prefer using nullish coalescing operator (`??`) instead of a ternary expression, as it is simpler to read.
+9. No definas helpers estáticos privados dentro de los repositorios si no usan el modelo Sequelize. Las funciones puras (fechas, formateo, nombres, mapeo de datos) van en `packages/server/src/Infrastructure/utils/` y se importan desde `@server/Infrastructure`. Ver sección "Utilidades compartidas".
