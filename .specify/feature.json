@@ -1,1 +1,3 @@
-{ "feature_directory": "specs/documents-filters" }
+{
+  "feature_directory": "specs/003-daily-admin-report"
+}

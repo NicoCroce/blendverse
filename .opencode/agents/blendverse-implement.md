@@ -7,8 +7,9 @@ permission:
   glob: allow
   bash: allow
   task: allow
+  todowrite: allow
 temperature: 0.1
-steps: 3
+steps: 8
 color: '#bd53ee'
 ---
 
@@ -61,11 +62,30 @@ A partir del contexto leído (o del `scope` reutilizado del registro en Engram),
 
 Solo preguntarle al usuario si el alcance es genuinamente ambiguo (ej: no hay mención a ninguna capa en el documento leído).
 
+### Paso 2.5 — Todo list de la cadena
+
+Antes de invocar agentes, crear una todo list con la herramienta `todowrite` con los eslabones de la cadena según el `scope` y el `resume_point`:
+
+- `Resolver task_id y contexto` — `completed` si ya se resolvió en el Paso 1 o se reutilizó de una iteración previa.
+- `Implementar backend (@blendverse-back)` — solo si el alcance es `back-only` o `full-stack`.
+- `Implementar frontend (@blendverse-front)` — solo si el alcance es `front-only` o `full-stack`.
+- `Generar tests (@blendverse-tester)`
+- `Validación estática (@blendverse-qa)`
+- `Revisión de estándares (@blendverse-reviewer)`
+- `Cerrar tarea y abrir PR a main`
+
+Reglas de mantenimiento:
+
+- Marcar cada ítem `in_progress` inmediatamente antes de lanzar el subagente correspondiente y `completed` SOLO cuando el eslabón termina con resultado positivo (implementado, tests `PASS`, QA `PASS`, reviewer `APPROVED`).
+- Si un eslabón falla (QA `FAIL`, reviewer `REJECTED`) o entra en retry, el ítem queda en `in_progress` hasta que el retry lo resuelva; no marcarlo `completed` en el medio.
+- Al reanudar (`resume_point` distinto de `start`), marcar como `completed` los eslabones ya cerrados en la iteración anterior y arrancar la lista desde el punto de reanudación.
+- Actualizar la todo list en cada cambio de estado, no esperar al final.
+
 ### Paso 3 — Invocar la cadena de agentes según el resume_point
 
 **NO mostrar prompts para copiar/pegar. NO pedirle al usuario que invoque ningún agente manualmente.**
 
-Resolver `{task_id}` y `{context_source}` con los valores reales del Paso 1 antes de construir cada prompt. Invocar cada agente directamente usando la herramienta `task` con el `subagent_type` correspondiente. Esperar a que cada `task` finalice antes de lanzar la siguiente.
+Resolver `{task_id}` y `{context_source}` con los valores reales del Paso 1 antes de construir cada prompt. Invocar cada agente directamente usando la herramienta `task` con el `subagent_type` correspondiente. Esperar a que cada `task` finalice antes de lanzar la siguiente. Mantener la todo list del Paso 2.5 en cada handoff (marcar `in_progress` antes de lanzar, `completed` solo con resultado positivo).
 
 Aplicar `resume_point` del Paso 1.5: **solo ejecutar los eslabones que aún faltan**.
 
@@ -129,11 +149,13 @@ Se ejecuta **únicamente** cuando `04_review_log.md` tiene `status: APPROVED` y 
 3. Invocar la herramienta `task` con `subagent_type: pr-detail`:
    > Generar el archivo `pr-detail.md` en la raíz del proyecto comparando `main` con la rama actual (seguir la skill `pr-detail`).
 4. Extraer el título del encabezado `# PR:` de `pr-detail.md` y crear el PR contra `main`:
+
    ```bash
    gh pr create --base main --head $(git branch --show-current) --title "<título del pr-detail.md>" --body-file pr-detail.md
    ```
 
    - Si `gh` no está disponible o falla → informar al usuario con la URL compare `https://github.com/NicoCroce/gestDoc/compare/main...<rama>?expand=1` y el contenido de `pr-detail.md` para que cree el PR manualmente.
+
 5. Eliminar `pr-detail.md` (artefacto derivado, no se commitea).
 6. Actualizar el espejo de cierre en Engram: `mem_save` con `topic_key: task/{task_id}/status`, `status: COMPLETED`, `pr_url` (la URL del PR abierto) y `capture_prompt: false`.
 7. Informar al usuario: `✅ PR abierto: {pr_url}`.

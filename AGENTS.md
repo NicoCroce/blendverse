@@ -37,12 +37,12 @@ Monorepo TypeScript con pnpm workspaces. Arquitectura Modular Monolith con DDD y
 
 ## Spec Kit — Feature Plan
 
-Active feature: **documents-filters**
+Active feature: **daily-admin-report**
 
-- Spec: `specs/documents-filters/spec.md`
-- Plan: `specs/documents-filters/plan.md`
-- Branch: `002-documents-filters`
+- Spec: `specs/003-daily-admin-report/spec.md`
+- Plan: `specs/003-daily-admin-report/plan.md`
+- Branch: `003-daily-admin-report`
 
-Design artifacts: `specs/documents-filters/{research,data-model,quickstart}.md`, `specs/documents-filters/contracts/`
+Design artifacts: `specs/003-daily-admin-report/{research,data-model,quickstart}.md`, `specs/003-daily-admin-report/contracts/`
 
 <!-- SPECKIT END -->

@@ -28,7 +28,7 @@ Si el usuario no indica `{{modo}}`, asumir `plan`.
 
 1. Invocar la skill `engram-sync`.
 2. Consultar Engram (Patrón 1) por `feature/{{feature}}/pipeline`.
-   - Si existe un pipeline `IN_PROGRESS` con `current_phase: N` → informar al usuario: "Se detectó un pipeline en curso para `{{feature}}` en la fase N. ¿Reanudamos desde ahí o empezamos de cero?". Si reanuda, **verificar en disco** que los artefactos de las fases previas existen en `specs/{{feature}}/` y continuar desde la fase N (las fases anteriores se consideran aprobadas). Si reinicia, sobrescribir el `pipeline` y comenzar desde la Fase 1.
+   - Si existe un pipeline `IN_PROGRESS` con `current_phase: N` → usar la herramienta `question` para que el usuario decida (fork binario): "Se detectó un pipeline en curso para `{{feature}}` en la fase N" → opciones `Reanudar desde la fase N` | `Empezar de cero`. Si reanuda, **verificar en disco** que los artefactos de las fases previas existen en `specs/{{feature}}/` y continuar desde la fase N (las fases anteriores se consideran aprobadas). Si reinicia, sobrescribir el `pipeline` y comenzar desde la Fase 1.
    - Si `status: COMPLETED` → el diseño ya terminó; avisar al usuario y ofrecer ir directo a la Fase 6 (handoff) o arrancar un pipeline nuevo.
    - Si no existe → registrar el pipeline inicial con `mem_save`: `topic_key: feature/{{feature}}/pipeline`, `status: IN_PROGRESS`, `current_phase: 1`, `branch` (rama actual), `capture_prompt: false`.
 3. Todos los espejos de fase usan `capture_prompt: false` (ver skill).
@@ -51,7 +51,49 @@ Si alguna falla o hay duda razonable → informar al usuario y pasar a `modo pla
 - **`modo auto`**: no esperar confirmación y encadenar la fase siguiente automáticamente. Interrumpir y volver a `modo plan` solo si:
   - Aparece una **duda material**: ambigüedad de requisito que cambia alcance, tradeoff de stack, dominio inexistente, alcance UI ambiguo.
   - El usuario hace una **sugerencia o corrección explícita**.
-- **Invariantes (ambos modos)**: si la feature no está relacionada con un dominio existente, preguntar el nombre del dominio SIEMPRE; vigilar el tope de 5 minutos por fase; avisar antes de que dispare un auto-commit hook de Speckit.
+- **Invariantes (ambos modos)**: si la feature no está relacionada con un dominio existente, preguntar el nombre del dominio SIEMPRE; vigilar el tope de 5 minutos por fase; avisar antes de que dispare un auto-commit hook de Speckit; aplicar el gate de "Cambios Críticos" en cada fase que escriba un artefacto existente.
+
+## Cambios Críticos — Protección de reglas de negocio (aplica a Fases 1–5)
+
+Este gate detecta y visibiliza cualquier modificación a artefactos ya existentes, para que la persona pueda identificar rápido si una regla de negocio se rompe o se altera. Aplica en TODAS las fases que escriben artefactos, en ambos modos.
+
+### Procedimiento por fase (ejecutar antes de sincronizar a Engram)
+
+1. **Snapshot previo** — antes de invocar al agente de la fase, verificar qué artefactos destino existen en `specs/{{feature}}/`:
+
+   | Fase | Artefactos destino                                                                |
+   | ---- | --------------------------------------------------------------------------------- |
+   | 1    | `spec.md`                                                                         |
+   | 2    | `spec.md` (si `@speckit-clarify` lo modifica)                                     |
+   | 3    | `plan.md`, `data-model.md`, `contracts/`, `frontend-design.md`                    |
+   | 4    | `tasks.md`                                                                        |
+   | 5    | no genera artefacto nuevo; verificar igual si el reporte indica cambios a aplicar |
+   - Si el artefacto NO existe → es artefacto nuevo, no aplica el gate.
+   - Si existe → leer su contenido y retenerlo como **versión previa**.
+
+2. **Diff posterior** — tras finalizar la fase, comparar la versión previa con la generada (lo que el agente dejó en disco).
+
+3. **Clasificar cada diferencia**:
+   - **CRÍTICO** — modifica o elimina una regla de negocio, un criterio de aceptación, una validación, el data-model de una entidad existente o un contrato existente (`contracts/`).
+   - **MENOR** — redacción, formato, reordenamiento o adiciones que NO alteran comportamiento existente.
+
+4. **Presentación obligatoria** — si hay al menos un cambio, mostrar un bloque prominente ANTES de confirmar la fase:
+
+   ```
+   ⚠️ CAMBIOS SOBRE ARTEFACTOS EXISTENTES ({{feature}}):
+   🔴 CRÍTICO:
+     - [spec.md] Se elimina la regla «...» → Motivo: ...
+     - [plan.md] Cambia el data-model de la entidad X → Motivo: ...
+   🟡 MENOR:
+     - [tasks.md] Se reformula la descripción de T012 → Motivo: ...
+   ```
+
+   Cada cambio listado con su **motivo explícito** (por qué se hizo). NO avanzar sin aprobación explícita del usuario.
+
+### Regla dura con el modo
+
+- Si hay al menos un cambio **CRÍTICO** → es una **duda material por definición**: interrumpir y volver a `modo plan`, esperar confirmación explícita antes de continuar la cadena, aunque el pipeline estuviera en `auto`.
+- Si solo hay cambios **MENOR** → en `modo plan` requieren igual la aprobación de la fase; en `modo auto` se pueden encadenar, pero mostrar el bloque MENOR de todos modos.
 
 ## Fase 1 — Especificación
 
@@ -179,7 +221,7 @@ Presentar al usuario el resumen de artefactos:
 ```
 
 - En `modo plan`: las fases ya fueron aprobadas una a una; proceder directo al handoff.
-- En `modo auto`: este es el **checkpoint único de revisión**. Esperar la confirmación explícita del usuario antes de delegar. Si pide iterar sobre algún artefacto, volver a `modo plan` y re-ejecutar las fases afectadas.
+- En `modo auto`: este es el **checkpoint único de revisión**. Usar la herramienta `question` para obtener la confirmación explícita antes de delegar (fork binario): opciones `Confirmar y delegar a @blendverse-implement` | `Iterar sobre algún artefacto`. Si elige iterar, volver a `modo plan` y re-ejecutar las fases afectadas.
 
 ### Sync a Engram
 
@@ -198,7 +240,8 @@ Este orquestador ya sabe leer `specs/{{feature}}/spec.md` y `tasks.md` directame
 
 - **`modo plan` (default)**: DETENTE ESTRICTAMENTE después de cada fase (1–5) y espera la confirmación explícita del usuario. NO pases a la siguiente fase sin que el usuario diga 'ok' o apruebe la fase anterior.
 - **`modo auto`**: las fases 1–5 se ejecutan encadenadas sin aprobación por fase, siempre que la feature pase la Fase 0 (baja complejidad). Interrumpir y volver a `modo plan` solo ante dudas materiales o sugerencias explícitas del usuario.
-- El checkpoint único de `modo auto` es antes de la Fase 6: presentar el resumen de artefactos y esperar confirmación antes de delegar la implementación.
+- El checkpoint único de `modo auto` es antes de la Fase 6: presentar el resumen de artefactos antes de delegar la implementación.
+- El gate de "Cambios Críticos" aplica en todas las fases que escriben artefactos: si se modifica un artefacto existente, mostrar siempre el bloque de cambios con motivo, y ante cualquier cambio CRÍTICO volver a `modo plan` incluso si el pipeline estaba en `auto`.
 
 - La Fase 6 es completamente automática — no requiere intervención del usuario, e incluye el paso final de `@blendverse-reviewer`, el cierre de la tarea en `history_log.json` y la apertura del PR a `main`.
 - Al cierre exitoso de la tarea (Fase 6), `@blendverse-implement` ejecuta su Paso 5: genera `pr-detail.md` con la skill `pr-detail`, pushea la rama y abre el PR contra `main` (requiere `gh` autenticado). El PR solo se crea cuando todas las validaciones (QA + reviewer) pasaron.

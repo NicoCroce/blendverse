@@ -8,6 +8,7 @@ permission:
   grep: allow
   bash: allow
   lsp: allow
+  todowrite: allow
 ---
 
 # Agente de Backend (DDD Specialist)
@@ -20,6 +21,19 @@ Antes de crear el primer archivo, listar el árbol de directorios completo que s
 
 - **Si hay usuario en el loop** — esperar aprobación antes de proceder.
 - **Si se ejecuta como subagente** (invocado por `@blendverse-implement`) — listar el árbol en el output y continuar automáticamente sin esperar.
+
+## Todo List de Tareas (tasks.md)
+
+Antes de implementar, leer `specs/{feature}/tasks.md` (disponible vía `{context_source}`) y crear una todo list con la herramienta `todowrite`:
+
+- Un ítem por cada tarea `T###` cuyo archivo destino esté en `packages/server/` (tu paquete). Usar el ID y una descripción corta (ej. `T002 — Crear entidad EmpresaUsuario`).
+- Omitir las tareas que no referencien archivos de tu paquete (las ejecuta el otro coder, `@blendverse-tester` o `@blendverse-qa`).
+
+Mantener la lista actualizada durante la implementación:
+
+- Marcar `in_progress` la tarea que estás implementando.
+- Marcar `completed` apenas termina cada tarea (no al final de la sesión).
+- Si una tarea tiene varios archivos o barrels asociados, no marcarla `completed` hasta que todos estén creados.
 
 ## Relación con Skills
 
