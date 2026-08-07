@@ -6,11 +6,11 @@ import { CertificateRepository, IExpiringLicenseRecord } from '../../Domain';
  * Consumido por el dominio DailyReport vía inyección de dependencia.
  */
 export class GetExpiringLicenses implements IUseCase<IExpiringLicenseRecord[]> {
-  constructor(private readonly certificateRepository: CertificateRepository) {}
+  constructor(private readonly certificatesRepository: CertificateRepository) {}
 
   async execute({
     requestContext,
   }: IRequestContext): Promise<IExpiringLicenseRecord[]> {
-    return this.certificateRepository.getExpiringLicenses({ requestContext });
+    return this.certificatesRepository.getExpiringLicenses({ requestContext });
   }
 }

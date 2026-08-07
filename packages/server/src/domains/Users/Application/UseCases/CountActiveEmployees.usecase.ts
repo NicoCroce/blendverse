@@ -6,9 +6,9 @@ import { UserRepository } from '../../Domain';
  * Consumido por el dominio DailyReport vía inyección de dependencia.
  */
 export class CountActiveEmployees implements IUseCase<number> {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(private readonly usersRepository: UserRepository) {}
 
   async execute({ requestContext }: IRequestContext): Promise<number> {
-    return this.userRepository.countActiveEmployees({ requestContext });
+    return this.usersRepository.countActiveEmployees({ requestContext });
   }
 }

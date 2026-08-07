@@ -89,6 +89,36 @@ describe('UpdateCertificateStatus use case', () => {
     expect(result.values.status).toBe('aprobado');
   });
 
+  // ── Administrador role can change status (success) ────────────────────
+  it('allows Administrador role to change certificate status', async () => {
+    const cert = createCertificate({ status: 'validando' });
+    const updatedCert = createCertificate({ status: 'aprobado' });
+    vi.mocked(mockRepository.getCertificate).mockResolvedValue(cert);
+    vi.mocked(mockRepository.updateCertificateStatus).mockResolvedValue(
+      updatedCert,
+    );
+    mockGetRoleByUser.execute.mockResolvedValue('Administrador');
+
+    const useCase = new UpdateCertificateStatus(
+      mockRepository,
+      mockGetRoleByUser as never,
+    );
+
+    const result = await useCase.execute({
+      input: { id: 1, status: 'aprobado' },
+      requestContext: adminContext,
+    });
+
+    expect(mockRepository.updateCertificateStatus).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: 1,
+        status: 'aprobado',
+        requestContext: adminContext,
+      }),
+    );
+    expect(result.values.status).toBe('aprobado');
+  });
+
   // ── Non-admin tries status change (blocked) ────────────────────────────
   it('throws when non-admin tries to change status', async () => {
     const cert = createCertificate({ status: 'aprobado' });

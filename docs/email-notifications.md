@@ -11,7 +11,11 @@ El envío real de emails se realiza a través de **Nodemailer** usando el servic
 | Archivo                                                                            | Rol                                                                       |
 | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
 | `packages/server/src/Infrastructure/utils/Email/MailNotification.service.ts`       | Servicio de envío SMTP con Nodemailer                                     |
-| `packages/server/src/Infrastructure/utils/Email/EmailsTemplates.ts`                | Templates HTML con `{subject, body}` para cada tipo de mail               |
+| `packages/server/src/Infrastructure/utils/Email/Config/smtp.config.ts`             | Configuración SMTP (env `EMAIL_*` + validación de variables críticas)     |
+| `packages/server/src/Infrastructure/utils/Email/Templates/index.ts`                | Barrel de templates + registro `emailTemplates`                           |
+| `packages/server/src/Infrastructure/utils/Email/Templates/types.ts`                | Interfaces de argumentos de los templates                                 |
+| `packages/server/src/Infrastructure/utils/Email/Templates/shared.ts`               | Helpers compartidos (`renderSection`, `emailFooter`)                      |
+| `packages/server/src/Infrastructure/utils/Email/Templates/*.template.ts`           | Un archivo por caso de mail (`addLicense`, `licenseStatusChange`, ...)    |
 | `packages/server/src/Application/Services/SendEmail.service.ts`                    | Orquestador: resuelve destinatarios, construye payloads, invoca templates |
 | `packages/server/src/domains/Disclaimer/Infrastructure/DisclaimerEmail.service.ts` | Envío de recordatorios de disclaimer (por fuera del orquestador central)  |
 
@@ -63,7 +67,7 @@ La función `getAdmins()` se usa en `SendEmailService` para resolver los destina
 | **Resolución de destinatarios** | `getAdmins()` → repository con filtro `id_rol: 1 AND id_propietario = ownerId` |
 | **Asunto**                      | `[Aviso] Gestdoc - Nueva licencia de {nombre del empleado}`                    |
 | **Cuerpo**                      | Contiene nombre del empleado y motivo de la licencia                           |
-| **Template**                    | `EmailsTemplates.ts:20` — `addLicense()`                                       |
+| **Template**                    | `Templates/addLicense.template.ts` — `addLicense()`                            |
 | **Adjuntos**                    | No                                                                             |
 | **Fire-and-forget**             | No (esperado con `await`)                                                      |
 
@@ -77,7 +81,7 @@ La función `getAdmins()` se usa en `SendEmailService` para resolver los destina
 | **Resolución de destinatarios** | `getUser(certificate.userId)` → `employee.values.mail`                                                                              |
 | **Asunto**                      | `[GestDoc] Su licencia ha sido aprobada` / `[GestDoc] Su licencia ha sido rechazada`                                                |
 | **Cuerpo**                      | Tabla con tipo, fechas de inicio/fin/reintegro, motivo, estado (con badge verde/rojo) e incluye nombre del revisor (`reviewerName`) |
-| **Template**                    | `EmailsTemplates.ts:48` — `licenseStatusChange()`                                                                                   |
+| **Template**                    | `Templates/licenseStatusChange.template.ts` — `licenseStatusChange()`                                                               |
 | **Adjuntos**                    | No                                                                                                                                  |
 | **Fire-and-forget**             | Sí (`this.sendEmailService.notifyLicenseStatusChange(...)` sin await, línea 211)                                                    |
 
@@ -85,16 +89,16 @@ La función `getAdmins()` se usa en `SendEmailService` para resolver los destina
 
 Se envían **dos mails** en una misma llamada.
 
-| Campo                | Mail A — confirmación al empleado                                                          | Mail B — notificación a admins                    |
-| -------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------- |
-| **Disparador**       | Empleado firma un documento                                                                | Mismo disparador                                  |
-| **Origen en código** | `Documents.service.ts:61` → `SendEmail.service.ts:131`                                     | Mismo                                             |
-| **Destinatarios**    | El **empleado que firmó** (`currentUser.mail`)                                             | **Todos los admins** de la empresa                |
-| **Asunto**           | `[GestDoc] Has firmado el documento #{id}`                                                 | `[GestDoc] {empleado} ha firmado un documento`    |
-| **Cuerpo**           | ID del documento, tipo de firma (bajo acuerdo / sin conformidad), motivo si no conformidad | Igual contenido que mail A pero dirigido a admins |
-| **Template**         | `documentSignedEmployee()` (`EmailsTemplates.ts:136`)                                      | `documentSignedAdmin()` (`EmailsTemplates.ts:98`) |
-| **Adjuntos**         | No                                                                                         | No                                                |
-| **Fire-and-forget**  | Sí — `void this.sendEmailService.signDocument(...).catch(() => undefined)` (línea 60-68)   | Mismo                                             |
+| Campo                | Mail A — confirmación al empleado                                                                  | Mail B — notificación a admins                                                                  |
+| -------------------- | -------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **Disparador**       | Empleado firma un documento                                                                        | Mismo disparador                                                                                |
+| **Origen en código** | `Documents.service.ts:61` → `SendEmail.service.ts:131`                                             | Mismo                                                                                           |
+| **Destinatarios**    | El **empleado que firmó** (`currentUser.mail`)                                                     | **Todos los admins** de la empresa                                                              |
+| **Asunto**           | `[GestDoc] Has firmado el documento #{id}`                                                         | `[GestDoc] {empleado} ha firmado un documento`                                                  |
+| **Cuerpo**           | ID del documento, tipo de firma (bajo acuerdo / sin conformidad), motivo si no conformidad         | Igual contenido que mail A pero dirigido a admins                                               |
+| **Template**         | `Templates/documentSigned.template.ts` — `documentSignedEmployee()` (`documentSigned.template.ts`) | `Templates/documentSigned.template.ts` — `documentSignedAdmin()` (`documentSigned.template.ts`) |
+| **Adjuntos**         | No                                                                                                 | No                                                                                              |
+| **Fire-and-forget**  | Sí — `void this.sendEmailService.signDocument(...).catch(() => undefined)` (línea 60-68)           | Mismo                                                                                           |
 
 ### 4. Enviar documento por email — `sendDocumentToEmail`
 
@@ -120,7 +124,7 @@ Se envían **dos mails** en una misma llamada.
 | **Resolución de destinatarios** | `getPendingEmployeeIds()`: busca todos los usuarios del owner, cruza con `disclaimer_acceptance` filtrando los que no tienen firma válida. Luego `getEmailsByUsersId()` obtiene los emails, procesados en **batches de 50** |
 | **Asunto**                      | `[GestDoc] Recordatorio de firma de términos - {empresa}`                                                                                                                                                                   |
 | **Cuerpo**                      | Nombre del empleado, nombre de la empresa y texto completo de los términos                                                                                                                                                  |
-| **Template**                    | `EmailsTemplates.ts:175` — `disclaimerReminder()`                                                                                                                                                                           |
+| **Template**                    | `Templates/disclaimerReminder.template.ts` — `disclaimerReminder()`                                                                                                                                                         |
 | **Adjuntos**                    | No                                                                                                                                                                                                                          |
 | **Fire-and-forget**             | No. Resultado con métricas (`{sent, failed, total}`) devuelto al frontend                                                                                                                                                   |
 | **Nota**                        | **No hay cron/scheduler.** El envío es exclusivamente manual desde la UI de admin                                                                                                                                           |
@@ -136,7 +140,7 @@ Se envían **dos mails** en una misma llamada.
 | **Resolución de destinatarios** | `_getAdmins` → `PermissionsRepository.getAdmins()` (`id_rol: 1 AND id_propietario = ownerId`). Si una empresa no tiene admins, se loguea un warning y se omite el envío                                                                                                                                     |
 | **Asunto**                      | `[GestDoc] Reporte diario — {empresa} — {fecha}`                                                                                                                                                                                                                                                            |
 | **Cuerpo**                      | Resumen estadístico (empleados activos, licencias en curso/pendientes, documentos sin firmar, términos sin aceptar) + 6 secciones detalladas: empleados de licencia hoy, licencias pendientes, documentos sin firmar, términos sin aceptar, vacaciones próximas (15 días), licencias que vencen esta semana |
-| **Template**                    | `EmailsTemplates.ts` — `dailyReport()`                                                                                                                                                                                                                                                                      |
+| **Template**                    | `Templates/dailyReport.template.ts` — `dailyReport()`                                                                                                                                                                                                                                                       |
 | **Adjuntos**                    | No                                                                                                                                                                                                                                                                                                          |
 | **Fire-and-forget**             | No. El cron espera el resultado y loguea métricas `{sent, failed, total}`                                                                                                                                                                                                                                   |
 | **Nota**                        | El scheduler se inicializa en `packages/server/src/index.ts` después de `registerDI(app)` (`dailyReportScheduler().init()`). El email viaja por el puerto hexagonal `IDailyReportEmailSender` para no acoplar la capa Application a Nodemailer                                                              |
@@ -153,13 +157,13 @@ Capa Application                Capa Infrastructure
 SendEmail.service.ts    ──────> MailNotification.service.ts  (Nodemailer SMTP)
   ├─ addLicense                    ├─ sendOne()
   ├─ notifyLicenseStatusChange     └─ send()  (batch)
-  ├─ signDocument                EmailsTemplates.ts
-  └─ sendDocumentToEmail           ├─ addLicense()
-                                   ├─ licenseStatusChange()
-DisclaimerEmail.service.ts ────>  ├─ documentSignedAdmin()
-  └─ sendDisclaimerReminders()     ├─ documentSignedEmployee()
-                                   ├─ disclaimerReminder()
-DailyReport (puerto hexagonal)     └─ dailyReport()
+  ├─ signDocument                Templates/ (un archivo por caso)
+  └─ sendDocumentToEmail           ├─ addLicense.template.ts
+                                   ├─ licenseStatusChange.template.ts
+DisclaimerEmail.service.ts ────>  ├─ documentSigned.template.ts
+  └─ sendDisclaimerReminders()     ├─ disclaimerReminder.template.ts
+                                   └─ dailyReport.template.ts
+DailyReport (puerto hexagonal)     └─ shared.ts (renderSection, emailFooter)
   SendReportEmail.usecase.ts
   → IDailyReportEmailSender
   → DailyReportEmailSender.

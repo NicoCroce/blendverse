@@ -8,12 +8,12 @@ import { CertificateRepository, IEmployeeOnLeaveRecord } from '../../Domain';
 export class GetEmployeesOnLeaveToday implements IUseCase<
   IEmployeeOnLeaveRecord[]
 > {
-  constructor(private readonly certificateRepository: CertificateRepository) {}
+  constructor(private readonly certificatesRepository: CertificateRepository) {}
 
   async execute({
     requestContext,
   }: IRequestContext): Promise<IEmployeeOnLeaveRecord[]> {
-    return this.certificateRepository.getEmployeesOnLeaveToday({
+    return this.certificatesRepository.getEmployeesOnLeaveToday({
       requestContext,
     });
   }

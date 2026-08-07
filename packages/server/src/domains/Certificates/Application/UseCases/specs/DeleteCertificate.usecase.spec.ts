@@ -152,6 +152,32 @@ describe('DeleteCertificate use case', () => {
     );
   });
 
+  // ── Administrador role soft-deletes any-status certificate (success) ──
+  it('allows Administrador role to soft-delete any-status certificate in tenant', async () => {
+    const cert = createCertificate({ status: 'rechazado', userId: 5 });
+    vi.mocked(mockRepository.getCertificate).mockResolvedValue(cert);
+    vi.mocked(mockRepository.updateCertificateStatus).mockResolvedValue(cert);
+    mockGetRoleByUser.execute.mockResolvedValue('Administrador');
+
+    const useCase = new DeleteCertificate(
+      mockRepository,
+      mockGetRoleByUser as never,
+    );
+
+    await useCase.execute({
+      input: { id: 1 },
+      requestContext: adminContext,
+    });
+
+    expect(mockRepository.updateCertificateStatus).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: 1,
+        status: 'eliminado',
+        requestContext: adminContext,
+      }),
+    );
+  });
+
   // ── Certificate not found ──────────────────────────────────────────
   it('throws when certificate is not found', async () => {
     vi.mocked(mockRepository.getCertificate).mockResolvedValue(null);

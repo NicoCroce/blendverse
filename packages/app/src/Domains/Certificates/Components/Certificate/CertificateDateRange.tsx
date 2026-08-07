@@ -40,7 +40,10 @@ export const CertificateDateRange = ({
   const end = parseEsArMonthDay(endDate, year);
   const daysDiff =
     start && end
-      ? Math.max(Math.round((end.getTime() - start.getTime()) / 86_400_000), 0)
+      ? Math.max(
+          Math.round((end.getTime() - start.getTime()) / 86_400_000) + 1,
+          1,
+        )
       : null;
 
   return (

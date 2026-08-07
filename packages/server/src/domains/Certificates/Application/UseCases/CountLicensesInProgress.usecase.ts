@@ -6,10 +6,10 @@ import { CertificateRepository } from '../../Domain';
  * Consumido por el dominio DailyReport vía inyección de dependencia.
  */
 export class CountLicensesInProgress implements IUseCase<number> {
-  constructor(private readonly certificateRepository: CertificateRepository) {}
+  constructor(private readonly certificatesRepository: CertificateRepository) {}
 
   async execute({ requestContext }: IRequestContext): Promise<number> {
-    return this.certificateRepository.countLicensesInProgress({
+    return this.certificatesRepository.countLicensesInProgress({
       requestContext,
     });
   }

@@ -1,3 +1,3 @@
 export * from './EmailSender';
-export * from './EmailsTemplates';
+export * from './Templates';
 export * from './MailNotification.service';

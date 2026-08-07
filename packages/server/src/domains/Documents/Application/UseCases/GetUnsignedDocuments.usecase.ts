@@ -8,11 +8,11 @@ import { DocumentRepository, IUnsignedDocumentRecord } from '../../Domain';
 export class GetUnsignedDocuments implements IUseCase<
   IUnsignedDocumentRecord[]
 > {
-  constructor(private readonly documentRepository: DocumentRepository) {}
+  constructor(private readonly documentsRepository: DocumentRepository) {}
 
   async execute({
     requestContext,
   }: IRequestContext): Promise<IUnsignedDocumentRecord[]> {
-    return this.documentRepository.getUnsignedDocuments({ requestContext });
+    return this.documentsRepository.getUnsignedDocuments({ requestContext });
   }
 }

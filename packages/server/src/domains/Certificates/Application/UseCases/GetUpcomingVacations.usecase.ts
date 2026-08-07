@@ -8,11 +8,11 @@ import { CertificateRepository, IUpcomingVacationRecord } from '../../Domain';
 export class GetUpcomingVacations implements IUseCase<
   IUpcomingVacationRecord[]
 > {
-  constructor(private readonly certificateRepository: CertificateRepository) {}
+  constructor(private readonly certificatesRepository: CertificateRepository) {}
 
   async execute({
     requestContext,
   }: IRequestContext): Promise<IUpcomingVacationRecord[]> {
-    return this.certificateRepository.getUpcomingVacations({ requestContext });
+    return this.certificatesRepository.getUpcomingVacations({ requestContext });
   }
 }

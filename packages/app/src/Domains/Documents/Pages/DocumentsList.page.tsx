@@ -17,7 +17,7 @@ export const DocumentsListPage = () => {
   return (
     <Page title="Documentos" headerRight={!isMobile && <SignDocument />}>
       <Container row>
-        <div className="min-w-[300px] max-w-[400px] w-full">
+        <div className="min-w-75 max-w-100 w-full">
           <DocumentsListWrapper service={service} />
         </div>
         {isMobile ? (

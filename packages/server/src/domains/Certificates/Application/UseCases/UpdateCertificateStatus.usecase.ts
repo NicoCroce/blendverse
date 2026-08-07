@@ -3,6 +3,7 @@ import { CertificateRepository } from '../../Domain/Certificate.respository';
 import { IUpdateCertificateStatus } from '../certificates.types';
 import { Certificate } from '../../Domain/Certificate.entity';
 import { GetRoleByUser } from '@server/domains/Permissions/Application/UseCases/GetRoleByUser.usecase';
+import { isAdminRole } from '@server/domains/Permissions/Domain';
 
 export class UpdateCertificateStatus implements IUseCase<Certificate> {
   constructor(
@@ -49,7 +50,7 @@ export class UpdateCertificateStatus implements IUseCase<Certificate> {
         input: requestContext.values.userId,
         requestContext,
       });
-      return roleName === 'Full Admin' || roleName === 'admin';
+      return isAdminRole(roleName);
     } catch {
       return false;
     }

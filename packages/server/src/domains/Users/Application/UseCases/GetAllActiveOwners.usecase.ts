@@ -6,9 +6,9 @@ import { ICompanyOwner, UserRepository } from '../../Domain';
  * Consumido por el dominio DailyReport vía inyección de dependencia.
  */
 export class GetAllActiveOwners implements IUseCase<ICompanyOwner[]> {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(private readonly usersRepository: UserRepository) {}
 
   async execute({ requestContext }: IRequestContext): Promise<ICompanyOwner[]> {
-    return this.userRepository.getAllActiveOwners({ requestContext });
+    return this.usersRepository.getAllActiveOwners({ requestContext });
   }
 }

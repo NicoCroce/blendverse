@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import type { Transporter } from 'nodemailer';
 import { logger } from '@server/Infrastructure/utils/pino';
+import { loadSmtpConfig } from './Config/smtp.config';
 
 // ── Tipos públicos ─────────────────────────────────────────────────────────
 
@@ -50,22 +51,13 @@ export class MailNotificationService {
   private readonly defaultFrom: string;
 
   constructor() {
-    const host = process.env.EMAIL_SMTPSERVER;
-    const port = Number(process.env.EMAIL_SMTPPORT) || 587;
-    const user = process.env.EMAIL_SMTPUSER;
-    const pass = process.env.EMAIL_SMTPPASSWORD;
-
-    if (!host || !user || !pass) {
-      throw new Error(
-        'MailNotificationService: faltan variables de entorno EMAIL_SMTPSERVER, EMAIL_SMTPUSER, EMAIL_SMTPPASSWORD',
-      );
-    }
+    const { host, port, secure, user, pass } = loadSmtpConfig();
 
     this.defaultFrom = user;
     this.transporter = nodemailer.createTransport({
       host,
       port,
-      secure: port === 465,
+      secure,
       auth: { user, pass },
     });
 

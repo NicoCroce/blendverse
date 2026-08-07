@@ -2,6 +2,7 @@ import { AppError, IUseCase, RequestContext } from '@server/Application';
 import { CertificateRepository } from '../../Domain/Certificate.respository';
 import { IDeleteCertificate } from '../certificates.types';
 import { GetRoleByUser } from '@server/domains/Permissions/Application/UseCases/GetRoleByUser.usecase';
+import { isAdminRole } from '@server/domains/Permissions/Domain';
 
 export class DeleteCertificate implements IUseCase<void> {
   constructor(
@@ -54,7 +55,7 @@ export class DeleteCertificate implements IUseCase<void> {
         input: requestContext.values.userId,
         requestContext,
       });
-      return roleName === 'Full Admin' || roleName === 'admin';
+      return isAdminRole(roleName);
     } catch {
       return false;
     }

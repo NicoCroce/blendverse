@@ -6,9 +6,9 @@ import { DocumentRepository } from '../../Domain';
  * Consumido por el dominio DailyReport vía inyección de dependencia.
  */
 export class CountUnsignedDocuments implements IUseCase<number> {
-  constructor(private readonly documentRepository: DocumentRepository) {}
+  constructor(private readonly documentsRepository: DocumentRepository) {}
 
   async execute({ requestContext }: IRequestContext): Promise<number> {
-    return this.documentRepository.countUnsignedDocuments({ requestContext });
+    return this.documentsRepository.countUnsignedDocuments({ requestContext });
   }
 }
