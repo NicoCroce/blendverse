@@ -51,6 +51,12 @@ initMiddlewares(app);
     await import('./domains/DailyReport/dailyReport.di.js');
   dailyReportScheduler().init();
 
+  // Scheduler de recordatorios de empleados (todos los días a las 9:00 AM
+  // hora Argentina; se envían emails a los empleados con pendientes)
+  const { employeeRemindersScheduler } =
+    await import('./domains/EmployeeReminders/employeeReminders.di.js');
+  employeeRemindersScheduler().init();
+
   app.get('/', (_req: Request, res: Response) => {
     res.send('Express + TypeScript Server 😁');
   });

@@ -64,6 +64,40 @@
           "attempts": 1
         }
       ]
+    },
+    {
+      "task_id": "TASK-004-employee-daily-reminders-20260807-1",
+      "feature": "employee-daily-reminders",
+      "branch": "004-employee-daily-reminders",
+      "status": "COMPLETED",
+      "created_at": "2026-08-07",
+      "closed_at": "2026-08-07",
+      "title": "Recordatorios diarios por email para empleados + notificación en tiempo real de documento nuevo",
+      "spec": "specs/004-employee-daily-reminders/spec.md",
+      "plan": "specs/004-employee-daily-reminders/plan.md",
+      "tasks": "specs/004-employee-daily-reminders/tasks.md",
+      "agents_chain": [
+        {
+          "agent": "Back_Agent",
+          "status": "IMPLEMENTED",
+          "attempts": 3
+        },
+        {
+          "agent": "Tester_Agent",
+          "status": "PASS",
+          "attempts": 3
+        },
+        {
+          "agent": "QA_Agent",
+          "status": "PASS",
+          "attempts": 3
+        },
+        {
+          "agent": "Reviewer_Agent",
+          "status": "APPROVED",
+          "attempts": 2
+        }
+      ]
     }
   ]
 }

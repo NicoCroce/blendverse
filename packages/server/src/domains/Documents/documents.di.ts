@@ -7,8 +7,10 @@ import {
   GetDocument,
   GetDocuments,
   GetDocumentsByCompany,
+  GetPendingDocumentsByEmployee,
   GetStatisticsDocuments,
   GetUnsignedDocuments,
+  IngestDocument,
   SendDocumentToEmail,
   SignDocument,
   ViewDocument,
@@ -29,6 +31,9 @@ export const documentsApp = {
   // Reporte diario (daily-admin-report)
   _getUnsignedDocuments: asClass(GetUnsignedDocuments),
   _countUnsignedDocuments: asClass(CountUnsignedDocuments),
+  // Recordatorios de empleados (employee-daily-reminders)
+  _getPendingDocumentsByEmployee: asClass(GetPendingDocumentsByEmployee),
+  _ingestDocument: asClass(IngestDocument),
 };
 
 export const documentsController = () =>

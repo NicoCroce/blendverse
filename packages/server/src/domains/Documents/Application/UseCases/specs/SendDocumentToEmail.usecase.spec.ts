@@ -31,6 +31,8 @@ const mockRepository: DocumentRepository = {
   getStatisticsDocuments: vi.fn(),
   getUnsignedDocuments: vi.fn(),
   countUnsignedDocuments: vi.fn(),
+  getPendingDocumentsByEmployee: vi.fn(),
+  createDocuments: vi.fn(),
 };
 
 const requestContext = new RequestContext(1, 'req-test', 10);

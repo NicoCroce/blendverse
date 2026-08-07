@@ -13,6 +13,7 @@ import { EmpresasUsuariosRoutes } from '@server/domains/Empresas_usuarios';
 import { DisclaimerRoutes } from '@server/domains/Disclaimer';
 import { SegmentsRoutes } from '@server/domains/Segments';
 import { DailyReportRoutes } from '@server/domains/DailyReport';
+import { EmployeeRemindersRoutes } from '@server/domains/EmployeeReminders';
 
 const MainRouter = () => {
   const AllRouters = {
@@ -28,6 +29,7 @@ const MainRouter = () => {
     ...DisclaimerRoutes(),
     ...SegmentsRoutes(),
     ...DailyReportRoutes(),
+    ...EmployeeRemindersRoutes(),
   };
   return router(AllRouters);
 };

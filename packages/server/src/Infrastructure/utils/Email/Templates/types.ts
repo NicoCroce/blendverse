@@ -39,6 +39,24 @@ export interface IDisclaimerReminder {
   companyName: string;
 }
 
+export interface IEmployeeDailyReminder {
+  employeeName: string;
+  companyName: string;
+  date: string;
+  pending: {
+    unsignedDocuments: Array<{ documentTitle: string }>;
+    unviewedDocuments: Array<{ documentTitle: string }>;
+    pendingDisclaimerAcceptance: boolean;
+    renewPassword: boolean;
+  };
+}
+
+export interface INewDocumentNotificationTemplate {
+  employeeName: string;
+  companyName: string;
+  documents: Array<{ documentTitle: string }>;
+}
+
 export interface IDailyReport {
   companyName: string;
   date: string;

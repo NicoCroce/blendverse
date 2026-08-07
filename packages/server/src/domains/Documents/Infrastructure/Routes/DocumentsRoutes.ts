@@ -9,6 +9,7 @@ export const DocumentsRoutes = () => {
     getDocumentsByCompany,
     getStatisticsDocuments,
     sendDocumentToEmail,
+    ingestDocument,
   } = documentsController();
 
   return {
@@ -20,6 +21,7 @@ export const DocumentsRoutes = () => {
       getAllByCompany: getDocumentsByCompany,
       getStatistics: getStatisticsDocuments,
       sendToEmail: sendDocumentToEmail,
+      ingestDocument,
     },
   };
 };

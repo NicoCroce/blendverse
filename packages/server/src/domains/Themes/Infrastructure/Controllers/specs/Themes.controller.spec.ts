@@ -8,12 +8,12 @@ vi.mock('@server/Infrastructure', async () => {
   return { router, protectedProcedure };
 });
 
-vi.mock('@server/utils/JWT', () => ({
+vi.mock('@server/Infrastructure/utils/JWT', () => ({
   generateToken: vi.fn(() => 'signed-token'),
   verifyToken: vi.fn(() => ({ id: 1, ownerId: 10 })),
 }));
 
-vi.mock('@server/utils/pino', () => ({
+vi.mock('@server/Infrastructure/utils/pino', () => ({
   loggerContextInput: () => ({ info: vi.fn() }),
   loggerContext: () => ({ info: vi.fn(), error: vi.fn() }),
   logger: { info: vi.fn(), error: vi.fn() },

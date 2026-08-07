@@ -2,12 +2,16 @@ import {
   Document,
   DocumentRepository,
   ICountUnsignedDocumentsRepository,
+  ICreateDocumentsRepository,
+  ICreatedDocumentRecord,
   IGetDocumentRepository,
   IGetDocumentsByCompanyRepository,
   IGetDocumentsRepository,
+  IGetPendingDocumentsByEmployeeRepository,
   IGetStatisticsDocumentsRepository,
   IGetStatisticsDocumentsResponseRepository,
   IGetUnsignedDocumentsRepository,
+  IPendingDocumentForEmployee,
   ISignDocumentRepository,
   IUnsignedDocumentRecord,
   IViewDocumentRepository,
@@ -19,6 +23,7 @@ import { UserModel } from '@server/domains/Users';
 import { UsuariosSegmentosModel } from '@server/domains/Segments/Infrastructure/Database/UsuariosSegmentos.model';
 import { Op, IncludeOptions, WhereOptions } from 'sequelize';
 import { buildEmployeeName } from '@server/Infrastructure';
+import { logger } from '@server/Infrastructure/utils/pino';
 
 export class DocumentsRepositoryImplementation implements DocumentRepository {
   async getDocuments({
@@ -335,5 +340,119 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
         },
       ],
     });
+  }
+
+  // ── Recordatorios de empleados (employee-daily-reminders) ─────────────────
+
+  async getPendingDocumentsByEmployee({
+    employeeId,
+    requestContext,
+  }: IGetPendingDocumentsByEmployeeRepository): Promise<
+    IPendingDocumentForEmployee[]
+  > {
+    const ownerId = requestContext.values.ownerId;
+
+    const documents = await Documentos.findAll({
+      where: {
+        Usuario_id: employeeId,
+        [Op.or]: [{ firmado: null }, { visualizado: null }],
+      } as WhereOptions<Documentos>,
+      include: [
+        {
+          model: UserModel,
+          as: 'User',
+          required: true,
+          where: { id_propietario: ownerId },
+          attributes: [],
+        },
+      ],
+    });
+
+    return documents.map((document) => ({
+      documentId: document.id,
+      documentTitle: document.titulo,
+      isUnsigned: document.firmado === null,
+      isUnviewed: document.visualizado === null,
+    }));
+  }
+
+  async createDocuments({
+    documents,
+    requestContext,
+  }: ICreateDocumentsRepository): Promise<ICreatedDocumentRecord[]> {
+    const { ownerId } = requestContext.values;
+
+    // `Usuario_id` es NOT NULL en la tabla `documentos` (verificado en la
+    // base): los ítems sin empleado destinatario no son persistibles; se
+    // omiten y se registran (FR-014: sin asignación → sin notificación).
+    const assigned = documents.filter(
+      (document) =>
+        document.employeeId !== undefined && document.employeeId !== null,
+    );
+
+    const skippedWithoutEmployee = documents.length - assigned.length;
+    if (skippedWithoutEmployee > 0) {
+      logger.warn(
+        {
+          ownerId,
+          skipped: skippedWithoutEmployee,
+        },
+        'createDocuments: documentos sin empleado destinatario omitidos (Usuario_id NOT NULL)',
+      );
+    }
+
+    // Multi-tenant (Pr. II): solo se persisten documentos para empleados que
+    // pertenecen al `ownerId` del requestContext. Sin este filtro, un usuario
+    // autenticado podría escribir documentos asignados a empleados de otro
+    // tenant (IDOR write / Broken Access Control, OWASP A01).
+    const employeeIds = assigned.map(
+      (document) => document.employeeId as number,
+    );
+
+    let toPersist = assigned;
+    if (employeeIds.length > 0) {
+      const validEmployees = await UserModel.findAll({
+        where: { id: { [Op.in]: employeeIds }, id_propietario: ownerId },
+        attributes: ['id'],
+      });
+      const validIds = new Set(validEmployees.map((user) => user.id));
+
+      toPersist = assigned.filter((document) =>
+        validIds.has(document.employeeId as number),
+      );
+
+      const skippedForeign = assigned.length - toPersist.length;
+      if (skippedForeign > 0) {
+        logger.warn(
+          {
+            ownerId,
+            skipped: skippedForeign,
+          },
+          'createDocuments: documentos omitidos por empleado de otro tenant (IDOR write prevenido)',
+        );
+      }
+    }
+
+    if (toPersist.length === 0) {
+      return [];
+    }
+
+    const rows = await Documentos.bulkCreate(
+      toPersist.map((document) => ({
+        Usuario_id: document.employeeId as number,
+        tipo: document.tipo,
+        titulo: document.titulo,
+        archivo: document.archivo,
+        extension: document.extension ?? null,
+        fecha_de_subida: new Date(),
+      })),
+      { returning: true },
+    );
+
+    return rows.map((row) => ({
+      id: row.id,
+      employeeId: row.Usuario_id,
+      titulo: row.titulo,
+    }));
   }
 }

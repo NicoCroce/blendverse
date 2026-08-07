@@ -3,7 +3,9 @@ import {
   GetDocument,
   GetDocuments,
   GetDocumentsByCompany,
+  GetPendingDocumentsByEmployee,
   GetStatisticsDocuments,
+  IngestDocument,
   SendDocumentToEmail,
   SignDocument,
   ViewDocument,
@@ -14,6 +16,7 @@ import {
   IGetDocumentsByCompany,
   IGetStatisticsDocuments,
   IGetStatisticsDocumentsResponse,
+  IIngestDocument,
   ISendDocumentToEmail,
   ISignDocument,
   IViewDocument,
@@ -31,6 +34,8 @@ export class DocumentsService {
     private readonly _getStatisticsDocuments: GetStatisticsDocuments,
     private readonly _sendDocumentToEmail: SendDocumentToEmail,
     private readonly sendEmailService: SendEmailService,
+    private readonly _getPendingDocumentsByEmployee: GetPendingDocumentsByEmployee,
+    private readonly _ingestDocument: IngestDocument,
   ) {}
 
   getDocuments({ input, requestContext }: IGetDocuments) {
@@ -117,6 +122,14 @@ export class DocumentsService {
   }: IGetStatisticsDocuments): Promise<IGetStatisticsDocumentsResponse> {
     return executeUseCase({
       useCase: this._getStatisticsDocuments,
+      requestContext,
+    });
+  }
+
+  async ingestDocument({ input, requestContext }: IIngestDocument) {
+    return executeUseCase({
+      useCase: this._ingestDocument,
+      input,
       requestContext,
     });
   }

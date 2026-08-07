@@ -4,13 +4,13 @@ import { AppError, RequestContext } from '@server/Application';
 import { User } from '@server/domains/Users/Domain/User.entity';
 
 // ── Pino stub ─────────────────────────────────────────────────────────────────
-vi.mock('@server/utils/pino', () => ({
+vi.mock('@server/Infrastructure/utils/pino', () => ({
   loggerContextInput: () => ({ info: vi.fn() }),
   loggerContext: () => ({ info: vi.fn(), error: vi.fn() }),
   logger: { info: vi.fn(), error: vi.fn() },
 }));
 
-vi.mock('@server/utils/bcrypt', () => ({
+vi.mock('@server/Infrastructure/utils/bcrypt', () => ({
   comparePassword: vi.fn(),
 }));
 

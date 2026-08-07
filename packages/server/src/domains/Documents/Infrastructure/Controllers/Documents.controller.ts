@@ -1,5 +1,6 @@
 import { protectedProcedure } from '@server/Infrastructure';
 import { DocumentsService } from '../../Application/Documents.service';
+import { IngestDocumentSchema } from '../../Application/documents.types';
 import { executeService } from '@server/Application';
 import z from 'zod';
 
@@ -87,4 +88,12 @@ export class DocumentsController {
       this.documentsService.getStatisticsDocuments.bind(this.documentsService),
     ),
   );
+
+  ingestDocument = protectedProcedure
+    .input(IngestDocumentSchema)
+    .mutation(
+      executeService(
+        this.documentsService.ingestDocument.bind(this.documentsService),
+      ),
+    );
 }

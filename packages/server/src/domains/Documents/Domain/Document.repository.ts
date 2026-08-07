@@ -52,6 +52,37 @@ export interface IUnsignedDocumentRecord {
   viewStatus: 'Visto' | 'No visto';
 }
 
+// ── Recordatorios de empleados (employee-daily-reminders) ───────────────────
+
+export interface IPendingDocumentForEmployee {
+  documentId: number;
+  documentTitle: string;
+  isUnsigned: boolean; // firmado IS NULL
+  isUnviewed: boolean; // visualizado IS NULL
+}
+
+export interface IDocumentToCreate {
+  employeeId?: number;
+  tipo: number;
+  titulo: string;
+  archivo: string;
+  extension?: string;
+}
+
+export interface IGetPendingDocumentsByEmployeeRepository extends IRequestContext {
+  employeeId: number;
+}
+
+export interface ICreateDocumentsRepository extends IRequestContext {
+  documents: IDocumentToCreate[];
+}
+
+export interface ICreatedDocumentRecord {
+  id: number;
+  employeeId?: number;
+  titulo: string;
+}
+
 export interface DocumentRepository {
   getDocuments({
     filters,
@@ -84,4 +115,11 @@ export interface DocumentRepository {
   countUnsignedDocuments(
     params: ICountUnsignedDocumentsRepository,
   ): Promise<number>;
+  // Recordatorios de empleados (employee-daily-reminders)
+  getPendingDocumentsByEmployee(
+    params: IGetPendingDocumentsByEmployeeRepository,
+  ): Promise<IPendingDocumentForEmployee[]>;
+  createDocuments(
+    params: ICreateDocumentsRepository,
+  ): Promise<ICreatedDocumentRecord[]>;
 }

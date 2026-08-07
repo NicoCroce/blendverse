@@ -33,6 +33,7 @@ const buildCaller = (service = {}) => {
     viewDocument: vi.fn(),
     signDocument: vi.fn(),
     sendDocumentToEmail: vi.fn(),
+    ingestDocument: vi.fn(),
     ...service,
   } as never);
 

@@ -8,16 +8,17 @@ Documentación del sistema de envío de correos electrónicos.
 
 El envío real de emails se realiza a través de **Nodemailer** usando el servicio `MailNotificationService`.
 
-| Archivo                                                                            | Rol                                                                       |
-| ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `packages/server/src/Infrastructure/utils/Email/MailNotification.service.ts`       | Servicio de envío SMTP con Nodemailer                                     |
-| `packages/server/src/Infrastructure/utils/Email/Config/smtp.config.ts`             | Configuración SMTP (env `EMAIL_*` + validación de variables críticas)     |
-| `packages/server/src/Infrastructure/utils/Email/Templates/index.ts`                | Barrel de templates + registro `emailTemplates`                           |
-| `packages/server/src/Infrastructure/utils/Email/Templates/types.ts`                | Interfaces de argumentos de los templates                                 |
-| `packages/server/src/Infrastructure/utils/Email/Templates/shared.ts`               | Helpers compartidos (`renderSection`, `emailFooter`)                      |
-| `packages/server/src/Infrastructure/utils/Email/Templates/*.template.ts`           | Un archivo por caso de mail (`addLicense`, `licenseStatusChange`, ...)    |
-| `packages/server/src/Application/Services/SendEmail.service.ts`                    | Orquestador: resuelve destinatarios, construye payloads, invoca templates |
-| `packages/server/src/domains/Disclaimer/Infrastructure/DisclaimerEmail.service.ts` | Envío de recordatorios de disclaimer (por fuera del orquestador central)  |
+| Archivo                                                                                                    | Rol                                                                                                                                                                  |
+| ---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/server/src/Infrastructure/utils/Email/MailNotification.service.ts`                               | Servicio de envío SMTP con Nodemailer                                                                                                                                |
+| `packages/server/src/Infrastructure/utils/Email/Config/smtp.config.ts`                                     | Configuración SMTP (env `EMAIL_*` + validación de variables críticas)                                                                                                |
+| `packages/server/src/Infrastructure/utils/Email/Templates/index.ts`                                        | Barrel de templates + registro `emailTemplates`                                                                                                                      |
+| `packages/server/src/Infrastructure/utils/Email/Templates/types.ts`                                        | Interfaces de argumentos de los templates                                                                                                                            |
+| `packages/server/src/Infrastructure/utils/Email/Templates/shared.ts`                                       | Helpers compartidos (`renderSection`, `emailFooter`)                                                                                                                 |
+| `packages/server/src/Infrastructure/utils/Email/Templates/*.template.ts`                                   | Un archivo por caso de mail (`addLicense`, `licenseStatusChange`, ...)                                                                                               |
+| `packages/server/src/Application/Services/SendEmail.service.ts`                                            | Orquestador: resuelve destinatarios, construye payloads, invoca templates                                                                                            |
+| `packages/server/src/domains/Disclaimer/Infrastructure/DisclaimerEmail.service.ts`                         | Envío de recordatorios de disclaimer (por fuera del orquestador central)                                                                                             |
+| `packages/server/src/domains/EmployeeReminders/Infrastructure/Email/EmployeeEmailSender.implementation.ts` | Envío de recordatorios diarios de empleados y notificaciones de nuevos documentos (puerto hexagonal `IEmployeeEmailSender`, usa `MailNotificationService.sendOne()`) |
 
 **Variables de entorno requeridas:**
 
@@ -145,6 +146,37 @@ Se envían **dos mails** en una misma llamada.
 | **Fire-and-forget**             | No. El cron espera el resultado y loguea métricas `{sent, failed, total}`                                                                                                                                                                                                                                   |
 | **Nota**                        | El scheduler se inicializa en `packages/server/src/index.ts` después de `registerDI(app)` (`dailyReportScheduler().init()`). El email viaja por el puerto hexagonal `IDailyReportEmailSender` para no acoplar la capa Application a Nodemailer                                                              |
 
+### 7. Recordatorio diario de pendientes — `employeeDailyReminder`
+
+| Campo                           | Detalle                                                                                                                                                                                                                                                                                                                                                       |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Disparador**                  | Cron diario a las **9:00 AM hora Argentina** (`0 9 * * *`, timezone `America/Argentina/Buenos_Aires`) o trigger manual (tRPC `employeeReminders.sendDailyReminders`)                                                                                                                                                                                          |
+| **Origen en código**            | `Infrastructure/Scheduler/EmployeeReminders.scheduler.ts` → `EmployeeReminders.service.ts` → `GenerateDailyReminder.usecase.ts` → `SendEmployeeReminderEmail.usecase.ts` → puerto `IEmployeeEmailSender` → `EmployeeEmailSender.implementation.ts` → `MailNotificationService.sendOne()`                                                                      |
+| **Destinatarios**               | **Empleados individuales** de cada empresa activa que tienen pendientes (documentos sin firmar/sin visualizar, términos sin aceptar, renovación de clave)                                                                                                                                                                                                     |
+| **Alcance**                     | Un email por empleado, agrupado por empresa activa (`getAllActiveOwners()`). Por empleado se resuelven sus pendientes con `_getEmployeesByCompany` (dominio Disclaimer, cross-domain) y `_getPendingDocumentsByEmployee` (dominio Documents, cross-domain). Un fallo en un empleado no bloquea el resto (FR-008); errores logueados por `employeeId` (FR-009) |
+| **Resolución de destinatarios** | `_getEmployeesByCompany` (page `'1'`, limit `MAX_EMPLOYEES_LIMIT = '100000'`) → `IEmployeeRecord.email`. Emails inválidos (`isValidEmail`) se omiten con log. Si el empleado no tiene pendientes (`shouldSend === false`), se omite el envío (FR-010)                                                                                                         |
+| **Asunto**                      | `[GestDoc] Tus pendientes — {empresa} — {fecha DD/MM/YYYY}`                                                                                                                                                                                                                                                                                                   |
+| **Cuerpo**                      | Secciones: `Documentos sin firmar (N)`, `Documentos sin visualizar (N)`, `Términos y condiciones sin aceptar`, `Renovar contraseña`                                                                                                                                                                                                                           |
+| **Template**                    | `Templates/employeeDailyReminder.template.ts` — `employeeDailyReminder()`                                                                                                                                                                                                                                                                                     |
+| **Adjuntos**                    | No                                                                                                                                                                                                                                                                                                                                                            |
+| **Fire-and-forget**             | No. El cron espera el resultado y loguea métricas `{sent, skipped, failed, totalOwners}`                                                                                                                                                                                                                                                                      |
+| **Nota**                        | El scheduler se inicializa en `packages/server/src/index.ts` después de `registerDI(app)` (`employeeRemindersScheduler().init()`). Email viaja por el puerto hexagonal `IEmployeeEmailSender` para no acoplar la capa Application a Nodemailer                                                                                                                |
+
+### 8. Nuevo documento por ingreso — `newDocumentNotification`
+
+| Campo                           | Detalle                                                                                                                                                                                                                                        |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Disparador**                  | Ingesta de documentos (tRPC `documents.ingestDocument`) con documentos asignados a empleados                                                                                                                                                   |
+| **Origen en código**            | `IngestDocument.usecase.ts` (dominio Documents) → `NotifyNewDocument.usecase.ts` (dominio EmployeeReminders, cross-domain) → puerto `IEmployeeEmailSender` → `EmployeeEmailSender.implementation.ts` → `MailNotificationService.sendOne()`     |
+| **Destinatarios**               | **Empleados destinatarios** de los documentos ingestados (se agrupa por empleado; varios documentos en una operación → UNA notificación)                                                                                                       |
+| **Resolución de destinatarios** | `_getUser` (dominio Users) → `user.values.mail`; `companyName` desde `_getAllActiveOwners` (dominio Users)                                                                                                                                     |
+| **Asunto**                      | `[GestDoc] Tienes nuevos documentos por revisar`                                                                                                                                                                                               |
+| **Cuerpo**                      | Saludo al empleado + lista de documentos recientes con su título                                                                                                                                                                               |
+| **Template**                    | `Templates/newDocumentNotification.template.ts` — `newDocumentNotification()`                                                                                                                                                                  |
+| **Adjuntos**                    | No                                                                                                                                                                                                                                             |
+| **Fire-and-forget**             | No. Un fallo de notificación o de resolución del empleado **no bloquea el ingreso** (FR-015): el documento queda persistido como pendiente y lo cubre el batch diario                                                                          |
+| **Nota**                        | Documentos sin `employeeId` no se notifican (se omiten en el repositorio — `Usuario_id` es NOT NULL en la tabla `documentos`). `NotifyNewDocument` devuelve `{ notified: boolean }` que `IngestDocument` agrega en `{ documentIds, notified }` |
+
 ---
 
 ## Arquitectura
@@ -162,11 +194,17 @@ SendEmail.service.ts    ──────> MailNotification.service.ts  (Nodema
                                    ├─ licenseStatusChange.template.ts
 DisclaimerEmail.service.ts ────>  ├─ documentSigned.template.ts
   └─ sendDisclaimerReminders()     ├─ disclaimerReminder.template.ts
-                                   └─ dailyReport.template.ts
-DailyReport (puerto hexagonal)     └─ shared.ts (renderSection, emailFooter)
-  SendReportEmail.usecase.ts
-  → IDailyReportEmailSender
+                                   ├─ dailyReport.template.ts
+DailyReport (puerto hexagonal)     ├─ employeeDailyReminder.template.ts
+  SendReportEmail.usecase.ts       └─ newDocumentNotification.template.ts
+  → IDailyReportEmailSender      shared.ts (renderSection, emailFooter)
   → DailyReportEmailSender.
+      implementation.ts ─────────> MailNotificationService.sendOne()
+
+EmployeeReminders (puerto hexagonal)
+  GenerateDailyReminder / NotifyNewDocument / SendEmployeeReminderEmail
+  → IEmployeeEmailSender
+  → EmployeeEmailSender.
       implementation.ts ─────────> MailNotificationService.sendOne()
 ```
 

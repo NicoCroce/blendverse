@@ -11,3 +11,4 @@ export * from './utils/LoadImages';
 export * from './utils/cookie';
 export * from './utils/dateUtils';
 export * from './utils/employeeUtils';
+export * from './utils/emailUtils';

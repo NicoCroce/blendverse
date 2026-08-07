@@ -11,6 +11,7 @@ import { empresasUsuariosApp } from './Empresas_usuarios';
 import { disclaimerApp } from './Disclaimer';
 import { segmentsApp } from './Segments';
 import { dailyReportApp } from './DailyReport';
+import { employeeRemindersApp } from './EmployeeReminders';
 
 export const registerDomains = () => ({
   ...ownersysApp,
@@ -26,4 +27,5 @@ export const registerDomains = () => ({
   ...disclaimerApp,
   ...segmentsApp,
   ...dailyReportApp,
+  ...employeeRemindersApp,
 });

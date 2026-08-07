@@ -1,6 +1,7 @@
 import { IRequestContext } from '@server/Application';
 import { Document } from '../Domain/Document.entity';
 import { TStateDocument } from '../Domain/Document.types';
+import z from 'zod';
 
 export interface IGetDocuments extends IRequestContext {
   input: {
@@ -52,4 +53,43 @@ export interface IGetStatisticsDocumentsResponse {
   total: number;
   pending: number;
   validated: number;
+}
+
+// ── Ingreso de documentos (employee-daily-reminders) ────────────────────────
+// `id_propietario` NUNCA llega del cliente (Pr. II): el tenant se deriva de
+// `requestContext.values.ownerId`.
+
+export const IngestDocumentSchema = z.object({
+  documents: z
+    .array(
+      z.object({
+        employeeId: z.number().optional(),
+        tipo: z.number().min(1, 'Tipo requerido'),
+        titulo: z.string().min(1, 'Título requerido'),
+        archivo: z.string().min(1, 'Archivo requerido'),
+        extension: z.string().optional(),
+      }),
+    )
+    .min(1, 'Debe ingresar al menos un documento'),
+});
+
+export type IIngestDocumentItem = z.infer<
+  typeof IngestDocumentSchema
+>['documents'][number];
+
+export type IIngestDocumentInput = z.infer<typeof IngestDocumentSchema>;
+
+export interface IIngestDocument extends IRequestContext {
+  input: IIngestDocumentInput;
+}
+
+export interface IIngestDocumentOutput {
+  documentIds: number[];
+  notified: boolean;
+}
+
+// ── Pendientes por empleado (employee-daily-reminders) ──────────────────────
+
+export interface IGetPendingDocumentsByEmployee extends IRequestContext {
+  input: { employeeId: number };
 }
