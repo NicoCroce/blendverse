@@ -3,6 +3,7 @@ export * from './GetDocument.usecase';
 export * from './GetDocuments.usecase';
 export * from './GetDocumentsByCompany.usecase';
 export * from './GetPendingDocumentsByEmployee.usecase';
+export * from './GetPendingDocumentsByEmployees.usecase';
 export * from './GetStatisticsDocuments.usecase';
 export * from './GetUnsignedDocuments.usecase';
 export * from './IngestDocument.usecase';

@@ -32,6 +32,7 @@ const mockRepository: DocumentRepository = {
   getUnsignedDocuments: vi.fn(),
   countUnsignedDocuments: vi.fn(),
   getPendingDocumentsByEmployee: vi.fn(),
+  getPendingDocumentsByEmployees: vi.fn(),
   createDocuments: vi.fn(),
 };
 

@@ -73,6 +73,16 @@ export interface IGetPendingDocumentsByEmployeeRepository extends IRequestContex
   employeeId: number;
 }
 
+/** Registro de pendiente que incluye el empleado dueño, para agrupar en memoria
+ *  el resultado del batch de `getPendingDocumentsByEmployees` (mejora N+1). */
+export interface IPendingDocumentForEmployeeWithEmployeeId extends IPendingDocumentForEmployee {
+  employeeId: number;
+}
+
+export interface IGetPendingDocumentsByEmployeesRepository extends IRequestContext {
+  employeeIds: number[];
+}
+
 export interface ICreateDocumentsRepository extends IRequestContext {
   documents: IDocumentToCreate[];
 }
@@ -119,6 +129,9 @@ export interface DocumentRepository {
   getPendingDocumentsByEmployee(
     params: IGetPendingDocumentsByEmployeeRepository,
   ): Promise<IPendingDocumentForEmployee[]>;
+  getPendingDocumentsByEmployees(
+    params: IGetPendingDocumentsByEmployeesRepository,
+  ): Promise<IPendingDocumentForEmployeeWithEmployeeId[]>;
   createDocuments(
     params: ICreateDocumentsRepository,
   ): Promise<ICreatedDocumentRecord[]>;

@@ -8,6 +8,7 @@ import {
   GetDocuments,
   GetDocumentsByCompany,
   GetPendingDocumentsByEmployee,
+  GetPendingDocumentsByEmployees,
   GetStatisticsDocuments,
   GetUnsignedDocuments,
   IngestDocument,
@@ -33,6 +34,7 @@ export const documentsApp = {
   _countUnsignedDocuments: asClass(CountUnsignedDocuments),
   // Recordatorios de empleados (employee-daily-reminders)
   _getPendingDocumentsByEmployee: asClass(GetPendingDocumentsByEmployee),
+  _getPendingDocumentsByEmployees: asClass(GetPendingDocumentsByEmployees),
   _ingestDocument: asClass(IngestDocument),
 };
 

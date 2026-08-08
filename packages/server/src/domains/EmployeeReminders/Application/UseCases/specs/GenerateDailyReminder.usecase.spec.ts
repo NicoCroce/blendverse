@@ -26,18 +26,21 @@ const employee = {
 
 const pendingDocuments = [
   {
+    employeeId: 5,
     documentId: 10,
     documentTitle: 'Recibo de sueldo',
     isUnsigned: true,
     isUnviewed: false,
   },
   {
+    employeeId: 5,
     documentId: 11,
     documentTitle: 'Reglamento interno',
     isUnsigned: false,
     isUnviewed: true,
   },
   {
+    employeeId: 5,
     documentId: 12,
     documentTitle: 'Liquidación',
     isUnsigned: true,
@@ -49,7 +52,7 @@ const buildMocks = () => ({
   getEmployeesByCompany: {
     execute: vi.fn().mockResolvedValue({ data: [employee], meta: {} }),
   },
-  getPendingDocumentsByEmployee: {
+  getPendingDocumentsByEmployees: {
     execute: vi.fn().mockResolvedValue(pendingDocuments),
   },
 });
@@ -61,7 +64,7 @@ describe('GenerateDailyReminder (US1–US5 — ensambla el recordatorio diario)'
     const mocks = buildMocks();
     const useCase = new GenerateDailyReminder(
       mocks.getEmployeesByCompany as never,
-      mocks.getPendingDocumentsByEmployee as never,
+      mocks.getPendingDocumentsByEmployees as never,
     );
 
     const result = await useCase.execute({
@@ -96,7 +99,7 @@ describe('GenerateDailyReminder (US1–US5 — ensambla el recordatorio diario)'
     const mocks = buildMocks();
     const useCase = new GenerateDailyReminder(
       mocks.getEmployeesByCompany as never,
-      mocks.getPendingDocumentsByEmployee as never,
+      mocks.getPendingDocumentsByEmployees as never,
     );
 
     await useCase.execute({
@@ -110,9 +113,9 @@ describe('GenerateDailyReminder (US1–US5 — ensambla el recordatorio diario)'
         requestContext,
       }),
     );
-    expect(mocks.getPendingDocumentsByEmployee.execute).toHaveBeenCalledWith(
+    expect(mocks.getPendingDocumentsByEmployees.execute).toHaveBeenCalledWith(
       expect.objectContaining({
-        input: { employeeId: 5 },
+        input: { employeeIds: [5] },
         requestContext,
       }),
     );
@@ -132,11 +135,11 @@ describe('GenerateDailyReminder (US1–US5 — ensambla el recordatorio diario)'
       ],
       meta: {},
     });
-    mocks.getPendingDocumentsByEmployee.execute.mockResolvedValue([]);
+    mocks.getPendingDocumentsByEmployees.execute.mockResolvedValue([]);
 
     const useCase = new GenerateDailyReminder(
       mocks.getEmployeesByCompany as never,
-      mocks.getPendingDocumentsByEmployee as never,
+      mocks.getPendingDocumentsByEmployees as never,
     );
 
     const result = await useCase.execute({
@@ -156,11 +159,11 @@ describe('GenerateDailyReminder (US1–US5 — ensambla el recordatorio diario)'
       data: [employee],
       meta: {},
     });
-    mocks.getPendingDocumentsByEmployee.execute.mockResolvedValue([]);
+    mocks.getPendingDocumentsByEmployees.execute.mockResolvedValue([]);
 
     const useCase = new GenerateDailyReminder(
       mocks.getEmployeesByCompany as never,
-      mocks.getPendingDocumentsByEmployee as never,
+      mocks.getPendingDocumentsByEmployees as never,
     );
 
     const result = await useCase.execute({
@@ -176,5 +179,73 @@ describe('GenerateDailyReminder (US1–US5 — ensambla el recordatorio diario)'
       renewPassword: false,
     });
     expect(result.reminders[0].shouldSend).toBe(false);
+  });
+
+  it('groups batch documents by employee in memory (N+1 fix)', async () => {
+    const mocks = buildMocks();
+    mocks.getEmployeesByCompany.execute.mockResolvedValue({
+      data: [employee, { ...employee, id: 6, email: 'laura@test.com' }],
+      meta: {},
+    });
+    // Batch devuelve pendientes de AMBOS empleados en una sola llamada.
+    mocks.getPendingDocumentsByEmployees.execute.mockResolvedValue([
+      {
+        employeeId: 5,
+        documentId: 10,
+        documentTitle: 'Recibo de sueldo',
+        isUnsigned: true,
+        isUnviewed: false,
+      },
+      {
+        employeeId: 6,
+        documentId: 20,
+        documentTitle: 'Reglamento interno',
+        isUnsigned: false,
+        isUnviewed: true,
+      },
+      {
+        employeeId: 5,
+        documentId: 12,
+        documentTitle: 'Liquidación',
+        isUnsigned: true,
+        isUnviewed: true,
+      },
+    ]);
+
+    const useCase = new GenerateDailyReminder(
+      mocks.getEmployeesByCompany as never,
+      mocks.getPendingDocumentsByEmployees as never,
+    );
+
+    const result = await useCase.execute({
+      input: { companyName: 'Acme S.A.' },
+      requestContext,
+    });
+
+    expect(result.reminders).toHaveLength(2);
+    // UNA sola llamada batch para toda la empresa.
+    expect(mocks.getPendingDocumentsByEmployees.execute).toHaveBeenCalledTimes(
+      1,
+    );
+    expect(mocks.getPendingDocumentsByEmployees.execute).toHaveBeenCalledWith(
+      expect.objectContaining({ input: { employeeIds: [5, 6] } }),
+    );
+
+    // Empleado 5: solo sus documentos (10 y 12).
+    const reminder5 = result.reminders.find((r) => r.employeeId === 5);
+    expect(reminder5?.pending.unsignedDocuments).toEqual([
+      { documentId: 10, documentTitle: 'Recibo de sueldo' },
+      { documentId: 12, documentTitle: 'Liquidación' },
+    ]);
+    expect(reminder5?.pending.unviewedDocuments).toEqual([
+      { documentId: 12, documentTitle: 'Liquidación' },
+    ]);
+
+    // Empleado 6: solo su documento (20) — la agrupación no mezcla empleados.
+    const reminder6 = result.reminders.find((r) => r.employeeId === 6);
+    expect(reminder6?.pending.unsignedDocuments).toEqual([]);
+    expect(reminder6?.pending.unviewedDocuments).toEqual([
+      { documentId: 20, documentTitle: 'Reglamento interno' },
+    ]);
   });
 });

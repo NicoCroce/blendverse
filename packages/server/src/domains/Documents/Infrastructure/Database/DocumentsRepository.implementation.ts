@@ -8,10 +8,12 @@ import {
   IGetDocumentsByCompanyRepository,
   IGetDocumentsRepository,
   IGetPendingDocumentsByEmployeeRepository,
+  IGetPendingDocumentsByEmployeesRepository,
   IGetStatisticsDocumentsRepository,
   IGetStatisticsDocumentsResponseRepository,
   IGetUnsignedDocumentsRepository,
   IPendingDocumentForEmployee,
+  IPendingDocumentForEmployeeWithEmployeeId,
   ISignDocumentRepository,
   IUnsignedDocumentRecord,
   IViewDocumentRepository,
@@ -369,6 +371,46 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
     });
 
     return documents.map((document) => ({
+      documentId: document.id,
+      documentTitle: document.titulo,
+      isUnsigned: document.firmado === null,
+      isUnviewed: document.visualizado === null,
+    }));
+  }
+
+  // Versión batch (mejora N+1): una sola query para todos los empleados de la
+  // empresa con `Usuario_id IN (...)`. Devuelve cada registro con su
+  // `employeeId` para poder agrupar en memoria sin perder la pertenencia.
+  async getPendingDocumentsByEmployees({
+    employeeIds,
+    requestContext,
+  }: IGetPendingDocumentsByEmployeesRepository): Promise<
+    IPendingDocumentForEmployeeWithEmployeeId[]
+  > {
+    const ownerId = requestContext.values.ownerId;
+
+    if (employeeIds.length === 0) {
+      return [];
+    }
+
+    const documents = await Documentos.findAll({
+      where: {
+        Usuario_id: { [Op.in]: employeeIds },
+        [Op.or]: [{ firmado: null }, { visualizado: null }],
+      } as WhereOptions<Documentos>,
+      include: [
+        {
+          model: UserModel,
+          as: 'User',
+          required: true,
+          where: { id_propietario: ownerId },
+          attributes: [],
+        },
+      ],
+    });
+
+    return documents.map((document) => ({
+      employeeId: document.Usuario_id,
       documentId: document.id,
       documentTitle: document.titulo,
       isUnsigned: document.firmado === null,

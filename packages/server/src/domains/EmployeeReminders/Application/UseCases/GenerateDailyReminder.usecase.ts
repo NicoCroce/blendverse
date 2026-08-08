@@ -1,6 +1,6 @@
 import { executeUseCase, IUseCase } from '@server/Application';
 import { GetEmployeesByCompany } from '@server/domains/Disclaimer/Application';
-import { GetPendingDocumentsByEmployee } from '@server/domains/Documents/Application';
+import { GetPendingDocumentsByEmployees } from '@server/domains/Documents/Application';
 import { buildEmployeeName, formatDate } from '@server/Infrastructure';
 import {
   EmployeeReminder,
@@ -17,11 +17,13 @@ import {
 const MAX_EMPLOYEES_LIMIT = '100000';
 
 /**
- * Orquesta los pendientes de UN empleado para el email diario (US1–US5).
- * Usa `_getEmployeesByCompany` (Disclaimer) para los pendientes de cuenta
- * (renovar_clave, estado_firma) y `_getPendingDocumentsByEmployee`
- * (Documents) para documentos sin firmar / sin visualizar. Ensambla el
- * `IEmployeeReminder` y calcula `shouldSend` (FR-008).
+ * Orquesta los pendientes de TODOS los empleados de una empresa para el email
+ * diario (US1–US5). Usa `_getEmployeesByCompany` (Disclaimer) para los
+ * pendientes de cuenta (renovar_clave, estado_firma) y
+ * `_getPendingDocumentsByEmployees` (Documents, batch) para documentos sin
+ * firmar / sin visualizar — UNA sola consulta para toda la empresa (mejora
+ * N+1) y agrupación en memoria por empleado. Ensambla los `IEmployeeReminder`
+ * y calcula `shouldSend` por empleado (FR-008).
  */
 export class GenerateDailyReminder implements IUseCase<
   IGenerateDailyReminderOutput,
@@ -29,7 +31,7 @@ export class GenerateDailyReminder implements IUseCase<
 > {
   constructor(
     private readonly _getEmployeesByCompany: GetEmployeesByCompany,
-    private readonly _getPendingDocumentsByEmployee: GetPendingDocumentsByEmployee,
+    private readonly _getPendingDocumentsByEmployees: GetPendingDocumentsByEmployees,
   ) {}
 
   async execute({
@@ -44,23 +46,37 @@ export class GenerateDailyReminder implements IUseCase<
       requestContext,
     });
 
+    const employeeIds = employees.map((employee) => employee.id);
+
+    // Una sola query batch para todos los empleados de la empresa.
+    const pendingDocuments = await executeUseCase({
+      useCase: this._getPendingDocumentsByEmployees,
+      input: { employeeIds },
+      requestContext,
+    });
+
+    // Agrupación en memoria por empleado: evita el N+1 original (una query por
+    // empleado) manteniendo el mismo resultado.
+    const pendingByEmployee = new Map<number, typeof pendingDocuments>();
+    for (const document of pendingDocuments) {
+      const group = pendingByEmployee.get(document.employeeId) ?? [];
+      group.push(document);
+      pendingByEmployee.set(document.employeeId, group);
+    }
+
     const reminders: IEmployeeReminder[] = [];
 
     for (const employee of employees) {
-      const pendingDocuments = await executeUseCase({
-        useCase: this._getPendingDocumentsByEmployee,
-        input: { employeeId: employee.id },
-        requestContext,
-      });
+      const employeePending = pendingByEmployee.get(employee.id) ?? [];
 
-      const unsignedDocuments = pendingDocuments
+      const unsignedDocuments = employeePending
         .filter((document) => document.isUnsigned)
         .map((document) => ({
           documentId: document.documentId,
           documentTitle: document.documentTitle,
         }));
 
-      const unviewedDocuments = pendingDocuments
+      const unviewedDocuments = employeePending
         .filter((document) => document.isUnviewed)
         .map((document) => ({
           documentId: document.documentId,

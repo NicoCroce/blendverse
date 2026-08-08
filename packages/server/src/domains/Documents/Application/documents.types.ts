@@ -93,3 +93,7 @@ export interface IIngestDocumentOutput {
 export interface IGetPendingDocumentsByEmployee extends IRequestContext {
   input: { employeeId: number };
 }
+
+export interface IGetPendingDocumentsByEmployees extends IRequestContext {
+  input: { employeeIds: number[] };
+}
