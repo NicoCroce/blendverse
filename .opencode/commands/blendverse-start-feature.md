@@ -24,6 +24,73 @@ Modo del pipeline: `{{modo}}` (`plan` | `auto`, default `plan`):
 
 Si el usuario no indica `{{modo}}`, asumir `plan`.
 
+## Protocolo de Visibilidad — Skill `progress-tracker`
+
+Invocar la skill `progress-tracker` al inicio del pipeline y en cada transición de fase. Esta skill define los formatos de banner, todo list, porcentaje y actividad de agente.
+
+### Todo list maestra del pipeline
+
+Inmediatamente después del Pre-flight (sync a Engram), crear la todo list maestra con la herramienta `todowrite`:
+
+```
+todowrite([
+  { content: "Fase 0 — Evaluación de complejidad", status: "in_progress", priority: "high" },
+  { content: "Fase 1 — Especificación (@speckit-specify)", status: "pending", priority: "high" },
+  { content: "Fase 2 — Aclaración (@speckit-clarify) [condicional]", status: "pending", priority: "medium" },
+  { content: "Fase 3.1 — Dirección de diseño frontend [condicional]", status: "pending", priority: "medium" },
+  { content: "Fase 3.2 — Plan técnico (@speckit-plan)", status: "pending", priority: "high" },
+  { content: "Fase 4 — Desglose de tareas (@speckit-tasks)", status: "pending", priority: "high" },
+  { content: "Fase 5 — Análisis de consistencia (@speckit-analyze)", status: "pending", priority: "medium" },
+  { content: "Fase 6 — Handoff a @blendverse-implement", status: "pending", priority: "high" }
+])
+```
+
+### Reglas de actualización
+
+- Marcar cada fase `in_progress` **inmediatamente antes** de invocar al agente de esa fase.
+- Marcar cada fase `completed` **solo después** de la confirmación del usuario (modo plan) o del avance automático (modo auto).
+- Si una fase se saltea (ej: Fase 2 cuando todas las categorías están Clear), marcarla `completed` con nota "SKIPPED".
+- Actualizar la todo list en **cada cambio de estado**, no esperar al final.
+
+### Banner de pipeline
+
+Mostrar este banner en cada transición de fase (inicio de fase, fin de fase, cambio de modo):
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  FEATURE: {{feature}}
+  BRANCH:  {{branch}}
+  MODE:    {{modo}} (plan | auto)
+  PHASE:   {{current_phase}} / 6
+  PROGRESS: {{percentage}}%
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+Porcentaje: `(fases_completadas / 6) * 100`, redondeado al entero más cercano.
+
+### Banner de actividad de agente
+
+Mostrar este banner **inmediatamente antes** de invocar cualquier agente o skill:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  AGENT:        @{{agent_name}}                              │
+│  ACTION:       {{what_it_does}}                             │
+│  EXPECTED:     {{expected_output}}                          │
+│  EST. TIME:    {{estimated_duration}}                       │
+│  PROGRESS:     {{current_percentage}}%                      │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Secciones "Currently Doing" / "Up Next"
+
+Después de cada banner de actividad, mostrar:
+
+```
+🔄 CURRENTLY: {{what_is_happening_now}}
+⏭️  UP NEXT:   {{what_comes_next}}
+```
+
 ## Pre-flight — Sync a Engram (resume)
 
 1. Invocar la skill `engram-sync`.
@@ -35,6 +102,20 @@ Si el usuario no indica `{{modo}}`, asumir `plan`.
 
 ## Fase 0 — Evaluación de complejidad (solo `modo auto`)
 
+**Todo list:** marcar `Fase 0 — Evaluación de complejidad` como `in_progress`.
+
+**Banner de pipeline:**
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  FEATURE: {{feature}}
+  BRANCH:  {{branch}}
+  MODE:    {{modo}}
+  PHASE:   0 / 6 (pre-evaluación)
+  PROGRESS: 0%
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
 Antes de arrancar, evaluar la feature contra señales concretas de baja complejidad. Se considera de baja complejidad solo si cumple TODAS:
 
 - Sigue un patrón existente del proyecto (CRUD sobre dominio existente, endpoint + hook tRPC, use case nuevo en un dominio existente).
@@ -44,6 +125,8 @@ Antes de arrancar, evaluar la feature contra señales concretas de baja compleji
 
 Si cumple TODAS → continuar en `modo auto` (fases encadenadas).
 Si alguna falla o hay duda razonable → informar al usuario y pasar a `modo plan` (comportamiento actual).
+
+**Al completar:** marcar `Fase 0` como `completed` en la todo list. Mostrar banner de transición a Fase 1 con `PROGRESS: 0%` (la Fase 0 no cuenta para el porcentaje).
 
 ## Regla de interacción por fase (aplica a Fases 1–5)
 
@@ -97,6 +180,23 @@ Este gate detecta y visibiliza cualquier modificación a artefactos ya existente
 
 ## Fase 1 — Especificación
 
+**Todo list:** marcar `Fase 1 — Especificación (@speckit-specify)` como `in_progress`.
+
+**Banner de actividad:**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  AGENT:        @speckit-specify                             │
+│  ACTION:       Generando especificación de la feature       │
+│  EXPECTED:     specs/{{feature}}/spec.md                    │
+│  EST. TIME:    2-3 min                                      │
+│  PROGRESS:     0% → 16%                                     │
+└─────────────────────────────────────────────────────────────┘
+
+🔄 CURRENTLY: Invocando @speckit-specify para generar la especificación
+⏭️  UP NEXT:   Fase 2 — Aclaración (condicional, puede saltearse)
+```
+
 Invocar el agente `@speckit-specify` con la descripción de la feature.
 
 > La creación de la rama de la feature ya no se invoca acá: `.specify/extensions.yml` define `before_specify` como hook mandatory, por lo que `@speckit-specify` crea la rama automáticamente antes de generar el spec. Invocarla explícitamente en una fase separada duplicaba la creación de rama.
@@ -117,12 +217,43 @@ Tras completar la fase (confirmada en `plan` o encadenada en `auto`), invocar la
 - `topic_key: feature/{{feature}}/spec` → `status: APPROVED`, resumen de user stories y criterios de aceptación, dudas/decisiones de alcance, `Where: specs/{{feature}}/spec.md`.
 - Actualizar `feature/{{feature}}/pipeline` → `current_phase: 2` (agregar la fase aprobada a `approved_phases`).
 
+**Al completar:** marcar `Fase 1` como `completed` en la todo list. Mostrar banner de transición:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  FEATURE: {{feature}}
+  PHASE:   1 / 6 → COMPLETED ✅
+  PROGRESS: 16%
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
 ## Fase 2 — Aclaración (condicional)
+
+**Todo list:** marcar `Fase 2 — Aclaración (@speckit-clarify) [condicional]` como `in_progress`.
 
 Revisar `spec.md` contra la misma taxonomía de cobertura que usa `@speckit-clarify` (Alcance Funcional, Dominio/Datos, UX, Calidad No-Funcional, Integraciones, Edge Cases, Restricciones, Terminología, Señales de Completitud) y marcar cada categoría como `Clear` / `Partial` / `Missing`.
 
-- Si **todas** las categorías quedan en `Clear` → saltear esta fase automáticamente y continuar directo a Fase 3, sin invocar al agente.
-- Si al menos una categoría queda en `Partial` o `Missing` → invocar el agente `@speckit-clarify`. Esperar respuestas del usuario.
+- Si **todas** las categorías quedan en `Clear` → saltear esta fase automáticamente y continuar directo a Fase 3, sin invocar al agente. Marcar `Fase 2` como `completed` con nota "SKIPPED — todas las categorías Clear". Mostrar:
+  ```
+  ⏭️  Fase 2 SKIPPED — todas las categorías de cobertura están Clear
+  🔄 CURRENTLY: Avanzando directo a Fase 3 — Diseño Técnico
+  ```
+- Si al menos una categoría queda en `Partial` o `Missing` → mostrar banner de actividad e invocar el agente `@speckit-clarify`:
+
+  ```
+  ┌─────────────────────────────────────────────────────────────┐
+  │  AGENT:        @speckit-clarify                             │
+  │  ACTION:       Aclarando ambigüedades del spec              │
+  │  EXPECTED:     spec.md actualizado con respuestas           │
+  │  EST. TIME:    2-4 min                                      │
+  │  PROGRESS:     16% → 33%                                    │
+  └─────────────────────────────────────────────────────────────┘
+
+  🔄 CURRENTLY: Invocando @speckit-clarify para resolver ambigüedades
+  ⏭️  UP NEXT:   Fase 3 — Diseño Técnico
+  ```
+
+  Esperar respuestas del usuario.
 
 ### Restricciones
 
@@ -135,14 +266,45 @@ Tras decidir el resultado de esta fase (ejecutada o salteada), invocar la skill 
 - `topic_key: feature/{{feature}}/clarify` → `status: APPROVED` (si se ejecutó, con preguntas hechas y respuestas del usuario) o `status: SKIPPED` (si todas las categorías quedaron en `Clear`).
 - Actualizar `feature/{{feature}}/pipeline` → `current_phase: 3`.
 
+**Al completar:** marcar `Fase 2` como `completed` en la todo list. Mostrar banner de transición:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  FEATURE: {{feature}}
+  PHASE:   2 / 6 → COMPLETED ✅ (o SKIPPED ⏭️)
+  PROGRESS: 33%
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
 ## Fase 3 — Diseño Técnico
+
+**Todo list:** marcar `Fase 3.1 — Dirección de diseño frontend [condicional]` y `Fase 3.2 — Plan técnico (@speckit-plan)` como `in_progress` (según corresponda).
 
 ### 3.1 — Dirección de diseño frontend (condicional)
 
 Determinar si la feature tiene alcance frontend leyendo `spec.md` (user stories que mencionen UI, pantallas, componentes, o categoría UX cubierta).
 
-- Si es **back-only** → saltear este paso y continuar directo al plan técnico.
-- Si es **front-only** o **full-stack** → invocar la skill `frontend-design` (`.agents/skills/frontend-design/SKILL.md`) con `spec.md` como brief y producir `specs/{feature}/frontend-design.md`:
+- Si es **back-only** → saltear este paso y continuar directo al plan técnico. Marcar `Fase 3.1` como `completed` con nota "SKIPPED — back-only". Mostrar:
+  ```
+  ⏭️  Fase 3.1 SKIPPED — feature back-only, no requiere diseño frontend
+  🔄 CURRENTLY: Avanzando directo a Fase 3.2 — Plan Técnico
+  ```
+- Si es **front-only** o **full-stack** → mostrar banner de actividad e invocar la skill `frontend-design`:
+
+  ```
+  ┌─────────────────────────────────────────────────────────────┐
+  │  AGENT:        skill frontend-design                        │
+  │  ACTION:       Definiendo dirección visual frontend         │
+  │  EXPECTED:     specs/{{feature}}/frontend-design.md         │
+  │  EST. TIME:    2-3 min                                      │
+  │  PROGRESS:     33% → 42%                                    │
+  └─────────────────────────────────────────────────────────────┘
+
+  🔄 CURRENTLY: Generando dirección visual (tokens, tipografías, layout)
+  ⏭️  UP NEXT:   Fase 3.2 — Plan Técnico (@speckit-plan)
+  ```
+
+  Invocar la skill `frontend-design` (`.agents/skills/frontend-design/SKILL.md`) con `spec.md` como brief y producir `specs/{feature}/frontend-design.md`:
   - **Grounding del brief**: subject concreto, audiencia y el único job de la página.
   - **Token system**: paleta de 4–6 hex nombrados, roles de tipografía (display + body + utility), concepto de layout, y el elemento firma único.
   - **Self-critique**: revisión del plan contra el brief, señalando qué se descartó por ser default genérico y por qué.
@@ -151,6 +313,23 @@ Determinar si la feature tiene alcance frontend leyendo `spec.md` (user stories 
 Output esperado: `specs/{feature}/frontend-design.md`
 
 ### 3.2 — Plan técnico
+
+**Todo list:** marcar `Fase 3.1` como `completed` (si corresponde) y `Fase 3.2 — Plan técnico (@speckit-plan)` como `in_progress`.
+
+**Banner de actividad:**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  AGENT:        @speckit-plan                                │
+│  ACTION:       Generando diseño técnico                     │
+│  EXPECTED:     plan.md, data-model.md, contracts/           │
+│  EST. TIME:    3-5 min                                      │
+│  PROGRESS:     42% → 50%                                    │
+└─────────────────────────────────────────────────────────────┘
+
+🔄 CURRENTLY: Invocando @speckit-plan para generar el diseño técnico
+⏭️  UP NEXT:   Fase 4 — Desglose de Tareas
+```
 
 Invocar el agente `@speckit-plan` para generar los artefactos de diseño técnico. Si existe `specs/{feature}/frontend-design.md`, indicarle que lo lea para alinear la sección frontend del plan (tokens, tipografías, layout) con la dirección visual.
 
@@ -172,7 +351,34 @@ Tras completar la fase (confirmada en `plan` o encadenada en `auto`), invocar la
 - `topic_key: feature/{{feature}}/frontend-design` → `status: APPROVED` (si aplica) o `status: SKIPPED` (si back-only), resumen de paleta, tipografías y elemento firma, `Where: specs/{feature}/frontend-design.md`.
 - Actualizar `feature/{{feature}}/pipeline` → `current_phase: 4`.
 
+**Al completar:** marcar `Fase 3.1` y `Fase 3.2` como `completed` en la todo list. Mostrar banner de transición:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  FEATURE: {{feature}}
+  PHASE:   3 / 6 → COMPLETED ✅
+  PROGRESS: 50%
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
 ## Fase 4 — Desglose de Tareas
+
+**Todo list:** marcar `Fase 4 — Desglose de tareas (@speckit-tasks)` como `in_progress`.
+
+**Banner de actividad:**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  AGENT:        @speckit-tasks                               │
+│  ACTION:       Desglosando tareas por user story            │
+│  EXPECTED:     specs/{{feature}}/tasks.md                   │
+│  EST. TIME:    2-3 min                                      │
+│  PROGRESS:     50% → 66%                                    │
+└─────────────────────────────────────────────────────────────┘
+
+🔄 CURRENTLY: Invocando @speckit-tasks para generar el desglose de tareas
+⏭️  UP NEXT:   Fase 5 — Análisis de Consistencia
+```
 
 Invocar el agente `@speckit-tasks` para generar `tasks.md` ordenado por user stories.
 
@@ -189,7 +395,34 @@ Tras completar la fase (confirmada en `plan` o encadenada en `auto`), invocar la
 - `topic_key: feature/{{feature}}/tasks` → `status: APPROVED`, cantidad de user stories y de tareas, `Where: specs/{{feature}}/tasks.md`.
 - Actualizar `feature/{{feature}}/pipeline` → `current_phase: 5`.
 
+**Al completar:** marcar `Fase 4` como `completed` en la todo list. Mostrar banner de transición:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  FEATURE: {{feature}}
+  PHASE:   4 / 6 → COMPLETED ✅
+  PROGRESS: 66%
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
 ## Fase 5 — Análisis de Consistencia
+
+**Todo list:** marcar `Fase 5 — Análisis de consistencia (@speckit-analyze)` como `in_progress`.
+
+**Banner de actividad:**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  AGENT:        @speckit-analyze                             │
+│  ACTION:       Analizando consistencia entre artefactos     │
+│  EXPECTED:     Reporte de consistencia                      │
+│  EST. TIME:    1-2 min                                      │
+│  PROGRESS:     66% → 83%                                    │
+└─────────────────────────────────────────────────────────────┘
+
+🔄 CURRENTLY: Invocando @speckit-analyze para validar consistencia
+⏭️  UP NEXT:   Fase 6 — Handoff a @blendverse-implement
+```
 
 Invocar el agente `@speckit-analyze` para generar un reporte para asegurar que todos los documentos y artefactos sean consistentes entre sí.
 
@@ -206,7 +439,44 @@ Tras completar la fase (confirmada en `plan` o encadenada en `auto`), invocar la
 - `topic_key: feature/{{feature}}/consistency` → `status: APPROVED`, inconsistencias detectadas y resueltas, comandos `speckit` ejecutados, `Where: specs/{{feature}}/`.
 - Actualizar `feature/{{feature}}/pipeline` → `current_phase: 6`.
 
+**Al completar:** marcar `Fase 5` como `completed` en la todo list. Mostrar banner de transición:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  FEATURE: {{feature}}
+  PHASE:   5 / 6 → COMPLETED ✅
+  PROGRESS: 83%
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
 ## Fase 6 — Handoff a Blendverse
+
+**Todo list:** marcar `Fase 6 — Handoff a @blendverse-implement` como `in_progress`.
+
+**Banner de pipeline:**
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  FEATURE: {{feature}}
+  PHASE:   6 / 6 — HANDOFF
+  PROGRESS: 83% → 100% (tras delegar a @blendverse-implement)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Banner de actividad:**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  AGENT:        @blendverse-implement                        │
+│  ACTION:       Iniciando cadena de implementación DDD       │
+│  EXPECTED:     Implementación completa + PR a main          │
+│  EST. TIME:    15-30 min (depende del scope)                │
+│  PROGRESS:     83% → 100%                                   │
+└─────────────────────────────────────────────────────────────┘
+
+🔄 CURRENTLY: Delegando control a @blendverse-implement
+⏭️  UP NEXT:   Cadena back → front → tester → qa → reviewer → PR
+```
 
 Presentar al usuario el resumen de artefactos:
 
@@ -235,6 +505,17 @@ Luego,**sin esperar intervención del usuario**, invocar directamente el agente 
 > La feature a implementar es `{{feature}}`. Los artefactos de diseño están en `specs/{{feature}}/` (`spec.md`, `plan.md`, `tasks.md` y, si aplica, `frontend-design.md`). Resolvé el `task_id` (Paso 1 de tu protocolo) y procedé con la cadena `back → front → tester → qa → reviewer` de forma autónoma. El agente `@blendverse-front` debe leer y aplicar `frontend-design.md` como brief visual al implementar la capa de presentación. Usá la skill `engram-sync` para registrar la tarea en Engram y retomar si hay una tarea en curso. Una vez que `@blendverse-reviewer` apruebe (todas las validaciones corregidas) y la tarea quede cerrada, ejecutá el Paso 5 de tu protocolo: invocá el agente `pr-detail` para generar `pr-detail.md`, pusheá la rama y abrí el PR contra `main` con `gh pr create`, reportando la URL al usuario.
 
 Este orquestador ya sabe leer `specs/{{feature}}/spec.md` y `tasks.md` directamente (sin transcribirlos a `memory/`), detectar el alcance e iniciar la cadena completa hasta el cierre de la tarea.
+
+**Al completar el handoff:** marcar `Fase 6` como `completed` en la todo list. Mostrar banner final:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  FEATURE: {{feature}}
+  PIPELINE SPECKIT → COMPLETED ✅
+  PROGRESS: 100%
+  HANDOFF:  @blendverse-implement (cadena de implementación)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
 
 ## Notas
 
