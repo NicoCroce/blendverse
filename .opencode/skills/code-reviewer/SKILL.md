@@ -11,7 +11,7 @@ Guía al agente `@blendverse-reviewer` en la revisión de estándares de arquite
 
 ---
 
-## Checklist de Revisión (12 Ítems)
+## Checklist de Revisión (16 Ítems)
 
 Los ítems marcados con 🔴 son **críticos** — un fallo en cualquiera de ellos resulta en `status: REJECTED`.  
 Los ítems marcados con 🟡 son **recomendados** — un fallo genera feedback pero no bloquea la aprobación.
@@ -47,11 +47,23 @@ Los ítems marcados con 🟡 son **recomendados** — un fallo genera feedback p
 | 10  | Los nombres de clases, archivos y carpetas siguen las convenciones del proyecto | 🔴    | Comparar contra las tablas de nomenclatura en `server.instructions.md` o `app.instructions.md` |
 | 11  | La entidad implementa `static create()`, `toJSON()` y `get values()`            | 🟡    | Revisar la clase entidad                                                                       |
 
+### Frontend — Estados de Pantalla y UX
+
+> Se aplica SOLO si la tarea toca `packages/app/**`. Criterios definidos en `app.instructions.md` — sección "Estados de Pantalla — Loading / Error / Empty".
+
+| #   | Criterio                                                                                                                                      | Nivel | Cómo verificar                                                            |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------------- | ----- | ------------------------------------------------------------------------- |
+| 12  | Las pantallas que obtienen datos implementan `isError` → `EmptyScreenError`, `isLoading` → skeleton, empty → `EmptyScreenFilter`/`EmptyState` | 🔴    | Revisar páginas/componentes con `useQuery` en `affected_files`            |
+| 13  | No hay texto suelto inline para estados (`<Text.Muted>Cargando</Text.Muted>`, `<p>`) ni fallbacks inalcanzables al final de ternarios         | 🔴    | Buscar `Cargando`, `<Text.Muted>` en componentes de pantalla              |
+| 14  | Los botones que ejecutan servicios reciben `isLoading={isPending}` (spinner) — nunca solo `disabled={isPending}`                              | 🔴    | Buscar `disabled={...isPending}` sin `isLoading` en botones con mutations |
+| 15  | Los empty states domain-specific usan `EmptyState` como base visual (no diseños custom duplicados)                                            | 🟡    | Revisar `*EmptyState.tsx` en dominios                                     |
+| 16  | Los skeletons de dominio viven en `Components/` del dominio (o `Application/Components/` si es cross-domain)                                  | 🟡    | Verificar ubicación de archivos `*Skeleton.tsx`                           |
+
 ### Mantenibilidad
 
 | #   | Criterio                                                                     | Nivel | Cómo verificar                                                  |
 | --- | ---------------------------------------------------------------------------- | ----- | --------------------------------------------------------------- |
-| 12  | El `index.ts` barrel del dominio exporta correctamente los símbolos públicos | 🟡    | Verificar que el barrel no re-exporta implementaciones privadas |
+| 17  | El `index.ts` barrel del dominio exporta correctamente los símbolos públicos | 🟡    | Verificar que el barrel no re-exporta implementaciones privadas |
 
 ---
 
@@ -89,7 +101,12 @@ date: 'YYYY-MM-DD'
 | 9   | Sin `console.log` en producción         | 🟡    | ✅     | —       |
 | 10  | Convenciones de nomenclatura            | 🔴    | ✅     | —       |
 | 11  | Entidad con `static create()` etc.      | 🟡    | ✅     | —       |
-| 12  | Barrels exportan correctamente          | 🟡    | ✅     | —       |
+| 12  | Pantallas con error/loading/empty       | 🔴    | ✅     | —       |
+| 13  | Sin texto inline para estados           | 🔴    | ✅     | —       |
+| 14  | Botones con `isLoading`                 | 🔴    | ✅     | —       |
+| 15  | Empty states usan `EmptyState`          | 🟡    | ✅     | —       |
+| 16  | Skeletons en Components/ del dominio    | 🟡    | ✅     | —       |
+| 17  | Barrels exportan correctamente          | 🟡    | ✅     | —       |
 
 ---
 

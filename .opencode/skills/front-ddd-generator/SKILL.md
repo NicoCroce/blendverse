@@ -293,13 +293,23 @@ export * from './useDelete[Entity]';
 
 ## Template: `Pages/[Entity]List.page.tsx`
 
+> ⚠️ **ESTADOS OBLIGATORIOS (ver Convenciones de UI):** toda página que obtiene datos DEBE implementar `isError → EmptyScreenError`, `isLoading → Skeleton`, `empty → EmptyScreenFilter/EmptyState` en ese orden. NO dejar fallbacks `<Text.Muted>Cargando</Text.Muted>` ni texto suelto inline.
+
 ```tsx
+import { EmptyScreenError, EmptyScreenFilter, Page } from '@app/Application';
+import { useGet[Entities] } from '../Hooks';
+
 export const [Entity]ListPage = () => {
+  const { data, isLoading, isError, error } = useGet[Entities]();
+
+  if (isError) return <EmptyScreenError message={error?.message} />;
+  if (isLoading) return <[Entity]TableSkeleton />; // skeleton del dominio en Components/
+  if (!data?.length) return <EmptyScreenFilter onClick={() => {}} />;
+
   return (
-    <div>
-      <h1>[Entities]</h1>
+    <Page title="[Entities]">
       {/* TODO: Implementar lista con DataCollection */}
-    </div>
+    </Page>
   );
 };
 ```
@@ -377,6 +387,50 @@ export * from './Pages';
 <Button onClick={() => null} icon={faEdit} showIcon />
 ```
 
+### Estados de pantalla — Loading / Error / Empty (OBLIGATORIO)
+
+Toda página o componente que obtiene datos (useQuery) implementa los tres estados en este orden:
+
+```tsx
+const { data, isLoading, isError, error } = service;
+
+if (isError) return <EmptyScreenError message={error?.message} />;
+if (isLoading) return <Skeleton />; // skeleton del dominio en Components/
+if (!data?.length) return <EmptyScreenFilter onClick={openFilters} />;
+```
+
+**Componentes genéricos (siempre desde el barrel `@app/Application`):**
+
+| Estado  | Componente          | Cuándo usarlo                                   |
+| ------- | ------------------- | ----------------------------------------------- |
+| Error   | `EmptyScreenError`  | La query falla (`isError`)                      |
+| Vacío   | `EmptyScreenFilter` | No hay resultados de filtros/búsqueda           |
+| Vacío   | `EmptyState`        | Empty state con título/descripción/ícono/CTA    |
+| Loading | `Skeleton`          | Base para skeletons del dominio (`ui/skeleton`) |
+
+**Reglas:**
+
+1. NUNCA texto suelto inline para estos estados (`<Text.Muted>Cargando</Text.Muted>`, `<p>`). SIEMPRE los componentes genéricos.
+2. NO dejar fallbacks inalcanzables `: <Text.Muted>Cargando</Text.Muted>` al final de un ternario. Si `isLoading` es false, no hay error y no hay data → empty state.
+3. Los skeletons del dominio van en `Components/` como archivo propio (`[Entity]TableSkeleton.tsx`, `[Entity]CardsSkeleton.tsx`), construidos sobre `Skeleton`. Si usás `DataTable`/`DataList`, usá sus `.Skeleton` estáticos.
+4. Los empty states domain-specific usan `EmptyState` internamente (base visual única, contexto dinámico en el dominio).
+
+### Botones que ejecutan servicios — SIEMPRE con `isLoading`
+
+Todo botón que dispara una mutation recibe `isLoading={isPending}` (spinner + disable automático del `Button` del proyecto):
+
+```tsx
+// ✅ Correcto
+<Button type="submit" isLoading={isPending}>Guardar</Button>
+
+// ❌ Incorrecto — sin feedback visual
+<Button type="submit" disabled={isPending}>Guardar</Button>
+```
+
+- NUNCA solo `disabled={isPending}` en un botón que ejecuta un servicio.
+- Los botones "Cancelar" acompañantes se deshabilitan con `disabled={isPending}` (sin spinner).
+- Botones fuera del proyecto (`ui/button` raw, `AlertDialogAction`, `<button>` nativo) que ejecutan servicio: usar el `Button` wrapper con `isLoading`, o `disabled` + indicador manual.
+
 ---
 
 ## Archivos Globales a Actualizar
@@ -410,4 +464,6 @@ Tras crear todos los archivos, ejecuta `diagnostics/getErrors` y verifica:
 - [ ] Todos los hooks usan `[Domain]Service` (no instancias directas de tRPC)
 - [ ] `Routes.tsx` incluye el nuevo `[Domain]Router`
 - [ ] Las páginas exportan componentes con nombre correcto
+- [ ] La `[Entity]ListPage` implementa los tres estados: `isError` → `EmptyScreenError`, `isLoading` → skeleton del dominio, empty → `EmptyScreenFilter`/`EmptyState` (sin texto inline ni fallbacks `Cargando`)
+- [ ] Los botones que ejecutan mutations reciben `isLoading={isPending}` (nunca solo `disabled`)
 - [ ] `index.ts` raíz hace barrel export de todo

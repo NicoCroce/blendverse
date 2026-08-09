@@ -354,6 +354,53 @@ const form = useForm<z.infer<typeof formSchema>>({
 <Button onClick={() => null} icon={faEdit} showIcon />
 ```
 
+## Estados de Pantalla — Loading / Error / Empty (OBLIGATORIO en toda pantalla que obtiene datos)
+
+Toda pantalla o componente que obtiene datos de un servicio (useQuery) DEBE implementar los tres estados en este orden exacto:
+
+```tsx
+const { data, isLoading, isError, error } = service;
+
+if (isError) return <EmptyScreenError message={error?.message} />;
+if (isLoading) return <Skeleton />;
+if (!data?.length) return <EmptyScreenFilter onClick={openFilters} />;
+```
+
+### Componentes genéricos — SIEMPRE desde el barrel `@app/Application`
+
+| Estado  | Componente                    | Ruta                                                     | Cuándo usarlo                                                                          |
+| ------- | ----------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Error   | `EmptyScreenError`            | `Application/Components/Molecules/EmptyScreenError.tsx`  | La query falla (`isError`) — usa `AlertMessage` error                                  |
+| Vacío   | `EmptyScreenFilter`           | `Application/Components/Molecules/EmptyScreenFilter.tsx` | No hay resultados de filtros/búsqueda                                                  |
+| Vacío   | `EmptyState`                  | `Application/Components/Molecules/EmptyState.tsx`        | Empty state genérico con título/descripción/ícono/CTA (`AlertMessage` variant="empty") |
+| Loading | `Skeleton` (de `ui/skeleton`) | `Application/Components/ui/skeleton.tsx`                 | Base para cualquier skeleton                                                           |
+
+**Reglas:**
+
+1. **NUNCA** renderizar texto suelto inline para estos estados (`<Text.Muted>Cargando</Text.Muted>`, `<p>`, divs con texto). SIEMPRE usar los componentes genéricos.
+2. **NO** dejar fallbacks inalcanzables tipo `: <Text.Muted>Cargando</Text.Muted>` al final de un ternario. Si `isLoading` es false, no hay error y no hay data → se muestra el empty state. El ternario es: `isError ? <Error/> : isLoading ? <Skeleton/> : items.length > 0 ? <Contenido/> : <Empty/>`.
+3. **Skeletons de dominio** (tabla, cards, lista) van en `Components/` del dominio como archivo propio (ej. `TableSkeleton.tsx`, `CardsSkeleton.tsx`, `DocumentsListSkeleton.tsx`) construidos sobre `Skeleton` de `ui/skeleton`. Si el listado usa `DataTable`/`DataList`, usar sus `.Skeleton` estáticos. Nunca duplicar skeletons entre dominios: si es cross-domain, va en `Application/Components/`.
+4. Los empty states domain-specific (con contexto propio: search term, filtros, CTA) usan `EmptyState` internamente para la base visual. El contexto (título/descripción dinámicos) vive en el componente del dominio, la base visual es única.
+5. **Errores de mutation** se muestran con `toast.error` en el hook (patrón estándar), no con `EmptyScreenError`. `EmptyScreenError` es solo para fallas de carga de queries.
+
+### Botones que ejecutan servicios — SIEMPRE con `isLoading`
+
+Todo botón que dispara una mutation (`useMutation`) o una llamada a servicio DEBE recibir `isLoading={isPending}` de la mutation. El `Button` del proyecto ya muestra el spinner de FontAwesome automáticamente cuando `isLoading` es true, y además deshabilita el botón (no hace falta pasar `disabled` aparte):
+
+```tsx
+// ✅ Correcto — spinner + disable automático
+<Button type="submit" isLoading={isPending}>Guardar</Button>
+
+// ❌ Incorrecto — sin feedback visual durante la carga
+<Button type="submit" disabled={isPending}>Guardar</Button>
+```
+
+**Reglas:**
+
+1. **NUNCA** usar solo `disabled={isPending}` en un botón que ejecuta un servicio: el usuario no ve feedback de que algo está pasando.
+2. Los botones "Cancelar" que acompañan a un submit con mutation se deshabilitan con `disabled={isPending}` (no necesitan spinner).
+3. Botones que no son del proyecto (`ui/button` raw, `AlertDialogAction`, botones `<button>` nativos) que ejecutan un servicio: usar el `Button` wrapper con `isLoading`, o deshabilitar con `disabled` + indicador de carga manual si el wrapper no aplica.
+
 ## Componentes Compartidos
 
 Antes de crear cualquier componente nuevo, verificar en `packages/app/src/Application/Components/`:
