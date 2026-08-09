@@ -26,8 +26,12 @@ import { UsuariosSegmentosModel } from '@server/domains/Segments/Infrastructure/
 import { Op, IncludeOptions, WhereOptions } from 'sequelize';
 import { buildEmployeeName } from '@server/Infrastructure';
 import { logger } from '@server/Infrastructure/utils/pino';
+import { TenantAwareRepository } from '@server/Infrastructure/Database/TenantAwareRepository';
 
-export class DocumentsRepositoryImplementation implements DocumentRepository {
+export class DocumentsRepositoryImplementation
+  extends TenantAwareRepository
+  implements DocumentRepository
+{
   async getDocuments({
     filters,
     requestContext,
@@ -91,9 +95,8 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
 
   async getDocument({
     id,
-    requestContext,
+    requestContext: _requestContext,
   }: IGetDocumentRepository): Promise<Document | null> {
-    console.log('Hacer algo con userID', requestContext);
     const document = await Documentos.findOne({
       where: { id },
       include: [
@@ -120,10 +123,9 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
   }
 
   async viewDocument({
-    requestContext,
+    requestContext: _requestContext,
     id,
   }: IViewDocumentRepository): Promise<number | null> {
-    console.log('Hacer algo con userID', requestContext);
     const rowsAffected = await Documentos.update(
       { visualizado: new Date() },
       { where: { id } },
@@ -134,13 +136,12 @@ export class DocumentsRepositoryImplementation implements DocumentRepository {
   }
 
   async signDocument({
-    requestContext,
+    requestContext: _requestContext,
     id,
     validationSign,
     agreement,
     reasonSignatureNonConformity,
   }: ISignDocumentRepository): Promise<number | null> {
-    console.log('Hacer algo con userID', requestContext);
     const rowsAffected = await Documentos.update(
       {
         firmado: new Date(),

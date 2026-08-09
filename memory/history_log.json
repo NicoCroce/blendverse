@@ -98,6 +98,35 @@
           "attempts": 2
         }
       ]
+    },
+    {
+      "task_id": "TASK-refactor-tenant-aware-repository-20260808-1",
+      "title": "Refactor seguridad multi-tenant: TenantAwareRepository + scopes + fix typo + readonly ownerId",
+      "status": "COMPLETED",
+      "created_at": "2026-08-08T18:16:00Z",
+      "closed_at": "2026-08-08T19:45:00Z",
+      "agents_chain": [
+        {
+          "agent": "Back_Agent",
+          "status": "IMPLEMENTED",
+          "attempts": 1
+        },
+        {
+          "agent": "Tester_Agent",
+          "status": "PASS",
+          "attempts": 1
+        },
+        {
+          "agent": "QA_Agent",
+          "status": "PASS",
+          "attempts": 1
+        },
+        {
+          "agent": "Reviewer_Agent",
+          "status": "APPROVED",
+          "attempts": 1
+        }
+      ]
     }
   ]
 }

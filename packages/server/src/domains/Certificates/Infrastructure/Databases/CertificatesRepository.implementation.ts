@@ -43,18 +43,40 @@ import {
   sequelize,
   startOfToday,
 } from '@server/Infrastructure';
+import { AppError } from '@server/Application';
+import { TenantAwareRepository } from '@server/Infrastructure/Database/TenantAwareRepository';
 
-export class CertificatesRepositoryImplementation implements CertificateRepository {
+export class CertificatesRepositoryImplementation
+  extends TenantAwareRepository
+  implements CertificateRepository
+{
+  /**
+   * Security: validates that the certificate belongs to a user of the
+   * calling ownerId before appending images (IDOR prevention).
+   */
   async appendImages({
-    requestContext: _,
+    requestContext,
     certificateId,
     files,
   }: IAppendImagesRepository): Promise<Certificate> {
+    const ownerId = requestContext.values.ownerId;
+
     try {
-      const certificate = await CertificateModel.findByPk(certificateId);
+      const certificate = await CertificateModel.findOne({
+        where: { id: certificateId },
+        include: [
+          {
+            model: UserModel,
+            as: 'User',
+            required: true,
+            where: { id_propietario: ownerId },
+            attributes: [],
+          },
+        ],
+      });
 
       if (!certificate) {
-        throw new Error('Certificate not found');
+        throw new AppError('Certificate not found', 404, 'NOT_FOUND');
       }
 
       const updatedFiles = [...(certificate.archivos || []), ...files];
@@ -66,7 +88,7 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
       );
 
       if (!certificateType) {
-        throw new Error('Certificate type not found');
+        throw new AppError('Certificate type not found', 404, 'NOT_FOUND');
       }
 
       return Certificate.create({
@@ -84,10 +106,13 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
         files: updatedFiles,
       });
     } catch (error) {
+      if (error instanceof AppError) throw error;
       console.error('Error appending images to certificate:', error);
-      throw new Error('Failed to append images to certificate', {
-        cause: error,
-      });
+      throw new AppError(
+        'Failed to append images to certificate',
+        500,
+        'INTERNAL_SERVER_ERROR',
+      );
     }
   }
 
@@ -151,7 +176,7 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
             id_propietario: requestContext.values.ownerId,
             ...whereConditionUsers,
           },
-          attributes: ['id', 'nombre', 'apellido'], // Atributos necesarios para la agrupación y ordenación
+          attributes: ['id', 'nombre', 'apellido'],
         },
         {
           model: CertificatesTypesModel,
@@ -231,17 +256,14 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
         where: {
           id_usuario: requestContext.values.userId,
           [Op.or]: [
-            // startDate está dentro del rango existente
             {
               fecha_inicio: { [Op.lte]: startDate },
               fecha_reintegro: { [Op.gte]: startDate },
             },
-            // returnDate está dentro del rango existente
             {
               fecha_inicio: { [Op.lte]: returnDate },
               fecha_reintegro: { [Op.gte]: returnDate },
             },
-            // El nuevo rango contiene completamente un rango existente
             {
               fecha_inicio: { [Op.gte]: startDate },
               fecha_reintegro: { [Op.lte]: returnDate },
@@ -251,8 +273,10 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
       });
 
       if (existingCertificate) {
-        throw new Error(
+        throw new AppError(
           'Ya existe una licencia con fechas que se solapan con las fechas proporcionadas',
+          409,
+          'CONFLICT',
         );
       }
       const {
@@ -278,7 +302,11 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
         await CertificatesTypesModel.findByPk(id_tipo_certificado);
 
       if (!certificateType) {
-        throw new Error('Tipo de certificado no encontrado');
+        throw new AppError(
+          'Tipo de certificado no encontrado',
+          404,
+          'NOT_FOUND',
+        );
       }
 
       return Certificate.create({
@@ -295,11 +323,15 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
         status: estado,
       });
     } catch (error) {
+      if (error instanceof AppError) throw error;
       if (error instanceof Error) {
-        throw new Error(error.message, { cause: error });
-      } else {
-        throw new Error('Error al insertar certificado', { cause: error });
+        throw new AppError(error.message, 500, 'INTERNAL_SERVER_ERROR');
       }
+      throw new AppError(
+        'Error al insertar certificado',
+        500,
+        'INTERNAL_SERVER_ERROR',
+      );
     }
   }
 
@@ -332,29 +364,29 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
     const allCertificatesTypes = await CertificateModel.findAll({
       attributes: [
         'id_tipo_certificado',
-        [sequelize.fn('COUNT', sequelize.col('CertificateModel.id')), 'count'], // Contar certificados por tipo
+        [sequelize.fn('COUNT', sequelize.col('CertificateModel.id')), 'count'],
       ],
       include: [
         {
           model: CertificatesTypesModel,
-          attributes: ['id', 'denominacion'], // Atributos del tipo de certificado
+          attributes: ['id', 'denominacion'],
         },
-        includeOwner, // Relación con el usuario propietario
+        includeOwner,
       ],
       group: [
-        'CertificateModel.id_tipo_certificado', // Incluir id_tipo_certificado en el GROUP BY
+        'CertificateModel.id_tipo_certificado',
         'CertificatesTypesModel.id',
         'CertificatesTypesModel.denominacion',
         'User.id',
         'User.nombre',
         'User.apellido',
-      ], // Incluir todas las columnas del SELECT en el GROUP BY
+      ],
     });
 
     const certificatesByEmployee = await CertificateModel.findAll({
       attributes: [
-        'id_usuario', // Identificador del usuario
-        [sequelize.fn('COUNT', sequelize.col('CertificateModel.id')), 'count'], // Contar certificados por usuario
+        'id_usuario',
+        [sequelize.fn('COUNT', sequelize.col('CertificateModel.id')), 'count'],
       ],
       include: [
         {
@@ -364,10 +396,10 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
           where: {
             id_propietario: ownerId,
           },
-          attributes: ['id', 'nombre', 'apellido'], // Atributos del usuario
+          attributes: ['id', 'nombre', 'apellido'],
         },
       ],
-      group: ['id_usuario', 'User.id', 'User.nombre', 'User.apellido'], // Agrupar por usuario
+      group: ['id_usuario', 'User.id', 'User.nombre', 'User.apellido'],
     });
 
     const certificatesByStatus = await CertificateModel.findAll({
@@ -380,7 +412,7 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
           model: UserModel,
           as: 'User',
           required: true,
-          attributes: [], // No traer columnas de User
+          attributes: [],
           where: {
             id_propietario: ownerId,
           },
@@ -521,13 +553,34 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
     };
   }
 
+  /**
+   * Security: validates that the certificate belongs to a user of the
+   * calling ownerId before deleting (IDOR prevention).
+   */
   async deleteCertificate({
     id,
-    requestContext: _,
+    requestContext,
   }: IDeleteCertificateRepository): Promise<void> {
-    await CertificateModel.destroy({
+    const ownerId = requestContext.values.ownerId;
+
+    const certificate = await CertificateModel.findOne({
       where: { id },
+      include: [
+        {
+          model: UserModel,
+          as: 'User',
+          required: true,
+          where: { id_propietario: ownerId },
+          attributes: [],
+        },
+      ],
     });
+
+    if (!certificate) {
+      throw new AppError('Certificate not found', 404, 'NOT_FOUND');
+    }
+
+    await certificate.destroy();
   }
 
   async getCertificate({
@@ -565,18 +618,33 @@ export class CertificatesRepositoryImplementation implements CertificateReposito
     });
   }
 
+  /**
+   * Security: validates that the certificate belongs to a user of the
+   * calling ownerId before updating status (IDOR prevention).
+   */
   async updateCertificateStatus({
     id,
     status,
-    requestContext: _,
+    requestContext,
   }: IUpdateCertificateStatusRepository): Promise<Certificate> {
+    const ownerId = requestContext.values.ownerId;
+
     const certificate = await CertificateModel.findOne({
       where: { id },
-      include: [{ model: CertificatesTypesModel }],
+      include: [
+        { model: CertificatesTypesModel },
+        {
+          model: UserModel,
+          as: 'User',
+          required: true,
+          where: { id_propietario: ownerId },
+          attributes: [],
+        },
+      ],
     });
 
     if (!certificate) {
-      throw new Error('Certificate not found');
+      throw new AppError('Certificate not found', 404, 'NOT_FOUND');
     }
 
     await certificate.update({ estado: status });

@@ -34,6 +34,10 @@ vi.mock('@server/Infrastructure', () => ({
   buildEmployeeName: () => '',
 }));
 
+vi.mock('@server/Infrastructure/Database', () => ({
+  TenantAwareRepository: class {},
+}));
+
 vi.mock('@server/Infrastructure/utils/pino', () => ({
   logger: { warn: vi.fn(), info: vi.fn(), error: vi.fn() },
 }));

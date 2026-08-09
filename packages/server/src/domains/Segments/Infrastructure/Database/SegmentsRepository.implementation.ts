@@ -14,8 +14,12 @@ import {
   IGetUsersBySegmentsRepository,
 } from '../../Domain';
 import { ISegmentType } from '../../Domain/SegmentType.types';
+import { TenantAwareRepository } from '@server/Infrastructure/Database/TenantAwareRepository';
 
-export class SegmentsRepositoryImplementation implements SegmentsRepository {
+export class SegmentsRepositoryImplementation
+  extends TenantAwareRepository
+  implements SegmentsRepository
+{
   async getSegmentTypes({
     requestContext,
   }: IGetSegmentTypesRepository): Promise<SegmentType[]> {
@@ -38,10 +42,11 @@ export class SegmentsRepositoryImplementation implements SegmentsRepository {
     requestContext,
   }: ICreateSegmentTypeRepository): Promise<SegmentType> {
     const ownerId = requestContext.values.ownerId;
-    const segment = await TiposSegmentosModel.create({
-      nombre,
-      id_propietario: ownerId,
-    });
+    const segment = await this.tenantCreate(
+      TiposSegmentosModel,
+      { nombre },
+      ownerId,
+    );
 
     return SegmentType.create({
       id: segment.id as number,
@@ -50,23 +55,42 @@ export class SegmentsRepositoryImplementation implements SegmentsRepository {
     });
   }
 
+  /**
+   * Security: uses tenantUpdate which validates that the segment type
+   * belongs to the calling ownerId before updating. Throws 404 if the
+   * record does not exist or belongs to another tenant (IDOR prevention).
+   */
   async updateSegmentType({
     id,
     nombre,
+    requestContext,
   }: IUpdateSegmentTypeRepository): Promise<SegmentType> {
-    await TiposSegmentosModel.update({ nombre }, { where: { id } });
-
-    const segment = await TiposSegmentosModel.findByPk(id);
+    const ownerId = requestContext.values.ownerId;
+    const updated = await this.tenantUpdate(
+      TiposSegmentosModel,
+      id,
+      { nombre },
+      ownerId,
+    );
 
     return SegmentType.create({
-      id: segment!.id as number,
-      nombre: segment!.nombre,
-      id_propietario: segment!.id_propietario,
+      id: updated.id as number,
+      nombre: updated.nombre,
+      id_propietario: updated.id_propietario,
     });
   }
 
-  async deleteSegmentType({ id }: IDeleteSegmentTypeRepository): Promise<void> {
-    await TiposSegmentosModel.destroy({ where: { id } });
+  /**
+   * Security: uses tenantDelete which validates that the segment type
+   * belongs to the calling ownerId before deleting. Throws 404 if the
+   * record does not exist or belongs to another tenant (IDOR prevention).
+   */
+  async deleteSegmentType({
+    id,
+    requestContext,
+  }: IDeleteSegmentTypeRepository): Promise<void> {
+    const ownerId = requestContext.values.ownerId;
+    await this.tenantDelete(TiposSegmentosModel, id, ownerId);
   }
 
   async getUserSegments({

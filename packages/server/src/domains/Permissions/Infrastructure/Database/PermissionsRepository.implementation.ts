@@ -17,8 +17,11 @@ import {
 import { RolesModel } from './Roles.model';
 import { PermissionsModel } from './Permissions.model';
 import { Users_RolesModel } from './Users_Roles.model';
+import { TenantAwareRepository } from '@server/Infrastructure/Database/TenantAwareRepository';
+import { AppError } from '@server/Application';
 
 export class PermissionsRepositoryImplementation
+  extends TenantAwareRepository
   implements PermissionsRepository
 {
   async getRoles(_params: IGetRolesRepository): Promise<Roles[]> {
@@ -87,7 +90,7 @@ export class PermissionsRepositoryImplementation
   async getPermissions({
     requestContext: _,
   }: IGetPermissionsRepository): Promise<Permissions[]> {
-    throw new Error('Method not implemented.');
+    throw new AppError('Method not implemented.', 501, 'NOT_IMPLEMENTED');
   }
 
   async getPermissionsByUser({
@@ -112,7 +115,11 @@ export class PermissionsRepositoryImplementation
     });
 
     if (!user) {
-      throw new Error(`Usuario con ID ${userId} no encontrado`);
+      throw new AppError(
+        `Usuario con ID ${userId} no encontrado`,
+        404,
+        'NOT_FOUND',
+      );
     }
 
     const roles = user?.RolesModels;
@@ -120,7 +127,11 @@ export class PermissionsRepositoryImplementation
     const permissions = roles?.flatMap((rol) => rol.PermissionsModels) || null;
 
     if (!permissions) {
-      throw new Error(`Permisos para Usuario con ID ${userId} no encontrado`);
+      throw new AppError(
+        `Permisos para Usuario con ID ${userId} no encontrado`,
+        404,
+        'NOT_FOUND',
+      );
     }
 
     return permissions.map((p) => p.codigo);
@@ -139,7 +150,7 @@ export class PermissionsRepositoryImplementation
       where: { denominacion: role },
     });
 
-    if (!existingRol) throw new Error('Rol no encontrado');
+    if (!existingRol) throw new AppError('Rol no encontrado', 404, 'NOT_FOUND');
 
     const newRoleId = existingRol.id;
 
@@ -182,20 +193,21 @@ export class PermissionsRepositoryImplementation
   }
 
   async getAdmins({ requestContext }: IGetAdminsRepository): Promise<string[]> {
+    const ownerId = requestContext.values.ownerId;
     const users = await UserModel.findAll({
-      where: { id_propietario: requestContext.values.ownerId },
+      where: { id_propietario: ownerId },
       include: [
         {
           model: Users_RolesModel,
           as: 'UsersRoles',
           where: { id_rol: 1 },
-          attributes: [], // Evita traer datos innecesarios de la relación
+          attributes: [],
         },
       ],
     });
 
     if (!users) {
-      throw new Error(`No se encontraron admins`);
+      throw new AppError(`No se encontraron admins`, 404, 'NOT_FOUND');
     }
 
     return users.map(({ email }) => email);

@@ -19,8 +19,12 @@ import { IPaginationResponse } from '@server/Application';
 import { PaginationImplementation } from '@server/Infrastructure/utils/pagination';
 import { buildEmployeeName } from '@server/Infrastructure';
 import { sequelize } from '@server/Infrastructure/Database';
+import { TenantAwareRepository } from '@server/Infrastructure/Database/TenantAwareRepository';
 
-export class DisclaimerRepositoryImplementation implements DisclaimerRepository {
+export class DisclaimerRepositoryImplementation
+  extends TenantAwareRepository
+  implements DisclaimerRepository
+{
   private computeHash(userId: number, timestamp: string): string {
     const secret = process.env.SECRET_KEY_BACK || 'default-secret';
     const payload = `${userId}:${timestamp}`;
@@ -31,11 +35,9 @@ export class DisclaimerRepositoryImplementation implements DisclaimerRepository 
     userId,
     ownerId,
   }: IGetSignatureStatusRepository): Promise<DisclaimerAcceptance | null> {
+    // DisclaimerAcceptanceModel uses `id_empresa` as tenant column
     const record = await DisclaimerAcceptanceModel.findOne({
-      where: {
-        id_usuario: userId,
-        id_empresa: ownerId,
-      },
+      where: { id_usuario: userId, id_empresa: ownerId },
     });
 
     if (!record) return null;
