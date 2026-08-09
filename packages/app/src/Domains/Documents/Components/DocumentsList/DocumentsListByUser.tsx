@@ -1,12 +1,14 @@
 import { useMemo, useState } from 'react';
 import {
   Container,
+  EmptyScreenError,
   EmptyScreenFilter,
+  EmptyState,
   Input,
   List,
-  Text,
 } from '@app/Application';
 import { MagnifyingGlassIcon, Cross2Icon } from '@radix-ui/react-icons';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { Document } from '../Document';
 import { ScrollArea } from '@app/Application/Components/ui/scroll-area';
 import { DocumentsListSkeleton } from './DocumentsListSkeleton';
@@ -30,7 +32,7 @@ export const DocumentsListByUser = ({
   service,
   filteredUserIds,
 }: DocumentsListProps) => {
-  const { data, isLoading } = service;
+  const { data, isLoading, isError, error } = service;
   const [query, setQuery] = useState('');
 
   const filteredData = useMemo(() => {
@@ -44,6 +46,10 @@ export const DocumentsListByUser = ({
     if (!trimmed) return result;
     return result.filter((entry) => entry.user.toLowerCase().includes(trimmed));
   }, [data, query, filteredUserIds]);
+
+  if (isError) {
+    return <EmptyScreenError message={error?.message} />;
+  }
 
   if (isLoading) {
     return <DocumentsListSkeleton />;
@@ -115,16 +121,20 @@ export const DocumentsListByUser = ({
           </List>
         </ScrollArea>
       ) : (
-        <Container className="py-10 text-center">
-          <Text.Muted>
-            {hasSegmentFilter
+        <EmptyState
+          icon={faMagnifyingGlass}
+          title={
+            hasSegmentFilter
               ? 'No hay empleados en los segmentos seleccionados'
-              : `No se encontraron empleados para «${query}».`}
-          </Text.Muted>
-        </Container>
+              : `Sin resultados para «${query}»`
+          }
+          description={
+            hasSegmentFilter
+              ? 'Limpiá el filtro de segmentos para ver todos los empleados'
+              : 'Probá con otro término de búsqueda'
+          }
+        />
       )}
     </>
-  ) : (
-    <Text.Muted>Cargando</Text.Muted>
-  );
+  ) : null;
 };

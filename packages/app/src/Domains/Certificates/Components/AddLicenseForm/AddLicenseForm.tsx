@@ -221,7 +221,7 @@ export const AddLicenseForm = () => {
               <Button
                 type="submit"
                 appearance="save"
-                disabled={isPendingAddLicense}
+                isLoading={isPendingAddLicense}
               />
             </Container>
           </Container>

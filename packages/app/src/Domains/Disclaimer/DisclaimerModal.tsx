@@ -3,6 +3,7 @@ import { DisclaimerForm } from './DisclaimerForm';
 import { useGlobalStore } from '@app/Application';
 import { useGetDisclaimerText } from './Hooks/useDisclaimer';
 import { TUserLogged } from '@app/Domains/Users/User.entity';
+import { Skeleton } from '@app/Application/Components/ui/skeleton';
 
 export const DisclaimerModal = () => {
   const { data: dataUser, setQueryData } =
@@ -33,7 +34,11 @@ export const DisclaimerModal = () => {
     >
       <div className="space-y-4">
         {isLoading ? (
-          <p className="text-sm text-muted-foreground">Cargando términos...</p>
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/4" />
+          </div>
         ) : (
           <div className="max-h-60 overflow-y-auto rounded-md border p-4 text-sm text-muted-foreground">
             {disclaimerText || 'No hay términos definidos para esta empresa.'}

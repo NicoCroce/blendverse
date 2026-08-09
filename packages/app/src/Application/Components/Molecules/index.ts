@@ -6,6 +6,7 @@ export * from './DatePicker';
 export * from './DateRange/DateRange';
 export * from './EmptyScreenError';
 export * from './EmptyScreenFilter';
+export * from './EmptyState';
 export * from './FilterButton';
 export * from './FormFields';
 export * from './Input';

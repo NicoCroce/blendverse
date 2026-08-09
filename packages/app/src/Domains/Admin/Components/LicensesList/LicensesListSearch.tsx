@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import {
   Container,
+  EmptyScreenError,
   EmptyScreenFilter,
   FilterButton,
   FiltersSheet,
@@ -20,7 +21,7 @@ export const LicensesListSearch = ({
   service,
   filteredUserIds,
 }: LicensesListSearchProps) => {
-  const { data, availableYears } = service;
+  const { data, availableYears, isError, error } = service;
   const [query, setQuery] = useState('');
   const [filtersIsOpen, setFiltersIsOpen] = useState(false);
 
@@ -55,6 +56,10 @@ export const LicensesListSearch = ({
   }, [data, query, filteredUserIds]);
 
   const isEmptyScreen = data && !Object.keys(data).length;
+
+  if (isError) {
+    return <EmptyScreenError message={error?.message} />;
+  }
 
   return (
     <>

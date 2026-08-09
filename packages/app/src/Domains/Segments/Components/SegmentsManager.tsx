@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { Button, Container } from '@app/Application';
+import { Button, Container, EmptyScreenError } from '@app/Application';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,7 +21,7 @@ import { SegmentInlineName } from './SegmentInlineName';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 export const SegmentsManager = () => {
-  const { data: segments, isLoading } = useGetSegmentTypes();
+  const { data: segments, isLoading, isError, error } = useGetSegmentTypes();
   const deleteMutation = useDeleteSegmentType();
   const [deleteTarget, setDeleteTarget] = useState<TSegmentType | null>(null);
 
@@ -40,6 +40,10 @@ export const SegmentsManager = () => {
       },
     );
   };
+
+  if (isError) {
+    return <EmptyScreenError message={error?.message} />;
+  }
 
   if (isLoading) return <SegmentsLoadingSkeleton />;
 

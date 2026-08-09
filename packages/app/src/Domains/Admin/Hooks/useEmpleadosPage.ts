@@ -16,10 +16,12 @@ export const useEmpleadosPage = () => {
   const page = searchParams?.page ?? '1';
   const limit = searchParams?.limit ?? '10';
 
-  const { data: paginated, isLoading } = useGetEmployees()(
-    { search, page, limit },
-    { refetchOnMount: 'always' },
-  );
+  const {
+    data: paginated,
+    isLoading,
+    isError,
+    error,
+  } = useGetEmployees()({ search, page, limit }, { refetchOnMount: 'always' });
 
   const sendReminders = useSendReminders();
 
@@ -112,5 +114,7 @@ export const useEmpleadosPage = () => {
     paginationMeta,
     columns,
     isLoading,
+    isError,
+    error,
   };
 };

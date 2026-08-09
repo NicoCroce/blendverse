@@ -1,5 +1,5 @@
-import { Text, Container } from '@app/Application';
-import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
+import { EmptyState } from '@app/Application';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
 const EMPTY_STATE_CONTENT = {
   search: {
@@ -58,17 +58,10 @@ export const UserSegmentsEmptyState = ({
       : content.title;
 
   return (
-    <Container align="center" justify="center" className="py-16 text-center">
-      <Container
-        row
-        align="center"
-        justify="center"
-        className="mb-4 size-16 rounded-full bg-muted"
-      >
-        <MagnifyingGlassIcon className="size-6 text-muted-foreground" />
-      </Container>
-      <Text className="text-base font-medium">{title}</Text>
-      <Text.Muted className="mt-1 max-w-sm">{content.description}</Text.Muted>
-    </Container>
+    <EmptyState
+      icon={faMagnifyingGlass}
+      title={title}
+      description={content.description}
+    />
   );
 };

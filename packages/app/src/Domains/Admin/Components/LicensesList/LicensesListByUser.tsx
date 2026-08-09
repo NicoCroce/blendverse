@@ -1,5 +1,6 @@
-import { Container, List, Text, Title } from '@app/Application';
+import { Container, EmptyState, List, Title } from '@app/Application';
 import { ScrollArea } from '@app/Application/Components/ui/scroll-area';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
 import {
   Accordion,
@@ -40,11 +41,11 @@ export const LicensesListByUser = ({
     <>
       {dataToIterate ? (
         Object.keys(dataToIterate).length === 0 ? (
-          <Container className="py-10 text-center">
-            <Text.Muted>
-              No se encontraron licencias para «{query ?? ''}».
-            </Text.Muted>
-          </Container>
+          <EmptyState
+            icon={faMagnifyingGlass}
+            title={`Sin resultados para «${query ?? ''}»`}
+            description="Probá con otro término de búsqueda"
+          />
         ) : (
           <ScrollArea className="h-[74vh] w-full">
             <List>
@@ -103,9 +104,7 @@ export const LicensesListByUser = ({
             </List>
           </ScrollArea>
         )
-      ) : (
-        <Text.Muted>Cargando</Text.Muted>
-      )}
+      ) : null}
     </>
   );
 };

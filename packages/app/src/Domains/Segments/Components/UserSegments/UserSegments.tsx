@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Container, useDevice } from '@app/Application';
+import { Container, EmptyScreenError, useDevice } from '@app/Application';
 import { TooltipProvider } from '@app/Application/Components/ui/tooltip';
 import { DataTable } from '@app/Application/Components/Organisms/DataCollection/DataTable';
 import { DataTablePagination } from '@app/Application/Components/Organisms/DataCollection/DataTablePagination';
@@ -40,7 +40,12 @@ export const UserSegments = () => {
       .filter((n) => !Number.isNaN(n));
   }, [searchParams?.segmentos]);
 
-  const { data: paginated, isLoading } = useGetEmployees()(
+  const {
+    data: paginated,
+    isLoading,
+    isError,
+    error,
+  } = useGetEmployees()(
     {
       search,
       page,
@@ -90,7 +95,9 @@ export const UserSegments = () => {
           onWithoutSegmentsChange={setWithoutSegments}
         />
 
-        {isLoading ? (
+        {isError ? (
+          <EmptyScreenError message={error?.message} />
+        ) : isLoading ? (
           isMobile ? (
             <UserSegmentsCardsSkeleton />
           ) : (

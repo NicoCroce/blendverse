@@ -23,7 +23,7 @@ const formScheme = z.object({
 
 export const RestorePassword = () => {
   const navigate = useNavigate();
-  const { mutate } = useRestorePassword();
+  const { mutate, isPending } = useRestorePassword();
   const form = useForm<z.infer<typeof formScheme>>({
     resolver: zodResolver(formScheme),
     defaultValues: { mail: '' },
@@ -51,11 +51,14 @@ export const RestorePassword = () => {
           )}
         />
         <Container row justify="end">
-          <Button type="submit">Recuperar contraseña</Button>
+          <Button type="submit" isLoading={isPending}>
+            Recuperar contraseña
+          </Button>
           <Button
             type="button"
             appearance="cancel"
             onClick={() => navigate(AUTH_ROUTE)}
+            disabled={isPending}
           >
             Cancelar
           </Button>

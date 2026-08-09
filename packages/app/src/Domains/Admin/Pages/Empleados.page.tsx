@@ -1,4 +1,10 @@
-import { Container, Page, Input, useDevice } from '@app/Application';
+import {
+  Container,
+  EmptyScreenError,
+  Page,
+  Input,
+  useDevice,
+} from '@app/Application';
 import { DataTable } from '@app/Application/Components/Organisms/DataCollection/DataTable';
 import { DataTablePagination } from '@app/Application/Components/Organisms/DataCollection/DataTablePagination';
 import { Button } from '@app/Application/Components';
@@ -25,6 +31,8 @@ export const EmpleadosPage = () => {
     paginationMeta,
     columns,
     isLoading,
+    isError,
+    error,
   } = useEmpleadosPage();
   const { isMobile } = useDevice();
 
@@ -75,7 +83,9 @@ export const EmpleadosPage = () => {
         )}
       </Container>
 
-      {isLoading ? (
+      {isError ? (
+        <EmptyScreenError message={error?.message} />
+      ) : isLoading ? (
         isMobile ? (
           <CardsSkeleton />
         ) : (

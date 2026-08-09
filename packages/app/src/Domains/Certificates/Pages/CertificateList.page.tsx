@@ -9,6 +9,7 @@ import {
   CertificatesGrid,
   ActionsCertificateListPage,
   FiltersCertificatesForm,
+  CertificatesListSkeleton,
 } from '../Components';
 
 import { useGetCertificates } from '../Hooks';
@@ -16,7 +17,8 @@ import { useState } from 'react';
 import { TCertificate } from '..';
 
 export const CertificateListPage = () => {
-  const { data, isError, error, availableYears } = useGetCertificates();
+  const { data, isLoading, isError, error, availableYears } =
+    useGetCertificates();
   const [filtersIsOpen, setFiltersIsOpen] = useState(false);
 
   const handleFilters = () => {
@@ -25,6 +27,17 @@ export const CertificateListPage = () => {
 
   if (isError) {
     return <EmptyScreenError message={error?.message} />;
+  }
+
+  if (isLoading) {
+    return (
+      <Page
+        title="Licencias"
+        headerRight={<ActionsCertificateListPage onClick={handleFilters} />}
+      >
+        <CertificatesListSkeleton />
+      </Page>
+    );
   }
 
   if (data && Object.keys(data).length === 0)
