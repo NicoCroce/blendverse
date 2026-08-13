@@ -371,15 +371,20 @@ export class CertificatesRepositoryImplementation
           model: CertificatesTypesModel,
           attributes: ['id', 'denominacion'],
         },
-        includeOwner,
+        {
+          model: UserModel,
+          as: 'User',
+          required: true,
+          attributes: [],
+          where: {
+            id_propietario: ownerId,
+          },
+        },
       ],
       group: [
         'CertificateModel.id_tipo_certificado',
         'CertificatesTypesModel.id',
         'CertificatesTypesModel.denominacion',
-        'User.id',
-        'User.nombre',
-        'User.apellido',
       ],
     });
 
