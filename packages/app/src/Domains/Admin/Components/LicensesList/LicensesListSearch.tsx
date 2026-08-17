@@ -34,11 +34,7 @@ export const LicensesListSearch = ({
     const result: typeof data = {};
     for (const userId of Object.keys(data)) {
       const numUserId = Number(userId);
-      if (
-        filteredUserIds &&
-        filteredUserIds.size > 0 &&
-        !filteredUserIds.has(numUserId)
-      ) {
+      if (filteredUserIds !== undefined && !filteredUserIds.has(numUserId)) {
         continue;
       }
       result[numUserId] = data[numUserId];

@@ -140,9 +140,20 @@ export class SegmentsRepositoryImplementation
   }: IGetUsersBySegmentsRepository): Promise<number[]> {
     const userSegments = await UsuariosSegmentosModel.findAll({
       where: { id_segmento: { [Op.in]: segmentIds } },
-      attributes: ['id_usuario'],
+      attributes: ['id_usuario', 'id_segmento'],
     });
 
-    return [...new Set(userSegments.map((us) => us.id_usuario))];
+    // AND semantics: a user must belong to ALL selected segments
+    const userSegmentsByUser = new Map<number, Set<number>>();
+    for (const us of userSegments) {
+      const segments =
+        userSegmentsByUser.get(us.id_usuario) ?? new Set<number>();
+      segments.add(us.id_segmento);
+      userSegmentsByUser.set(us.id_usuario, segments);
+    }
+
+    return [...userSegmentsByUser.entries()]
+      .filter(([, segments]) => segments.size === segmentIds.length)
+      .map(([userId]) => userId);
   }
 }

@@ -38,7 +38,7 @@ export const DocumentsListByUser = ({
   const filteredData = useMemo(() => {
     if (!data) return data;
     let result = data;
-    if (filteredUserIds && filteredUserIds.size > 0) {
+    if (filteredUserIds !== undefined) {
       result = result.filter((entry) => filteredUserIds.has(entry.userId));
     }
     if (result.length === 0) return result;
