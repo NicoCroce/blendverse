@@ -1,0 +1,17 @@
+import { inferRouterOutputs } from '@trpc/server';
+import { {{serverRouterType}} } from '@server/domains/{{ServerDomain}}';
+import { TPagination } from '@app/Application';
+
+type RouterOutput = inferRouterOutputs<{{serverRouterType}}>;
+type DomainOutput = RouterOutput['{{serverDomain}}'];
+
+{{#if hasGet}}export type T{{Entity}} = NonNullable<DomainOutput['get']>;
+{{else}}{{#if hasGetAll}}export type T{{Entity}} = NonNullable<DomainOutput['getAll']>['data'][number];
+{{else}}export type T{{Entity}} = never;
+{{/if}}{{/if}}
+
+export type T{{Entity}}Search = {
+{{#each filterFields}}
+  {{this.name}}?: {{this.type}};
+{{/each}}
+} & TPagination;

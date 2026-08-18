@@ -1,4 +1,8 @@
-import { loggerContext } from '@server/utils/pino';
+import { loggerContext } from '@server/Infrastructure/utils/pino';
+import {
+  ICookieResponse,
+  setAuthCookie,
+} from '@server/Infrastructure/utils/cookie';
 import { RequestContext } from '../Entities';
 import { IRequestContext } from '../Interfaces';
 
@@ -81,3 +85,36 @@ export const executeServiceAlone = <TService>(
     return response;
   };
 };
+
+interface IRequestWithCookie<TInput> {
+  ctx: {
+    requestContext: RequestContext;
+    res: ICookieResponse;
+  };
+  input: TInput;
+}
+
+type IexecuteServiceWithCookie<TInput> = (
+  params: ServiceParams<TInput>,
+) => Promise<{ token: string; ownerId: number }>;
+
+/**
+ * Variant of executeService that sets an HttpOnly `auth_token` cookie from the
+ * `token` field of the service response and returns `{ ownerId }`.
+ * Use for procedures that need to update the session cookie (e.g. select-empresa).
+ * @this bind the service method before passing it.
+ * @example executeServiceWithCookie(this.service.selectEmpresa.bind(this.service))
+ */
+export const executeServiceWithCookie =
+  <TInput>(service: IexecuteServiceWithCookie<TInput>) =>
+  async ({ ctx, input }: IRequestWithCookie<TInput>) => {
+    loggerContext({ ...ctx.requestContext, input: JSON.stringify(input) }).info(
+      'Service Input (withCookie)',
+    );
+    const result = await service({ input, requestContext: ctx.requestContext });
+    setAuthCookie(ctx.res, result.token);
+    loggerContext(ctx.requestContext).info(
+      'Service Response (withCookie) => ownerId: ' + result.ownerId,
+    );
+    return { ownerId: result.ownerId };
+  };

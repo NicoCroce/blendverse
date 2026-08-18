@@ -6,3 +6,11 @@ dist
 packages/server/logs/pino/server.log
 .DS_Store
 tsconfig.tsbuildinfo
+
+packages/app/dev-dist
+
+coverage
+playwright-report
+test-results
+# Local AI runtime state
+.atl/

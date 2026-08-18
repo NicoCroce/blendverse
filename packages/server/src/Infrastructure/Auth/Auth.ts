@@ -1,6 +1,6 @@
 import { RequestContext } from '@server/Application';
-import { verifyToken } from '@server/utils/JWT';
-import { logger, loggerContext } from '@server/utils/pino';
+import { verifyToken } from '@server/Infrastructure/utils/JWT';
+import { logger, loggerContext } from '@server/Infrastructure/utils/pino';
 import { Request, Response, NextFunction } from 'express';
 
 export const verifyTokenInHeader = (cookies: Record<string, unknown>) => {
@@ -42,8 +42,14 @@ export const authMiddleware = async (
   const ownerId = dataToken.ownerId;
 
   const requestId = res.getHeader('requestId') as string;
+  const xAppClient = req.headers['x-app-client'] as string | undefined;
 
-  const requestContext = new RequestContext(userId, requestId, ownerId);
+  const requestContext = new RequestContext(
+    userId,
+    requestId,
+    ownerId,
+    xAppClient,
+  );
 
   logger.info('\n\n=================================\n');
   loggerContext(requestContext).info(

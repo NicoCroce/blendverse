@@ -1,0 +1,31 @@
+import { Route } from 'react-router-dom';
+import {
+{{#if hasList}}  {{Entity}}ListPage,
+{{/if}}
+{{#if hasDetail}}  {{Entity}}DetailPage,
+{{/if}}
+{{#if hasNew}}  {{Entity}}NewPage,
+{{/if}}
+{{#if hasEdit}}  {{Entity}}UpdatePage,
+{{/if}}
+} from './Pages';
+import {
+  {{baseRouteConst}},
+{{#if hasDetail}}  {{detailRouteConst}},
+{{/if}}
+{{#if hasNew}}  {{newRouteConst}},
+{{/if}}
+{{#if hasEdit}}  {{editRouteConst}},
+{{/if}}
+} from './{{Domain}}.routes';
+
+export const {{Domain}}Router = [
+{{#if hasList}}  <Route key="{{domain}}-list" path={{baseRouteExpression}} element={<{{Entity}}ListPage />} />,
+{{/if}}
+{{#if hasDetail}}  <Route key="{{domain}}-detail" path={{detailRouteExpression}} element={<{{Entity}}DetailPage />} />,
+{{/if}}
+{{#if hasNew}}  <Route key="{{domain}}-new" path={{newRouteExpression}} element={<{{Entity}}NewPage />} />,
+{{/if}}
+{{#if hasEdit}}  <Route key="{{domain}}-edit" path={{editRouteExpression}} element={<{{Entity}}UpdatePage />} />,
+{{/if}}
+];

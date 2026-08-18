@@ -1,0 +1,48 @@
+import { IRequestContext{{#if hasGetAll}}, IPaginationResponse{{/if}} } from '@server/Application';
+import { {{Entity}} } from './{{Entity}}.entity';
+
+// --- Interfaces de entrada para el repositorio ---
+
+{{#if hasGetAll}}
+export interface IGetAll{{Entities}}Repository extends IRequestContext {
+  filters?: {
+{{#each filterFields}}
+    {{this.name}}?: {{this.type}};
+{{/each}}
+  } & import('@server/Application').IPagination;
+}
+
+export interface IGetAll{{Entities}}RepositoryResponse
+  extends IPaginationResponse<{{Entity}}[]> {}
+{{/if}}
+{{#if hasCreate}}
+export interface ICreate{{Entity}}Repository extends IRequestContext {
+  {{entity}}: {{Entity}};
+}
+{{/if}}
+{{#if hasGet}}
+export interface IGet{{Entity}}Repository extends IRequestContext {
+  id: number;
+}
+{{/if}}
+{{#if hasUpdate}}
+export interface IUpdate{{Entity}}Repository extends IRequestContext {
+  {{entity}}: {{Entity}};
+}
+{{/if}}
+{{#if hasDelete}}
+export interface IDelete{{Entity}}Repository extends IRequestContext {
+  id: number;
+}
+{{/if}}
+
+// --- Puerto abstracto (interface) ---
+
+export interface {{Entity}}Repository {
+{{#if hasGetAll}}  getAll{{Entities}}(params: IGetAll{{Entities}}Repository): Promise<IGetAll{{Entities}}RepositoryResponse>;
+{{/if}}{{#if hasGet}}  get{{Entity}}(params: IGet{{Entity}}Repository): Promise<{{Entity}} | null>;
+{{/if}}{{#if hasCreate}}  create{{Entity}}(params: ICreate{{Entity}}Repository): Promise<{{Entity}}>;
+{{/if}}{{#if hasUpdate}}  update{{Entity}}(params: IUpdate{{Entity}}Repository): Promise<{{Entity}}>;
+{{/if}}{{#if hasDelete}}  delete{{Entity}}(params: IDelete{{Entity}}Repository): Promise<number>;
+{{/if}}
+}

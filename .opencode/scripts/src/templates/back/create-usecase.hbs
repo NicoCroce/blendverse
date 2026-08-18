@@ -1,0 +1,16 @@
+import { IUseCase } from '@server/Application';
+import { {{Entity}}Repository } from '../../Domain/{{Entity}}.repository';
+import { ICreate{{Entity}} } from '../{{domain}}.types';
+import { {{Entity}} } from '../../Domain/{{Entity}}.entity';
+
+export class Create{{Entity}} implements IUseCase<{{Entity}}> {
+  constructor(private readonly {{entity}}Repository: {{Entity}}Repository) {}
+
+  async execute({ input, requestContext }: ICreate{{Entity}}): Promise<{{Entity}}> {
+    const new{{Entity}} = {{Entity}}.create({
+      ...input,
+      id_propietario: requestContext.values.ownerId,
+    });
+    return this.{{entity}}Repository.create{{Entity}}({ {{entity}}: new{{Entity}}, requestContext });
+  }
+}

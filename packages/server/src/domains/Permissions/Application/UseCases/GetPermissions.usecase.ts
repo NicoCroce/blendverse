@@ -1,0 +1,13 @@
+import { IUseCase } from '@server/Application/Interfaces/IUseCase';
+import { Permissions, PermissionsRepository } from '../../Domain';
+import { IGetPermissions } from '../permissions.types';
+
+export class GetPermissions implements IUseCase<Permissions[]> {
+  constructor(private permissionsRepository: PermissionsRepository) {}
+
+  async execute({ requestContext }: IGetPermissions): Promise<Permissions[]> {
+    return this.permissionsRepository.getPermissions({
+      requestContext,
+    });
+  }
+}

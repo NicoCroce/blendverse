@@ -1,0 +1,1270 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GestDoc — Gestion Documental y RRHH</title>
+    <style>
+      :root {
+        --bg-primary: #0a0a0f;
+        --bg-secondary: #12121a;
+        --bg-tertiary: #1a1a25;
+        --accent-primary: #6366f1;
+        --accent-secondary: #8b5cf6;
+        --accent-success: #10b981;
+        --accent-warning: #f59e0b;
+        --accent-danger: #ef4444;
+        --accent-info: #3b82f6;
+        --text-primary: #f4f4f5;
+        --text-secondary: #a1a1aa;
+        --text-muted: #71717a;
+        --border: #27272a;
+        --border-accent: rgba(99, 102, 241, 0.3);
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family:
+          'Inter',
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          sans-serif;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        line-height: 1.6;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      /* Hero */
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+        padding: 80px 0;
+        background: radial-gradient(
+          ellipse at top,
+          rgba(99, 102, 241, 0.15) 0%,
+          transparent 50%
+        );
+      }
+      .hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+        background-size: 50px 50px;
+        pointer-events: none;
+      }
+      .hero-content {
+        position: relative;
+        z-index: 1;
+      }
+      .hero-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 16px;
+        background: rgba(99, 102, 241, 0.1);
+        border: 1px solid var(--border-accent);
+        border-radius: 100px;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--accent-primary);
+        margin-bottom: 32px;
+        letter-spacing: 0.5px;
+      }
+      .hero-eyebrow::before {
+        content: '';
+        width: 6px;
+        height: 6px;
+        background: var(--accent-primary);
+        border-radius: 50%;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.5;
+          transform: scale(1.2);
+        }
+      }
+      .hero h1 {
+        font-size: clamp(48px, 8vw, 96px);
+        font-weight: 800;
+        line-height: 0.95;
+        letter-spacing: -0.03em;
+        margin-bottom: 24px;
+        background: linear-gradient(
+          135deg,
+          var(--text-primary) 0%,
+          var(--text-secondary) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .hero-subtitle {
+        font-size: clamp(18px, 2.5vw, 24px);
+        color: var(--text-secondary);
+        max-width: 640px;
+        margin-bottom: 48px;
+      }
+      .hero-metrics {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 20px;
+        margin-top: 64px;
+      }
+      .metric-card {
+        padding: 28px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        transition: all 0.3s ease;
+      }
+      .metric-card:hover {
+        border-color: var(--border-accent);
+        transform: translateY(-4px);
+      }
+      .metric-value {
+        font-size: 42px;
+        font-weight: 800;
+        color: var(--accent-primary);
+        line-height: 1;
+        margin-bottom: 8px;
+      }
+      .metric-label {
+        font-size: 13px;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      /* Sections */
+      section {
+        padding: 100px 0;
+        position: relative;
+      }
+      section:nth-child(even) {
+        background: var(--bg-secondary);
+      }
+      .section-header {
+        margin-bottom: 56px;
+      }
+      .section-number {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--accent-primary);
+        letter-spacing: 2px;
+        margin-bottom: 16px;
+        display: block;
+      }
+      .section-title {
+        font-size: clamp(28px, 5vw, 48px);
+        font-weight: 700;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+        margin-bottom: 16px;
+      }
+      .section-description {
+        font-size: 17px;
+        color: var(--text-secondary);
+        max-width: 700px;
+      }
+
+      /* Tables */
+      .data-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        background: var(--bg-tertiary);
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        margin-bottom: 40px;
+      }
+      .data-table thead {
+        background: rgba(99, 102, 241, 0.05);
+      }
+      .data-table th {
+        padding: 16px 20px;
+        text-align: left;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--text-secondary);
+        border-bottom: 1px solid var(--border);
+      }
+      .data-table td {
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+        font-size: 14px;
+      }
+      .data-table tr:last-child td {
+        border-bottom: none;
+      }
+      .data-table tr:hover {
+        background: rgba(99, 102, 241, 0.02);
+      }
+
+      /* Badges */
+      .badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 100px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .badge-admin {
+        background: rgba(99, 102, 241, 0.15);
+        color: var(--accent-primary);
+        border: 1px solid rgba(99, 102, 241, 0.3);
+      }
+      .badge-employee {
+        background: rgba(16, 185, 129, 0.15);
+        color: var(--accent-success);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+      }
+      .badge-both {
+        background: rgba(245, 158, 11, 0.15);
+        color: var(--accent-warning);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+      }
+      .badge-new {
+        background: rgba(59, 130, 246, 0.15);
+        color: var(--accent-info);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+      }
+      .badge-improved {
+        background: rgba(139, 92, 246, 0.15);
+        color: var(--accent-secondary);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+      }
+
+      /* Feature Cards */
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+      }
+      .feature-card {
+        padding: 28px;
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        transition: all 0.3s ease;
+      }
+      .feature-card:hover {
+        border-color: var(--border-accent);
+        transform: translateY(-2px);
+      }
+      .feature-icon {
+        width: 44px;
+        height: 44px;
+        background: rgba(99, 102, 241, 0.1);
+        border: 1px solid var(--border-accent);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+        font-size: 22px;
+      }
+      .feature-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      .feature-description {
+        color: var(--text-secondary);
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      /* Sub-sections */
+      .subsection {
+        margin-bottom: 56px;
+      }
+      .subsection-title {
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .subsection-title::before {
+        content: '';
+        width: 4px;
+        height: 24px;
+        background: var(--accent-primary);
+        border-radius: 2px;
+      }
+
+      /* Stats row */
+      .stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 40px;
+      }
+      .stat-item {
+        padding: 24px;
+        background: linear-gradient(
+          135deg,
+          rgba(99, 102, 241, 0.08) 0%,
+          rgba(139, 92, 246, 0.04) 100%
+        );
+        border: 1px solid var(--border-accent);
+        border-radius: 12px;
+        text-align: center;
+      }
+      .stat-value {
+        font-size: 36px;
+        font-weight: 800;
+        background: linear-gradient(
+          135deg,
+          var(--accent-primary) 0%,
+          var(--accent-secondary) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1;
+        margin-bottom: 6px;
+      }
+      .stat-label {
+        font-size: 12px;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      /* List styles */
+      .feature-list {
+        list-style: none;
+        margin-bottom: 24px;
+      }
+      .feature-list li {
+        padding: 10px 0;
+        padding-left: 28px;
+        position: relative;
+        color: var(--text-secondary);
+        font-size: 14px;
+        border-bottom: 1px solid rgba(39, 39, 42, 0.5);
+      }
+      .feature-list li:last-child {
+        border-bottom: none;
+      }
+      .feature-list li::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 8px;
+        height: 8px;
+        background: var(--accent-primary);
+        border-radius: 50%;
+      }
+      .feature-list li strong {
+        color: var(--text-primary);
+      }
+
+      /* CTA */
+      .cta {
+        text-align: center;
+        background:
+          radial-gradient(
+            ellipse at center,
+            rgba(99, 102, 241, 0.18) 0%,
+            transparent 60%
+          ),
+          var(--bg-primary);
+      }
+      .cta h2 {
+        font-size: clamp(28px, 5vw, 48px);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        margin-bottom: 20px;
+      }
+      .cta p {
+        font-size: 17px;
+        color: var(--text-secondary);
+        max-width: 640px;
+        margin: 0 auto 48px;
+      }
+      .cta-actions {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .btn {
+        display: inline-block;
+        padding: 16px 36px;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: 1px solid transparent;
+      }
+      .btn-primary {
+        background: linear-gradient(
+          135deg,
+          var(--accent-primary) 0%,
+          var(--accent-secondary) 100%
+        );
+        color: #fff;
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(99, 102, 241, 0.35);
+      }
+      .btn-secondary {
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+        border-color: var(--border);
+      }
+      .btn-secondary:hover {
+        border-color: var(--border-accent);
+        transform: translateY(-2px);
+      }
+      .cta-note {
+        margin-top: 24px;
+        font-size: 13px;
+        color: var(--text-muted);
+      }
+
+      /* Footer */
+      footer {
+        padding: 48px 0;
+        background: var(--bg-secondary);
+        border-top: 1px solid var(--border);
+        text-align: center;
+      }
+      .footer-text {
+        color: var(--text-muted);
+        font-size: 13px;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .hero-metrics {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .data-table {
+          font-size: 13px;
+        }
+        .data-table th,
+        .data-table td {
+          padding: 12px;
+        }
+        section {
+          padding: 60px 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-eyebrow">
+            Software de Gestion de RRHH y Documentacion
+          </div>
+          <h1>GestDoc<br />Tu empresa, digitalizada</h1>
+          <p class="hero-subtitle">
+            Centraliza la gestion documental, las licencias medicas y las
+            notificaciones de tu equipo en una sola plataforma. Menos papel,
+            menos errores, mas control. Todo automatizado, todo en tiempo real.
+          </p>
+          <div class="hero-metrics">
+            <div class="metric-card">
+              <div class="metric-value">8</div>
+              <div class="metric-label">Emails automaticos</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value">5</div>
+              <div class="metric-label">Estados de licencia</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value">3</div>
+              <div class="metric-label">Niveles de conformidad</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value">2</div>
+              <div class="metric-label">Roles de acceso</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value">1</div>
+              <div class="metric-label">Plataforma unica</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value">0</div>
+              <div class="metric-label">Papeles en tu oficina</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1. DOCUMENTOS -->
+    <section>
+      <div class="container">
+        <div class="section-header">
+          <span class="section-number">01</span>
+          <h2 class="section-title">Gestion de Documentos y Firma Digital</h2>
+          <p class="section-description">
+            Toda la documentacion de tu empresa en un solo lugar: carga,
+            asignacion, firma digital y control de conformidad desde cualquier
+            dispositivo.
+          </p>
+        </div>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon">&#9999;</div>
+            <div class="feature-title">Firma Digital</div>
+            <div class="feature-description">
+              Tu equipo firma documentos desde cualquier dispositivo. Cada firma
+              queda registrada con su huella de validacion para darle respaldo
+              legal a cada operacion.
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">&#128220;</div>
+            <div class="feature-title">Control de Conformidad</div>
+            <div class="feature-description">
+              Cada documento registra si fue firmado con acuerdo o sin acuerdo,
+              con el motivo. Tres estados claros: pendiente, bajo conformidad y
+              sin conformidad.
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">&#128228;</div>
+            <div class="feature-title">Asignacion Masiva</div>
+            <div class="feature-description">
+              Carga varios documentos y asignalos a los empleados que
+              correspondan en un solo paso. Sin planillas, sin correos sueltos.
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">&#128274;</div>
+            <div class="feature-title">Notificacion Automatica</div>
+            <div class="feature-description">
+              Cada documento asignado dispara una notificacion al empleado al
+              instante. Nadie se entera tarde de lo que tiene que firmar.
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">&#128231;</div>
+            <div class="feature-title">Envio por Email</div>
+            <div class="feature-description">
+              Reenvia cualquier documento por email con su PDF adjunto en un
+              clic. Sin descargas manuales ni archivos perdidos.
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">&#128269;</div>
+            <div class="feature-title">Busqueda y Filtros Inteligentes</div>
+            <div class="feature-description">
+              Encuentra cualquier documento por nombre, estado de conformidad o
+              segmento de empleados. Tu filtro queda guardado en la URL, listo
+              para compartir.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. LICENCIAS -->
+    <section>
+      <div class="container">
+        <div class="section-header">
+          <span class="section-number">02</span>
+          <h2 class="section-title">Gestion de Licencias Medicas</h2>
+          <p class="section-description">
+            Un flujo completo y sin margen de error para las licencias de tu
+            equipo: del registro al reintegro, con control total y reglas de
+            negocio que te cuidan.
+          </p>
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">Control total del estado</h3>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Estado</th>
+                <th>Color</th>
+                <th>Que significa</th>
+                <th>Que podes hacer</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Pendiente</strong></td>
+                <td>
+                  <span
+                    style="
+                      display: inline-block;
+                      width: 12px;
+                      height: 12px;
+                      background: #fbbf24;
+                      border-radius: 50%;
+                      vertical-align: middle;
+                    "
+                  ></span>
+                  Amarillo
+                </td>
+                <td>La licencia se registro y espera revision</td>
+                <td>
+                  El empleado puede eliminarla. El admin puede cambiar su
+                  estado.
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Validando</strong></td>
+                <td>
+                  <span
+                    style="
+                      display: inline-block;
+                      width: 12px;
+                      height: 12px;
+                      background: #3b82f6;
+                      border-radius: 50%;
+                      vertical-align: middle;
+                    "
+                  ></span>
+                  Azul
+                </td>
+                <td>En proceso de validacion por administracion</td>
+                <td>El admin puede aprobar, rechazar o eliminar.</td>
+              </tr>
+              <tr>
+                <td><strong>Aprobado</strong></td>
+                <td>
+                  <span
+                    style="
+                      display: inline-block;
+                      width: 12px;
+                      height: 12px;
+                      background: #22c55e;
+                      border-radius: 50%;
+                      vertical-align: middle;
+                    "
+                  ></span>
+                  Verde
+                </td>
+                <td>Licencia aprobada por el administrador</td>
+                <td>El admin puede cambiarla de estado o eliminarla.</td>
+              </tr>
+              <tr>
+                <td><strong>Rechazado</strong></td>
+                <td>
+                  <span
+                    style="
+                      display: inline-block;
+                      width: 12px;
+                      height: 12px;
+                      background: #ef4444;
+                      border-radius: 50%;
+                      vertical-align: middle;
+                    "
+                  ></span>
+                  Rojo
+                </td>
+                <td>Licencia rechazada por el administrador</td>
+                <td>El admin puede cambiarla de estado o eliminarla.</td>
+              </tr>
+              <tr>
+                <td><strong>Eliminado</strong></td>
+                <td>
+                  <span
+                    style="
+                      display: inline-block;
+                      width: 12px;
+                      height: 12px;
+                      background: #6b7280;
+                      border-radius: 50%;
+                      vertical-align: middle;
+                    "
+                  ></span>
+                  Gris
+                </td>
+                <td>Licencia dada de baja, sin perder el historial</td>
+                <td>
+                  Sin acciones disponibles, el registro queda como referencia.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">Formulario sin errores</h3>
+          <ul class="feature-list">
+            <li>
+              <strong>Fechas encadenadas:</strong> inicio, fin y reintegro con
+              validacion en cascada: cada fecha depende de la anterior
+            </li>
+            <li>
+              <strong>Reglas de negocio incorporadas:</strong> el reintegro
+              nunca puede ser antes del fin de la licencia
+            </li>
+            <li>
+              <strong>Reposo inteligente:</strong> el formulario se adapta al
+              tipo de licencia y muestra el reposo solo cuando corresponde
+            </li>
+            <li>
+              <strong>Validacion automatica:</strong> el sistema verifica cada
+              campo antes de guardar; imposible cargar fechas invalidas
+            </li>
+            <li>
+              <strong>Historial preservado:</strong> las bajas son suaves: el
+              registro sigue existiendo como referencia
+            </li>
+          </ul>
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">Filtros y acciones para cada rol</h3>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div class="feature-title">Encontra lo que necesitas</div>
+              <div class="feature-description">
+                <ul class="feature-list" style="margin: 0">
+                  <li>
+                    <strong>Por empleado:</strong> busca las licencias de
+                    cualquier persona
+                  </li>
+                  <li>
+                    <strong>Por tipo:</strong> filtra segun el tipo de licencia
+                  </li>
+                  <li>
+                    <strong>Por fecha y año:</strong> acota por periodo exacto
+                  </li>
+                  <li>
+                    <strong>Por estado:</strong> colores semanticos para leer de
+                    un vistazo
+                  </li>
+                  <li>
+                    <strong>Por segmento:</strong> cruza con tus agrupaciones de
+                    empleados
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-title">Decisiones con un clic</div>
+              <div class="feature-description">
+                <ul class="feature-list" style="margin: 0">
+                  <li>
+                    <strong>Empleado:</strong> carga y sigue sus licencias;
+                    puede eliminar solo las pendientes
+                  </li>
+                  <li>
+                    <strong>Admin:</strong> aprueba, rechaza o cambia estados
+                    desde la misma lista
+                  </li>
+                  <li>
+                    <strong>Eliminacion segura:</strong> siempre pide
+                    confirmacion antes de borrar
+                  </li>
+                  <li>
+                    <strong>Estados cerrados:</strong> las licencias dadas de
+                    baja no ofrecen acciones que confundan
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. EMAILS -->
+    <section>
+      <div class="container">
+        <div class="section-header">
+          <span class="section-number">03</span>
+          <h2 class="section-title">Automatizacion por Email</h2>
+          <p class="section-description">
+            Ocho flujos automaticos que mantienen a administradores y empleados
+            al dia, sin que nadie tenga que acordarse de avisar.
+          </p>
+        </div>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Automatizacion</th>
+              <th>Recibe</th>
+              <th>Se dispara cuando</th>
+              <th>Que llega</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <strong>Nueva licencia</strong><br /><small
+                  style="color: var(--text-muted)"
+                  >Aviso de alta</small
+                >
+              </td>
+              <td><span class="badge badge-admin">Admin</span></td>
+              <td>Un empleado registra una licencia medica</td>
+              <td>Nombre del empleado y motivo de la licencia</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Cambio de estado de licencia</strong><br /><small
+                  style="color: var(--text-muted)"
+                  >Notificacion de resolucion</small
+                >
+              </td>
+              <td><span class="badge badge-employee">Empleado</span></td>
+              <td>El admin aprueba o rechaza una licencia</td>
+              <td>Detalle con tipo, fechas, motivo, estado y revisor</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Firma de documento</strong><br /><small
+                  style="color: var(--text-muted)"
+                  >Confirmacion de firma</small
+                >
+              </td>
+              <td><span class="badge badge-both">Ambos</span></td>
+              <td>Un empleado firma un documento</td>
+              <td>Confirmacion al empleado + aviso a los administradores</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Envio de documento</strong><br /><small
+                  style="color: var(--text-muted)"
+                  >PDF por email</small
+                >
+              </td>
+              <td><span class="badge badge-employee">Empleado</span></td>
+              <td>El admin envia un documento por email</td>
+              <td>El PDF adjunto, listo para guardar o imprimir</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Recordatorio de terminos</strong><br /><small
+                  style="color: var(--text-muted)"
+                  >Firma de conformidad</small
+                >
+              </td>
+              <td><span class="badge badge-employee">Empleado</span></td>
+              <td>El admin envia un recordatorio de firma</td>
+              <td>Nombre, empresa y texto completo de terminos</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Reporte diario del admin</strong><br /><small
+                  style="color: var(--text-muted)"
+                  >Resumen de la mañana</small
+                >
+              </td>
+              <td><span class="badge badge-admin">Admin</span></td>
+              <td>Todos los dias a las 9:00 AM</td>
+              <td>
+                Resumen con licencias de hoy, pendientes, documentos sin firmar,
+                terminos, vacaciones y vencimientos
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Recordatorio diario del empleado</strong><br /><small
+                  style="color: var(--text-muted)"
+                  >Pendientes personales</small
+                >
+              </td>
+              <td><span class="badge badge-employee">Empleado</span></td>
+              <td>Todos los dias, solo si tiene pendientes</td>
+              <td>
+                Docs sin firmar, docs sin visualizar, terminos y renovacion de
+                clave
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Nuevo documento asignado</strong><br /><small
+                  style="color: var(--text-muted)"
+                  >Aviso de recepcion</small
+                >
+              </td>
+              <td><span class="badge badge-employee">Empleado</span></td>
+              <td>Se cargan documentos asignados al empleado</td>
+              <td>Lista de los documentos nuevos que le corresponden</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon">&#9889;</div>
+            <div class="feature-title">Envio en lotes</div>
+            <div class="feature-description">
+              Las campañas masivas se procesan en lotes que no bloquean el
+              sistema. Un problema puntual jamas detiene el envio al resto del
+              equipo.
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">&#128337;</div>
+            <div class="feature-title">Automatizado de punta a punta</div>
+            <div class="feature-description">
+              Los reportes y recordatorios diarios se generan solos. La
+              administracion deja de perseguir gente y empieza a tomar
+              decisiones con datos.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. DASHBOARD -->
+    <section>
+      <div class="container">
+        <div class="section-header">
+          <span class="section-number">04</span>
+          <h2 class="section-title">Panel de Control con Estadisticas</h2>
+          <p class="section-description">
+            Un tablero ejecutivo que te muestra la salud de tu organizacion en
+            un vistazo: empleados, licencias, documentos y conformidades.
+          </p>
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">Tu organizacion, de un vistazo</h3>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div class="feature-icon">&#128202;</div>
+              <div class="feature-title">Estado de tu equipo</div>
+              <div class="feature-description">
+                Total de empleados, quienes necesitan renovar su clave y el
+                nivel de aceptacion de terminos, con indicadores verdes y rojos.
+              </div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">&#128200;</div>
+              <div class="feature-title">Licencias en graficos</div>
+              <div class="feature-description">
+                Licencias activas, licencias por tipo, empleados con licencias y
+                estados de los certificados, en graficos que se leen en
+                segundos.
+              </div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">&#128197;</div>
+              <div class="feature-title">Evolucion mensual</div>
+              <div class="feature-description">
+                Grafico de area con la distribucion de licencias mes a mes y
+                selector de año. Detecta tendencias y picos antes de que sean un
+                problema.
+              </div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">&#128269;</div>
+              <div class="feature-title">Busqueda en vivo</div>
+              <div class="feature-description">
+                Encontra empleados por nombre, apellido o email mientras
+                escribis, con paginacion limpia para listas grandes.
+              </div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">&#128241;</div>
+              <div class="feature-title">Disenado para cualquier pantalla</div>
+              <div class="feature-description">
+                Tablas completas en desktop, tarjetas en movil. La misma
+                informacion, optimizada para cada dispositivo.
+              </div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">&#128190;</div>
+              <div class="feature-title">Resumen ejecutivo diario</div>
+              <div class="feature-description">
+                Empleados activos, licencias en curso, pendientes, documentos
+                sin firmar y terminos pendientes: todo en una unica vista.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. SEGMENTACION -->
+    <section>
+      <div class="container">
+        <div class="section-header">
+          <span class="section-number">05</span>
+          <h2 class="section-title">Segmentacion de tu Equipo</h2>
+          <p class="section-description">
+            Organiza a tus empleados como tu empresa funciona: por areas,
+            sucursales, turnos o convenios. Y cruza esa informacion en todo el
+            sistema.
+          </p>
+        </div>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon">&#128451;</div>
+            <div class="feature-title">Segmentos a tu medida</div>
+            <div class="feature-description">
+              Crea los tipos de segmentos que necesites y asignalos a cada
+              empleado. La estructura la decides vos.
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">&#128101;</div>
+            <div class="feature-title">Vista completa de empleados</div>
+            <div class="feature-description">
+              Tabla o tarjetas con estadisticas, busqueda y edicion de segmentos
+              por empleado desde un panel lateral.
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">&#128269;</div>
+            <div class="feature-title">Filtros cruzados</div>
+            <div class="feature-description">
+              Selecciona multiples segmentos a la vez y aplica el filtro en
+              licencias, documentos y reportes. Respuestas al instante.
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">&#128202;</div>
+            <div class="feature-title">Indicadores de alcance</div>
+            <div class="feature-description">
+              Total de empleados, cuantos quedaron filtrados y cuantos segmentos
+              existen. Sabes exactamente a quien estas viendo.
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">&#128240;</div>
+            <div class="feature-title">Sin segmentos asignados</div>
+            <div class="feature-description">
+              Un toggle te muestra los empleados que todavia no tienen
+              segmentos, para completar el mapa de tu organizacion.
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">&#128204;</div>
+            <div class="feature-title">Asignacion visual</div>
+            <div class="feature-description">
+              Agrega o quita segmentos de un empleado con checkboxes, sin
+              formularios largos ni pasos innecesarios.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. DISCLAIMER -->
+    <section>
+      <div class="container">
+        <div class="section-header">
+          <span class="section-number">06</span>
+          <h2 class="section-title">Terminos y Conformidad Legal</h2>
+          <p class="section-description">
+            Garantiza que cada integrante de tu empresa lea y acepte tus
+            terminos y condiciones, con registro de cada aceptacion y
+            recordatorios automaticos.
+          </p>
+        </div>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon">&#128220;</div>
+            <div class="feature-title">Aceptacion obligatoria</div>
+            <div class="feature-description">
+              Al ingresar, quien todavia no acepto los terminos debe leerlos y
+              firmarlos antes de usar el sistema. Nada queda al azar.
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">&#128190;</div>
+            <div class="feature-title">Registro de cada firma</div>
+            <div class="feature-description">
+              El sistema guarda quien acepto y cuando. Si un dia lo necesitas,
+              tenes el rastro completo de conformidad de cada empleado.
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">&#128231;</div>
+            <div class="feature-title">Recordatorios masivos</div>
+            <div class="feature-description">
+              Envia recordatorios a todos los que faltan firmar de una sola vez,
+              con metricas claras de cuantos correos se entregaron y cuantos
+              fallaron.
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">&#128270;</div>
+            <div class="feature-title">Estado en tiempo real</div>
+            <div class="feature-description">
+              Ves al instante quien firmo, quien esta pendiente y que empleados
+              deben ser contactados. Sin planillas, sin correos manuales.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. MULTIEMPRESA -->
+    <section>
+      <div class="container">
+        <div class="section-header">
+          <span class="section-number">07</span>
+          <h2 class="section-title">Multiempresa y Escalabilidad</h2>
+          <p class="section-description">
+            Gestiona varias empresas desde una sola cuenta, con datos
+            completamente aislados y la posibilidad de cambiar entre ellas sin
+            esfuerzo.
+          </p>
+        </div>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon">&#127970;</div>
+            <div class="feature-title">Una cuenta, varias empresas</div>
+            <div class="feature-description">
+              Si participas en mas de una organizacion, elige cual administrar
+              desde un selector visual con logo y razon social de cada una.
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">&#128272;</div>
+            <div class="feature-title">Aislamiento total de datos</div>
+            <div class="feature-description">
+              Cada empresa ve exactamente su informacion. Nada se mezcla entre
+              organizaciones: empleados, licencias y documentos siempre
+              separados.
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">&#128260;</div>
+            <div class="feature-title">Cambio sin friccion</div>
+            <div class="feature-description">
+              Cambia de empresa cuando quieras sin volver a iniciar sesion. Un
+              solo acceso, todos tus negocios.
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">&#128218;</div>
+            <div class="feature-title">Pensada para crecer</div>
+            <div class="feature-description">
+              La plataforma escala con tu organizacion: de una sola empresa a un
+              grupo de empresas, sin migraciones ni dobles cargas.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. SEGURIDAD -->
+    <section>
+      <div class="container">
+        <div class="section-header">
+          <span class="section-number">08</span>
+          <h2 class="section-title">Seguridad y Acceso</h2>
+          <p class="section-description">
+            Accesos por roles, gestion de contraseñas y sesiones protegidas para
+            que cada persona vea solo lo que le corresponde.
+          </p>
+        </div>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon">&#128737;</div>
+            <div class="feature-title">Roles diferenciados</div>
+            <div class="feature-description">
+              Administradores y empleados con permisos claros: quien aprueba,
+              quien carga, quien firma. Cada uno en su lugar.
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">&#128273;</div>
+            <div class="feature-title">Gestion de contraseñas</div>
+            <div class="feature-description">
+              Recuperacion de clave, renovacion de contraseñas vencidas y cambio
+              seguro desde el perfil. El acceso siempre al dia.
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">&#128274;</div>
+            <div class="feature-title">Sesiones protegidas</div>
+            <div class="feature-description">
+              Cookies seguras y tokens por empresa mantienen cada sesion
+              identificada y controlada de punta a punta.
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">&#128451;</div>
+            <div class="feature-title">Datos aislados por organizacion</div>
+            <div class="feature-description">
+              La informacion de cada empresa queda contenida y protegida por
+              diseno. Privacidad estructural, no por configuracion.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+      <div class="container">
+        <h2>¿Listo para digitalizar tu empresa?</h2>
+        <p>
+          Menos papeles, menos errores, menos tiempo perdido. Mas control, mas
+          automatizacion, mas tranquilidad. GestDoc pone la gestion documental y
+          de RRHH de tu organizacion en una sola plataforma.
+        </p>
+        <div class="cta-actions">
+          <a href="#" class="btn btn-primary">Solicitar una demo</a>
+          <a href="#" class="btn btn-secondary">Probar GestDoc</a>
+        </div>
+        <p class="cta-note">
+          Implementacion rapida · Disenada para equipos de cualquier tamano ·
+          Multiempresa
+        </p>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="container">
+        <p class="footer-text">
+          GestDoc — Gestion Documental y de Recursos Humanos<br />
+          Agosto de 2026
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

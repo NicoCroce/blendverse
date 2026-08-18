@@ -1,7 +1,6 @@
-import { procedure } from '@server/Infrastructure';
+import { procedure, setAuthCookie } from '@server/Infrastructure';
 import { AuthService } from '../../Application';
 import z from 'zod';
-import { loggerContextInput } from '@server/utils/pino';
 import { executeService } from '@server/Application';
 
 export class AuthController {
@@ -16,28 +15,15 @@ export class AuthController {
         }),
       )
       .mutation(async ({ ctx, input }) => {
-        loggerContextInput(ctx.requestContext, { mail: input.mail }).info(
-          'Execute Service',
-        );
+        const { token, user, theme, pendingDisclaimer } =
+          await this.authService.login({
+            input,
+            requestContext: ctx.requestContext,
+          });
 
-        const requestContext = ctx.requestContext;
+        setAuthCookie(ctx.res, token);
 
-        const { token, user } = await this.authService.login({
-          input,
-          requestContext,
-        });
-
-        loggerContextInput(ctx.requestContext, { mail: input.mail }).info(
-          'Service response => ',
-        );
-
-        ctx.res.cookie('auth_token', token, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
-        });
-
-        return { data: user };
+        return { ...user.values, theme, pendingDisclaimer };
       });
 
   logout = () =>
@@ -56,5 +42,20 @@ export class AuthController {
       )
       .mutation(
         executeService(this.authService.restorePassword.bind(this.authService)),
+      );
+
+  renewPasswordAuth = () =>
+    procedure
+      .input(
+        z.object({
+          token: z.string(),
+          newPassword: z.string(),
+          rePassword: z.string(),
+        }),
+      )
+      .mutation(
+        executeService(
+          this.authService.renewPasswordAuth.bind(this.authService),
+        ),
       );
 }

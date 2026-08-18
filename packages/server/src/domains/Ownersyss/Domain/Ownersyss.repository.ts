@@ -1,0 +1,19 @@
+﻿import { IPaginationResponse, IRequestContext } from '@server/Application';
+import { Ownersys } from './Ownersyss.entity';
+
+export interface IGetOwnersysRepository extends IRequestContext {
+  id: number;
+}
+export interface IUpdateThemeRepository extends IRequestContext {
+  tema: number;
+}
+
+export type IGetOwnerThemeRepository = IRequestContext;
+
+export type IGetOwnersyssRepositoryResponse = IPaginationResponse<Ownersys[]>;
+export interface OwnersyssRepository {
+  updateTheme(params: IUpdateThemeRepository): Promise<number | null>;
+  getOwnersys(params: IGetOwnersysRepository): Promise<Ownersys | null>;
+
+  getOwnerTheme(params: IGetOwnerThemeRepository): Promise<number | null>;
+}

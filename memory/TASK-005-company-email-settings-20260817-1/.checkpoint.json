@@ -1,0 +1,15 @@
+{
+  "task_id": "TASK-005-company-email-settings-20260817-1",
+  "feature": "company-email-settings",
+  "scope": "full-stack",
+  "branch": "005-company-email-settings",
+  "last_completed_step": "back",
+  "completed_steps": ["back"],
+  "pending_steps": ["front", "tester", "qa", "reviewer", "close", "pr"],
+  "current_agent": "Front_Agent",
+  "status": "BLOCKED",
+  "blocked_agent": "Front_Agent",
+  "blocked_reason": "Disclaimer.getText no expone termsVersion junto con el contenido mostrado; el flujo frontend no puede cumplir el contrato sin una lectura backend tenant-scoped para empleados.",
+  "context_source": "specs/company-email-settings/spec.md + specs/company-email-settings/plan.md + specs/company-email-settings/tasks.md",
+  "timestamp": "2026-08-17T18:42:00Z"
+}

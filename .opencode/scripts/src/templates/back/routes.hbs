@@ -1,0 +1,14 @@
+import { router } from '@server/Infrastructure';
+import { {{domain}}Controller } from '@server/domains/{{Domain}}';
+
+export const {{Domain}}Routes = () => ({
+  {{domain}}: router({
+{{#if hasGetAll}}    getAll: {{domain}}Controller().getAll(),
+{{/if}}{{#if hasGet}}    get: {{domain}}Controller().get{{Entity}}(),
+{{/if}}{{#if hasCreate}}    create: {{domain}}Controller().create{{Entity}}(),
+{{/if}}{{#if hasUpdate}}    update: {{domain}}Controller().update{{Entity}}(),
+{{/if}}{{#if hasDelete}}    delete: {{domain}}Controller().delete{{Entity}}(),
+{{/if}}  }),
+});
+
+export type T{{Domain}}Router = ReturnType<typeof {{Domain}}Routes>;

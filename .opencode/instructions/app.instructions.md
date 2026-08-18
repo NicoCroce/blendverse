@@ -1,0 +1,460 @@
+---
+description: Convenciones de arquitectura por dominios para el paquete `packages/app`. Se aplica automáticamente en cualquier tarea dentro de esa carpeta.
+applyTo: 'packages/app/**'
+---
+
+# Frontend — Arquitectura por Dominios Funcionales
+
+## Estructura de un Dominio
+
+```
+packages/app/src/Domains/[Domain]/
+├── [Entity].entity.ts          # Tipos TypeScript del dominio (re-exporta de @server)
+├── [Domain].service.ts         # Instancia tRPC React para este dominio
+├── [Domain].routes.ts          # Constantes de URLs (sin JSX → .ts)
+├── [Domain].router.tsx         # JSX con <Route> de React Router
+├── Components/                 # Componentes específicos del dominio
+│   └── index.ts
+├── Hooks/                      # Custom hooks (query + mutation)
+│   ├── use[Action][Entity].ts
+│   └── index.ts
+├── Pages/
+│   ├── [Entity]List.page.tsx
+│   ├── [Entity]New.page.tsx
+│   ├── [Entity]Update.page.tsx
+│   └── index.ts
+└── index.ts                    # Barrel export del dominio
+```
+
+## Estructura de Specs
+
+Todos los archivos de test (`.spec.tsx`, `.spec.ts`, `.test.tsx`, `.test.ts`) deben organizarse en una carpeta `specs/` manteniendo la misma estructura del directorio padre.
+
+✅ **CORRECTO:**
+
+```
+packages/app/src/Domains/Auth/
+├── Components/
+│   ├── LoginForm.tsx
+│   └── specs/
+│       └── LoginForm.spec.tsx
+├── Hooks/
+│   ├── useLogin.ts
+│   └── specs/
+│       └── useLogin.spec.ts
+└── Pages/
+    ├── LoginPage.page.tsx
+    └── specs/
+        └── LoginPage.page.spec.tsx
+```
+
+❌ **PROHIBIDO** — Mezclar specs con archivos fuente:
+
+```
+Components/
+├── LoginForm.tsx
+├── LoginForm.spec.tsx          # ← INCORRECTO
+```
+
+## Patrones Obligatorios
+
+## Reglas de oro
+
+1. Las páginas y los componentes solo pueden llamar a los servicios desde los hooks, de su propio dominio o de los demás.
+2. TRPc solo puede ser llamado desde la carpeta `Service`.
+3. **Usa los wrappers con patrones del proyecto SIEMPRE que existan.** Los componentes en `Molecules/`, `Organisms/` y `Layout/` tienen comportamientos del proyecto (como `Button` con `appearance`, `isLoading`, o `Input` con `forceEnabled`/`isEditable`). Impórtalos desde el barrel `@app/Application/Components`:
+   - ✅ `import { Button } from '@app/Application/Components'` — usa el wrapper de `Molecules/Button`
+   - ❌ `import { Button } from '@app/Application/Components/ui/button'` — es el raw shadcn, sin patrones del proyecto
+
+4. Solo importa de `ui/` cuando NO exista un wrapper en `Layout/`, `Molecules/` u `Organisms/`, o cuando necesites composición de bajo nivel que el wrapper no exponga (ej: `SelectContent`/`SelectItem` directos de `ui/select` porque el wrapper `Molecules/Select` usa una API simplificada distinta). Siempre verifica primero el barrel.
+5. El componente `Container` es estrucutral, por lo que si lo utilizas por defecto ya es flex column. Esto facilita el layout. **SI VAS A UTILIZARLO ANALIZA BIEN SU COMPORTAMIENTO PARA NO AGREGAR BLOCK INNECESARIAMENTE** También ten en cuenta `space` los valores correctos.
+
+6. Los tipos de datos usan prefijo `T` (`TEntity`, `TEntitySearch`) y SIEMPRE se derivan del router del servidor con `inferRouterOutputs`. Nunca definas interfaces manuales con prefijo `I` (ej. `ICertificate` → `TCertificate`): el frontend debe sincronizarse con el backend automáticamente cuando cambia.
+
+### Entity (tipos)
+
+**Nunca definas los tipos manualmente.** Derivalos del router del servidor con `inferRouterOutputs` para que el frontend se sincronice automáticamente cuando el backend cambia.
+
+```typescript
+import { inferRouterOutputs } from '@trpc/server';
+import { T[Domain]Router } from '@server/domains/[Domain]';
+import { TPagination } from '@app/Application';
+
+type RouterOutput = inferRouterOutputs<T[Domain]Router>;
+
+// Tipo de la entidad: inferido del output de la procedure getById (o getAll)
+export type TEntity = RouterOutput['[domainName]']['getById'];
+
+// Tipo de búsqueda: solo los parámetros de filtro, no viene del server
+export type TEntitySearch = { search?: string } & TPagination;
+```
+
+> **Regla:** `TEntity` y variantes (`TEntityList`, `TEntitySelect`, etc.) siempre se derivan de `inferRouterOutputs`. Solo `TEntitySearch` se define manualmente porque describe parámetros de URL, no datos del servidor.
+
+### Service (tRPC)
+
+```typescript
+import { T[Domain]Router } from '@server/domains/[Domain]';
+import { createTRPCReact } from '@trpc/react-query';
+
+export const _entityService = createTRPCReact<T[Domain]Router>();
+export const EntityService = _entityService.[domainName];
+```
+
+### Hook de Query (lista paginada)
+
+```typescript
+import { useURLParams } from '@app/Application/Hooks/useURLParams';
+import { TEntitySearch } from '../Entity.entity';
+import { EntityService } from '../Entity.service';
+
+export const useGetEntities = () => {
+  const { searchParams } = useURLParams<TEntitySearch>();
+  return EntityService.getAll.useQuery(searchParams, {
+    staleTime: 1000,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    placeholderData: (prev) => prev,
+  });
+};
+```
+
+### Filtros auto-contenidos con URL Params — SIEMPRE usar esta forma
+
+**Regla:** cualquier componente de filtro debe ser **self-contained** usando `useURLParams` internamente. No recibe props `value`/`onChange`. El estado del filtro vive en la URL, no en el componente padre.
+
+```tsx
+// ✅ Correcto — el filtro lee y escribe directo en la URL
+<SegmentsFilter />
+
+// ❌ Nunca — props externas con useState en la página
+<SegmentsFilter value={segmentIds} onChange={setSegmentIds} />
+```
+
+**Arrays en URL params:** se serializan como string comma-separated (`?segmentos=1,2,3`):
+
+```typescript
+const segmentIds = useMemo(() => {
+  const raw = searchParams?.segmentos;
+  if (!raw) return [];
+  return raw
+    .split(',')
+    .map(Number)
+    .filter((n) => !isNaN(n));
+}, [searchParams?.segmentos]);
+```
+
+**Contrapartida en hooks de query:** todo hook que consuma params desde `useURLParams` debe parsear los arrays de string a `number[]` antes de enviarlos al server. Ejemplo:
+
+```typescript
+export const useGetEntities = () => {
+  const { searchParams } = useURLParams<TEntitySearch>();
+  const { id, segmentos: rawSegmentos, ...rest } = searchParams || {};
+
+  const segmentos = rawSegmentos
+    ? rawSegmentos
+        .split(',')
+        .map(Number)
+        .filter((n) => !isNaN(n))
+    : undefined;
+
+  return EntityService.getAll.useQuery({
+    ...rest,
+    ...(segmentos && segmentos.length > 0 ? { segmentos } : {}),
+  });
+};
+```
+
+### Hook de Mutation (crear)
+
+```typescript
+import { toast } from 'sonner';
+import { EntityService } from '../Entity.service';
+import { useCacheEntities } from './useCacheEntities';
+
+export const useAddEntity = () => {
+  const cache = useCacheEntities();
+  return EntityService.create.useMutation({
+    onSuccess: () => {
+      toast.success('Registro agregado');
+      cache.invalidate();
+    },
+    onError: () => {
+      toast.error('Registro no agregado');
+    },
+  });
+};
+```
+
+### Hook de Cache
+
+```typescript
+import { useQueryClient } from '@tanstack/react-query';
+import { getQueryKey } from '@trpc/react-query';
+import { EntityService } from '../Entity.service';
+
+export const useCacheEntities = () => {
+  const queryClient = useQueryClient();
+  const key = getQueryKey(EntityService.getAll);
+  return {
+    getData: () => queryClient.getQueryData(key),
+    invalidate: () => queryClient.invalidateQueries({ queryKey: key }),
+  };
+};
+```
+
+### Invalidación de Cache en Mutations — SIEMPRE
+
+**Regla:** toda mutation debe invalidar la cache de las queries relacionadas en su `onSuccess`. Esto se hace a nivel del hook en `queries.ts` para que todos los consumidores se beneficien automáticamente, sin depender de que cada componente lo recuerde.
+
+```typescript
+// ✅ Correcto — invalidación en el hook, todos los consumidores la heredan
+export const useUpdateEntity = () => {
+  const utils = entityTRPC.useUtils();
+  return EntityService.update.useMutation({
+    onSuccess: () => {
+      utils.[domain].[procedure].invalidate();
+    },
+  });
+};
+
+// ❌ Incorrecto — sin invalidación, el listado muestra datos stale
+export const useUpdateEntity = () =>
+  EntityService.update.useMutation();
+```
+
+**Ejemplo real** usando `useUtils()` de tRPC:
+
+```typescript
+export const useUpdateSegmentType = () => {
+  const utils = segmentsTRPC.useUtils();
+  return segmentsService.updateType.useMutation({
+    onSuccess: () => {
+      utils.segments.getTypes.invalidate();
+    },
+  });
+};
+```
+
+**Alternativa** con custom cache hook (equivalente):
+
+```typescript
+export const useUpdateEntity = () => {
+  const cache = useCacheEntities();
+  return EntityService.update.useMutation({
+    onSuccess: () => {
+      cache.invalidate();
+    },
+  });
+};
+```
+
+## Rutas
+
+### `[Domain].routes.ts` (constantes)
+
+> Los archivos de rutas contienen SOLO constantes de URLs, no JSX. Por eso la extensión es `.ts` (no `.tsx`). El `.router.tsx` es el único que lleva JSX.
+
+```typescript
+export const ENTITY_ROUTE = '/entities';
+export const ENTITY_NEW_ROUTE = `${ENTITY_ROUTE}/new`;
+export const ENTITY_UPDATE_ROUTE = `${ENTITY_ROUTE}/update/:id`;
+```
+
+### `[Domain].router.tsx` (JSX)
+
+```tsx
+import { Route } from 'react-router-dom';
+import { EntityListPage, EntityNewPage, EntityUpdatePage } from './Pages';
+import {
+  ENTITY_ROUTE,
+  ENTITY_NEW_ROUTE,
+  ENTITY_UPDATE_ROUTE,
+} from './Entity.routes';
+
+export const EntityRouter = [
+  <Route key="entity-list" path={ENTITY_ROUTE} element={<EntityListPage />} />,
+  <Route
+    key="entity-new"
+    path={ENTITY_NEW_ROUTE}
+    element={<EntityNewPage />}
+  />,
+  <Route
+    key="entity-update"
+    path={ENTITY_UPDATE_ROUTE}
+    element={<EntityUpdatePage />}
+  />,
+];
+```
+
+## Responsive — Mobile First
+
+**Regla:** una misma página soporta dos presentaciones (tabla en desktop, cards en mobile) con UN solo hook de lógica. El hook orquesta datos, búsqueda, paginación, modo selección y acciones; la página elige la presentación con `useDevice()` y ternarios.
+
+**PROHIBIDO usar `hidden md:block` / `md:hidden` para elegir presentación.** Con CSS `hidden` ambas ramas se montan en React: los dos componentes corren sus hooks, efectos y lógica aunque CSS los oculte — renderizado duplicado sin necesidad. El hook `useDevice()` (breakpoint 768px, store global) solo monta el componente que corresponde al dispositivo.
+
+Patrón de referencia: `Admin/Pages/Empleados.page.tsx` + `Admin/Hooks/useEmpleadosPage.ts` + `Admin/Components/EmployeeCards.tsx`.
+
+```tsx
+const { isMobile } = useDevice(); // de @app/Application
+
+{isLoading ? (
+  isMobile ? (
+    <CardsSkeleton />
+  ) : (
+    <TableSkeleton />
+  )
+) : items.length > 0 ? (
+  isMobile ? (
+    <>
+      <ItemCards items={items} selectionMode={selectionMode} ... />
+      <DataTablePagination totalPages={paginationMeta.totalPages} totalItems={paginationMeta.totalItems} />
+    </>
+  ) : (
+    <DataTable columns={columns} data={items} pagination={paginationMeta} />
+  )
+) : (
+  <EmptyState search={search} />
+)}
+```
+
+- **Desktop (≥ 768px):** `DataTable` con el layout actual, sin cambios de comportamiento.
+- **Mobile (< 768px):** lista de cards con el mismo contrato de datos (página, selección, acciones).
+- **Skeletons:** uno por presentación, elegido con el mismo ternario. No llevan `md:hidden` interno.
+- **Empty state:** componente extraído, compartido por ambas presentaciones.
+- **NO dupliques lógica:** selección, búsqueda, paginación y mutations viven en un único hook (ej. `useEmpleadosPage`), nunca en la página ni en los componentes de presentación.
+- Los componentes de presentación (cards, skeletons) NO declaran responsive internamente: la decisión vive en la página.
+
+## Formularios
+
+Siempre usar React Hook Form + Zod:
+
+```tsx
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+
+const formSchema = z.object({
+  field1: z.string().min(1, 'Requerido'),
+  field2: z.coerce.number().min(0),
+});
+
+const form = useForm<z.infer<typeof formSchema>>({
+  resolver: zodResolver(formSchema),
+  defaultValues: { field1: '', field2: 0 },
+});
+```
+
+## Button
+
+- Por defecto NO pasar el atributo `size`. El tamaño default del tema es el correcto.
+- NO agregar un componente `<Icon>` dentro del `<Button>`. Usar los atributos `icon` y `showIcon`:
+
+```tsx
+<Button onClick={() => null} icon={faEdit} showIcon />
+```
+
+## Estados de Pantalla — Loading / Error / Empty (OBLIGATORIO en toda pantalla que obtiene datos)
+
+Toda pantalla o componente que obtiene datos de un servicio (useQuery) DEBE implementar los tres estados en este orden exacto:
+
+```tsx
+const { data, isLoading, isError, error } = service;
+
+if (isError) return <EmptyScreenError message={error?.message} />;
+if (isLoading) return <Skeleton />;
+if (!data?.length) return <EmptyScreenFilter onClick={openFilters} />;
+```
+
+### Componentes genéricos — SIEMPRE desde el barrel `@app/Application`
+
+| Estado  | Componente                    | Ruta                                                     | Cuándo usarlo                                                                          |
+| ------- | ----------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Error   | `EmptyScreenError`            | `Application/Components/Molecules/EmptyScreenError.tsx`  | La query falla (`isError`) — usa `AlertMessage` error                                  |
+| Vacío   | `EmptyScreenFilter`           | `Application/Components/Molecules/EmptyScreenFilter.tsx` | No hay resultados de filtros/búsqueda                                                  |
+| Vacío   | `EmptyState`                  | `Application/Components/Molecules/EmptyState.tsx`        | Empty state genérico con título/descripción/ícono/CTA (`AlertMessage` variant="empty") |
+| Loading | `Skeleton` (de `ui/skeleton`) | `Application/Components/ui/skeleton.tsx`                 | Base para cualquier skeleton                                                           |
+
+**Reglas:**
+
+1. **NUNCA** renderizar texto suelto inline para estos estados (`<Text.Muted>Cargando</Text.Muted>`, `<p>`, divs con texto). SIEMPRE usar los componentes genéricos.
+2. **NO** dejar fallbacks inalcanzables tipo `: <Text.Muted>Cargando</Text.Muted>` al final de un ternario. Si `isLoading` es false, no hay error y no hay data → se muestra el empty state. El ternario es: `isError ? <Error/> : isLoading ? <Skeleton/> : items.length > 0 ? <Contenido/> : <Empty/>`.
+3. **Skeletons de dominio** (tabla, cards, lista) van en `Components/` del dominio como archivo propio (ej. `TableSkeleton.tsx`, `CardsSkeleton.tsx`, `DocumentsListSkeleton.tsx`) construidos sobre `Skeleton` de `ui/skeleton`. Si el listado usa `DataTable`/`DataList`, usar sus `.Skeleton` estáticos. Nunca duplicar skeletons entre dominios: si es cross-domain, va en `Application/Components/`.
+4. Los empty states domain-specific (con contexto propio: search term, filtros, CTA) usan `EmptyState` internamente para la base visual. El contexto (título/descripción dinámicos) vive en el componente del dominio, la base visual es única.
+5. **Errores de mutation** se muestran con `toast.error` en el hook (patrón estándar), no con `EmptyScreenError`. `EmptyScreenError` es solo para fallas de carga de queries.
+
+### Botones que ejecutan servicios — SIEMPRE con `isLoading`
+
+Todo botón que dispara una mutation (`useMutation`) o una llamada a servicio DEBE recibir `isLoading={isPending}` de la mutation. El `Button` del proyecto ya muestra el spinner de FontAwesome automáticamente cuando `isLoading` es true, y además deshabilita el botón (no hace falta pasar `disabled` aparte):
+
+```tsx
+// ✅ Correcto — spinner + disable automático
+<Button type="submit" isLoading={isPending}>Guardar</Button>
+
+// ❌ Incorrecto — sin feedback visual durante la carga
+<Button type="submit" disabled={isPending}>Guardar</Button>
+```
+
+**Reglas:**
+
+1. **NUNCA** usar solo `disabled={isPending}` en un botón que ejecuta un servicio: el usuario no ve feedback de que algo está pasando.
+2. Los botones "Cancelar" que acompañan a un submit con mutation se deshabilitan con `disabled={isPending}` (no necesitan spinner).
+3. Botones que no son del proyecto (`ui/button` raw, `AlertDialogAction`, botones `<button>` nativos) que ejecutan un servicio: usar el `Button` wrapper con `isLoading`, o deshabilitar con `disabled` + indicador de carga manual si el wrapper no aplica.
+
+## Componentes Compartidos
+
+Antes de crear cualquier componente nuevo, verificar en `packages/app/src/Application/Components/`:
+
+| Carpeta      | Contenido                                                   |
+| ------------ | ----------------------------------------------------------- |
+| `ui/`        | Primitivos shadcn/ui (Button, Input, Dialog, Select, Form…) |
+| `Molecules/` | InputField, Combobox, ComboboxBigSearch, DataCollection     |
+| `Organisms/` | FiltersSheet, EditDelete, Menu, PieChart                    |
+| `Layout/`    | Sidebar, Header, Layout wrapper                             |
+
+**Nunca dupliques un componente que ya exista. Si falta, crealo en la capa correcta.**
+
+### Componentes de dominio reutilizables — un archivo por pieza
+
+Los pieces de presentación que se repiten dentro de un dominio (skeletons, empty states, stat cards, íconos de estado) van en archivos propios dentro del `Components/` del dominio, con nombre semántico — NUNCA definidos inline en una página ni duplicados entre archivos.
+
+| Pieza                     | Archivo (ejemplo Admin)                                    |
+| ------------------------- | ---------------------------------------------------------- |
+| Skeleton tabla            | `Components/TableSkeleton.tsx`                             |
+| Skeleton cards            | `Components/CardsSkeleton.tsx`                             |
+| Skeleton lista            | `Components/LicensesList/LicensesListSkeleton.tsx`         |
+| Empty state               | `Components/EmpleadosEmptyState.tsx`                       |
+| Stat card                 | `Components/EmpleadosStatCard.tsx`                         |
+| Íconos de estado ok/error | `Components/StatusIcons.tsx` (exporta `OkIcon`, `NotIcon`) |
+| Tooltip de chart          | `Components/MonthlyLicensesChartTooltip.tsx`               |
+
+Regla: si el mismo fragmento aparece en 2+ archivos o infla una página, extraerlo a un archivo propio en el `Components/` del dominio. Si es cross-domain, en `packages/app/src/Application/Components/`.
+
+## Archivos Globales a Actualizar al Crear un Dominio
+
+1. `packages/app/src/Infrastructure/Routes.tsx` → agregar `[Domain]Router` al array `AllRoutes`
+2. `packages/app/src/Domains/MenuAccess.tsx` → agregar entrada de menú si corresponde
+
+## Convenciones
+
+| Artefacto      | Patrón                                                     | Ejemplo                 |
+| -------------- | ---------------------------------------------------------- | ----------------------- |
+| Tipos entidad  | `T[Entity]`                                                | `TArticle`              |
+| Tipo búsqueda  | `T[Entity]Search`                                          | `TArticleSearch`        |
+| Hooks query    | `useGet[Entities]`                                         | `useGetArticles`        |
+| Hooks mutation | `useAdd[Entity]`, `useUpdate[Entity]`, `useDelete[Entity]` | `useAddArticle`         |
+| Hook cache     | `useCache[Entities]`                                       | `useCacheArticles`      |
+| Páginas        | `[Entity][Action].page.tsx`                                | `ArticlesList.page.tsx` |
+| Routes const   | `[ENTITY]_[ACTION]_ROUTE`                                  | `ARTICLES_NEW_ROUTE`    |
+| Router export  | `[Domain]Router`                                           | `ArticlesRouter`        |
+
+## Restricciones
+
+1. No debes llamar un servicio (TRPC, o de la carpeta Service) desde un componente tsx.
+2. No debes escribir grandes bloqeues de código directamente en \*.page. Debes colocarlo en la carpeta `Components` del dominio.
+3. Evita utilizar `magics strings`.
+4. No debes crear componentes genéricos que no sean específicos de tu dominio. Si necesitas un componente compartido, colócalo en `packages/app/src/Application/Components/` y avisa al equipo.
+5. No debes escribir lógica de negocio en los componentes. Toda la lógica debe ir en los hooks o servicios.
+6. No debes utilizar `<div>` con class `flex` en su lugar usa <Container> con las props que tiene el componente.
+7. Los nombres de los métodos, variables, etc. deben ser camelcase. Ej: `Rename class "Empresas_usuariosService" to match the regular expression ^\$?[A-Z][a-zA-Z0-9]*$.`.
+8. Prefer using nullish coalescing operator (`??`) instead of a ternary expression, as it is simpler to read.

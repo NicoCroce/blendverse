@@ -1,11 +1,33 @@
 import { userApp } from './Users';
 import { authApp } from './Auth';
 import { permissionsApp } from './Permissions';
-import { streetApp } from './Streets';
+import { documentsApp } from './Documents';
+import { documentTypesApp } from './DocumentsTypes';
+import { certificatesApp } from './Certificates';
+import { ownersysApp } from './Ownersyss';
+import { userprofileApp } from './Userprofiles';
+import { themeApp } from './Themes';
+import { empresasUsuariosApp } from './Empresas_usuarios';
+import { disclaimerApp } from './Disclaimer';
+import { segmentsApp } from './Segments';
+import { dailyReportApp } from './DailyReport';
+import { employeeRemindersApp } from './EmployeeReminders';
+import { companyEmailSettingsApp } from './CompanyEmailSettings/companyEmailSettings.di';
 
 export const registerDomains = () => ({
+  ...ownersysApp,
   ...authApp,
   ...userApp,
   ...permissionsApp,
-  ...streetApp,
+  ...documentsApp,
+  ...documentTypesApp,
+  ...certificatesApp,
+  ...userprofileApp,
+  ...themeApp,
+  ...empresasUsuariosApp,
+  ...disclaimerApp,
+  ...segmentsApp,
+  ...dailyReportApp,
+  ...employeeRemindersApp,
+  ...companyEmailSettingsApp,
 });

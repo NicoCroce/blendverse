@@ -1,0 +1,4 @@
+{
+  "apiOperations": ["get", "update", "publishTerms", "getAudit"],
+  "uiViews": ["detail", "edit"]
+}

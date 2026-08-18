@@ -1,0 +1,17 @@
+{
+  "task_id": "TASK-005-company-email-settings-20260817-2",
+  "branch": "005-company-email-settings",
+  "captured_at": "2026-08-17T19:44:52Z",
+  "packages": {
+    "server": {
+      "command": "cd packages/server && npx vitest run --no-file-parallelism",
+      "status": "PASS",
+      "failed_tests": []
+    },
+    "app": {
+      "command": "cd packages/app && npx vitest run --no-file-parallelism",
+      "status": "PASS",
+      "failed_tests": []
+    }
+  }
+}

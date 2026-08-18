@@ -1,10 +1,10 @@
-import { Modal } from '@app/Aplication/Components';
+import { Modal } from '@app/Application/Components';
 import { ChangePasswordForm } from './ChangePasswordForm';
-import { useGlobalStore } from '@app/Aplication';
-import { TUser } from '../../User.entity';
+import { useGlobalStore } from '@app/Application';
+import { TUserLogged } from '../../User.entity';
 
 export const ChangePasswordModal = () => {
-  const { data: dataUser } = useGlobalStore<TUser>('dataUser');
+  const { data: dataUser } = useGlobalStore<TUserLogged>('dataUser');
 
   if (!dataUser || !dataUser?.renewPassword) {
     return null;

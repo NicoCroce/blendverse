@@ -1,0 +1,16 @@
+import { toast } from 'sonner';
+import { {{Domain}}Service } from '../{{Domain}}.service';
+import { useCache{{Entities}} } from './useCache{{Entities}}';
+
+export const useAdd{{Entity}} = () => {
+  const cache = useCache{{Entities}}();
+  return {{Domain}}Service.create.useMutation({
+    onSuccess: () => {
+      toast.success('Registro agregado');
+      cache.invalidate();
+    },
+    onError: () => {
+      toast.error('Registro no agregado');
+    },
+  });
+};

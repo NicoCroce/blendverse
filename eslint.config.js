@@ -1,6 +1,7 @@
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import globals from 'globals';
 
 const ignores = {
   ignores: [
@@ -33,6 +34,12 @@ const customRules = {
 export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
+  {
+    files: ['playwright.config.js', 'e2e/**/*.js'],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
   ignores,
   eslintPluginPrettierRecommended,
   customRules,

@@ -1,0 +1,11 @@
+import { IUseCase } from '@server/Application';
+import { {{Entity}}Repository } from '../../Domain/{{Entity}}.repository';
+import { IDelete{{Entity}} } from '../{{domain}}.types';
+
+export class Delete{{Entity}} implements IUseCase<number> {
+  constructor(private readonly {{entity}}Repository: {{Entity}}Repository) {}
+
+  async execute({ input, requestContext }: IDelete{{Entity}}): Promise<number> {
+    return this.{{entity}}Repository.delete{{Entity}}({ id: input, requestContext });
+  }
+}

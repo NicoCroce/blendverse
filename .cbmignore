@@ -1,0 +1,62 @@
+# .cbmignore — exclusiones específicas del proyecto para codebase-memory-mcp
+# Sintaxis estilo .gitignore (globstar **, negación !, "/" al final = solo directorios).
+# Estas reglas se SUMAN a .gitignore: node_modules, dist, .env, .DS_Store, coverage,
+# playwright-report, test-results, etc. ya quedan afuera por el .gitignore raíz.
+# Monorepo pnpm: packages/app (front) + packages/server (back).
+
+# --- Artefactos de build / cache que puedan colarse en algún paquete ---
+**/dist/
+**/dist-ssr/
+**/build/
+**/.turbo/
+**/.cache/
+**/*.tsbuildinfo
+
+# --- Lockfiles: pesados y sin valor para el grafo de código ---
+pnpm-lock.yaml
+**/package-lock.json
+**/yarn.lock
+
+# --- Datos de runtime / usuario (no son código fuente) ---
+packages/server/uploads/
+packages/server/logs/
+**/*.log
+
+# --- Assets binarios y multimedia ---
+packages/app/public/images/
+packages/app/public/favicon/
+**/*.png
+**/*.jpg
+**/*.jpeg
+**/*.gif
+**/*.ico
+**/*.webp
+**/*.pdf
+**/*.excalidraw
+
+# --- Documentación de proceso / planificación (no es código de la app) ---
+# Sacar del ignore si querés que el grafo también relacione requisitos y specs con el código.
+memory/
+specs/
+Requerimientos/
+mejoras_ia/
+
+# --- Tooling de agentes / asistentes de IA (prompts, skills, instrucciones) ---
+.opencode/
+.specify/
+.agents/
+.github/agents/
+.github/prompts/
+.github/skills/
+.github/instructions/
+.github/hooks/
+.github/copilot-instructions.md
+.github/copilot-artifacts-documentation.md
+
+# --- Config de editor / hooks de git / meta del repo ---
+.vscode/
+.husky/
+skills-lock.json
+
+# --- Otros ---
+.DS_Store

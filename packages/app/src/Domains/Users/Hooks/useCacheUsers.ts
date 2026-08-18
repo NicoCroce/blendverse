@@ -1,3 +1,8 @@
-import { _usersService } from '../Users.service';
+import { useQueryClient } from '@tanstack/react-query';
 
-export const useCacheUsers = () => _usersService.useUtils().users.getAll;
+export const useCacheUsers = () => {
+  const queryClient = useQueryClient();
+  return {
+    invalidate: () => queryClient.invalidateQueries({ queryKey: [['users']] }),
+  };
+};

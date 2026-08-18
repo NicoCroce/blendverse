@@ -1,10 +1,11 @@
 import { UserEmail, UserId, UserName, UserPassword } from './ValueObjects';
-import { IUser } from './User.interfaces';
+import { IUser } from './User.types';
 
 export class User {
   constructor(
     private readonly _mail: UserEmail,
     private readonly _name: UserName,
+    private readonly _surname?: string,
     private readonly _id?: UserId,
     private readonly _password?: UserPassword,
     private readonly _renewPassword?: boolean,
@@ -12,24 +13,29 @@ export class User {
     private readonly _ownerId?: number,
     private readonly _companyLogo?: string,
     private readonly _companyName?: string,
+    private readonly _rol?: string,
+    private readonly _tema?: number,
   ) {}
 
   static create({
     id,
     mail,
     name,
+    surname,
     password,
     renewPassword = false,
     userImage,
     ownerId,
     companyLogo,
     companyName,
+    rol,
   }: IUser) {
     const userId = id ? new UserId(id) : undefined;
     const userPassword = password ? new UserPassword(password) : undefined;
     return new User(
       new UserEmail(mail),
       new UserName(name),
+      surname,
       userId,
       userPassword,
       renewPassword,
@@ -37,6 +43,7 @@ export class User {
       ownerId,
       companyLogo,
       companyName,
+      rol,
     );
   }
 
@@ -49,11 +56,13 @@ export class User {
       id: this._id?.value,
       mail: this._mail.value,
       name: this._name.value,
+      surname: this._surname,
       renewPassword: this._renewPassword,
       userImage: this._userImage,
       ownerId: this._ownerId,
       companyLogo: this._companyLogo,
       companyName: this._companyName,
+      rol: this._rol,
     };
   }
 

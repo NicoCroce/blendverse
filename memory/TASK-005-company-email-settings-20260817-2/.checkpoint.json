@@ -1,0 +1,12 @@
+{
+  "task_id": "TASK-005-company-email-settings-20260817-2",
+  "feature": "company-email-settings",
+  "scope": "full-stack",
+  "branch": "005-company-email-settings",
+  "last_completed_step": "tester",
+  "completed_steps": ["back", "front", "tester"],
+  "pending_steps": ["qa", "reviewer", "close", "pr"],
+  "current_agent": "QA_Agent",
+  "context_source": "specs/company-email-settings/spec.md",
+  "timestamp": "2026-08-17T20:06:30Z"
+}

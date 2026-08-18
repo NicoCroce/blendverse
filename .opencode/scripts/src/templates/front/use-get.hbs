@@ -1,0 +1,8 @@
+import { {{Domain}}Service } from '../{{Domain}}.service';
+
+export const useGet{{Entity}} = (id: number) => {
+  return {{Domain}}Service.get.useQuery(id, {
+    enabled: !!id,
+    staleTime: 1000,
+  });
+};

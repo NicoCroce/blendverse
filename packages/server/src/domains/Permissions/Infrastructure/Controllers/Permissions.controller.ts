@@ -1,7 +1,7 @@
 import { protectedProcedure } from '@server/Infrastructure';
-import { PermissionsService } from '../../Aplication';
 import { executeService } from '@server/Application';
 import z from 'zod';
+import { PermissionsService } from '../../Application';
 
 export class PermissionsController {
   constructor(private readonly permissionsService: PermissionsService) {}

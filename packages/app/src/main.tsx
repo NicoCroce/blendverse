@@ -1,27 +1,17 @@
 import React from 'react';
 import { HashRouter } from 'react-router-dom';
 import ReactDOM from 'react-dom/client';
-import { QueryClient } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import './index.css';
-import { Layout } from './Aplication/Components/Layout/AppLayout/Layout';
-import { registerEventViewport } from './Aplication/Helpers';
+import { Layout } from './Application/Components/Layout/AppLayout/Layout';
+import { registerEventViewport } from './Application/Helpers';
 import { TrpcApi, trpcClientApi } from './Infrastructure/Services/clientApi';
-import { persistOptions } from './Aplication/Helpers/persister';
+import { persistOptions } from './Application/Helpers/persister';
 import { registerSW } from 'virtual:pwa-register';
-
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      gcTime: 1000 * 60 * 60 * 24, // 24 hours
-      staleTime: Infinity,
-      retry: 0,
-    },
-  },
-});
+import { queryClient } from './queryClient';
 
 // add this to prompt for a refresh
 const updateSW = registerSW({

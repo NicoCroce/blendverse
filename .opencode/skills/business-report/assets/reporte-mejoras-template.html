@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GestDoc — Reporte de Mejoras v{{VERSION}}</title>
+    <style>
+      :root {
+        --bg-primary: #0a0a0f;
+        --bg-secondary: #12121a;
+        --bg-tertiary: #1a1a25;
+        --accent-primary: #6366f1;
+        --accent-secondary: #8b5cf6;
+        --accent-success: #10b981;
+        --accent-warning: #f59e0b;
+        --accent-danger: #ef4444;
+        --accent-info: #3b82f6;
+        --text-primary: #f4f4f5;
+        --text-secondary: #a1a1aa;
+        --text-muted: #71717a;
+        --border: #27272a;
+        --border-accent: rgba(99, 102, 241, 0.3);
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family:
+          'Inter',
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          sans-serif;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        line-height: 1.6;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      /* Hero */
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+        padding: 80px 0;
+        background: radial-gradient(
+          ellipse at top,
+          rgba(99, 102, 241, 0.15) 0%,
+          transparent 50%
+        );
+      }
+      .hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+        background-size: 50px 50px;
+        pointer-events: none;
+      }
+      .hero-content {
+        position: relative;
+        z-index: 1;
+      }
+      .hero-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 16px;
+        background: rgba(99, 102, 241, 0.1);
+        border: 1px solid var(--border-accent);
+        border-radius: 100px;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--accent-primary);
+        margin-bottom: 32px;
+        letter-spacing: 0.5px;
+      }
+      .hero-eyebrow::before {
+        content: '';
+        width: 6px;
+        height: 6px;
+        background: var(--accent-primary);
+        border-radius: 50%;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.5;
+          transform: scale(1.2);
+        }
+      }
+      .hero h1 {
+        font-size: clamp(48px, 8vw, 96px);
+        font-weight: 800;
+        line-height: 0.95;
+        letter-spacing: -0.03em;
+        margin-bottom: 24px;
+        background: linear-gradient(
+          135deg,
+          var(--text-primary) 0%,
+          var(--text-secondary) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .hero-subtitle {
+        font-size: clamp(18px, 2.5vw, 24px);
+        color: var(--text-secondary);
+        max-width: 600px;
+        margin-bottom: 48px;
+      }
+      .hero-metrics {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 20px;
+        margin-top: 64px;
+      }
+      .metric-card {
+        padding: 28px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        transition: all 0.3s ease;
+      }
+      .metric-card:hover {
+        border-color: var(--border-accent);
+        transform: translateY(-4px);
+      }
+      .metric-value {
+        font-size: 42px;
+        font-weight: 800;
+        color: var(--accent-primary);
+        line-height: 1;
+        margin-bottom: 8px;
+      }
+      .metric-label {
+        font-size: 13px;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      /* Sections */
+      section {
+        padding: 100px 0;
+        position: relative;
+      }
+      section:nth-child(even) {
+        background: var(--bg-secondary);
+      }
+      .section-header {
+        margin-bottom: 56px;
+      }
+      .section-number {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--accent-primary);
+        letter-spacing: 2px;
+        margin-bottom: 16px;
+        display: block;
+      }
+      .section-title {
+        font-size: clamp(28px, 5vw, 48px);
+        font-weight: 700;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+        margin-bottom: 16px;
+      }
+      .section-description {
+        font-size: 17px;
+        color: var(--text-secondary);
+        max-width: 700px;
+      }
+
+      /* Tables */
+      .data-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        background: var(--bg-tertiary);
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        margin-bottom: 40px;
+      }
+      .data-table thead {
+        background: rgba(99, 102, 241, 0.05);
+      }
+      .data-table th {
+        padding: 16px 20px;
+        text-align: left;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--text-secondary);
+        border-bottom: 1px solid var(--border);
+      }
+      .data-table td {
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+        font-size: 14px;
+      }
+      .data-table tr:last-child td {
+        border-bottom: none;
+      }
+      .data-table tr:hover {
+        background: rgba(99, 102, 241, 0.02);
+      }
+
+      /* Badges */
+      .badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 100px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .badge-admin {
+        background: rgba(99, 102, 241, 0.15);
+        color: var(--accent-primary);
+        border: 1px solid rgba(99, 102, 241, 0.3);
+      }
+      .badge-employee {
+        background: rgba(16, 185, 129, 0.15);
+        color: var(--accent-success);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+      }
+      .badge-both {
+        background: rgba(245, 158, 11, 0.15);
+        color: var(--accent-warning);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+      }
+      .badge-new {
+        background: rgba(59, 130, 246, 0.15);
+        color: var(--accent-info);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+      }
+      .badge-improved {
+        background: rgba(139, 92, 246, 0.15);
+        color: var(--accent-secondary);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+      }
+
+      /* Feature Cards */
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+      }
+      .feature-card {
+        padding: 28px;
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        transition: all 0.3s ease;
+      }
+      .feature-card:hover {
+        border-color: var(--border-accent);
+        transform: translateY(-2px);
+      }
+      .feature-icon {
+        width: 44px;
+        height: 44px;
+        background: rgba(99, 102, 241, 0.1);
+        border: 1px solid var(--border-accent);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+        font-size: 22px;
+      }
+      .feature-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      .feature-description {
+        color: var(--text-secondary);
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      /* Sub-sections */
+      .subsection {
+        margin-bottom: 56px;
+      }
+      .subsection-title {
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .subsection-title::before {
+        content: '';
+        width: 4px;
+        height: 24px;
+        background: var(--accent-primary);
+        border-radius: 2px;
+      }
+
+      /* Stats row */
+      .stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 40px;
+      }
+      .stat-item {
+        padding: 24px;
+        background: linear-gradient(
+          135deg,
+          rgba(99, 102, 241, 0.08) 0%,
+          rgba(139, 92, 246, 0.04) 100%
+        );
+        border: 1px solid var(--border-accent);
+        border-radius: 12px;
+        text-align: center;
+      }
+      .stat-value {
+        font-size: 36px;
+        font-weight: 800;
+        background: linear-gradient(
+          135deg,
+          var(--accent-primary) 0%,
+          var(--accent-secondary) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1;
+        margin-bottom: 6px;
+      }
+      .stat-label {
+        font-size: 12px;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      /* Domain header */
+      .domain-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 32px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--border);
+      }
+      .domain-icon {
+        width: 56px;
+        height: 56px;
+        background: rgba(99, 102, 241, 0.1);
+        border: 1px solid var(--border-accent);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+      }
+      .domain-info h3 {
+        font-size: 24px;
+        font-weight: 700;
+      }
+      .domain-info p {
+        color: var(--text-secondary);
+        font-size: 14px;
+      }
+
+      /* List styles */
+      .feature-list {
+        list-style: none;
+        margin-bottom: 24px;
+      }
+      .feature-list li {
+        padding: 10px 0;
+        padding-left: 28px;
+        position: relative;
+        color: var(--text-secondary);
+        font-size: 14px;
+        border-bottom: 1px solid rgba(39, 39, 42, 0.5);
+      }
+      .feature-list li:last-child {
+        border-bottom: none;
+      }
+      .feature-list li::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 8px;
+        height: 8px;
+        background: var(--accent-primary);
+        border-radius: 50%;
+      }
+      .feature-list li strong {
+        color: var(--text-primary);
+      }
+
+      /* Chart visual */
+      .chart-container {
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 32px;
+        margin-bottom: 40px;
+      }
+      .chart-title {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 20px;
+      }
+      .bar-chart {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .bar-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .bar-label {
+        width: 140px;
+        font-size: 13px;
+        color: var(--text-secondary);
+        flex-shrink: 0;
+      }
+      .bar-track {
+        flex: 1;
+        height: 24px;
+        background: rgba(99, 102, 241, 0.1);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .bar-fill {
+        height: 100%;
+        border-radius: 12px;
+        background: linear-gradient(
+          90deg,
+          var(--accent-primary),
+          var(--accent-secondary)
+        );
+        transition: width 1s ease;
+      }
+      .bar-value {
+        width: 50px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--accent-primary);
+        text-align: right;
+      }
+
+      /* Timeline */
+      .timeline {
+        position: relative;
+        padding-left: 48px;
+      }
+      .timeline::before {
+        content: '';
+        position: absolute;
+        left: 15px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(
+          180deg,
+          var(--accent-primary) 0%,
+          var(--accent-secondary) 100%
+        );
+      }
+      .timeline-item {
+        position: relative;
+        padding-bottom: 40px;
+      }
+      .timeline-item:last-child {
+        padding-bottom: 0;
+      }
+      .timeline-marker {
+        position: absolute;
+        left: -41px;
+        top: 0;
+        width: 28px;
+        height: 28px;
+        background: var(--bg-primary);
+        border: 2px solid var(--accent-primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--accent-primary);
+      }
+      .timeline-content {
+        padding: 20px;
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+      }
+      .timeline-title {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+      .timeline-description {
+        color: var(--text-secondary);
+        font-size: 14px;
+      }
+
+      /* Footer */
+      footer {
+        padding: 48px 0;
+        background: var(--bg-secondary);
+        border-top: 1px solid var(--border);
+        text-align: center;
+      }
+      .footer-text {
+        color: var(--text-muted);
+        font-size: 13px;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .hero-metrics {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .data-table {
+          font-size: 13px;
+        }
+        .data-table th,
+        .data-table td {
+          padding: 12px;
+        }
+        section {
+          padding: 60px 0;
+        }
+        .bar-label {
+          width: 100px;
+          font-size: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-eyebrow">Reporte de Evolucion</div>
+          <h1>GestDoc<br />Mejoras v{{VERSION}}</h1>
+          <p class="hero-subtitle">{{SUBTITULO_GENERAL}}</p>
+          <div class="hero-metrics">
+            <div class="metric-card">
+              <div class="metric-value">{{COMMITS}}</div>
+              <div class="metric-label">Commits</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value">{{PULL_REQUESTS}}</div>
+              <div class="metric-label">Pull Requests</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value">{{ARCHIVOS}}</div>
+              <div class="metric-label">Archivos</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value">{{LINEAS}}</div>
+              <div class="metric-label">Lineas</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value">{{DOMINIOS_NUEVOS}}</div>
+              <div class="metric-label">Dominios Nuevos</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value">{{TESTS_NUEVOS}}</div>
+              <div class="metric-label">Tests Nuevos</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1. EMAILS (solo si hubo cambios en el sistema de emails) -->
+    <section>
+      <div class="container">
+        <div class="section-header">
+          <span class="section-number">01</span>
+          <h2 class="section-title">Sistema de Notificaciones por Email</h2>
+          <p class="section-description">{{DESCRIPCION_EMAILS}}</p>
+        </div>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Template</th>
+              <th>Destinatario</th>
+              <th>Disparador</th>
+              <th>Contenido</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{EMAIL_ROWS}}
+          </tbody>
+        </table>
+
+        <div class="feature-grid">{{EMAIL_FEATURES}}</div>
+      </div>
+    </section>
+
+    <!-- 2..N. DOMINIOS DEL PRODUCTO -->
+    <!-- Replicar una seccion por cada dominio con cambios reales. -->
+    <!-- Cada seccion puede combinar: tablas (estados/flujos/use cases), feature-grid (componentes), feature-list (mejoras puntuales). -->
+    <section>
+      <div class="container">
+        <div class="section-header">
+          <span class="section-number">0{{N}}</span>
+          <h2 class="section-title">{{NOMBRE_DOMINIO}}</h2>
+          <p class="section-description">{{DESCRIPCION_DOMINIO}}</p>
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">{{SUBSECCION}}</h3>
+          <div class="feature-grid">{{DOMINIO_FEATURES}}</div>
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">Use Cases del Servidor ({{DOMINIO}})</h3>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Use Case</th>
+                <th>Funcion</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{USECASE_ROWS}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPONENTES COMPARTIDOS (solo si hubo cambios en Application/Components) -->
+    <section>
+      <div class="container">
+        <div class="section-header">
+          <span class="section-number">0{{N}}</span>
+          <h2 class="section-title">Componentes Compartidos</h2>
+          <p class="section-description">
+            Mejoras en componentes reutilizables del Application layer.
+          </p>
+        </div>
+        <div class="feature-grid">{{SHARED_FEATURES}}</div>
+      </div>
+    </section>
+
+    <!-- IA (siempre presente: seccion de herramientas y calidad del proceso) -->
+    <section>
+      <div class="container">
+        <div class="section-header">
+          <span class="section-number">0{{N}}</span>
+          <h2 class="section-title">Mejoras en Componentes IA</h2>
+          <p class="section-description">{{DESCRIPCION_IA}}</p>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-item">
+            <div class="stat-value">{{TESTS_NUEVOS}}</div>
+            <div class="stat-label">Tests Nuevos</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{LINEAS_TESTS}}</div>
+            <div class="stat-label">Lineas de Tests</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ARCHIVOS_ELIMINADOS}}</div>
+            <div class="stat-label">Archivos IA Eliminados</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{SKILLS_NUEVOS}}</div>
+            <div class="stat-label">Skills Nuevos</div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">Distribucion de Tests por Dominio</h3>
+          <div class="chart-container">
+            <div class="bar-chart">{{TEST_BARS}}</div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">Migracion de Herramientas IA</h3>
+          <div class="timeline">{{TIMELINE_ITEMS}}</div>
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">Garantia de Calidad IA</h3>
+          <div class="feature-grid">{{IA_FEATURES}}</div>
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">MCP Servers Integrados</h3>
+          <div class="feature-grid">{{MCP_SERVERS}}</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="container">
+        <p class="footer-text">
+          GestDoc - Reporte generado el {{FECHA}}<br />
+          Analisis desde commit {{COMMIT_INICIAL}} hasta HEAD
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,5 @@
+import { {{serverRouterType}} } from '@server/domains/{{ServerDomain}}';
+import { createTRPCReact } from '@trpc/react-query';
+
+export const _{{domain}}Service = createTRPCReact<{{serverRouterType}}>();
+export const {{Domain}}Service = _{{domain}}Service.{{serverDomain}};

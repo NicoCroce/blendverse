@@ -1,0 +1,19 @@
+import { EmptyScreenError, Page } from '@app/Application';
+import { Skeleton } from '@app/Application/Components/ui/skeleton';
+import { useParams } from 'react-router-dom';
+import { useGet{{Entity}} } from '../Hooks';
+
+export const {{Entity}}UpdatePage = () => {
+  const { id } = useParams<{ id: string }>();
+  const { data, isLoading, isError, error } = useGet{{Entity}}(Number(id));
+
+  if (isError) return <EmptyScreenError message={error?.message} />;
+  if (isLoading) return <Skeleton className="h-32 w-full" />;
+
+  return (
+    <Page title="Editar {{Entity}}">
+      {/* The agent must implement the feature-specific React Hook Form here. */}
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </Page>
+  );
+};

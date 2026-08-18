@@ -1,4 +1,4 @@
-import { IPermissions } from './Permissions.interfaces';
+import { IPermissions } from './Permissions.types';
 
 export class Permissions {
   constructor(

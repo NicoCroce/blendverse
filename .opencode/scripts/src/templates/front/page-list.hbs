@@ -1,0 +1,18 @@
+import { EmptyScreenError, EmptyScreenFilter, Page } from '@app/Application';
+import { Skeleton } from '@app/Application/Components/ui/skeleton';
+import { useGet{{Entities}} } from '../Hooks';
+
+export const {{Entity}}ListPage = () => {
+  const { data, isLoading, isError, error } = useGet{{Entities}}();
+
+  if (isError) return <EmptyScreenError message={error?.message} />;
+  if (isLoading) return <Skeleton className="h-32 w-full" />;
+  if (!data?.data?.length) return <EmptyScreenFilter onClick={() => {}} />;
+
+  return (
+    <Page title="{{Entities}}">
+      {/* The agent must replace this scaffold with the feature-specific list UI. */}
+      <pre>{JSON.stringify(data.data, null, 2)}</pre>
+    </Page>
+  );
+};

@@ -1,0 +1,6 @@
+{{#if hasGetAll}}export * from './GetAll{{Entities}}.usecase';
+{{/if}}{{#if hasGet}}export * from './Get{{Entity}}.usecase';
+{{/if}}{{#if hasCreate}}export * from './Create{{Entity}}.usecase';
+{{/if}}{{#if hasUpdate}}export * from './Update{{Entity}}.usecase';
+{{/if}}{{#if hasDelete}}export * from './Delete{{Entity}}.usecase';
+{{/if}}

@@ -1,1 +1,13 @@
-npx --no -- commitlint --edit $1
+# Cargar nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# Usar la versión de Node configurada en el proyecto
+[ -f .nvmrc ] && nvm use
+
+# Ejecutar el comando con pnpm o npx
+if command -v pnpm >/dev/null 2>&1; then
+  pnpm commitlint --edit "$1"
+else
+  npx commitlint --edit "$1"
+fi

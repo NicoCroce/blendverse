@@ -1,0 +1,19 @@
+import { AppError, IUseCase } from '@server/Application';
+import { User } from '../../Domain/User.entity';
+import { UserRepository } from '../../Domain/User.repository';
+import { IGetUser } from '../users.types';
+
+export class GetUser implements IUseCase<User> {
+  constructor(private readonly usersRepository: UserRepository) {}
+
+  async execute({ input: id, requestContext }: IGetUser): Promise<User> {
+    const user = await this.usersRepository.getUser({
+      id,
+      requestContext,
+    });
+    if (!user) {
+      throw new AppError('User not found', 404);
+    }
+    return user;
+  }
+}
