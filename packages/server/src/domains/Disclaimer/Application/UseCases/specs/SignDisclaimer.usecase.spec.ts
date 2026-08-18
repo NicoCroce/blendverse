@@ -10,6 +10,16 @@ vi.mock('@server/Infrastructure/utils/bcrypt', () => ({
 import { comparePassword } from '@server/Infrastructure/utils/bcrypt';
 
 const requestContext = new RequestContext(1, 'req-1', 99);
+const currentTerms = {
+  execute: vi.fn().mockResolvedValue({
+    id: 12,
+    version: 1,
+    publishedAt: new Date('2024-01-01T00:00:00.000Z'),
+    publishedBy: null,
+    content: '<p>Terms</p>',
+    contentHash: 'hash',
+  }),
+};
 
 function computeExpectedHash(userId: number, timestamp: string): string {
   return crypto
@@ -45,6 +55,7 @@ describe('SignDisclaimer', () => {
     const useCase = new SignDisclaimer(
       mockRepo as never,
       mockUserRepo as never,
+      currentTerms as never,
     );
 
     const result = await useCase.execute({
@@ -52,6 +63,7 @@ describe('SignDisclaimer', () => {
         password: 'correct-password',
         ip: '192.168.1.1',
         userAgent: 'Mozilla/5.0',
+        termsVersion: 1,
       },
       requestContext,
     });
@@ -64,12 +76,11 @@ describe('SignDisclaimer', () => {
       'hashed-password-value',
     );
     expect(mockRepo.sign).toHaveBeenCalledWith({
-      userId: 1,
-      ownerId: 99,
       hash: expectedHash,
       ip: '192.168.1.1',
       userAgent: 'Mozilla/5.0',
       timestamp: now,
+      termsVersionId: 12,
       requestContext,
     });
     expect(result).toEqual({ values: { id: 1 } });
@@ -90,6 +101,7 @@ describe('SignDisclaimer', () => {
     const useCase = new SignDisclaimer(
       mockRepo as never,
       mockUserRepo as never,
+      currentTerms as never,
     );
 
     await expect(
@@ -98,6 +110,7 @@ describe('SignDisclaimer', () => {
           password: 'wrong-password',
           ip: '192.168.1.1',
           userAgent: null,
+          termsVersion: 1,
         },
         requestContext,
       }),
@@ -109,6 +122,7 @@ describe('SignDisclaimer', () => {
           password: 'wrong-password',
           ip: '192.168.1.1',
           userAgent: null,
+          termsVersion: 1,
         },
         requestContext,
       }),
@@ -126,6 +140,7 @@ describe('SignDisclaimer', () => {
     const useCase = new SignDisclaimer(
       mockRepo as never,
       mockUserRepo as never,
+      currentTerms as never,
     );
 
     await expect(
@@ -134,11 +149,36 @@ describe('SignDisclaimer', () => {
           password: 'any-password',
           ip: '10.0.0.1',
           userAgent: null,
+          termsVersion: 1,
         },
         requestContext,
       }),
     ).rejects.toThrow(AppError);
 
+    expect(mockRepo.sign).not.toHaveBeenCalled();
+  });
+
+  it('rejects an acceptance without the displayed terms version', async () => {
+    const mockRepo = { sign: vi.fn() };
+    const mockUserRepo = { validateUser: vi.fn() };
+    const useCase = new SignDisclaimer(
+      mockRepo as never,
+      mockUserRepo as never,
+      currentTerms as never,
+    );
+
+    await expect(
+      useCase.execute({
+        input: {
+          password: 'correct-password',
+          ip: '192.168.1.1',
+          userAgent: null,
+        } as never,
+        requestContext,
+      }),
+    ).rejects.toMatchObject({ errorCode: 'VALIDATION_ERROR' });
+
+    expect(mockUserRepo.validateUser).not.toHaveBeenCalled();
     expect(mockRepo.sign).not.toHaveBeenCalled();
   });
 });

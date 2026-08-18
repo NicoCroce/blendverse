@@ -13,7 +13,7 @@ Actúa como el agente `@blendverse-qa`. Carga y sigue estrictamente la skill `qa
 
 1. Leer `.opencode/instructions/memory.instructions.md` para confirmar el schema de frontmatter.
 2. Leer `memory/{{taskId}}/02_dev_log.md` para obtener la lista de `affected_files`.
-3. Verificar el campo `attempts` — si es >= 3, ejecutar el Protocolo Break-Loop.
+3. Leer `memory/{{taskId}}/03_qa_report.md` y verificar los `attempts` propios de QA. Si es >= 3, ejecutar el Protocolo Break-Loop; no usar el contador de `02_dev_log.md`.
 4. Ejecutar la secuencia de validación completa:
    - `npx tsc --noEmit` en el paquete correspondiente.
    - `pnpm lint`.

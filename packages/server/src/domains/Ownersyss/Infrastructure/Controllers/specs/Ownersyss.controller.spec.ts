@@ -3,9 +3,9 @@ import { describe, expect, it, vi } from 'vitest';
 import { OwnersyssController } from '../Ownersyss.controller';
 
 vi.mock('@server/Infrastructure', async () => {
-  const { router, protectedProcedure } =
-    await import('@server/Infrastructure/trpc/TrpcInstance.js');
-  return { router, protectedProcedure };
+  const { initTRPC } = await import('@trpc/server');
+  const t = initTRPC.create();
+  return { router: t.router, protectedProcedure: t.procedure };
 });
 
 vi.mock('@server/Infrastructure/utils/JWT', () => ({

@@ -1,13 +1,14 @@
 import crypto from 'node:crypto';
 import { IUseCase } from '@server/Application';
 import { DisclaimerRepository } from '../../Domain';
+import { GetCurrentTermsVersion } from '@server/domains/CompanyEmailSettings/Application';
 import { IGetSignatureStatus } from '../disclaimer.types';
 
-export class GetSignatureStatus implements IUseCase<
-  IGetSignatureStatusResponse | null,
-  { userId: number; ownerId: number }
-> {
-  constructor(private readonly disclaimerRepository: DisclaimerRepository) {}
+export class GetSignatureStatus implements IUseCase<IGetSignatureStatusResponse | null> {
+  constructor(
+    private readonly disclaimerRepository: DisclaimerRepository,
+    private readonly _getCurrentTermsVersion?: GetCurrentTermsVersion,
+  ) {}
 
   private computeHash(userId: number, timestamp: string): string {
     const secret = process.env.SECRET_KEY_BACK || 'default-secret';
@@ -16,12 +17,15 @@ export class GetSignatureStatus implements IUseCase<
   }
 
   async execute({
-    input,
     requestContext,
   }: IGetSignatureStatus): Promise<IGetSignatureStatusResponse | null> {
+    const currentTerms = this._getCurrentTermsVersion
+      ? await this._getCurrentTermsVersion.execute({ requestContext })
+      : null;
+    if (!currentTerms) return null;
+
     const record = await this.disclaimerRepository.getStatus({
-      userId: input.userId,
-      ownerId: input.ownerId,
+      termsVersionId: currentTerms.id,
       requestContext,
     });
 
@@ -29,7 +33,7 @@ export class GetSignatureStatus implements IUseCase<
 
     const storedHash = record.values.hash_prueba;
     const expectedHash = this.computeHash(
-      input.userId,
+      requestContext.values.userId,
       record.values.timestamp instanceof Date
         ? record.values.timestamp.toISOString()
         : String(record.values.timestamp),

@@ -102,11 +102,11 @@ describe('GenerateDailyReport (US8 — orquestador de las 7 secciones)', () => {
       requestContext,
     });
 
-    expect(result.report.values.ownerId).toBe(42);
-    expect(result.report.values.companyName).toBe('Acme S.A.');
-    expect(result.report.values.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(result.report!.values.ownerId).toBe(42);
+    expect(result.report!.values.companyName).toBe('Acme S.A.');
+    expect(result.report!.values.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
 
-    const sections = result.report.values.sections;
+    const sections = result.report!.values.sections;
     expect(sections.employeesOnLeaveToday).toEqual({
       items: [onLeaveRecord],
       totalCount: 1,
@@ -179,16 +179,16 @@ describe('GenerateDailyReport (US8 — orquestador de las 7 secciones)', () => {
       requestContext,
     });
 
-    expect(result.report.values.sections.employeesOnLeaveToday).toEqual({
+    expect(result.report!.values.sections.employeesOnLeaveToday).toEqual({
       items: [],
       totalCount: 0,
     });
-    expect(result.report.values.sections.pendingLicenses).toEqual({
+    expect(result.report!.values.sections.pendingLicenses).toEqual({
       items: [],
       totalCount: 0,
     });
     // Las demás secciones siguen con datos
-    expect(result.report.values.sections.unsignedDocuments.totalCount).toBe(1);
+    expect(result.report!.values.sections.unsignedDocuments.totalCount).toBe(1);
   });
 
   it('falls back to an empty companyName when input is not provided', async () => {
@@ -209,6 +209,6 @@ describe('GenerateDailyReport (US8 — orquestador de las 7 secciones)', () => {
     // ejercitar la rama sin input.
     const result = await useCase.execute({ requestContext } as never);
 
-    expect(result.report.values.companyName).toBe('');
+    expect(result.report!.values.companyName).toBe('');
   });
 });

@@ -19,6 +19,30 @@ description: Genera un dominio completo en el frontend React/tRPC: entity types,
 - `edit/editFiles` — Para actualizar los archivos globales (Routes.tsx, MenuAccess.tsx)
 - `diagnostics/getErrors` — Para verificar errores al finalizar
 
+## Uso del Generator Automatizado
+
+Esta skill define el resultado arquitectónico del scaffold. Cuando se crea un
+dominio frontend nuevo, el agente debe preferir el CLI automatizado:
+
+```bash
+pnpm --filter @opencode-automation/scripts generate-front \
+  --entity Product \
+  --server-domain Products \
+  --operations-file specs/{feature}/contracts/operations.json
+```
+
+No ejecutar el generator completo sobre un dominio frontend existente. En ese
+caso, implementar solamente los archivos indicados por `tasks.md`.
+
+El generator crea scaffold técnico, hooks tRPC y páginas base. No implementa
+la lógica de negocio, formularios definitivos, permisos, estados de negocio,
+diseño final, integraciones ni criterios de aceptación. Esa lógica debe ser
+implementada por el agente después de generar la estructura.
+
+`operations.json` contiene `apiOperations` y opcionalmente `uiViews`. Backend y
+frontend deben consumir el mismo contrato para evitar endpoints y pantallas
+desalineados.
+
 ---
 
 ## Prerequisito: El Dominio Backend ya debe existir
@@ -30,6 +54,12 @@ Esta skill asume que el dominio ya fue creado con `back-ddd-generator`. Necesita
 ---
 
 ## Protocolo de Preguntas (OBLIGATORIO si faltan datos)
+
+Si la skill se ejecuta como subagente de `@blendverse-implement` y
+`spec.md`, `tasks.md` y `contracts/operations.json` contienen los datos
+necesarios, no detener el pipeline para pedir una aprobación interactiva.
+Listar el árbol en el reporte y continuar. Las preguntas siguen siendo
+obligatorias cuando falta información material.
 
 Antes de generar, pregunta al usuario:
 
@@ -49,7 +79,7 @@ Antes de crear el primer archivo, lista para el usuario el árbol exacto a crear
 packages/app/src/Domains/[Domain]/
 ├── [Entity].entity.ts
 ├── [Domain].service.ts
-├── [Domain].routes.tsx
+├── [Domain].routes.ts
 ├── [Domain].router.tsx
 ├── Components/
 │   └── index.ts
@@ -120,7 +150,7 @@ export const [Domain]Service = _[domain]Service.[domain];
 
 ---
 
-## Template: `[Domain].routes.tsx`
+## Template: `[Domain].routes.ts`
 
 ```typescript
 export const [DOMAIN]_ROUTE = '/[domain]';

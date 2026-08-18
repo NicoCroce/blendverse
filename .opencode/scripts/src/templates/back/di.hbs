@@ -1,0 +1,35 @@
+import { asClass } from 'awilix';
+import {
+  {{Domain}}Service,
+{{#if hasGetAll}}  GetAll{{Entities}},
+{{/if}}
+{{#if hasGet}}  Get{{Entity}},
+{{/if}}
+{{#if hasCreate}}  Create{{Entity}},
+{{/if}}
+{{#if hasUpdate}}  Update{{Entity}},
+{{/if}}
+{{#if hasDelete}}  Delete{{Entity}},
+{{/if}}
+} from './Application';
+import { {{Domain}}Controller, {{Entity}}RepositoryImplementation } from './Infrastructure';
+import { container } from '@server/Infrastructure/di/Container';
+
+export const {{domain}}App = {
+  {{domain}}Repository: asClass({{Entity}}RepositoryImplementation),
+  {{domain}}Service: asClass({{Domain}}Service),
+  {{domain}}Controller: asClass({{Domain}}Controller),
+{{#if hasGetAll}}  _getAll{{Entities}}: asClass(GetAll{{Entities}}),
+{{/if}}
+{{#if hasGet}}  _get{{Entity}}: asClass(Get{{Entity}}),
+{{/if}}
+{{#if hasCreate}}  _create{{Entity}}: asClass(Create{{Entity}}),
+{{/if}}
+{{#if hasUpdate}}  _update{{Entity}}: asClass(Update{{Entity}}),
+{{/if}}
+{{#if hasDelete}}  _delete{{Entity}}: asClass(Delete{{Entity}}),
+{{/if}}
+};
+
+export const {{domain}}Controller = () =>
+  container.resolve<{{Domain}}Controller>('{{domain}}Controller');

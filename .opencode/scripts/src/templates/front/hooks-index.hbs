@@ -1,0 +1,7 @@
+export * from './useCache{{Entities}}';
+{{#if hasGetAll}}export * from './useGet{{Entities}}';
+{{/if}}{{#if hasGet}}export * from './useGet{{Entity}}';
+{{/if}}{{#if hasCreate}}export * from './useAdd{{Entity}}';
+{{/if}}{{#if hasUpdate}}export * from './useUpdate{{Entity}}';
+{{/if}}{{#if hasDelete}}export * from './useDelete{{Entity}}';
+{{/if}}

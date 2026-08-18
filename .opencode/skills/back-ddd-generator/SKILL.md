@@ -18,6 +18,31 @@ description: Genera un dominio DDD completo en el servidor: entidad, interfaces,
 - `edit/editFiles` — Para actualizar los archivos globales de registro
 - `diagnostics/getErrors` — Para verificar errores al finalizar
 
+## Uso del Generator Automatizado
+
+Esta skill define el resultado arquitectónico del scaffold. Cuando se crea un
+dominio nuevo, el agente debe preferir el CLI automatizado:
+
+```bash
+pnpm --filter @opencode-automation/scripts generate-back \
+  --entity Product \
+  --table productos \
+  --fields "nombre:string,precio:number" \
+  --operations-file specs/{feature}/contracts/operations.json
+```
+
+No ejecutar el generator completo sobre un dominio existente. En ese caso,
+implementar solamente los archivos indicados por `tasks.md`.
+
+El generator crea scaffold técnico y CRUD genérico. No implementa reglas de
+negocio, permisos específicos, integraciones, cálculos, flujos cross-domain ni
+criterios de aceptación. Esas reglas deben ser implementadas por el agente
+después de generar la estructura.
+
+El archivo `operations.json` es la única fuente de verdad para las operaciones
+API. Backend y frontend deben consumir el mismo contrato; no deben inferir
+operaciones por separado desde lenguaje natural.
+
 ---
 
 ## Convención de Nombres del Proyecto
@@ -35,6 +60,12 @@ description: Genera un dominio DDD completo en el servidor: entidad, interfaces,
 ---
 
 ## Protocolo de Preguntas (OBLIGATORIO si faltan datos)
+
+Si la skill se ejecuta como subagente de `@blendverse-implement` y
+`spec.md`, `tasks.md` y `contracts/operations.json` contienen los datos
+necesarios, no detener el pipeline para pedir una aprobación interactiva.
+Listar el árbol en el reporte y continuar. Las preguntas siguen siendo
+obligatorias cuando falta información material.
 
 Antes de generar cualquier archivo, pregunta al usuario:
 

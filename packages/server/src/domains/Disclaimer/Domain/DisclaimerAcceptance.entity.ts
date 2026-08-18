@@ -28,6 +28,7 @@ export class DisclaimerAcceptance {
     private readonly _ip: IPAddress,
     private readonly _user_agent: UserAgent,
     private readonly _timestamp: Date,
+    private readonly _terms_version_id: number | null,
     private readonly _id?: number,
   ) {}
 
@@ -39,7 +40,12 @@ export class DisclaimerAcceptance {
     ip,
     user_agent,
     timestamp,
+    terms_version_id,
   }: IDisclaimerAcceptance): DisclaimerAcceptance {
+    if (terms_version_id == null) {
+      throw new Error('Terms version is required for an acceptance');
+    }
+
     return new DisclaimerAcceptance(
       id_usuario,
       id_empresa,
@@ -47,6 +53,7 @@ export class DisclaimerAcceptance {
       new IPAddress(ip),
       new UserAgent(user_agent ?? null),
       timestamp instanceof Date ? timestamp : new Date(timestamp),
+      terms_version_id,
       id,
     );
   }
@@ -64,6 +71,7 @@ export class DisclaimerAcceptance {
       ip: this._ip.value,
       user_agent: this._user_agent.value,
       timestamp: this._timestamp,
+      terms_version_id: this._terms_version_id,
     };
   }
 }

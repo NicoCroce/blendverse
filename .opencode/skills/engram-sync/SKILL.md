@@ -15,6 +15,7 @@ Mantener en Engram un espejo persistente de cada fase del pipeline `blendverse-s
 - Engram es un **espejo de estado** para detección de resume y recuperación entre sesiones. Nunca se usa para reconstruir contenido si el archivo existe.
 - **Anti-divergencia:** antes de reanudar un pipeline o tarea, verificar en disco que el artefacto que el espejo dice completado realmente existe. Si falta el archivo pero existe el espejo, el espejo está obsoleto → regenerar la fase y sobrescribir el espejo.
 - Si el espejo y el archivo se contradicen → **gana el archivo**. Corregir el espejo (`mem_save` con el mismo `topic_key`).
+- Un estado `BLOCKED` en Engram nunca detiene una tarea antes de verificar el `task_id` exacto, su checkpoint y `memory/{task_id}/BLOCKED.md` en disco. Un bloqueo histórico o perteneciente a `parent_task_id` no bloquea una tarea reabierta.
 
 ## Cuándo invocar esta skill
 
@@ -39,6 +40,7 @@ Mantener en Engram un espejo persistente de cada fase del pipeline `blendverse-s
 | `feature/{feature}/consistency` | Fase 5 — reporte de consistencia                    | Comando                 |
 | `feature/{feature}/handoff`     | Fase 6 — handoff a `@blendverse-implement`          | Comando                 |
 | `task/{task_id}/registration`   | Registro de la tarea (Paso 1 de implement)          | `@blendverse-implement` |
+| `task/{task_id}/baseline`       | `memory/{task_id}/00_baseline.json`                 | `@blendverse-implement` |
 | `task/{task_id}/dev-log`        | `memory/{task_id}/02_dev_log.md`                    | back/front              |
 | `task/{task_id}/test-log`       | `memory/{task_id}/05_test_log.md`                   | tester                  |
 | `task/{task_id}/qa-report`      | `memory/{task_id}/03_qa_report.md`                  | qa                      |
@@ -71,16 +73,17 @@ status: <APROBADO según tabla de estados>
 
 Estados válidos por artefacto:
 
-| Artefacto                                 | Estados                                   |
-| ----------------------------------------- | ----------------------------------------- |
-| `pipeline`                                | `IN_PROGRESS` \| `COMPLETED`              |
-| `spec` / `plan` / `tasks` / `consistency` | `APPROVED`                                |
-| `clarify`                                 | `APPROVED` \| `SKIPPED`                   |
-| `handoff`                                 | `HANDOFF`                                 |
-| `registration` / `status`                 | `IN_PROGRESS` \| `COMPLETED` \| `BLOCKED` |
-| `dev-log`                                 | `IMPLEMENTED` \| `IN_PROGRESS`            |
-| `test-log` / `qa-report`                  | `PASS` \| `FAIL`                          |
-| `review-log`                              | `APPROVED` \| `REJECTED`                  |
+| Artefacto                                 | Estados                                    |
+| ----------------------------------------- | ------------------------------------------ |
+| `pipeline`                                | `IN_PROGRESS` \| `COMPLETED`               |
+| `spec` / `plan` / `tasks` / `consistency` | `APPROVED`                                 |
+| `clarify`                                 | `APPROVED` \| `SKIPPED`                    |
+| `handoff`                                 | `HANDOFF`                                  |
+| `registration` / `status`                 | `IN_PROGRESS` \| `COMPLETED` \| `BLOCKED`  |
+| `baseline`                                | `PASS` \| `FAIL` \| `TIMEOUT` \| `NOT_RUN` |
+| `dev-log`                                 | `IMPLEMENTED` \| `IN_PROGRESS`             |
+| `test-log` / `qa-report`                  | `PASS` \| `FAIL`                           |
+| `review-log`                              | `APPROVED` \| `REJECTED`                   |
 
 Campos adicionales según el artefacto (opcionales salvo `status`):
 
@@ -119,24 +122,24 @@ mem_search(query: "task {task_id} registration", project: "<proyecto>")
 ```
 
 - `status` COMPLETED → tarea ya cerrada; no reabrir. Informar y detener.
-- `status` BLOCKED → informar que requiere intervención humana; detener.
+- `status` BLOCKED → detener solo si `memory/{task_id}/BLOCKED.md` existe y el `task_id` coincide exactamente. Si el archivo no existe o pertenece a una tarea padre, corregir el espejo y continuar desde el checkpoint válido.
 - `registration` IN_PROGRESS → reutilizar `task_id`, `scope` y `context_source` sin re-derivarlos.
 
 ### Patrón 3 — ¿Dónde se cortó la cadena de implementación?
 
 Buscar los espejos `task/{task_id}/*` y usar el **último espejo presente** para decidir el punto de reanudación:
 
-| Último espejo presente | Estado        | Punto de reanudación                                        |
-| ---------------------- | ------------- | ----------------------------------------------------------- |
-| `review-log`           | `APPROVED`    | Solo cerrar: actualizar `task/{task_id}/status` a COMPLETED |
-| `review-log`           | `REJECTED`    | Coder (con feedback del review) → tester → qa → reviewer    |
-| `qa-report`            | `FAIL`        | Coder (con error del QA) → tester → qa                      |
-| `qa-report`            | `PASS`        | Reviewer                                                    |
-| `test-log`             | `FAIL`        | Tester (corregir/re-ejecutar)                               |
-| `test-log`             | `PASS`        | QA                                                          |
-| `dev-log`              | `IMPLEMENTED` | Tester                                                      |
-| `registration` (solo)  | `IN_PROGRESS` | Inicio de la cadena según `scope`                           |
-| ninguno                | —             | Cadena completa desde el inicio según `scope`               |
+| Último espejo presente | Estado        | Punto de reanudación                                                                                                                                                          |
+| ---------------------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `review-log`           | `APPROVED`    | Solo cerrar: actualizar `task/{task_id}/status` a COMPLETED                                                                                                                   |
+| `review-log`           | `REJECTED`    | Coder (con feedback del review) → tester → qa → reviewer                                                                                                                      |
+| `qa-report`            | `FAIL`        | Coder (con error del QA) → tester → qa                                                                                                                                        |
+| `qa-report`            | `PASS`        | Reviewer                                                                                                                                                                      |
+| `test-log`             | `FAIL`        | Clasificar el fallo: specs obsoletos con evidencia contractual vuelven al Tester; regresiones vuelven al Coder; `TIMEOUT`/`INFRA_FAILURE` se reintentan sin consumir attempts |
+| `test-log`             | `PASS`        | QA                                                                                                                                                                            |
+| `dev-log`              | `IMPLEMENTED` | Tester                                                                                                                                                                        |
+| `registration` (solo)  | `IN_PROGRESS` | Inicio de la cadena según `scope`                                                                                                                                             |
+| ninguno                | —             | Cadena completa desde el inicio según `scope`                                                                                                                                 |
 
 Siempre verificar el archivo correspondiente en `memory/{task_id}/` antes de actuar: el espejo indica estado, el archivo es el contenido.
 

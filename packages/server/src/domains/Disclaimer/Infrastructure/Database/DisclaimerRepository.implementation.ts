@@ -32,12 +32,17 @@ export class DisclaimerRepositoryImplementation
   }
 
   async getStatus({
-    userId,
-    ownerId,
+    termsVersionId,
+    requestContext,
   }: IGetSignatureStatusRepository): Promise<DisclaimerAcceptance | null> {
+    const { userId, ownerId } = requestContext.values;
     // DisclaimerAcceptanceModel uses `id_empresa` as tenant column
     const record = await DisclaimerAcceptanceModel.findOne({
-      where: { id_usuario: userId, id_empresa: ownerId },
+      where: {
+        id_usuario: userId,
+        id_empresa: ownerId,
+        terms_version_id: termsVersionId,
+      },
     });
 
     if (!record) return null;
@@ -50,17 +55,19 @@ export class DisclaimerRepositoryImplementation
       ip: record.ip,
       user_agent: record.user_agent,
       timestamp: record.timestamp,
+      terms_version_id: record.terms_version_id,
     });
   }
 
   async sign({
-    userId,
-    ownerId,
     hash,
     ip,
     userAgent,
     timestamp,
+    termsVersionId,
+    requestContext,
   }: ISignDisclaimerRepository): Promise<DisclaimerAcceptance> {
+    const { userId, ownerId } = requestContext.values;
     const [record] = await DisclaimerAcceptanceModel.upsert({
       id_usuario: userId,
       id_empresa: ownerId,
@@ -68,6 +75,7 @@ export class DisclaimerRepositoryImplementation
       ip,
       user_agent: userAgent,
       timestamp,
+      terms_version_id: termsVersionId,
     });
 
     return DisclaimerAcceptance.create({
@@ -78,23 +86,24 @@ export class DisclaimerRepositoryImplementation
       ip: record.ip,
       user_agent: record.user_agent,
       timestamp: record.timestamp,
+      terms_version_id: record.terms_version_id,
     });
   }
 
   async getEmployeesByCompany({
-    ownerId,
     search,
     page,
     limit,
     withoutSegments,
     segmentIds,
+    termsVersionId,
+    requestContext,
   }: IGetEmployeesByCompanyRepository): Promise<
     IPaginationResponse<IEmployeeRecord[]>
   > {
     const whereClause: Record<string | symbol, unknown> = {};
-    if (ownerId !== undefined) {
-      whereClause.id_propietario = ownerId;
-    }
+    const ownerId = requestContext.values.ownerId;
+    whereClause.id_propietario = ownerId;
     if (search) {
       whereClause[Op.or] = [
         { nombre: { [Op.like]: `%${search}%` } },
@@ -155,7 +164,11 @@ export class DisclaimerRepositoryImplementation
           model: DisclaimerAcceptanceModel,
           as: 'DisclaimerAcceptance',
           required: false,
-          attributes: ['hash_prueba', 'timestamp'],
+          attributes: ['hash_prueba', 'timestamp', 'terms_version_id'],
+          where: {
+            id_empresa: requestContext.values.ownerId,
+            terms_version_id: termsVersionId,
+          },
         },
       ],
       offset,
@@ -196,12 +209,11 @@ export class DisclaimerRepositoryImplementation
   }
 
   async getPendingEmployeeIds({
-    ownerId,
+    termsVersionId,
+    requestContext,
   }: IGetPendingEmployeeIdsRepository): Promise<number[]> {
-    const whereClause: Record<string, unknown> = {};
-    if (ownerId !== undefined) {
-      whereClause.id_propietario = ownerId;
-    }
+    const { ownerId } = requestContext.values;
+    const whereClause: Record<string, unknown> = { id_propietario: ownerId };
 
     const users = await UserModel.findAll({
       where: whereClause,
@@ -213,6 +225,8 @@ export class DisclaimerRepositoryImplementation
     const signedRecords = await DisclaimerAcceptanceModel.findAll({
       where: {
         id_usuario: { [Op.in]: userIds },
+        id_empresa: ownerId,
+        terms_version_id: termsVersionId,
       },
       attributes: ['id_usuario', 'hash_prueba', 'timestamp'],
     });
@@ -251,6 +265,7 @@ export class DisclaimerRepositoryImplementation
 
   async getEmployeesWithoutDisclaimerAcceptance({
     requestContext,
+    termsVersionId,
   }: IGetPendingDisclaimerAcceptancesRepository): Promise<
     IPendingDisclaimerAcceptanceRecord[]
   > {
@@ -264,7 +279,11 @@ export class DisclaimerRepositoryImplementation
           model: DisclaimerAcceptanceModel,
           as: 'DisclaimerAcceptance',
           required: false,
-          attributes: ['hash_prueba', 'timestamp'],
+          attributes: ['hash_prueba', 'timestamp', 'terms_version_id'],
+          where: {
+            id_empresa: requestContext.values.ownerId,
+            terms_version_id: termsVersionId,
+          },
         },
       ],
       order: [['apellido', 'ASC']],
@@ -296,9 +315,11 @@ export class DisclaimerRepositoryImplementation
 
   async countPendingDisclaimers({
     requestContext,
+    termsVersionId,
   }: ICountPendingDisclaimersRepository): Promise<number> {
     const pending = await this.getEmployeesWithoutDisclaimerAcceptance({
       requestContext,
+      termsVersionId,
     });
     return pending.length;
   }

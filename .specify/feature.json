@@ -1,1 +1,3 @@
-{ "feature_directory": "specs/004-employee-daily-reminders" }
+{
+  "feature_directory": "specs/company-email-settings"
+}

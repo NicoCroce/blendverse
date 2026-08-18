@@ -27,7 +27,7 @@ cd packages/server && npx tsc --noEmit 2>&1
 cd packages/app && npx tsc --noEmit 2>&1
 ```
 
-**Criterio:** `status: PASS` solo si la salida no contiene `error TS`.
+**Criterio:** `status: PASS` solo si la salida no contiene `error TS`. Un timeout se clasifica como `TIMEOUT` y se reintenta; no consume un intento funcional.
 
 ### 2. Linting
 
@@ -56,7 +56,7 @@ cd packages/server && npx vitest run 2>&1
 cd packages/app && npx vitest run 2>&1
 ```
 
-**Criterio:** `status: PASS` solo si todos los tests pasan (0 failed).
+**Criterio:** `status: PASS` solo si todos los tests afectados pasan y no aparecen fallos nuevos respecto de `00_baseline.json`. Los fallos baseline deben quedar enumerados y no bloquean por sí solos.
 
 ### 4. Verificación de Estructura de Carpetas
 
@@ -97,7 +97,7 @@ domains/{domain}/
 Domains/{Domain}/
   {Entity}.entity.ts
   {Domain}.service.ts
-  {Domain}.routes.tsx
+  {Domain}.routes.ts
   {Domain}.router.tsx
   Hooks/
     useCache{Entities}.ts
@@ -118,13 +118,13 @@ Domains/{Domain}/
 
 ### 5. Determinación del Status Final
 
-| Condición                                                             | Status |
-| --------------------------------------------------------------------- | ------ |
-| tsc sin errores + linter sin errores + tests OK + estructura correcta | `PASS` |
-| Cualquier error de tsc                                                | `FAIL` |
-| Cualquier error de linter (no warning)                                | `FAIL` |
-| Cualquier test fallado                                                | `FAIL` |
-| Archivo en capa incorrecta                                            | `FAIL` |
+| Condición                                                                                                | Status |
+| -------------------------------------------------------------------------------------------------------- | ------ |
+| tsc sin errores + linter sin errores + tests afectados OK + sin regresiones nuevas + estructura correcta | `PASS` |
+| Cualquier error de tsc                                                                                   | `FAIL` |
+| Cualquier error de linter (no warning)                                                                   | `FAIL` |
+| Cualquier test afectado fallado o regresión nueva no clasificada                                         | `FAIL` |
+| Archivo en capa incorrecta                                                                               | `FAIL` |
 
 ---
 
@@ -139,6 +139,7 @@ agent: 'QA_Agent'
 status: 'PASS' # PASS | FAIL
 attempts: 1
 date: 'YYYY-MM-DD'
+failure_class: null # implementation_regression | stale_test | baseline | test_infrastructure | timeout
 ---
 
 # Reporte de QA — [Título de la Tarea]
@@ -158,6 +159,8 @@ date: 'YYYY-MM-DD'
 
 **Paso fallido:** [1 / 2 / 3 / 4]
 
+**Clasificación:** `implementation_regression` | `stale_test` | `baseline` | `test_infrastructure` | `timeout`
+
 **Error:**
 ```
 
@@ -176,9 +179,9 @@ date: 'YYYY-MM-DD'
 
 ## Reglas de Calidad
 
-1. **Pegar el output completo del terminal** — no resumir ni truncar los errores.
+1. **Conservar el output completo durante la ejecución**, pero no pegarlo en el reporte final: resumir únicamente el error concreto, archivo, clasificación y acción esperada.
 2. **Sección "Tests (Vitest)"** es obligatoria aunque `status: PASS`.
 3. **Si `status: FAIL`**, la sección "Contexto para el Coder" es obligatoria.
 4. **`attempts`** comienza en `1` y se incrementa en cada re-ejecución.
-5. **Si `attempts >= 3`**, no escribir el reporte — ejecutar el Protocolo Break-Loop definido en `@blendverse-qa`.
+5. **Si `attempts >= 3`**, crear `memory/{task_id}/BLOCKED.md` y ejecutar el Protocolo Break-Loop definido en `@blendverse-qa`.
 ```

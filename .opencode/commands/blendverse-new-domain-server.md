@@ -15,6 +15,11 @@ El usuario quiere crear un nuevo dominio en `packages/server`.
 4. Actualiza los dos archivos globales de registro.
 5. Verifica que no haya errores de TypeScript en los archivos creados.
 
+Si existe `specs/{feature}/contracts/operations.json`, ejecútalo mediante el
+CLI `generate-back --operations-file`. El generator crea únicamente el
+scaffold técnico y CRUD genérico; después debes implementar la lógica de
+negocio específica solicitada.
+
 Dominio a crear: **{{domainName}}**
 Entidad: **{{entityName}}**
 Atributos: **{{attributes}}**

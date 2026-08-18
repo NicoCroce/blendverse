@@ -127,6 +127,44 @@
           "attempts": 1
         }
       ]
+    },
+    {
+      "task_id": "TASK-005-company-email-settings-20260817-1",
+      "feature": "company-email-settings",
+      "branch": "005-company-email-settings",
+      "status": "BLOCKED",
+      "created_at": "2026-08-17T00:00:00Z",
+      "title": "Configuración tenant-scoped de comunicaciones por empresa",
+      "spec": "specs/company-email-settings/spec.md",
+      "plan": "specs/company-email-settings/plan.md",
+      "tasks": "specs/company-email-settings/tasks.md"
+    },
+    {
+      "task_id": "TASK-005-company-email-settings-20260817-2",
+      "parent_task_id": "TASK-005-company-email-settings-20260817-1",
+      "reopened_from": "TASK-005-company-email-settings-20260817-1",
+      "feature": "company-email-settings",
+      "branch": "005-company-email-settings",
+      "status": "IN_PROGRESS",
+      "created_at": "2026-08-17T19:44:52Z",
+      "title": "Reconciliación de contratos de términos y tests de company-email-settings",
+      "spec": "specs/company-email-settings/spec.md",
+      "plan": "specs/company-email-settings/plan.md",
+      "tasks": "specs/company-email-settings/tasks.md",
+      "current_agent": "QA_Agent",
+      "resume_point": "qa",
+      "agents_chain": [
+        {
+          "agent": "Front_Agent",
+          "status": "IMPLEMENTED",
+          "attempts": 2
+        },
+        {
+          "agent": "Tester_Agent",
+          "status": "PASS",
+          "attempts": 2
+        }
+      ]
     }
   ]
 }

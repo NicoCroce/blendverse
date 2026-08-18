@@ -2,6 +2,7 @@ import { executeUseCase, IPaginationResponse } from '@server/Application';
 import { DisclaimerAcceptance, IEmployeeRecord } from '../Domain';
 import {
   IGetDisclaimerText,
+  IGetDisclaimerTextResponse,
   IGetSignatureStatus,
   ISignDisclaimer,
   IGetEmployeesByCompany,
@@ -29,7 +30,7 @@ export class DisclaimerService {
   async getDisclaimerText({
     input,
     requestContext,
-  }: IGetDisclaimerText): Promise<string> {
+  }: IGetDisclaimerText): Promise<IGetDisclaimerTextResponse> {
     return executeUseCase({
       useCase: this._getDisclaimerText,
       input,

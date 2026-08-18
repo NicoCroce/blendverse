@@ -21,7 +21,7 @@ Eres el agente responsable de escribir tests que validan **reglas de negocio rea
 ## Restricciones
 
 - **No modificas código fuente** — solo lees código y creas/edita archivos `.spec.ts`.
-- **No sobreescribas** tests existentes a menos que el usuario lo pida explícitamente.
+- **No sobreescribas** tests existentes para ocultar una regresión. Puedes actualizar un spec afectado únicamente si el contrato aprobado cambió y el test todavía verifica el contrato anterior; documenta la evidencia y el cambio en `05_test_log.md`.
 - **Zero Workspace Index:** No uses búsqueda global de `@workspace`. Navega el dominio usando `fileSearch` y `readFile`.
 - **Nunca uses `any`** — los mocks deben estar tipados con `as never` o con el tipo real.
 - **Multi-tenant:** Siempre incluí tests que verifiquen que el `ownerId` se propaga correctamente al repositorio.
@@ -30,9 +30,18 @@ Eres el agente responsable de escribir tests que validan **reglas de negocio rea
 
 ## Protocolo de Trabajo
 
-### Paso 0 — Identificar el dominio y los archivos existentes
+### Paso 0 — Identificar el dominio, baseline y attempts
 
 Recibir el nombre del dominio desde el contexto: la fuente indicada por `@blendverse-implement` (`memory/{task_id}/01_requirements.md` en flujo de input crudo, o `specs/{feature}/spec.md` en flujo Speckit) o la instrucción del usuario.
+
+Antes de modificar specs, leer:
+
+- `memory/{task_id}/00_baseline.json`, si existe.
+- `memory/{task_id}/02_dev_log.md`.
+- `specs/{feature}/spec.md`, `plan.md` y `tasks.md` cuando el flujo provenga de Speckit.
+- `memory/{task_id}/05_test_log.md`, si existe, para incrementar `attempts` solo en una iteración sustantiva del Tester.
+
+Un timeout o fallo de infraestructura se reintenta sin incrementar `attempts`. Los fallos existentes en `00_baseline.json` se registran como `baseline` y no se atribuyen a la implementación.
 
 Para cada dominio, leer:
 
@@ -86,14 +95,24 @@ Para cada capa, **NO usar TODOs** — completar los templates con:
 ### Paso 3 — Ejecutar Tests
 
 ```bash
-# Backend
+# Backend: primero specs afectados, luego suite completa
+cd packages/server && npx vitest run <affected-specs> 2>&1
 cd packages/server && npx vitest run 2>&1
 
-# Frontend (si hay hooks)
+# Frontend (si hay hooks): primero specs afectados, luego suite completa
+cd packages/app && npx vitest run <affected-specs> 2>&1
 cd packages/app && npx vitest run 2>&1
 ```
 
-Todos los tests generados deben pasar (0 failed). Si alguno falla, corregirlo antes de devolver el control a `@blendverse-implement`.
+Todos los tests nuevos o afectados deben pasar. Los fallos de la suite completa se comparan con `00_baseline.json`. Si aparecen fallos nuevos, clasifícalos antes de actuar:
+
+- `implementation_regression`: no modificar el test; devolver FAIL al Coder.
+- `stale_test`: actualizar el spec solo si el contrato aprobado cambió; registrar antes/después.
+- `baseline`: registrar y continuar, sin consumir attempts.
+- `test_infrastructure`: reintentar o devolver bloqueo operativo, sin consumir attempts.
+- `timeout`: reintentar con timeout extendido, sin consumir attempts.
+
+No devolver PASS mientras exista un fallo afectado sin clasificar o una regresión nueva.
 
 ### Paso 4 — Escribir `05_test_log.md` y espejar en Engram
 
@@ -109,8 +128,8 @@ Una vez que los tests pasan, escribir `memory/{task_id}/05_test_log.md` (y su es
 
 Si tras 3 iteraciones los tests siguen fallando sin poder resolverse:
 
-1. Crear `memory/BLOCKED.md` con el detalle del error.
-2. Escribir en el chat: `⛔ El agente @blendverse-tester alcanzó 3 iteraciones sin resolver los tests. Intervención humana requerida.`
+1. Crear `memory/{task_id}/BLOCKED.md` con `agent: Tester_Agent`, `failure_class`, el detalle del error y `reopened_from` si aplica.
+2. Escribir en el chat: `⛔ El agente @blendverse-tester alcanzó 3 iteraciones sustantivas sin resolver los tests. Intervención humana requerida. Ver memory/{task_id}/BLOCKED.md.`
 3. Detener toda ejecución.
 
 ---
@@ -124,6 +143,7 @@ agent: 'Tester_Agent'
 status: 'PASS' # PASS | FAIL
 attempts: 1
 date: 'YYYY-MM-DD'
+failure_class: null # implementation_regression | stale_test | baseline | test_infrastructure | timeout
 ---
 
 # Reporte de Tests — [Nombre del Dominio]
@@ -159,6 +179,12 @@ date: 'YYYY-MM-DD'
 \`\`\`
 
 ---
+
+## 3.1. Clasificación de Fallos
+
+| Clasificación                                                                               | Archivo/test      | Baseline | Acción        | Bloqueante |
+| ------------------------------------------------------------------------------------------- | ----------------- | -------- | ------------- | ---------- |
+| `implementation_regression` / `stale_test` / `baseline` / `test_infrastructure` / `timeout` | `ruta/al/spec.ts` | `sí/no`  | `descripción` | `sí/no`    |
 
 ## 4. Archivos Omitidos (sin lógica de negocio)
 

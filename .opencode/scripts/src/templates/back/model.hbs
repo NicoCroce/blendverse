@@ -1,0 +1,24 @@
+import { DataTypes, Model, Optional } from 'sequelize';
+import { sequelize } from '@server/Infrastructure';
+import type { {{Entity}}Props } from '../../Domain/{{Entity}}.entity';
+
+type I{{Entity}}CreationAttributes = Optional<{{Entity}}Props, 'id'>;
+
+export class {{Entity}}Model extends Model<{{Entity}}Props, I{{Entity}}CreationAttributes> {}
+
+{{Entity}}Model.init(
+  {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    id_propietario: { type: DataTypes.INTEGER, allowNull: false },
+{{#each fields}}
+    {{this.name}}: { type: {{this.dataType}}, allowNull: {{this.nullable}} },
+{{/each}}
+  },
+  {
+    sequelize,
+    tableName: '{{tableName}}',
+    timestamps: false,
+  },
+);
+
+export default {{Entity}}Model;

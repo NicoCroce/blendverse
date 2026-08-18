@@ -1,5 +1,8 @@
 import { DASHBOARD_ACCESS, MenuItem } from '@app/Application';
-import { faChartLine } from '@fortawesome/free-solid-svg-icons';
+import {
+  faChartLine,
+  faEnvelopeOpenText,
+} from '@fortawesome/free-solid-svg-icons';
 import {
   ADMIN_DASHBOARD,
   DOCUMENTS_DASHBOARD,
@@ -8,6 +11,7 @@ import {
   SEGMENTS_DASHBOARD,
   USER_SEGMENTS_DASHBOARD,
 } from './Admin.routes';
+import { COMPANY_EMAIL_SETTINGS_ROUTE } from '@app/Domains/CompanyEmailSettings/CompanyEmailSettings.routes';
 
 export const MenuDashboard = () => (
   <MenuItem
@@ -40,6 +44,12 @@ export const MenuDashboard = () => (
     <MenuItem
       to={USER_SEGMENTS_DASHBOARD}
       text="Segmentos a usuarios"
+      permission={DASHBOARD_ACCESS}
+    />
+    <MenuItem
+      to={COMPANY_EMAIL_SETTINGS_ROUTE}
+      text="Comunicaciones"
+      icon={faEnvelopeOpenText}
       permission={DASHBOARD_ACCESS}
     />
   </MenuItem>

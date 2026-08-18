@@ -333,6 +333,22 @@ Output esperado: `specs/{feature}/frontend-design.md`
 
 Invocar el agente `@speckit-plan` para generar los artefactos de diseño técnico. Si existe `specs/{feature}/frontend-design.md`, indicarle que lo lea para alinear la sección frontend del plan (tokens, tipografías, layout) con la dirección visual.
 
+Si la feature crea un dominio nuevo, el plan debe incluir
+`specs/{feature}/contracts/operations.json` con este formato:
+
+```json
+{
+  "apiOperations": ["getAll", "get", "create"],
+  "uiViews": ["list", "detail", "new"]
+}
+```
+
+`apiOperations` es la fuente única para backend y frontend. `uiViews` define
+las superficies que debe scaffoldar el frontend; una vista `detail` requiere
+la operación API `get`. Si la feature modifica un dominio existente, el
+contrato puede marcarse como `not_applicable` y los agentes no deben ejecutar
+los generators completos.
+
 Output esperado en `specs/{feature}/`:
 
 - `plan.md` (tech stack, estructura, fases)
@@ -502,7 +518,7 @@ Antes de delegar, invocar la skill `engram-sync` y guardar:
 
 Luego,**sin esperar intervención del usuario**, invocar directamente el agente `@blendverse-implement` pasándole `{{feature}}` explícitamente en el prompt, por ejemplo:
 
-> La feature a implementar es `{{feature}}`. Los artefactos de diseño están en `specs/{{feature}}/` (`spec.md`, `plan.md`, `tasks.md` y, si aplica, `frontend-design.md`). Resolvé el `task_id` (Paso 1 de tu protocolo) y procedé con la cadena `back → front → tester → qa → reviewer` de forma autónoma. El agente `@blendverse-front` debe leer y aplicar `frontend-design.md` como brief visual al implementar la capa de presentación. Usá la skill `engram-sync` para registrar la tarea en Engram y retomar si hay una tarea en curso. Una vez que `@blendverse-reviewer` apruebe (todas las validaciones corregidas) y la tarea quede cerrada, ejecutá el Paso 5 de tu protocolo: invocá el agente `pr-detail` para generar `pr-detail.md`, pusheá la rama y abrí el PR contra `main` con `gh pr create`, reportando la URL al usuario.
+> La feature a implementar es `{{feature}}`. Los artefactos de diseño están en `specs/{{feature}}/` (`spec.md`, `plan.md`, `tasks.md`, `contracts/operations.json` si crea un dominio nuevo y, si aplica, `frontend-design.md`). Resolvé el `task_id` (Paso 1 de tu protocolo) y procedé con la cadena `back → front → tester → qa → reviewer` de forma autónoma. Si existe `operations.json`, backend y frontend deben consumirlo con los generators; si el dominio ya existe, no deben ejecutar el generator completo. El generator solo crea scaffold técnico: los agentes deben implementar la lógica de negocio y UI específica de la feature después. El agente `@blendverse-front` debe leer y aplicar `frontend-design.md` como brief visual al implementar la capa de presentación. Usá la skill `engram-sync` para registrar la tarea y retomar si hay una tarea en curso. Una vez que `@blendverse-reviewer` apruebe (todas las validaciones corregidas) y la tarea quede cerrada, ejecutá el Paso 5 de tu protocolo: invocá el agente `pr-detail` para generar `pr-detail.md`, pusheá la rama y abrí el PR contra `main` con `gh pr create`, reportando la URL al usuario.
 
 Este orquestador ya sabe leer `specs/{{feature}}/spec.md` y `tasks.md` directamente (sin transcribirlos a `memory/`), detectar el alcance e iniciar la cadena completa hasta el cierre de la tarea.
 
@@ -533,4 +549,4 @@ Este orquestador ya sabe leer `specs/{{feature}}/spec.md` y `tasks.md` directame
 - Si alguna de las fases demora más de 5 minutos, debes indicarle al usuario por pantalla y analizar por qué está demandando tanto tiempo.
 - Cada fase aprobada se espeja en Engram (skill `engram-sync`). Si el pipeline se interrumpe entre sesiones, el pre-flight detecta `feature/{feature}/pipeline` en `IN_PROGRESS` y ofrece reanudar desde `current_phase`.
 - La Fase 3.1 es **condicional al alcance UI**: para features back-only no se genera `frontend-design.md` y el espejo en Engram queda como `SKIPPED`. El artefacto define una **dirección visual** (tokens de color/tipografía/layout y elemento firma), no un mockup.
-- La evaluación de `tsc` + `eslint` (skill `qa-runner`) y el fix automático de inconsistencias **no** ocurren en las Fases 1–5 (no hay código aún): ocurren en la cadena del handoff (Fase 6). `@blendverse-qa` valida estáticamente y escribe `03_qa_report.md`; `@blendverse-implement` re-invoca al Coder (`back`/`front`) con el error concreto hasta `PASS`. El tope de 3 intentos lo cuenta QA leyendo `attempts` del `02_dev_log.md` (que incrementa el Coder): si `attempts >= 3` ejecuta el Protocolo Break-Loop → `BLOCKED`.
+- La evaluación de `tsc` + `eslint` (skill `qa-runner`) y el fix automático de inconsistencias **no** ocurren en las Fases 1–5 (no hay código aún): ocurren en la cadena del handoff (Fase 6). `@blendverse-qa` valida estáticamente y escribe `03_qa_report.md`; `@blendverse-implement` re-invoca al Coder (`back`/`front`) con el error concreto hasta `PASS`. Cada agente cuenta sus propios intentos en su reporte; timeout, infraestructura y baseline no consumen intentos funcionales. Si el contador del agente activo llega a 3, se crea `memory/{task_id}/BLOCKED.md` y se detiene la cadena.

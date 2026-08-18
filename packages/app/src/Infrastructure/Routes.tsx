@@ -4,6 +4,7 @@ import { CertificatesRouter } from '@app/Domains/Certificates';
 import { DocumentsRouter } from '@app/Domains/Documents/';
 import { EmpresasUsuariosRouter } from '@app/Domains/EmpresasUsuarios';
 import { UsersRouter } from '@app/Domains/Users';
+import { CompanyEmailSettingsRouter } from '@app/Domains/CompanyEmailSettings';
 
 export const AllRoutes = [
   AuthRouter,
@@ -12,4 +13,5 @@ export const AllRoutes = [
   CertificatesRouter,
   AdminRouter,
   EmpresasUsuariosRouter,
+  CompanyEmailSettingsRouter,
 ];

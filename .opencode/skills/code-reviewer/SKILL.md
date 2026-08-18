@@ -139,7 +139,7 @@ date: 'YYYY-MM-DD'
 2. **Si `status: REJECTED`**, la sección de Feedback es **obligatoria** con ejemplo de código correcto.
 3. **No rechazar** por ítems 🟡 — solo generar feedback en "Deuda Técnica".
 4. **`attempts`** comienza en `1` y se incrementa en cada re-revisión.
-5. **Si `attempts >= 3`**, no escribir el reporte — ejecutar el Protocolo Break-Loop definido en `@blendverse-reviewer`.
+5. **Si `attempts >= 3`**, crear `memory/{task_id}/BLOCKED.md` y ejecutar el Protocolo Break-Loop definido en `@blendverse-reviewer`.
 
 ```
 

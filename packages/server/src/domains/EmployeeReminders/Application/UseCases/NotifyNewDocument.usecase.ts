@@ -1,8 +1,9 @@
 import { IUseCase } from '@server/Application';
-import { emailTemplates } from '@server/Infrastructure';
-import { isValidEmail } from '@server/Infrastructure';
-import { logger } from '@server/Infrastructure/utils/pino';
-import { IEmployeeEmailSender } from '../../Domain/EmployeeEmailSender.port';
+import { ResolveEmailDeliveryPolicy } from '@server/domains/CompanyEmailSettings/Application';
+import {
+  IEmployeeEmailSender,
+  isValidEmployeeEmail,
+} from '../../Domain/EmployeeEmailSender.port';
 import {
   INewDocumentNotification,
   INotifyNewDocument,
@@ -19,38 +20,38 @@ export class NotifyNewDocument implements IUseCase<
   INotifyNewDocumentOutput,
   INewDocumentNotification
 > {
-  constructor(private readonly employeeEmailSender: IEmployeeEmailSender) {}
+  constructor(
+    private readonly employeeEmailSender: IEmployeeEmailSender,
+    private readonly _resolveEmailDeliveryPolicy?: ResolveEmailDeliveryPolicy,
+  ) {}
 
   async execute({
     input,
+    requestContext,
   }: INotifyNewDocument): Promise<INotifyNewDocumentOutput> {
-    if (!isValidEmail(input.employeeEmail)) {
-      logger.warn(
-        {
-          ownerId: input.ownerId,
-          employeeId: input.employeeId,
-          email: input.employeeEmail,
-        },
-        'New document notification skipped: invalid email',
-      );
+    const policy = this._resolveEmailDeliveryPolicy
+      ? await this._resolveEmailDeliveryPolicy.execute({
+          input: { code: 'employee_document_assigned' },
+          requestContext,
+        })
+      : { enabled: false, welcomeMessage: null };
+    if (!policy.enabled) return { notified: false };
+    if (!isValidEmployeeEmail(input.employeeEmail)) {
       return { notified: false };
     }
 
     try {
-      const { subject, body } = emailTemplates.newDocumentNotification(input);
-
-      await this.employeeEmailSender.send({
+      await this.employeeEmailSender.sendNewDocument({
         to: [input.employeeEmail],
-        subject,
-        html: body,
+        employeeName: input.employeeName,
+        companyName: input.companyName,
+        documents: input.documents,
+        welcomeMessage: policy.welcomeMessage,
+        requestContext,
       });
 
       return { notified: true };
-    } catch (error) {
-      logger.error(
-        { error, ownerId: input.ownerId, employeeId: input.employeeId },
-        'New document notification failed',
-      );
+    } catch {
       return { notified: false };
     }
   }

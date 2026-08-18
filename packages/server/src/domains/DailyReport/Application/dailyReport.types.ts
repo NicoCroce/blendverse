@@ -62,7 +62,8 @@ export interface IGenerateDailyReport extends IRequestContext {
 }
 
 export interface IGenerateDailyReportOutput {
-  report: DailyReport;
+  report: DailyReport | undefined;
+  skipped?: boolean;
 }
 
 // ── SendReportEmail ─────────────────────────────────────────────────────────

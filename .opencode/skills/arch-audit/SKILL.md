@@ -52,11 +52,11 @@ ls packages/app/src/Domains/
 
 Para cada dominio, verificar:
 
-| Chequeo                                                      | Señal de desvío                                                                  |
-| ------------------------------------------------------------ | -------------------------------------------------------------------------------- |
-| ¿`[Entity].entity.ts` importa `IEntity` manualmente?         | Import desde `@server/domains/...` sin usar `inferRouterOutputs` ← **DESVÍO D1** |
-| ¿Tiene carpeta `Hooks/`?                                     | Ausencia es desvío si hay más de 1 página                                        |
-| ¿`[Domain].routes.tsx` usa extensión `.ts` en vez de `.tsx`? | Inconsistencia de extensión                                                      |
+| Chequeo                                              | Señal de desvío                                                                  |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------- |
+| ¿`[Entity].entity.ts` importa `IEntity` manualmente? | Import desde `@server/domains/...` sin usar `inferRouterOutputs` ← **DESVÍO D1** |
+| ¿Tiene carpeta `Hooks/`?                             | Ausencia es desvío si hay más de 1 página                                        |
+| ¿`[Domain].routes.ts` usa la extensión correcta?     | Un archivo `.routes.tsx` para constantes de URL es inconsistencia                |
 
 ### Paso 4 — Detectar desvíos de naming
 

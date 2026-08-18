@@ -1,0 +1,112 @@
+.company-email-settings {
+  --ces-ink-950: #0b0a16;
+  --ces-indigo-900: #171538;
+  --ces-violet-500: #8875ff;
+  --ces-ice-100: #eef0ff;
+  --ces-slate-400: #9b9bb8;
+  --ces-amber-400: #f6b84b;
+  --ces-border: rgb(238 240 255 / 12%);
+  --ces-border-strong: rgb(136 117 255 / 48%);
+  --ces-surface-inset: rgb(11 10 22 / 64%);
+  --ces-font-display: 'Sora', 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  --ces-font-body: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  --ces-font-utility: 'IBM Plex Mono', ui-monospace, monospace;
+  background: var(--ces-ink-950);
+  color: var(--ces-ice-100);
+  font-family: var(--ces-font-body);
+  min-height: 100%;
+}
+
+.company-email-settings :is(button, input, textarea):focus-visible {
+  outline: 2px solid var(--ces-violet-500);
+  outline-offset: 3px;
+}
+
+.ces-panel {
+  background: var(--ces-indigo-900);
+  border: 1px solid var(--ces-border);
+  border-radius: 1rem;
+}
+
+.ces-inset {
+  background: var(--ces-surface-inset);
+  border: 1px solid var(--ces-border);
+  border-radius: 0.75rem;
+}
+
+.ces-display {
+  font-family: var(--ces-font-display);
+}
+
+.ces-utility {
+  font-family: var(--ces-font-utility);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ces-muted {
+  color: var(--ces-slate-400);
+}
+
+.ces-route-line {
+  background: var(--ces-slate-400);
+  height: 2px;
+  position: relative;
+  transition: background-color 180ms ease-out;
+}
+
+.ces-route-line::after {
+  border-bottom: 5px solid transparent;
+  border-left: 6px solid var(--ces-slate-400);
+  border-top: 5px solid transparent;
+  content: '';
+  position: absolute;
+  right: -1px;
+  top: -4px;
+}
+
+.ces-route-line[data-active='true'] {
+  background: var(--ces-violet-500);
+}
+
+.ces-route-line[data-active='true']::after {
+  border-left-color: var(--ces-violet-500);
+}
+
+.ces-risk {
+  border-color: rgb(246 184 75 / 55%);
+  color: var(--ces-amber-400);
+}
+
+.ces-risk-surface {
+  background: rgb(246 184 75 / 9%);
+  border: 1px solid rgb(246 184 75 / 34%);
+}
+
+.ces-status-on {
+  color: var(--ces-violet-500);
+}
+
+.ces-status-off {
+  color: var(--ces-slate-400);
+}
+
+.ces-toggle {
+  accent-color: var(--ces-violet-500);
+}
+
+.ces-preview {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .company-email-settings *,
+  .company-email-settings *::before,
+  .company-email-settings *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

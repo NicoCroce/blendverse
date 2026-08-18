@@ -8,10 +8,10 @@ Actúa como el punto de entrada del flujo orquestado. Tu responsabilidad es inic
 
 ### 1. Registrar la tarea en el historial
 
-1. Leer `memory/history_log.json` (crear el archivo si no existe con un array vacío `[]`).
+1. Leer `memory/history_log.json` (crear el archivo si no existe con `{ "tasks": [] }`).
 2. Ejecutar `git branch --show-current` y sanitizar el resultado (`/` → `-`).
 3. Generar el siguiente `task_id` con el formato `TASK-{rama-sanitizada}-YYYYMMDD-N` (ver `.opencode/instructions/memory.instructions.md`).
-4. Agregar al JSON una nueva entrada con:
+4. Agregar al array `tasks` una nueva entrada con:
    - `task_id`: el ID generado
    - `title`: resumen en una línea de la tarea del usuario
    - `status`: `"IN_PROGRESS"`

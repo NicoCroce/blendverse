@@ -1,0 +1,69 @@
+import { executeUseCase } from '@server/Application';
+import { {{Entity}} } from '../Domain';
+import type {
+{{#if hasGetAll}}  IGetAll{{Entities}},
+{{/if}}
+{{#if hasGet}}  IGet{{Entity}},
+{{/if}}
+{{#if hasCreate}}  ICreate{{Entity}},
+{{/if}}
+{{#if hasUpdate}}  IUpdate{{Entity}},
+{{/if}}
+{{#if hasDelete}}  IDelete{{Entity}},
+{{/if}}
+} from './{{domain}}.types';
+import {
+{{#if hasGetAll}}  GetAll{{Entities}},
+{{/if}}
+{{#if hasGet}}  Get{{Entity}},
+{{/if}}
+{{#if hasCreate}}  Create{{Entity}},
+{{/if}}
+{{#if hasUpdate}}  Update{{Entity}},
+{{/if}}
+{{#if hasDelete}}  Delete{{Entity}},
+{{/if}}
+} from './UseCases';
+{{#if hasGetAll}}import type { IGetAll{{Entities}}RepositoryResponse } from '../Domain/{{Entity}}.repository';
+{{/if}}
+
+export class {{Domain}}Service {
+  constructor(
+{{#if hasGetAll}}    private readonly _getAll{{Entities}}: GetAll{{Entities}},
+{{/if}}
+{{#if hasGet}}    private readonly _get{{Entity}}: Get{{Entity}},
+{{/if}}
+{{#if hasCreate}}    private readonly _create{{Entity}}: Create{{Entity}},
+{{/if}}
+{{#if hasUpdate}}    private readonly _update{{Entity}}: Update{{Entity}},
+{{/if}}
+{{#if hasDelete}}    private readonly _delete{{Entity}}: Delete{{Entity}},
+{{/if}}
+  ) {}
+
+{{#if hasGetAll}}
+  async getAll{{Entities}}({ input, requestContext }: IGetAll{{Entities}}): Promise<IGetAll{{Entities}}RepositoryResponse> {
+    return executeUseCase({ useCase: this._getAll{{Entities}}, input, requestContext });
+  }
+{{/if}}
+{{#if hasGet}}
+  async get{{Entity}}({ input, requestContext }: IGet{{Entity}}): Promise<{{Entity}}> {
+    return executeUseCase({ useCase: this._get{{Entity}}, input, requestContext });
+  }
+{{/if}}
+{{#if hasCreate}}
+  async create{{Entity}}({ input, requestContext }: ICreate{{Entity}}): Promise<{{Entity}}> {
+    return executeUseCase({ useCase: this._create{{Entity}}, input, requestContext });
+  }
+{{/if}}
+{{#if hasUpdate}}
+  async update{{Entity}}({ input, requestContext }: IUpdate{{Entity}}): Promise<{{Entity}}> {
+    return executeUseCase({ useCase: this._update{{Entity}}, input, requestContext });
+  }
+{{/if}}
+{{#if hasDelete}}
+  async delete{{Entity}}({ input, requestContext }: IDelete{{Entity}}): Promise<number> {
+    return executeUseCase({ useCase: this._delete{{Entity}}, input, requestContext });
+  }
+{{/if}}
+}

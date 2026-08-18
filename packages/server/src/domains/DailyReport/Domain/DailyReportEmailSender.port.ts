@@ -5,5 +5,16 @@
  * desacoplada de la infraestructura de email (arquitectura hexagonal).
  */
 export interface IDailyReportEmailSender {
-  send(params: { to: string[]; subject: string; html: string }): Promise<void>;
+  send(params: {
+    to: string[];
+    report: DailyReport;
+    welcomeMessage: string | null;
+    requestContext: {
+      readonly values: {
+        readonly ownerId: number;
+        readonly userId: number;
+      };
+    };
+  }): Promise<void>;
 }
+import { DailyReport } from './DailyReport.entity';

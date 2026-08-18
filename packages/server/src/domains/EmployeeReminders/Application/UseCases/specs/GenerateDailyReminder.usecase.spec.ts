@@ -109,10 +109,14 @@ describe('GenerateDailyReminder (US1–US5 — ensambla el recordatorio diario)'
 
     expect(mocks.getEmployeesByCompany.execute).toHaveBeenCalledWith(
       expect.objectContaining({
-        input: { ownerId: 42, page: '1', limit: '100000' },
+        input: { page: '1', limit: '100000' },
         requestContext,
       }),
     );
+    expect(
+      mocks.getEmployeesByCompany.execute.mock.calls[0][0].requestContext.values
+        .ownerId,
+    ).toBe(42);
     expect(mocks.getPendingDocumentsByEmployees.execute).toHaveBeenCalledWith(
       expect.objectContaining({
         input: { employeeIds: [5] },

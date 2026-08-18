@@ -3,6 +3,9 @@ import { RequestContext } from '@server/Application';
 import { GetEmployeesByCompany } from '../GetEmployeesByCompany.usecase';
 
 const requestContext = new RequestContext(1, 'req-1', 99);
+const currentTerms = {
+  execute: vi.fn().mockResolvedValue({ id: 12, version: 1 }),
+};
 
 const mockEmployees = [
   {
@@ -49,7 +52,10 @@ describe('GetEmployeesByCompany', () => {
         .mockResolvedValue(makePaginatedResponse(mockEmployees)),
     };
 
-    const useCase = new GetEmployeesByCompany(mockRepo as never);
+    const useCase = new GetEmployeesByCompany(
+      mockRepo as never,
+      currentTerms as never,
+    );
     const result = await useCase.execute({
       input: { search: '' },
       requestContext,
@@ -59,8 +65,8 @@ describe('GetEmployeesByCompany', () => {
     expect(result.data[0]).toEqual(mockEmployees[0]);
     expect(result.meta.totalItems).toBe(3);
     expect(mockRepo.getEmployeesByCompany).toHaveBeenCalledWith({
-      ownerId: 99,
       search: '',
+      termsVersionId: 12,
       page: undefined,
       limit: undefined,
       requestContext,
@@ -74,7 +80,10 @@ describe('GetEmployeesByCompany', () => {
         .mockResolvedValue(makePaginatedResponse([mockEmployees[0]])),
     };
 
-    const useCase = new GetEmployeesByCompany(mockRepo as never);
+    const useCase = new GetEmployeesByCompany(
+      mockRepo as never,
+      currentTerms as never,
+    );
     const result = await useCase.execute({
       input: { search: 'Juan' },
       requestContext,
@@ -82,30 +91,33 @@ describe('GetEmployeesByCompany', () => {
 
     expect(result.data).toHaveLength(1);
     expect(mockRepo.getEmployeesByCompany).toHaveBeenCalledWith({
-      ownerId: 99,
       search: 'Juan',
+      termsVersionId: 12,
       page: undefined,
       limit: undefined,
       requestContext,
     });
   });
 
-  it('uses provided ownerId when given (superadmin)', async () => {
+  it('uses the authenticated tenant context without accepting a client ownerId', async () => {
     const mockRepo = {
       getEmployeesByCompany: vi
         .fn()
         .mockResolvedValue(makePaginatedResponse(mockEmployees)),
     };
 
-    const useCase = new GetEmployeesByCompany(mockRepo as never);
+    const useCase = new GetEmployeesByCompany(
+      mockRepo as never,
+      currentTerms as never,
+    );
     await useCase.execute({
-      input: { ownerId: 200, search: '' },
+      input: { search: '' },
       requestContext,
     });
 
     expect(mockRepo.getEmployeesByCompany).toHaveBeenCalledWith({
-      ownerId: 200,
       search: '',
+      termsVersionId: 12,
       page: undefined,
       limit: undefined,
       requestContext,
@@ -119,17 +131,28 @@ describe('GetEmployeesByCompany', () => {
         .mockResolvedValue(makePaginatedResponse(mockEmployees.slice(0, 2))),
     };
 
-    const useCase = new GetEmployeesByCompany(mockRepo as never);
+    const useCase = new GetEmployeesByCompany(
+      mockRepo as never,
+      currentTerms as never,
+    );
     await useCase.execute({
-      input: { search: '', page: '1', limit: '2' },
+      input: {
+        search: '',
+        page: '1',
+        limit: '2',
+        withoutSegments: true,
+        segmentIds: [3, 5],
+      },
       requestContext,
     });
 
     expect(mockRepo.getEmployeesByCompany).toHaveBeenCalledWith({
-      ownerId: 99,
       search: '',
+      termsVersionId: 12,
       page: '1',
       limit: '2',
+      withoutSegments: true,
+      segmentIds: [3, 5],
       requestContext,
     });
   });

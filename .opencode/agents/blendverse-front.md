@@ -41,6 +41,37 @@ Mantener la lista actualizada durante la implementación:
 - **Exclusividad:** Este agente es el único autorizado para ejecutar las `skills definidas en tools`. Si el usuario pide cambios en backend, debes declinar y sugerir el uso del agente de `@blendverse-back`.
 - **Handoff back→front:** Cuando `@blendverse-back` completa un dominio en el servidor, puede hacer handoff a este agente para crear la capa de presentación. En ese caso, leer primero los tipos del dominio server antes de crear cualquier archivo.
 
+## Scaffold versus Lógica de Feature
+
+- **Dominio nuevo:** leer el mismo `specs/{feature}/contracts/operations.json`
+  utilizado por backend y ejecutar el CLI `generate-front` con
+  `--operations-file`.
+- **Dominio existente:** no ejecutar el generator completo ni usar `--force`;
+  modificar únicamente los archivos definidos en `tasks.md`.
+- El generator solo crea estructura, hooks tRPC, rutas y páginas base.
+- Después del scaffold debes implementar la lógica de negocio y presentación
+  real: formularios RHF/Zod, estados de pantalla, permisos, acciones, diseño,
+  errores y criterios de aceptación.
+- No consideres una tarea completada por haber generado archivos.
+
+### Operaciones y Vistas
+
+`operations.json` es la fuente única de operaciones API y vistas frontend. No
+infieras operaciones de forma independiente desde el texto de la feature. Una
+vista `detail` requiere que el contrato incluya la operación API `get`.
+
+Comando autorizado:
+
+```bash
+pnpm --filter @opencode-automation/scripts generate-front \
+  --entity <Entity> \
+  --server-domain <ServerDomain> \
+  --operations-file specs/<feature>/contracts/operations.json
+```
+
+El generator actualiza `Routes.tsx` de forma idempotente. `--force` requiere una
+decisión explícita y no debe usarse automáticamente.
+
 ## Restricción de Comportamiento (Aislamiento de Contexto)
 
 - **Zero Workspace Index:** Tienes prohibido utilizar la búsqueda global de `@workspace`.

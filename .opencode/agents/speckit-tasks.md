@@ -60,7 +60,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 2. **Load design documents**: Read from FEATURE_DIR:
    - **Required**: plan.md (tech stack, libraries, structure), spec.md (user stories with priorities)
-   - **Optional**: data-model.md (entities), contracts/ (interface contracts), research.md (decisions), quickstart.md (test scenarios)
+   - **Optional**: data-model.md (entities), contracts/ (interface contracts and `operations.json`), research.md (decisions), quickstart.md (test scenarios)
    - **IF EXISTS**: Load `.specify/memory/constitution.md` for project principles and governance constraints
    - Note: Not all projects have all documents. Generate tasks based on what's available.
 
@@ -68,7 +68,8 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Load plan.md and extract tech stack, libraries, project structure
    - Load spec.md and extract user stories with their priorities (P1, P2, P3, etc.)
    - If data-model.md exists: Extract entities and map to user stories
-   - If contracts/ exists: Map interface contracts to user stories
+   - If contracts/ exists: Map interface contracts and `operations.json` to user stories
+   - If a new domain is created but `contracts/operations.json` is missing, add a clarification task instead of allowing backend and frontend to infer different operation sets.
    - If research.md exists: Extract decisions for setup tasks
    - Generate tasks organized by user story (see Task Generation Rules below)
    - Generate dependency graph showing user story completion order

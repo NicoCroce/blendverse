@@ -1,0 +1,16 @@
+import { toast } from 'sonner';
+import { {{Domain}}Service } from '../{{Domain}}.service';
+import { useCache{{Entities}} } from './useCache{{Entities}}';
+
+export const useDelete{{Entity}} = () => {
+  const cache = useCache{{Entities}}();
+  return {{Domain}}Service.delete.useMutation({
+    onSuccess: () => {
+      toast.success('Registro eliminado');
+      cache.invalidate();
+    },
+    onError: () => {
+      toast.error('Error al eliminar');
+    },
+  });
+};

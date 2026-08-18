@@ -1,0 +1,12 @@
+import { useQueryClient } from '@tanstack/react-query';
+import { getQueryKey } from '@trpc/react-query';
+import { {{Domain}}Service } from '../{{Domain}}.service';
+
+export const useCache{{Entities}} = () => {
+  const queryClient = useQueryClient();
+  const key = getQueryKey({{Domain}}Service.getAll);
+  return {
+    getData: () => queryClient.getQueryData(key),
+    invalidate: () => queryClient.invalidateQueries({ queryKey: key }),
+  };
+};

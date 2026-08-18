@@ -1,0 +1,7 @@
+export const {{baseRouteConst}} = '/{{domain}}';
+{{#if hasDetail}}export const {{detailRouteConst}} = {{baseRouteConst}} + '/:id';
+{{/if}}
+{{#if hasNew}}export const {{newRouteConst}} = {{baseRouteConst}} + '/new';
+{{/if}}
+{{#if hasEdit}}export const {{editRouteConst}} = {{baseRouteConst}} + '/update/:id';
+{{/if}}

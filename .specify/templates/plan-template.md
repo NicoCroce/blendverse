@@ -42,7 +42,7 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 | Principio                       | Verificación requerida                                                                    |
 | ------------------------------- | ----------------------------------------------------------------------------------------- |
-| I. Arquitectura Hexagonal / DDD | ¿La feature crea o modifica dominios? ¿Sigue la estructura de 5 capas?                    |
+| I. Arquitectura Hexagonal / DDD | ¿La feature crea o modifica dominios? ¿Sigue la estructura backend establecida?           |
 | II. Multi-Tenant Obligatorio    | ¿Toda query al repositorio filtra por `ownerId`?                                          |
 | III. TypeScript Estricto + Zod  | ¿Tipos derivados con `z.infer`? ¿Sin `any`? ¿Frontend usa `inferRouterOutputs`?           |
 | IV. Flujo de Agentes Orquestado | ¿La tarea pasa por analyst (o Speckit) → implement → back/front → tester → qa → reviewer? |

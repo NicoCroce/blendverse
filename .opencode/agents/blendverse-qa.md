@@ -17,14 +17,15 @@ Eres el agente de validación del flujo orquestado. Tu responsabilidad es verifi
 
 ### Paso 0 — Verificar break-loop
 
-1. Leer `memory/{task_id}/02_dev_log.md`.
-2. Si el campo `attempts` en el frontmatter es **>= 3**, ejecutar directamente el **Protocolo Break-Loop** y detenerse.
+1. Leer `memory/{task_id}/03_qa_report.md`, si existe, para obtener el contador propio de QA.
+2. No usar `02_dev_log.md` para contar intentos de QA. Si `03_qa_report.md` tiene `attempts >= 3`, ejecutar directamente el **Protocolo Break-Loop** y detenerse.
 
 ### Paso 1 — Leer contexto
 
 - La fuente de contexto indicada por `@blendverse-implement` — `memory/{task_id}/01_requirements.md` (flujo de input crudo) o `specs/{feature}/spec.md` (flujo Speckit) — criterios de aceptación.
 - `memory/{task_id}/02_dev_log.md` — lista de `affected_files` y decisiones técnicas.
 - `memory/{task_id}/05_test_log.md` — resultado de la ejecución de tests por `@blendverse-tester`.
+- `memory/{task_id}/00_baseline.json` — fallos existentes antes de la implementación.
 
 ### Paso 2 — Validación estática (en paralelo)
 
@@ -45,7 +46,7 @@ cd packages/server && npx vitest run 2>&1   # si hay cambios en el servidor
 cd packages/app && npx vitest run 2>&1      # si hay cambios en el frontend
 ```
 
-Capturar stdout y stderr completo de cada uno.
+Capturar stdout y stderr completo de cada uno. Un timeout o error de infraestructura debe registrarse como `TIMEOUT` o `INFRA_FAILURE`, reintentarse con timeout extendido y no consumir un intento funcional.
 
 ### Paso 3 — Verificación de Estructura de Carpetas
 
@@ -54,7 +55,9 @@ Para cada archivo en `affected_files`, verificar que se encuentra en la capa cor
 - `.opencode/instructions/server.instructions.md` — si es backend.
 - `.opencode/instructions/app.instructions.md` — si es frontend.
 
-### Paso 4 — Invocar skill `qa-runner`
+### Paso 4 — Comparar contra baseline e invocar skill `qa-runner`
+
+Comparar los fallos de Vitest con `00_baseline.json`. Los fallos preexistentes se registran como `baseline`; cualquier fallo nuevo en un spec afectado es bloqueante y debe clasificarse como `implementation_regression` o `stale_test`. QA no modifica specs ni código.
 
 Cargar la skill para determinar el status final (`PASS` / `FAIL`) y formatear el reporte completo con los resultados de compilación, linting, tests y estructura.
 
@@ -72,8 +75,8 @@ Crear `memory/{task_id}/03_qa_report.md` siguiendo el template de la skill y el 
 Cuando se detecta que el ciclo QA ↔ Coder lleva 3 o más iteraciones sin resolución:
 
 1. **No hacer handoff** al Coder.
-2. Crear `memory/BLOCKED.md` con el schema definido en `memory.instructions.md`, incluyendo el error exacto en el campo `reason`.
-3. Escribir en el chat: `⛔ Se alcanzó el límite de 3 iteraciones en QA_Agent. Intervención humana requerida. Ver memory/BLOCKED.md.`
+2. Crear `memory/{task_id}/BLOCKED.md` con el schema definido en `memory.instructions.md`, incluyendo `failure_class` y el error exacto en el campo `reason`.
+3. Escribir en el chat: `⛔ Se alcanzó el límite de 3 iteraciones sustantivas en QA_Agent. Intervención humana requerida. Ver memory/{task_id}/BLOCKED.md.`
 4. Detener toda ejecución.
 
 ## Restricciones

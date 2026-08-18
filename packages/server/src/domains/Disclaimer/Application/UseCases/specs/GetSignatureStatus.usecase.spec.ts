@@ -4,6 +4,9 @@ import { RequestContext } from '@server/Application';
 import { GetSignatureStatus } from '../GetSignatureStatus.usecase';
 
 const requestContext = new RequestContext(1, 'req-1', 99);
+const currentTerms = {
+  execute: vi.fn().mockResolvedValue({ id: 12, version: 1 }),
+};
 
 function computeExpectedHash(userId: number, timestamp: string): string {
   return crypto
@@ -35,9 +38,12 @@ describe('GetSignatureStatus', () => {
       }),
     };
 
-    const useCase = new GetSignatureStatus(mockRepo as never);
+    const useCase = new GetSignatureStatus(
+      mockRepo as never,
+      currentTerms as never,
+    );
     const result = await useCase.execute({
-      input: { userId: 1, ownerId: 99 },
+      input: {},
       requestContext,
     });
 
@@ -48,6 +54,10 @@ describe('GetSignatureStatus', () => {
       ip: '192.168.1.1',
       corrupt: false,
     });
+    expect(mockRepo.getStatus).toHaveBeenCalledWith({
+      termsVersionId: 12,
+      requestContext,
+    });
   });
 
   it('returns null when no signature exists', async () => {
@@ -55,9 +65,12 @@ describe('GetSignatureStatus', () => {
       getStatus: vi.fn().mockResolvedValue(null),
     };
 
-    const useCase = new GetSignatureStatus(mockRepo as never);
+    const useCase = new GetSignatureStatus(
+      mockRepo as never,
+      currentTerms as never,
+    );
     const result = await useCase.execute({
-      input: { userId: 1, ownerId: 99 },
+      input: {},
       requestContext,
     });
 
@@ -78,9 +91,12 @@ describe('GetSignatureStatus', () => {
       }),
     };
 
-    const useCase = new GetSignatureStatus(mockRepo as never);
+    const useCase = new GetSignatureStatus(
+      mockRepo as never,
+      currentTerms as never,
+    );
     const result = await useCase.execute({
-      input: { userId: 1, ownerId: 99 },
+      input: {},
       requestContext,
     });
 

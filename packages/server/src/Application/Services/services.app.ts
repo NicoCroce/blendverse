@@ -1,8 +1,12 @@
 import { asClass } from 'awilix';
 import { SendEmailService } from './SendEmail.service';
-import { MailNotificationService } from '@server/Infrastructure';
+import {
+  InstitutionalEmailNotificationAdapter,
+  MailNotificationService,
+} from '@server/Infrastructure';
 
 export const servicesApp = () => ({
-  sendEmailService: asClass(SendEmailService),
   mailNotificationService: asClass(MailNotificationService),
+  sendEmailService: asClass(SendEmailService),
+  emailNotificationPort: asClass(InstitutionalEmailNotificationAdapter),
 });

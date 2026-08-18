@@ -15,6 +15,11 @@ El usuario quiere crear un nuevo dominio en `packages/app`. El dominio backend e
 4. Actualiza `Routes.tsx` (y `MenuAccess.tsx` si corresponde).
 5. Verifica que no haya errores de TypeScript en los archivos creados.
 
+Si existe `specs/{feature}/contracts/operations.json`, ejecútalo mediante el
+CLI `generate-front --operations-file`. El generator crea únicamente el
+scaffold técnico; después debes implementar la UI y lógica específica de la
+feature.
+
 Dominio frontend: **{{domainName}}**
 Dominio servidor: **{{serverDomain}}**
 Entidad: **{{entityName}}**

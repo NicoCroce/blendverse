@@ -1,6 +1,9 @@
 import { protectedProcedure } from '@server/Infrastructure';
-import { DisclaimerService } from '../../Application';
-import { executeService } from '@server/Application';
+import {
+  DisclaimerService,
+  getDisclaimerTextResponseSchema,
+} from '../../Application';
+import { executeService, executeServiceAlone } from '@server/Application';
 import z from 'zod';
 
 export class DisclaimerController {
@@ -8,21 +11,16 @@ export class DisclaimerController {
 
   getText = () =>
     protectedProcedure
-      .input(z.number().min(1, 'ownerId is required'))
+      .output(getDisclaimerTextResponseSchema)
       .query(
-        executeService(
+        executeServiceAlone(
           this.disclaimerService.getDisclaimerText.bind(this.disclaimerService),
         ),
       );
 
   getStatus = () =>
     protectedProcedure
-      .input(
-        z.object({
-          userId: z.number().min(1),
-          ownerId: z.number().min(1),
-        }),
-      )
+      .input(z.object({}).optional())
       .query(
         executeService(
           this.disclaimerService.getSignatureStatus.bind(
@@ -36,6 +34,7 @@ export class DisclaimerController {
       .input(
         z.object({
           password: z.string().min(1, 'Password is required'),
+          termsVersion: z.number().int().positive(),
         }),
       )
       .mutation(async ({ ctx, input }) => {
@@ -49,7 +48,12 @@ export class DisclaimerController {
           this.disclaimerService.signDisclaimer.bind(this.disclaimerService),
         )({
           ctx: ctx as never,
-          input: { password: input.password, ip, userAgent },
+          input: {
+            password: input.password,
+            ip,
+            userAgent,
+            termsVersion: input.termsVersion,
+          },
         });
       });
 
@@ -57,7 +61,6 @@ export class DisclaimerController {
     protectedProcedure
       .input(
         z.object({
-          ownerId: z.number().optional(),
           search: z.string().optional().default(''),
           page: z.string().optional(),
           limit: z.string().optional(),
@@ -77,7 +80,6 @@ export class DisclaimerController {
     protectedProcedure
       .input(
         z.object({
-          ownerId: z.number().optional(),
           employeeIds: z.array(z.number()).optional(),
         }),
       )

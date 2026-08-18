@@ -1,0 +1,14 @@
+import { AppError, IUseCase } from '@server/Application';
+import { {{Entity}}Repository } from '../../Domain/{{Entity}}.repository';
+import { IGet{{Entity}} } from '../{{domain}}.types';
+import { {{Entity}} } from '../../Domain/{{Entity}}.entity';
+
+export class Get{{Entity}} implements IUseCase<{{Entity}}> {
+  constructor(private readonly {{entity}}Repository: {{Entity}}Repository) {}
+
+  async execute({ input, requestContext }: IGet{{Entity}}): Promise<{{Entity}}> {
+    const result = await this.{{entity}}Repository.get{{Entity}}({ id: input, requestContext });
+    if (!result) throw new AppError('{{Entity}} no encontrado', 404, 'NOT_FOUND');
+    return result;
+  }
+}

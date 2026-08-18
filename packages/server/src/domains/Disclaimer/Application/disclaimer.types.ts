@@ -1,26 +1,38 @@
 import { IRequestContext } from '@server/Application';
+import { z } from 'zod';
 
-// GetDisclaimerText
-export type IGetDisclaimerText = IRequestContext & { input: number };
+// GetDisclaimerText — the tenant is always taken from RequestContext.
+export type IGetDisclaimerText = IRequestContext & { input?: undefined };
+
+export const getDisclaimerTextResponseSchema = z.object({
+  content: z.string(),
+  version: z.number().int().positive().nullable(),
+});
+
+export type IGetDisclaimerTextResponse = z.infer<
+  typeof getDisclaimerTextResponseSchema
+>;
 
 // GetSignatureStatus
 export type IGetSignatureStatus = IRequestContext & {
-  input: { userId: number; ownerId: number };
+  input?: object;
 };
 
 // SignDisclaimer
+export type ISignDisclaimerInput = {
+  password: string;
+  ip: string;
+  userAgent: string | null;
+  termsVersion: number;
+};
+
 export interface ISignDisclaimer extends IRequestContext {
-  input: {
-    password: string;
-    ip: string;
-    userAgent: string | null;
-  };
+  input: ISignDisclaimerInput;
 }
 
 // GetEmployeesByCompany
 export interface IGetEmployeesByCompany extends IRequestContext {
   input: {
-    ownerId?: number;
     search?: string;
     page?: string;
     limit?: string;
@@ -32,7 +44,6 @@ export interface IGetEmployeesByCompany extends IRequestContext {
 // SendReminders
 export interface ISendReminders extends IRequestContext {
   input: {
-    ownerId?: number;
     employeeIds?: number[];
   };
 }

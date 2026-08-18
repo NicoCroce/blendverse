@@ -1,12 +1,12 @@
 <!--
 SYNC IMPACT REPORT
-Version change: 1.0.0 → 2.0.0 (MAJOR — redefinición de los principios IV y V, reemplazo de
-la fuente de verdad operacional y ampliación material de los principios I, II, III, VI y VII)
+Version change: 2.0.0 → 3.0.0 (MAJOR — redefinición del Principio I para
+alinearlo con la estructura backend establecida)
 
 Modified principles:
-  - I. Arquitectura Hexagonal / DDD — agregada regla de barrel de dominio (solo
-    `./Infrastructure/Routes`, nunca `./Infrastructure` completo) y referencia a las
-    instrucciones normativas `.opencode/instructions/*`
+  - I. Arquitectura Hexagonal / DDD — aclarada la estructura normativa como
+     `Domain/`, `Application/`, `Infrastructure/` y `[domain].di.ts`; los controllers
+     viven en `Infrastructure/Controllers`.
   - II. Multi-Tenant Obligatorio — prohibición explícita de `id_propietario` en los
     schemas Zod de entrada del controller (nunca como input del cliente)
   - III. TypeScript Estricto + Zod — los templates de `back-ddd-generator` y
@@ -33,7 +33,7 @@ Removed sections:
   - Tabla de agentes con handles cortos sin mapeo a los agentes reales
 
 Templates requiring updates:
-  ✅ .specify/templates/plan-template.md — Constitution Check alineado con v2.0.0
+   ✅ .specify/templates/plan-template.md — Constitution Check alineado con v3.0.0
      (handles `blendverse-*`, flujo dual, Pr. IV)
   ✅ .specify/templates/tasks-template.md — tests obligatorios (Pr. V), generados por
      `@blendverse-tester` tras la implementación
@@ -70,16 +70,17 @@ separadas):
 
 - Project Name: MacroGest Core
 - Architecture Focus: Modular Monolith with Domain-Driven Design (DDD) and Hexagonal Architecture
-- Version: 2.0.0
+- Version: 3.0.0
 - Ratified: 2026-05-17
-- Last Amended: 2026-07-31
+- Last Amended: 2026-08-17
 
 ## Core Principles
 
 ### I. Arquitectura Hexagonal / DDD (NON-NEGOTIABLE)
 
-- Mínimo 5 capas: Domain, Infrastructure, Application, Presentation, DI.
-- Múltiples dominios separados en `packages/server/src/domains/[Domain]/`, cada uno con su propio `Application/`, `Domain/`, `Infrastructure/`, `Presentation/` y `Infrastructure/Routes/`.
+- La estructura normativa de cada dominio backend es `Domain/`, `Application/`, `Infrastructure/` y el archivo `[domain].di.ts` en la raíz del dominio.
+- Dentro de `Infrastructure/` viven los adapters de entrada y salida: `Controllers/`, `Database/` y `Routes/`. Los controllers tRPC se implementan exclusivamente en `Infrastructure/Controllers`; no se agrega un directorio adicional para controllers.
+- Múltiples dominios separados en `packages/server/src/domains/[Domain]/`, cada uno siguiendo la estructura establecida en `.opencode/instructions/server.instructions.md` y el template `back-ddd-generator`.
 - DTOs de entrada/salida definidos con Zod (`z.infer<typeof Schema>`) en `Application/[domain].types.ts`.
 - Repositorios son puertos abstractos definidos en Domain e implementados en Infrastructure, inyectados mediante Awilix.
 - Los specs aislados viven dentro de su capa, en una carpeta `specs/` que espeja la estructura del dominio (especificación formal del contrato y del comportamiento por cada capa).

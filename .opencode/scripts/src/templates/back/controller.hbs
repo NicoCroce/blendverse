@@ -1,0 +1,62 @@
+import { protectedProcedure } from '@server/Infrastructure';
+import { {{Domain}}Service } from '../../Application';
+import { executeService } from '@server/Application';
+import z from 'zod';
+{{#if hasGetAll}}
+import { paginationZodParams } from '@server/utils';
+{{/if}}
+
+export class {{Domain}}Controller {
+  constructor(private {{domain}}Service: {{Domain}}Service) {}
+
+{{#if hasGetAll}}
+  getAll = () =>
+    protectedProcedure
+      .input(
+        z.object({
+{{#each filterFields}}
+          {{this.name}}: {{this.zodType}},
+{{/each}}
+          ...paginationZodParams,
+        }).optional(),
+      )
+      .query(executeService(this.{{domain}}Service.getAll{{Entities}}.bind(this.{{domain}}Service)));
+{{/if}}
+{{#if hasGet}}
+  get{{Entity}} = () =>
+    protectedProcedure
+      .input(z.number().min(1, 'ID requerido'))
+      .query(executeService(this.{{domain}}Service.get{{Entity}}.bind(this.{{domain}}Service)));
+{{/if}}
+{{#if hasCreate}}
+  create{{Entity}} = () =>
+    protectedProcedure
+      .input(
+        z.object({
+{{#each createFields}}
+          {{this.name}}: {{this.zodType}},
+{{/each}}
+        }),
+      )
+      .mutation(executeService(this.{{domain}}Service.create{{Entity}}.bind(this.{{domain}}Service)));
+{{/if}}
+{{#if hasUpdate}}
+  update{{Entity}} = () =>
+    protectedProcedure
+      .input(
+        z.object({
+          id: z.number().min(1),
+{{#each updateFields}}
+          {{this.name}}: {{this.zodType}},
+{{/each}}
+        }),
+      )
+      .mutation(executeService(this.{{domain}}Service.update{{Entity}}.bind(this.{{domain}}Service)));
+{{/if}}
+{{#if hasDelete}}
+  delete{{Entity}} = () =>
+    protectedProcedure
+      .input(z.number().min(1, 'ID requerido'))
+      .mutation(executeService(this.{{domain}}Service.delete{{Entity}}.bind(this.{{domain}}Service)));
+{{/if}}
+}

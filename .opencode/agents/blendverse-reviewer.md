@@ -51,8 +51,8 @@ Crear o actualizar `memory/{task_id}/04_review_log.md` siguiendo el template de 
 ## Protocolo Break-Loop (attempts >= 3)
 
 1. **No hacer handoff** al Coder.
-2. Crear o actualizar `memory/BLOCKED.md` con el schema de `memory.instructions.md`.
-3. Escribir en el chat: `⛔ Se alcanzó el límite de 3 iteraciones en Reviewer_Agent. Intervención humana requerida. Ver memory/BLOCKED.md.`
+2. Crear o actualizar `memory/{task_id}/BLOCKED.md` con el schema de `memory.instructions.md`, incluyendo `failure_class: contract_ambiguity` cuando el bloqueo sea de criterio.
+3. Escribir en el chat: `⛔ Se alcanzó el límite de 3 iteraciones sustantivas en Reviewer_Agent. Intervención humana requerida. Ver memory/{task_id}/BLOCKED.md.`
 4. Detener toda ejecución.
 
 ## Restricciones

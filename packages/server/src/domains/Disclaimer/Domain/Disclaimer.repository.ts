@@ -2,21 +2,19 @@ import { IRequestContext, IPaginationResponse } from '@server/Application';
 import { DisclaimerAcceptance } from './DisclaimerAcceptance.entity';
 
 export interface IGetSignatureStatusRepository extends IRequestContext {
-  userId: number;
-  ownerId: number;
+  termsVersionId: number;
 }
 
 export interface ISignDisclaimerRepository extends IRequestContext {
-  userId: number;
-  ownerId: number;
   hash: string;
   ip: string;
   userAgent: string | null;
   timestamp: Date;
+  termsVersionId: number;
 }
 
 export interface IGetEmployeesByCompanyRepository extends IRequestContext {
-  ownerId?: number;
+  termsVersionId: number;
   search?: string;
   page?: string;
   limit?: string;
@@ -25,7 +23,7 @@ export interface IGetEmployeesByCompanyRepository extends IRequestContext {
 }
 
 export interface IGetPendingEmployeeIdsRepository extends IRequestContext {
-  ownerId?: number;
+  termsVersionId: number;
 }
 
 export interface IEmployeeRecord {
@@ -39,8 +37,12 @@ export interface IEmployeeRecord {
 
 // ── Reporte diario (daily-admin-report) ─────────────────────────────────────
 
-export type IGetPendingDisclaimerAcceptancesRepository = IRequestContext;
-export type ICountPendingDisclaimersRepository = IRequestContext;
+export type IGetPendingDisclaimerAcceptancesRepository = IRequestContext & {
+  termsVersionId: number;
+};
+export type ICountPendingDisclaimersRepository = IRequestContext & {
+  termsVersionId: number;
+};
 
 export interface IPendingDisclaimerAcceptanceRecord {
   employeeId: number;

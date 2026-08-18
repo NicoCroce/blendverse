@@ -12,9 +12,9 @@ import {
 import {
   DisclaimerController,
   DisclaimerRepositoryImplementation,
-  DisclaimerEmailService,
 } from './Infrastructure';
-import { UsersRepositoryImplementation } from '@server/domains/Users/Infrastructure';
+import { DisclaimerEmailService } from './Infrastructure/DisclaimerEmail.service';
+import { UsersRepositoryImplementation } from '@server/domains/Users/Infrastructure/Database/UsersRepository.implementation';
 import { container } from '@server/Infrastructure/di/Container';
 
 export const disclaimerApp = {

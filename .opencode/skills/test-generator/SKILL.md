@@ -512,7 +512,7 @@ cd packages/server && npx vitest run 2>&1
 cd packages/app && npx vitest run 2>&1
 ```
 
-Todos los tests generados deben pasar (0 failed). Si alguno falla, corregirlo antes de hacer handoff a `@blendverse-qa`. No se requiere flag `--coverage` ni alcanzar umbrales de porcentaje.
+Todos los tests nuevos o afectados deben pasar (0 failed). Comparar la suite completa con `memory/{task_id}/00_baseline.json` cuando exista. Si aparece un fallo nuevo, no modificar el test automáticamente: clasificarlo como `implementation_regression`, `stale_test`, `baseline`, `test_infrastructure` o `timeout`. Solo actualizar un test obsoleto cuando el contrato aprobado cambió y dejar la evidencia en `05_test_log.md`. No se requiere flag `--coverage` ni alcanzar umbrales de porcentaje.
 
 ---
 
@@ -529,7 +529,7 @@ Los siguientes archivos **no tienen lógica de negocio propia** y no deben recib
 
 **Frontend:**
 
-- `*.routes.tsx` / `*.router.tsx` — declaración de rutas: sin lógica
+- `*.routes.ts` / `*.router.tsx` — declaración de rutas: sin lógica
 - `Pages/**` — páginas de composición: la lógica está en los hooks que usan
 - `index.ts` — barrel exports: sin lógica
 - Componentes puramente visuales sin estado ni validación

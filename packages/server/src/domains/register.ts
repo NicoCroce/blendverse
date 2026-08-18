@@ -12,6 +12,7 @@ import { disclaimerApp } from './Disclaimer';
 import { segmentsApp } from './Segments';
 import { dailyReportApp } from './DailyReport';
 import { employeeRemindersApp } from './EmployeeReminders';
+import { companyEmailSettingsApp } from './CompanyEmailSettings/companyEmailSettings.di';
 
 export const registerDomains = () => ({
   ...ownersysApp,
@@ -28,4 +29,5 @@ export const registerDomains = () => ({
   ...segmentsApp,
   ...dailyReportApp,
   ...employeeRemindersApp,
+  ...companyEmailSettingsApp,
 });

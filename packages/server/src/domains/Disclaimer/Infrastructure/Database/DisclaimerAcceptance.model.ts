@@ -18,6 +18,7 @@ export class DisclaimerAcceptanceModel extends Model<
   declare ip: string;
   declare user_agent: string | null;
   declare timestamp: Date;
+  declare terms_version_id: number;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
   declare deletedAt: CreationOptional<Date | null>;
@@ -55,6 +56,10 @@ DisclaimerAcceptanceModel.init(
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
+    },
+    terms_version_id: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
     },
     createdAt: {
       type: DataTypes.DATE,

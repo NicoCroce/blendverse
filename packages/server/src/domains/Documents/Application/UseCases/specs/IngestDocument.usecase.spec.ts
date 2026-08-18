@@ -75,7 +75,6 @@ describe('IngestDocument (US6/FR-011..FR-016 — ingreso + notificación real-ti
     expect(mocks.notifyNewDocument.execute).toHaveBeenCalledTimes(1);
     const notifyCall = mocks.notifyNewDocument.execute.mock.calls[0][0];
     expect(notifyCall.input).toEqual({
-      ownerId: 42,
       employeeId: 5,
       employeeName: 'Carlos Gómez',
       employeeEmail: 'carlos@test.com',

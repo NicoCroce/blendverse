@@ -3,21 +3,12 @@ import { RequestContext } from '@server/Application';
 import { SendEmployeeReminderEmail } from '../SendEmployeeReminderEmail.usecase';
 import type { IEmployeeReminder } from '../../../Domain/EmployeeReminder.entity';
 
-const { employeeDailyReminderTemplate } = vi.hoisted(() => ({
-  employeeDailyReminderTemplate: vi.fn(),
-}));
-
-vi.mock('@server/Infrastructure', () => ({
-  emailTemplates: { employeeDailyReminder: employeeDailyReminderTemplate },
-  isValidEmail: (email: string | null | undefined): boolean => {
-    if (!email) return false;
-    const trimmed = email.trim();
-    if (trimmed === '') return false;
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
-  },
-}));
-
 const requestContext = new RequestContext(1, 'req-1', 42);
+const enabledPolicy = {
+  execute: vi
+    .fn()
+    .mockResolvedValue({ enabled: true, welcomeMessage: 'Welcome' }),
+};
 
 const buildReminder = (
   overrides: Partial<IEmployeeReminder> = {},
@@ -42,12 +33,11 @@ describe('SendEmployeeReminderEmail (FR-008/FR-009 — envío condicional)', () 
   beforeEach(() => vi.clearAllMocks());
 
   it('sends the email and returns { sent: true } when shouldSend is true', async () => {
-    employeeDailyReminderTemplate.mockReturnValue({
-      subject: '[GestDoc] Tus pendientes — Acme S.A. — 2026-08-07',
-      body: '<h1>Hola Carlos Gómez</h1>',
-    });
-    const sender = { send: vi.fn().mockResolvedValue(undefined) };
-    const useCase = new SendEmployeeReminderEmail(sender);
+    const sender = { sendReminder: vi.fn().mockResolvedValue(undefined) };
+    const useCase = new SendEmployeeReminderEmail(
+      sender as never,
+      enabledPolicy as never,
+    );
 
     const result = await useCase.execute({
       input: { reminder: buildReminder() },
@@ -55,18 +45,20 @@ describe('SendEmployeeReminderEmail (FR-008/FR-009 — envío condicional)', () 
     });
 
     expect(result).toEqual({ sent: true });
-    expect(sender.send).toHaveBeenCalledOnce();
-    const params = sender.send.mock.calls[0][0];
-    expect(params.to).toEqual(['carlos@test.com']);
-    expect(params.subject).toContain('Tus pendientes');
-    expect(params.subject).toContain('Acme S.A.');
-    expect(params.html).toContain('Carlos Gómez');
-    expect(employeeDailyReminderTemplate).toHaveBeenCalledWith(buildReminder());
+    expect(sender.sendReminder).toHaveBeenCalledWith({
+      to: ['carlos@test.com'],
+      reminder: buildReminder(),
+      welcomeMessage: 'Welcome',
+      requestContext,
+    });
   });
 
   it('skips the email when shouldSend is false (FR-008)', async () => {
-    const sender = { send: vi.fn() };
-    const useCase = new SendEmployeeReminderEmail(sender);
+    const sender = { sendReminder: vi.fn() };
+    const useCase = new SendEmployeeReminderEmail(
+      sender as never,
+      enabledPolicy as never,
+    );
 
     const result = await useCase.execute({
       input: {
@@ -84,13 +76,15 @@ describe('SendEmployeeReminderEmail (FR-008/FR-009 — envío condicional)', () 
     });
 
     expect(result).toEqual({ sent: false });
-    expect(sender.send).not.toHaveBeenCalled();
-    expect(employeeDailyReminderTemplate).not.toHaveBeenCalled();
+    expect(sender.sendReminder).not.toHaveBeenCalled();
   });
 
   it('skips the email when the employee email is invalid (FR-009)', async () => {
-    const sender = { send: vi.fn() };
-    const useCase = new SendEmployeeReminderEmail(sender);
+    const sender = { sendReminder: vi.fn() };
+    const useCase = new SendEmployeeReminderEmail(
+      sender as never,
+      enabledPolicy as never,
+    );
 
     const result = await useCase.execute({
       input: {
@@ -100,19 +94,17 @@ describe('SendEmployeeReminderEmail (FR-008/FR-009 — envío condicional)', () 
     });
 
     expect(result).toEqual({ sent: false });
-    expect(sender.send).not.toHaveBeenCalled();
-    expect(employeeDailyReminderTemplate).not.toHaveBeenCalled();
+    expect(sender.sendReminder).not.toHaveBeenCalled();
   });
 
   it('propagates errors from the email sender', async () => {
-    employeeDailyReminderTemplate.mockReturnValue({
-      subject: 'subject',
-      body: 'body',
-    });
     const sender = {
-      send: vi.fn().mockRejectedValue(new Error('SMTP down')),
+      sendReminder: vi.fn().mockRejectedValue(new Error('SMTP down')),
     };
-    const useCase = new SendEmployeeReminderEmail(sender);
+    const useCase = new SendEmployeeReminderEmail(
+      sender as never,
+      enabledPolicy as never,
+    );
 
     await expect(
       useCase.execute({

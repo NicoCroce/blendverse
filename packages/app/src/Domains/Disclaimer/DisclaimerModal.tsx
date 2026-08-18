@@ -1,4 +1,4 @@
-import { Modal } from '@app/Application/Components';
+import { EmptyScreenError, Modal } from '@app/Application/Components';
 import { DisclaimerForm } from './DisclaimerForm';
 import { useGlobalStore } from '@app/Application';
 import { useGetDisclaimerText } from './Hooks/useDisclaimer';
@@ -9,10 +9,13 @@ export const DisclaimerModal = () => {
   const { data: dataUser, setQueryData } =
     useGlobalStore<TUserLogged>('dataUser');
 
-  const ownerId = dataUser?.ownerId;
-
-  const { data: disclaimerText, isLoading } = useGetDisclaimerText()(ownerId!, {
-    enabled: !!ownerId,
+  const {
+    data: disclaimerText,
+    isLoading,
+    isError,
+    error,
+  } = useGetDisclaimerText()(undefined, {
+    enabled: !!dataUser,
   });
 
   if (!dataUser || !dataUser.pendingDisclaimer) {
@@ -33,18 +36,27 @@ export const DisclaimerModal = () => {
       description="Debe aceptar los términos y condiciones antes de continuar"
     >
       <div className="space-y-4">
-        {isLoading ? (
+        {isError ? (
+          <EmptyScreenError message={error?.message} />
+        ) : isLoading ? (
           <div className="space-y-2">
             <Skeleton className="h-4 w-full" />
             <Skeleton className="h-4 w-full" />
             <Skeleton className="h-4 w-3/4" />
           </div>
-        ) : (
+        ) : disclaimerText ? (
           <div className="max-h-60 overflow-y-auto rounded-md border p-4 text-sm text-muted-foreground">
-            {disclaimerText || 'No hay términos definidos para esta empresa.'}
+            {disclaimerText.content}
           </div>
+        ) : (
+          <EmptyScreenError message="No se pudieron cargar los términos de esta empresa." />
         )}
-        <DisclaimerForm onSuccess={handleSuccess} />
+        {disclaimerText && !isError && (
+          <DisclaimerForm
+            termsVersion={disclaimerText.version}
+            onSuccess={handleSuccess}
+          />
+        )}
       </div>
     </Modal>
   );

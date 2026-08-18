@@ -1,0 +1,47 @@
+export type {{Entity}}Props = {
+  id?: number;
+  id_propietario: number;
+{{#each fields}}
+  {{this.name}}: {{this.type}};
+{{/each}}
+};
+
+export class {{Entity}} {
+  constructor(
+    protected readonly _id_propietario: number,
+{{#each fields}}
+    protected readonly _{{this.name}}: {{this.type}},
+{{/each}}
+    protected readonly _id?: number,
+  ) {}
+
+  static create({
+    id,
+    id_propietario,
+{{#each fields}}
+    {{this.name}},
+{{/each}}
+  }: {{Entity}}Props): {{Entity}} {
+    return new {{Entity}}(
+      id_propietario,
+{{#each fields}}
+      {{this.name}},
+{{/each}}
+      id,
+    );
+  }
+
+  toJSON() {
+    return this.values;
+  }
+
+  get values() {
+    return {
+      id: this._id,
+      id_propietario: this._id_propietario,
+{{#each fields}}
+      {{this.name}}: this._{{this.name}},
+{{/each}}
+    };
+  }
+}

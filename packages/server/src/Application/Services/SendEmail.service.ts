@@ -2,14 +2,12 @@ import { Certificate } from '@server/domains/Certificates';
 import { GetUser } from '@server/domains/Users';
 import { executeUseCase } from '../Adapters';
 import { getDateString } from '../Utils';
-import {
-  MailNotificationService,
-  emailTemplates,
-} from '@server/Infrastructure';
+import { emailTemplates } from '@server/Infrastructure';
 import { loggerContext } from '@server/Infrastructure/utils/pino';
-import { IRequestContext } from '../Interfaces';
+import { IEmailNotificationPort, IRequestContext } from '../Interfaces';
 import { RequestContext } from '../Entities';
-import { GetAdmins } from '@server/domains/Permissions/Application';
+import { ResolveEmailDeliveryPolicy } from '@server/domains/CompanyEmailSettings/Application';
+import type { EmailCatalogCode } from '@server/domains/CompanyEmailSettings/Domain';
 
 interface IAddLicense extends IRequestContext {
   certificate: Certificate;
@@ -24,6 +22,7 @@ interface ISignDocument extends IRequestContext {
 interface ISendEmailsToAdmin<Targs> extends IRequestContext {
   templateFn: (args: Targs) => { body: string; subject: string };
   templateArgs: Targs;
+  code: EmailCatalogCode;
 }
 
 interface ISendDocumentToEmail extends IRequestContext {
@@ -39,17 +38,10 @@ interface INotifyLicenseStatusChange extends IRequestContext {
 
 export class SendEmailService {
   constructor(
-    private readonly _getAdmins: GetAdmins,
     private readonly _getUser: GetUser,
-    private readonly mailNotificationService: MailNotificationService,
+    private readonly emailNotificationPort: IEmailNotificationPort,
+    private readonly _resolveEmailDeliveryPolicy: ResolveEmailDeliveryPolicy,
   ) {}
-
-  private async getAdmins(requestContext: RequestContext) {
-    return await executeUseCase({
-      useCase: this._getAdmins,
-      requestContext,
-    });
-  }
 
   private async getCurrentUser(requestContext: RequestContext) {
     return await executeUseCase({
@@ -63,21 +55,28 @@ export class SendEmailService {
     requestContext,
     templateFn,
     templateArgs,
+    code,
   }: ISendEmailsToAdmin<Targs>) {
     try {
       const currentUser = await this.getCurrentUser(requestContext);
-      const admins = await this.getAdmins(requestContext);
+      const policy = await executeUseCase({
+        useCase: this._resolveEmailDeliveryPolicy,
+        input: { code },
+        requestContext,
+      });
 
-      if (admins) {
+      if (policy.enabled && policy.recipients.length > 0) {
         const { body, subject } = templateFn({
           ...templateArgs,
           currentUser:
             `${currentUser.values.name} ${currentUser.values.surname ?? ''}`.trim(),
         });
-        await this.mailNotificationService.sendOne({
-          to: admins,
+        await this.emailNotificationPort.sendOne({
+          to: policy.recipients,
           subject,
           html: body,
+          code,
+          welcomeMessage: policy.welcomeMessage,
         });
       }
     } catch (error) {
@@ -96,6 +95,7 @@ export class SendEmailService {
         reason: certificate.values.reason,
         currentUser: '',
       },
+      code: 'admin_license_created',
     });
   }
 
@@ -108,10 +108,19 @@ export class SendEmailService {
     try {
       const currentUser = await this.getCurrentUser(requestContext);
 
-      await this.mailNotificationService.sendOne({
+      const policy = await executeUseCase({
+        useCase: this._resolveEmailDeliveryPolicy,
+        input: { code: 'requester_document_manual' },
+        requestContext,
+      });
+      if (!policy.enabled) return;
+
+      await this.emailNotificationPort.sendOne({
         to: currentUser.values.mail,
         subject: `Documento: ${documentTitle}`,
         html: `<p>Adjunto encontrará el documento <strong>${documentTitle}</strong> (ID: ${documentId}).</p>`,
+        code: 'requester_document_manual',
+        welcomeMessage: policy.welcomeMessage,
         attachments: [
           {
             filename: `${documentTitle}.pdf`,
@@ -136,7 +145,16 @@ export class SendEmailService {
   }: ISignDocument) {
     try {
       const currentUser = await this.getCurrentUser(requestContext);
-      const admins = await this.getAdmins(requestContext);
+      const employeePolicy = await executeUseCase({
+        useCase: this._resolveEmailDeliveryPolicy,
+        input: { code: 'employee_document_signed' },
+        requestContext,
+      });
+      const adminPolicy = await executeUseCase({
+        useCase: this._resolveEmailDeliveryPolicy,
+        input: { code: 'admin_document_signed' },
+        requestContext,
+      });
 
       const employeeName =
         `${currentUser.values.name} ${currentUser.values.surname ?? ''}`.trim();
@@ -149,14 +167,18 @@ export class SendEmailService {
         reasonSignatureNonConformity,
       });
 
-      await this.mailNotificationService.sendOne({
-        to: currentUser.values.mail,
-        subject: employeeTemplate.subject,
-        html: employeeTemplate.body,
-      });
+      if (employeePolicy.enabled) {
+        await this.emailNotificationPort.sendOne({
+          to: currentUser.values.mail,
+          subject: employeeTemplate.subject,
+          html: employeeTemplate.body,
+          code: 'employee_document_signed',
+          welcomeMessage: employeePolicy.welcomeMessage,
+        });
+      }
 
       // Enviar a los admins
-      if (admins) {
+      if (adminPolicy.enabled && adminPolicy.recipients.length > 0) {
         const adminTemplate = emailTemplates.documentSignedAdmin({
           employeeName,
           documentId,
@@ -164,10 +186,12 @@ export class SendEmailService {
           reasonSignatureNonConformity,
         });
 
-        await this.mailNotificationService.sendOne({
-          to: admins,
+        await this.emailNotificationPort.sendOne({
+          to: adminPolicy.recipients,
           subject: adminTemplate.subject,
           html: adminTemplate.body,
+          code: 'admin_document_signed',
+          welcomeMessage: adminPolicy.welcomeMessage,
         });
       }
     } catch (error) {
@@ -211,10 +235,19 @@ export class SendEmailService {
         status: newStatus,
       });
 
-      await this.mailNotificationService.sendOne({
+      const policy = await executeUseCase({
+        useCase: this._resolveEmailDeliveryPolicy,
+        input: { code: 'employee_license_status_changed' },
+        requestContext,
+      });
+      if (!policy.enabled) return;
+
+      await this.emailNotificationPort.sendOne({
         to: employee.values.mail,
         subject,
         html: body,
+        code: 'employee_license_status_changed',
+        welcomeMessage: policy.welcomeMessage,
       });
     } catch (error) {
       loggerContext(requestContext.values).error(

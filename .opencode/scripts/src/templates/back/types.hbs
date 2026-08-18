@@ -1,0 +1,50 @@
+import { IRequestContext{{#if hasGetAll}}, IPagination{{/if}} } from '@server/Application';
+import type { {{Entity}}Props } from '../Domain/{{Entity}}.entity';
+{{#if hasValidation}}
+import z from 'zod';
+{{/if}}
+
+// --- Tipo plano de la entidad ---
+export type I{{Entity}} = {{Entity}}Props;
+
+// --- Schemas Zod ---
+{{#if hasCreate}}export const Create{{Entity}}Schema = z.object({
+{{#each createFields}}
+  {{this.name}}: {{this.zodType}},
+{{/each}}
+});
+{{/if}}
+
+{{#if hasUpdate}}export const Update{{Entity}}Schema = z.object({
+  id: z.number(),
+{{#each updateFields}}
+  {{this.name}}: {{this.zodType}},
+{{/each}}
+});
+{{/if}}
+
+// --- Tipos de Use Cases ---
+{{#if hasGetAll}}export type IGetAll{{Entities}} = IRequestContext & {
+  input?: {
+{{#each filterFields}}
+    {{this.name}}?: {{this.type}};
+{{/each}}
+  } & IPagination;
+};
+{{/if}}
+
+{{#if hasGet}}export type IGet{{Entity}} = IRequestContext & { input: number };
+{{/if}}
+
+{{#if hasCreate}}export type ICreate{{Entity}} = IRequestContext & {
+  input: z.infer<typeof Create{{Entity}}Schema>;
+};
+{{/if}}
+
+{{#if hasUpdate}}export type IUpdate{{Entity}} = IRequestContext & {
+  input: z.infer<typeof Update{{Entity}}Schema>;
+};
+{{/if}}
+
+{{#if hasDelete}}export type IDelete{{Entity}} = IRequestContext & { input: number };
+{{/if}}

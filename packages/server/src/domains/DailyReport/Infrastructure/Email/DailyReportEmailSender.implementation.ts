@@ -1,4 +1,9 @@
-import { MailNotificationService } from '@server/Infrastructure';
+import {
+  MailNotificationService,
+  applyInstitutionalWelcome,
+  emailTemplates,
+} from '@server/Infrastructure';
+import { DailyReport } from '../../Domain/DailyReport.entity';
 import { IDailyReportEmailSender } from '../../Domain/DailyReportEmailSender.port';
 
 /**
@@ -12,13 +17,24 @@ export class DailyReportEmailSenderImplementation implements IDailyReportEmailSe
 
   async send(params: {
     to: string[];
-    subject: string;
-    html: string;
+    report: DailyReport;
+    welcomeMessage: string | null;
+    requestContext: {
+      readonly values: {
+        readonly ownerId: number;
+        readonly userId: number;
+      };
+    };
   }): Promise<void> {
+    const { subject, body } = emailTemplates.dailyReport(params.report.values);
     await this.mailNotificationService.sendOne({
       to: params.to,
-      subject: params.subject,
-      html: params.html,
+      subject,
+      html: applyInstitutionalWelcome(
+        body,
+        'admin_daily_report',
+        params.welcomeMessage,
+      ),
     });
   }
 }

@@ -19,7 +19,7 @@ describe('SendReminders', () => {
         ]),
     };
     const mockEmailSender = {
-      sendDisclaimerReminders: vi.fn().mockResolvedValue(undefined),
+      sendReminder: vi.fn().mockResolvedValue(undefined),
     };
     const mockOwnersysRepo = {
       getOwnersys: vi.fn().mockResolvedValue({
@@ -29,12 +29,24 @@ describe('SendReminders', () => {
         },
       }),
     };
+    const policy = { execute: vi.fn().mockResolvedValue({ enabled: true }) };
+    const currentTerms = {
+      execute: vi
+        .fn()
+        .mockResolvedValue({
+          id: 12,
+          version: 1,
+          content: 'Texto del disclaimer',
+        }),
+    };
 
     const useCase = new SendReminders(
       mockRepo as never,
       mockUserRepo as never,
       mockEmailSender as never,
       mockOwnersysRepo as never,
+      policy as never,
+      currentTerms as never,
     );
 
     const result = await useCase.execute({
@@ -45,14 +57,19 @@ describe('SendReminders', () => {
     expect(result.sent).toBe(3);
     expect(result.failed).toBe(0);
     expect(result.total).toBe(3);
-    expect(mockEmailSender.sendDisclaimerReminders).toHaveBeenCalledWith({
+    expect(policy.execute).toHaveBeenCalledWith({
+      input: { code: 'employee_terms_reminder' },
+      requestContext,
+    });
+    expect(mockEmailSender.sendReminder).toHaveBeenCalledWith({
       to: ['juan@test.com', 'maria@test.com', 'carlos@test.com'],
       disclaimerText: 'Texto del disclaimer',
       companyName: 'Empresa Test',
+      requestContext,
     });
   });
 
-  it('uses provided ownerId when given (superadmin)', async () => {
+  it('ignores a client-provided ownerId and uses the authenticated tenant context', async () => {
     const mockRepo = {
       getPendingEmployeeIds: vi.fn().mockResolvedValue([1]),
     };
@@ -60,7 +77,7 @@ describe('SendReminders', () => {
       getEmailsByUsersId: vi.fn().mockResolvedValue(['juan@test.com']),
     };
     const mockEmailSender = {
-      sendDisclaimerReminders: vi.fn().mockResolvedValue(undefined),
+      sendReminder: vi.fn().mockResolvedValue(undefined),
     };
     const mockOwnersysRepo = {
       getOwnersys: vi.fn().mockResolvedValue({
@@ -70,21 +87,33 @@ describe('SendReminders', () => {
         },
       }),
     };
+    const policy = { execute: vi.fn().mockResolvedValue({ enabled: true }) };
+    const currentTerms = {
+      execute: vi
+        .fn()
+        .mockResolvedValue({
+          id: 12,
+          version: 1,
+          content: 'Texto del disclaimer',
+        }),
+    };
 
     const useCase = new SendReminders(
       mockRepo as never,
       mockUserRepo as never,
       mockEmailSender as never,
       mockOwnersysRepo as never,
+      policy as never,
+      currentTerms as never,
     );
 
     await useCase.execute({
-      input: { ownerId: 200 },
+      input: {},
       requestContext,
     });
 
     expect(mockRepo.getPendingEmployeeIds).toHaveBeenCalledWith({
-      ownerId: 200,
+      termsVersionId: 12,
       requestContext,
     });
   });

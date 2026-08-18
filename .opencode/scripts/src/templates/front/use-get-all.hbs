@@ -1,0 +1,13 @@
+import { useURLParams } from '@app/Application/Hooks/useURLParams';
+import { T{{Entity}}Search } from '../{{Entity}}.entity';
+import { {{Domain}}Service } from '../{{Domain}}.service';
+
+export const useGet{{Entities}} = () => {
+  const { searchParams } = useURLParams<T{{Entity}}Search>();
+  return {{Domain}}Service.getAll.useQuery(searchParams, {
+    staleTime: 1000,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    placeholderData: (prev) => prev,
+  });
+};

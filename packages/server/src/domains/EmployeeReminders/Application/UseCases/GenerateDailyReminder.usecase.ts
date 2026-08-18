@@ -42,7 +42,7 @@ export class GenerateDailyReminder implements IUseCase<
 
     const { data: employees } = await executeUseCase({
       useCase: this._getEmployeesByCompany,
-      input: { ownerId, page: '1', limit: MAX_EMPLOYEES_LIMIT },
+      input: { page: '1', limit: MAX_EMPLOYEES_LIMIT },
       requestContext,
     });
 

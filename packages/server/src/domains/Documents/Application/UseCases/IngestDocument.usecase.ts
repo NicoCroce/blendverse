@@ -70,7 +70,6 @@ export class IngestDocument implements IUseCase<IIngestDocumentOutput> {
         const { notified: notifiedOne } = await executeUseCase({
           useCase: this._notifyNewDocument,
           input: {
-            ownerId,
             employeeId,
             employeeName: `${user.values.name} ${
               user.values.surname ?? ''

@@ -25,10 +25,14 @@ export class EmployeeRemindersService {
   async sendDailyReminders({
     requestContext,
   }: IRequestContext): Promise<ISendDailyRemindersOutput> {
-    const owners = await executeUseCase({
+    const allOwners = await executeUseCase({
       useCase: this._getAllActiveOwners,
       requestContext,
     });
+    const owners =
+      requestContext.values.userId === 0
+        ? allOwners
+        : allOwners.filter(({ id }) => id === requestContext.values.ownerId);
 
     if (owners.length === 0) {
       logger.info('No active companies to process for employee reminders');

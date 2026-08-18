@@ -1,8 +1,9 @@
 import { IUseCase } from '@server/Application';
-import { emailTemplates } from '@server/Infrastructure';
-import { isValidEmail } from '@server/Infrastructure';
-import { logger } from '@server/Infrastructure/utils/pino';
-import { IEmployeeEmailSender } from '../../Domain/EmployeeEmailSender.port';
+import { ResolveEmailDeliveryPolicy } from '@server/domains/CompanyEmailSettings/Application';
+import {
+  IEmployeeEmailSender,
+  isValidEmployeeEmail,
+} from '../../Domain/EmployeeEmailSender.port';
 import {
   ISendEmployeeReminderEmail,
   ISendEmployeeReminderEmailInput,
@@ -19,41 +20,38 @@ export class SendEmployeeReminderEmail implements IUseCase<
   ISendEmployeeReminderEmailOutput,
   ISendEmployeeReminderEmailInput
 > {
-  constructor(private readonly employeeEmailSender: IEmployeeEmailSender) {}
+  constructor(
+    private readonly employeeEmailSender: IEmployeeEmailSender,
+    private readonly _resolveEmailDeliveryPolicy?: ResolveEmailDeliveryPolicy,
+  ) {}
 
   async execute({
     input,
     requestContext,
   }: ISendEmployeeReminderEmail): Promise<ISendEmployeeReminderEmailOutput> {
     const { reminder } = input;
-    const ownerId = requestContext.values.ownerId;
+
+    const policy = this._resolveEmailDeliveryPolicy
+      ? await this._resolveEmailDeliveryPolicy.execute({
+          input: { code: 'employee_daily_reminder' },
+          requestContext,
+        })
+      : { enabled: false, welcomeMessage: null };
+    if (!policy.enabled) return { sent: false };
 
     if (!reminder.shouldSend) {
-      logger.info(
-        { ownerId, employeeId: reminder.employeeId },
-        'Employee reminder skipped: no pending actions',
-      );
       return { sent: false };
     }
 
-    if (!isValidEmail(reminder.employeeEmail)) {
-      logger.warn(
-        {
-          ownerId,
-          employeeId: reminder.employeeId,
-          email: reminder.employeeEmail,
-        },
-        'Employee reminder skipped: invalid email',
-      );
+    if (!isValidEmployeeEmail(reminder.employeeEmail)) {
       return { sent: false };
     }
 
-    const { subject, body } = emailTemplates.employeeDailyReminder(reminder);
-
-    await this.employeeEmailSender.send({
+    await this.employeeEmailSender.sendReminder({
       to: [reminder.employeeEmail],
-      subject,
-      html: body,
+      reminder,
+      welcomeMessage: policy.welcomeMessage,
+      requestContext,
     });
 
     return { sent: true };

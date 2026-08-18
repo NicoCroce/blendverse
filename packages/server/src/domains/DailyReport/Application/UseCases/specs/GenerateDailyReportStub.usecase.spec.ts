@@ -13,11 +13,11 @@ describe('GenerateDailyReportStub (US1/MVP — reporte con secciones vacías)', 
       requestContext,
     });
 
-    expect(result.report.values.ownerId).toBe(42);
-    expect(result.report.values.companyName).toBe('Acme S.A.');
-    expect(result.report.values.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(result.report!.values.ownerId).toBe(42);
+    expect(result.report!.values.companyName).toBe('Acme S.A.');
+    expect(result.report!.values.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
 
-    const sections = result.report.values.sections;
+    const sections = result.report!.values.sections;
     expect(sections.employeesOnLeaveToday).toEqual({
       items: [],
       totalCount: 0,
@@ -45,7 +45,7 @@ describe('GenerateDailyReportStub (US1/MVP — reporte con secciones vacías)', 
     // Sin `input`: el stub usa el fallback defensivo `input?.companyName ?? ''`
     const result = await useCase.execute({ requestContext } as never);
 
-    expect(result.report.values.ownerId).toBe(42);
-    expect(result.report.values.companyName).toBe('');
+    expect(result.report!.values.ownerId).toBe(42);
+    expect(result.report!.values.companyName).toBe('');
   });
 });

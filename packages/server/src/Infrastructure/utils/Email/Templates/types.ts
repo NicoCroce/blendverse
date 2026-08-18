@@ -60,6 +60,7 @@ export interface INewDocumentNotificationTemplate {
 export interface IDailyReport {
   companyName: string;
   date: string;
+  selectedSections?: readonly string[];
   sections: {
     employeesOnLeaveToday: {
       items: Array<{

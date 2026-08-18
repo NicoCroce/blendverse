@@ -14,11 +14,14 @@ describe('GetDisclaimerText', () => {
 
     const useCase = new GetDisclaimerText(mockRepo as never);
     const result = await useCase.execute({
-      input: 99,
+      input: undefined,
       requestContext,
     });
 
-    expect(result).toBe('Texto legal de prueba');
+    expect(result).toEqual({
+      content: 'Texto legal de prueba',
+      version: null,
+    });
     expect(mockRepo.getOwnersys).toHaveBeenCalledWith({
       id: 99,
       requestContext,
@@ -32,11 +35,11 @@ describe('GetDisclaimerText', () => {
 
     const useCase = new GetDisclaimerText(mockRepo as never);
     const result = await useCase.execute({
-      input: 99,
+      input: undefined,
       requestContext,
     });
 
-    expect(result).toBe('');
+    expect(result).toEqual({ content: '', version: null });
   });
 
   it('returns empty string when texto_disclaimer is undefined', async () => {
@@ -48,10 +51,10 @@ describe('GetDisclaimerText', () => {
 
     const useCase = new GetDisclaimerText(mockRepo as never);
     const result = await useCase.execute({
-      input: 99,
+      input: undefined,
       requestContext,
     });
 
-    expect(result).toBe('');
+    expect(result).toEqual({ content: '', version: null });
   });
 });

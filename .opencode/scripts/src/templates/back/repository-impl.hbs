@@ -1,0 +1,73 @@
+import {
+  {{Entity}},
+  {{Entity}}Repository,
+{{#if hasGetAll}}  IGetAll{{Entities}}Repository,
+  IGetAll{{Entities}}RepositoryResponse,
+{{/if}}
+{{#if hasGet}}  IGet{{Entity}}Repository,
+{{/if}}
+{{#if hasCreate}}  ICreate{{Entity}}Repository,
+{{/if}}
+{{#if hasUpdate}}  IUpdate{{Entity}}Repository,
+{{/if}}
+{{#if hasDelete}}  IDelete{{Entity}}Repository,
+{{/if}}
+} from '../../Domain';
+import { {{Entity}}Model } from './{{Entity}}.model';
+{{#if hasGetAll}}
+import { PaginationImplementation } from '@server/utils';
+{{/if}}
+
+export class {{Entity}}RepositoryImplementation implements {{Entity}}Repository {
+{{#if hasGetAll}}
+  async getAll{{Entities}}({
+    filters,
+    requestContext,
+  }: IGetAll{{Entities}}Repository): Promise<IGetAll{{Entities}}RepositoryResponse> {
+    const { limit, offset, createPaginatedResponse } = PaginationImplementation(filters);
+    const { ownerId } = requestContext.values;
+
+    const whereClause: Record<string, unknown> = {};
+    if (ownerId) whereClause.id_propietario = ownerId;
+
+    const { rows, count } = await {{Entity}}Model.findAndCountAll({
+      where: whereClause,
+      limit,
+      offset,
+    });
+
+    const entities = rows.map((row) => {{Entity}}.create(row.dataValues));
+    return createPaginatedResponse(entities, count);
+  }
+{{/if}}
+{{#if hasGet}}
+  async get{{Entity}}({ id, requestContext }: IGet{{Entity}}Repository): Promise<{{Entity}} | null> {
+    const { ownerId } = requestContext.values;
+    const row = await {{Entity}}Model.findOne({ where: { id, id_propietario: ownerId } });
+    if (!row) return null;
+    return {{Entity}}.create(row.dataValues);
+  }
+{{/if}}
+{{#if hasCreate}}
+  async create{{Entity}}({ {{entity}}, requestContext }: ICreate{{Entity}}Repository): Promise<{{Entity}}> {
+    const { ownerId } = requestContext.values;
+    const row = await {{Entity}}Model.create({ ...({{entity}}.values), id_propietario: ownerId });
+    return {{Entity}}.create(row.dataValues);
+  }
+{{/if}}
+{{#if hasUpdate}}
+  async update{{Entity}}({ {{entity}}, requestContext }: IUpdate{{Entity}}Repository): Promise<{{Entity}}> {
+    const { ownerId } = requestContext.values;
+    const { id, ...rest } = {{entity}}.values;
+    await {{Entity}}Model.update({ ...rest }, { where: { id, id_propietario: ownerId } });
+    const updated = await {{Entity}}Model.findByPk(id);
+    return {{Entity}}.create(updated!.dataValues);
+  }
+{{/if}}
+{{#if hasDelete}}
+  async delete{{Entity}}({ id, requestContext }: IDelete{{Entity}}Repository): Promise<number> {
+    const { ownerId } = requestContext.values;
+    return {{Entity}}Model.destroy({ where: { id, id_propietario: ownerId } });
+  }
+{{/if}}
+}

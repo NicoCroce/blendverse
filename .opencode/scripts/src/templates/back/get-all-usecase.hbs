@@ -1,0 +1,15 @@
+import { IUseCase } from '@server/Application';
+import { {{Entity}}Repository } from '../../Domain/{{Entity}}.repository';
+import { IGetAll{{Entities}} } from '../{{domain}}.types';
+import { IGetAll{{Entities}}RepositoryResponse } from '../../Domain/{{Entity}}.repository';
+
+export class GetAll{{Entities}} implements IUseCase<IGetAll{{Entities}}RepositoryResponse> {
+  constructor(private readonly {{entity}}Repository: {{Entity}}Repository) {}
+
+  async execute({ input, requestContext }: IGetAll{{Entities}}): Promise<IGetAll{{Entities}}RepositoryResponse> {
+    return this.{{entity}}Repository.getAll{{Entities}}({
+      filters: input,
+      requestContext,
+    });
+  }
+}

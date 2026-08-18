@@ -4,11 +4,16 @@ import { describe, expect, it, vi } from 'vitest';
 import { AuthController } from '../Auth.controller';
 
 vi.mock('@server/Infrastructure', async () => {
-  const { router, procedure, protectedProcedure } =
-    await import('@server/Infrastructure/trpc/TrpcInstance.js');
+  const { initTRPC } = await import('@trpc/server');
+  const t = initTRPC.create();
   const { setAuthCookie } =
     await import('@server/Infrastructure/utils/cookie.js');
-  return { router, procedure, protectedProcedure, setAuthCookie };
+  return {
+    router: t.router,
+    procedure: t.procedure,
+    protectedProcedure: t.procedure,
+    setAuthCookie,
+  };
 });
 vi.mock('@server/domains/Users', async () => {
   const { User } = await import('@server/domains/Users/Domain/User.entity.js');

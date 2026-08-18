@@ -119,4 +119,5 @@ export interface IDailyReport {
   companyName: string;
   date: string; // ISO 8601 (YYYY-MM-DD)
   sections: IDailyReportSections;
+  selectedSections?: readonly string[];
 }

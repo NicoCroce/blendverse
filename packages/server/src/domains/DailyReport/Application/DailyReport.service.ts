@@ -24,10 +24,14 @@ export class DailyReportService {
   async sendDailyReport({
     requestContext,
   }: IRequestContext): Promise<ISendDailyReportOutput> {
-    const owners = await executeUseCase({
+    const allOwners = await executeUseCase({
       useCase: this._getAllActiveOwners,
       requestContext,
     });
+    const owners =
+      requestContext.values.userId === 0
+        ? allOwners
+        : allOwners.filter(({ id }) => id === requestContext.values.ownerId);
 
     if (owners.length === 0) {
       logger.info('No active companies to process for daily report');
@@ -45,11 +49,13 @@ export class DailyReportService {
           owner.id,
         );
 
-        const { report } = await executeUseCase({
+        const { report, skipped } = await executeUseCase({
           useCase: this._generateDailyReport,
           input: { companyName: owner.denominacion },
           requestContext: ownerContext,
         });
+
+        if (skipped || !report) continue;
 
         const { success } = await executeUseCase({
           useCase: this._sendReportEmail,

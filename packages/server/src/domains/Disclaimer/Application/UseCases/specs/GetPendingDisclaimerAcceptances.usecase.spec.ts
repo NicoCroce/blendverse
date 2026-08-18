@@ -20,13 +20,19 @@ describe('GetPendingDisclaimerAcceptances (US5 — términos sin aceptar)', () =
         .fn()
         .mockResolvedValue(records),
     };
+    const currentTerms = {
+      execute: vi.fn().mockResolvedValue({ id: 12, version: 1 }),
+    };
 
-    const useCase = new GetPendingDisclaimerAcceptances(mockRepo as never);
+    const useCase = new GetPendingDisclaimerAcceptances(
+      mockRepo as never,
+      currentTerms as never,
+    );
     const result = await useCase.execute({ requestContext });
 
     expect(
       mockRepo.getEmployeesWithoutDisclaimerAcceptance,
-    ).toHaveBeenCalledWith({ requestContext });
+    ).toHaveBeenCalledWith({ termsVersionId: 12, requestContext });
     expect(requestContext.values.ownerId).toBe(42);
     expect(result).toEqual(records);
   });
@@ -35,8 +41,14 @@ describe('GetPendingDisclaimerAcceptances (US5 — términos sin aceptar)', () =
     const mockRepo = {
       getEmployeesWithoutDisclaimerAcceptance: vi.fn().mockResolvedValue([]),
     };
+    const currentTerms = {
+      execute: vi.fn().mockResolvedValue({ id: 12, version: 1 }),
+    };
 
-    const useCase = new GetPendingDisclaimerAcceptances(mockRepo as never);
+    const useCase = new GetPendingDisclaimerAcceptances(
+      mockRepo as never,
+      currentTerms as never,
+    );
     const result = await useCase.execute({ requestContext });
 
     expect(result).toEqual([]);

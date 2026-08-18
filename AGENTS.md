@@ -4,7 +4,7 @@ Monorepo TypeScript con pnpm workspaces. Arquitectura Modular Monolith con DDD y
 
 ## Estructura
 
-- `packages/server` — Backend: Express 5, tRPC v11, Sequelize v6 (MySQL), Awilix DI. Dominios en `src/domains/[Domain]/` con capas Domain/Application/Infrastructure/Presentation/DI.
+- `packages/server` — Backend: Express 5, tRPC v11, Sequelize v6 (MySQL), Awilix DI. Dominios en `src/domains/[Domain]/` con `Domain/`, `Application/`, `Infrastructure/` y `[domain].di.ts`; los controllers viven en `Infrastructure/Controllers`.
 - `packages/app` — Frontend: React 19, Vite, TanStack Query, React Router, Tailwind. Dominios en `src/Domains/[Domain]/`.
 - `specs/` — Artefactos Speckit por feature (`{spec,plan,tasks}.md`).
 - `memory/` — Artefactos del pipeline de agentes por tarea.
@@ -37,12 +37,12 @@ Monorepo TypeScript con pnpm workspaces. Arquitectura Modular Monolith con DDD y
 
 ## Spec Kit — Feature Plan
 
-Active feature: **employee-daily-reminders**
+Active feature: **company-email-settings**
 
-- Spec: `specs/004-employee-daily-reminders/spec.md`
-- Plan: `specs/004-employee-daily-reminders/plan.md`
-- Branch: `004-employee-daily-reminders`
+- Spec: `specs/company-email-settings/spec.md`
+- Plan: `specs/company-email-settings/plan.md`
+- Branch: `005-company-email-settings`
 
-Design artifacts: `specs/004-employee-daily-reminders/{research,data-model,quickstart}.md`, `specs/004-employee-daily-reminders/contracts/`
+Design artifacts: `specs/company-email-settings/{research,data-model,quickstart}.md`, `specs/company-email-settings/contracts/`
 
 <!-- SPECKIT END -->

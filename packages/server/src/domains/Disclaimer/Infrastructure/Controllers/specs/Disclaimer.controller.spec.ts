@@ -2,9 +2,9 @@ import { describe, expect, it, vi } from 'vitest';
 import { DisclaimerController } from '../Disclaimer.controller';
 
 vi.mock('@server/Infrastructure', async () => {
-  const { router, protectedProcedure } =
-    await import('@server/Infrastructure/trpc/TrpcInstance.js');
-  return { router, protectedProcedure };
+  const { initTRPC } = await import('@trpc/server');
+  const t = initTRPC.create();
+  return { router: t.router, protectedProcedure: t.procedure };
 });
 
 vi.mock('@server/utils/JWT', () => ({
@@ -61,7 +61,7 @@ const buildCaller = (
 describe('DisclaimerController', () => {
   it('getText calls service with ownerId', async () => {
     const { getDisclaimerText } = buildCaller(
-      vi.fn().mockResolvedValue('Texto legal'),
+      vi.fn().mockResolvedValue({ content: 'Texto legal', version: null }),
     );
 
     expect(getDisclaimerText).toBeDefined();

@@ -66,6 +66,7 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Evaluate gates (ERROR if violations unjustified)
    - Phase 0: Generate research.md (resolve all NEEDS CLARIFICATION)
    - Phase 1: Generate data-model.md, contracts/, quickstart.md
+   - If the feature creates a new DDD domain, generate `contracts/operations.json` with the shared API operations and frontend views consumed by the scaffold generators.
    - Phase 1: Update agent context by running the agent script
    - Re-evaluate Constitution Check post-design
 
@@ -150,17 +151,23 @@ Command ends after Phase 2 planning. Report branch, IMPL_PLAN path, and generate
    - Examples: public APIs for libraries, command schemas for CLI tools, endpoints for web services, grammars for parsers, UI contracts for applications
    - Skip if project is purely internal (build scripts, one-off tools, etc.)
 
-3. **Create quickstart validation guide** → `quickstart.md`:
+3. **Define the scaffold contract for a new DDD domain** → `contracts/operations.json`:
+   - `apiOperations`: one or more of `getAll`, `get`, `create`, `update`, `delete`.
+   - `uiViews`: optional values from `list`, `detail`, `new`, `edit`.
+   - A `detail` view requires the `get` API operation.
+   - Do not create this file for a feature that only modifies an existing domain.
+
+4. **Create quickstart validation guide** → `quickstart.md`:
    - Document runnable validation scenarios that prove the feature works end-to-end
    - Include prerequisites, setup commands, test/run commands, and expected outcomes
    - Use links or references to contracts and data model details instead of duplicating them
    - Do not include full implementation code, model/service/controller bodies, migrations, or complete test suites
    - Keep this artifact as a validation/run guide; implementation details belong in `tasks.md` and the implementation phase
 
-4. **Agent context update**:
+5. **Agent context update**:
    - Update the plan reference between the `<!-- SPECKIT START -->` and `<!-- SPECKIT END -->` markers in `AGENTS.md` to point to the plan file created in step 1 (the IMPL_PLAN path)
 
-**Output**: data-model.md, /contracts/\*, quickstart.md, updated agent context file
+**Output**: data-model.md, /contracts/\* (including `operations.json` when a new domain is created), quickstart.md, updated agent context file
 
 ## Key rules
 

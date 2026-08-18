@@ -61,29 +61,35 @@ Mostrar este banner **inmediatamente antes** de invocar cada sub-agente:
 
 ## Protocolo de Trabajo
 
-### Paso 1 — Resolver task_id, fuente de contexto y estado en Engram
+### Paso 1 — Resolver task_id, fuente de contexto y estado
 
 1. Invocar la skill `engram-sync`.
 2. Ejecutar `git branch --show-current` para obtener la rama activa. Sanitizar el resultado reemplazando `/` por `-` (ej. `feat/segments` → `feat-segments`).
-3. Leer `memory/history_log.json`.
-   - Si existe una entrada con `status: IN_PROGRESS` cuyo `task_id` contiene la rama sanitizada del paso 2 → reutilizar ese `task_id` (tarea en curso sobre la misma rama).
-   - Si no existe → generar un `task_id` **nuevo** con el formato `TASK-{rama-sanitizada}-YYYYMMDD-N` (ver `.opencode/instructions/memory.instructions.md`) y agregar la entrada a `history_log.json` con `status: IN_PROGRESS`, `created_at` y `title`.
-4. Consultar Engram (Patrón 2 de la skill `engram-sync`) con el `task_id` resuelto:
-   - `mem_search(query: "task {task_id} status")` → si existe una observación con `status: COMPLETED`, informar que la tarea ya se cerró y **detenerse** (no duplicar). Si `BLOCKED`, informar que requiere intervención humana y detenerse.
-   - `mem_search(query: "task {task_id} registration")` → si existe con `status: IN_PROGRESS`, reutilizar `scope` y `context_source` si están presentes (verificando en disco que la fuente sigue existiendo).
-5. Si quien invoca este agente indicó explícitamente `{feature}` (ej. desde `@blendverse-start-feature`), usarlo. Si no, y hay artefactos Speckit, inferirlo del directorio bajo `specs/` modificado más recientemente; si hay más de un candidato genuinamente ambiguo, preguntar al usuario cuál usar.
-6. Determinar la fuente de contexto **sin transcribir ni copiar contenido**:
+3. Leer `memory/history_log.json` usando el formato canónico `{ "tasks": [] }`.
+   - Si el prompt contiene un `task_id` explícito, usarlo sin reemplazarlo.
+   - Si no contiene uno y existe una entrada `IN_PROGRESS` cuyo `task_id` corresponde a la rama sanitizada, reutilizar ese `task_id`.
+   - Si no existe → generar un `task_id` **nuevo** con el formato `TASK-{rama-sanitizada}-YYYYMMDD-N` y agregar la entrada con `status: IN_PROGRESS`, `created_at` y `title`.
+   - Una reapertura humana de una tarea `BLOCKED` debe crear un nuevo ID con `parent_task_id` y `reopened_from`; nunca convertir silenciosamente un bloqueo histórico en una tarea activa.
+4. Antes de consultar Engram, verificar en disco `memory/{task_id}/`, `memory/{task_id}/.checkpoint.json` y `memory/{task_id}/BLOCKED.md`.
+   - Si existe `BLOCKED.md` con el mismo `task_id`, detenerse y exigir intervención humana.
+   - Si `BLOCKED.md` no existe, pertenece a otro task_id o solo existe un espejo `BLOCKED` en Engram, el estado bloqueado es obsoleto para esta tarea y no debe detener la cadena.
+5. Consultar Engram (Patrón 2 de la skill `engram-sync`) con el `task_id` exacto:
+   - `status: COMPLETED` solo detiene si `history_log.json` y el checkpoint también confirman el cierre.
+   - `registration: IN_PROGRESS` puede aportar `scope` y `context_source`, siempre verificando esas rutas en disco.
+   - Si el espejo contradice los archivos, corregirlo con el mismo `topic_key` antes de continuar.
+6. Si quien invoca este agente indicó explícitamente `{feature}` (ej. desde `@blendverse-start-feature`), usarlo. Si no, y hay artefactos Speckit, inferirlo del directorio bajo `specs/` modificado más recientemente; si hay más de un candidato genuinamente ambiguo, preguntar al usuario cuál usar.
+7. Determinar la fuente de contexto **sin transcribir ni copiar contenido**:
    - Si existe `memory/{task_id}/01_requirements.md` → esa es la fuente (flujo de input crudo, generado por `@blendverse-analyst`).
    - Si no existe pero hay artefactos Speckit (`specs/{feature}/spec.md` + `tasks.md`) → la fuente es directamente `specs/{feature}/spec.md` y `specs/{feature}/tasks.md`.
-7. Crear la carpeta `memory/{task_id}/` si no existe (para `02_dev_log.md`, `03_qa_report.md`, `04_review_log.md` y `05_test_log.md`, que no tienen equivalente en Speckit).
-8. Guardar la fuente resuelta como `{context_source}` — se usa en cada prompt del Paso 3 en lugar de una ruta fija a `01_requirements.md`.
-9. Registrar la tarea en Engram: `mem_save` con `topic_key: task/{task_id}/registration`, `status: IN_PROGRESS`, `feature`, `scope` (si ya se determinó), `context_source` y `branch`, `capture_prompt: false`.
+8. Crear la carpeta `memory/{task_id}/` si no existe (para `00_baseline.json`, `02_dev_log.md`, `03_qa_report.md`, `04_review_log.md` y `05_test_log.md`, que no tienen equivalente en Speckit).
+9. Guardar la fuente resuelta como `{context_source}` — se usa en cada prompt del Paso 3 en lugar de una ruta fija a `01_requirements.md`.
+10. Registrar la tarea en Engram: `mem_save` con `topic_key: task/{task_id}/registration`, `status: IN_PROGRESS`, `feature`, `scope` (si ya se determinó), `context_source` y `branch`, `capture_prompt: false`.
 
 ### Paso 1.5 — Detectar punto de reanudación
 
 Solo si la tarea ya estaba `IN_PROGRESS` en Engram (Paso 1.4) o existe `memory/{task_id}/` con artefactos previos:
 
-1. **Leer checkpoint file** (fuente de verdad primaria): si existe `memory/{task_id}/.checkpoint.json`, leerlo y usar `last_completed_step` para determinar el `resume_point`. Mapeo:
+1. **Leer checkpoint file** (fuente de verdad primaria): si existe `memory/{task_id}/.checkpoint.json`, leerlo y usar `last_completed_step` para determinar el `resume_point`. Antes de usarlo, validar que `task_id`, `branch` y `scope` coincidan, que `completed_steps` y `pending_steps` sean disjuntos y que `last_completed_step` sea el último paso completado según el orden del scope. Si es inválido, ignorarlo y derivar el punto desde los artefactos en disco.
    - `last_completed_step: "back"` o `"front"` → `resume_point` según el scope (si falta el otro coder, continuar con coder; si no, `tester`).
    - `last_completed_step: "tester"` → `resume_point: "qa"`.
    - `last_completed_step: "qa"` → `resume_point: "reviewer"`.
@@ -106,6 +112,8 @@ Solo si la tarea ya estaba `IN_PROGRESS` en Engram (Paso 1.4) o existe `memory/{
 
 5. Si no hay registro previo ni artefactos en `memory/{task_id}/` → `resume_point: start`.
 
+6. Si no existe `memory/{task_id}/00_baseline.json`, ejecutar `pnpm --filter @opencode-automation/scripts capture-pipeline-baseline --project-root . --task-id {task_id} --branch {branch}` antes de lanzar Coder. Un fallo previo queda registrado como `baseline` y no consume attempts; un timeout queda como `TIMEOUT` y se reintenta con la política de infraestructura.
+
 ### Paso 2 — Detectar el alcance
 
 A partir del contexto leído (o del `scope` reutilizado del registro en Engram), determinar si la tarea es:
@@ -115,6 +123,16 @@ A partir del contexto leído (o del `scope` reutilizado del registro en Engram),
 - **full-stack** — modifica ambos paquetes
 
 Solo preguntarle al usuario si el alcance es genuinamente ambiguo (ej: no hay mención a ninguna capa en el documento leído).
+
+Si el alcance implica crear un dominio nuevo, resolver también una única fuente
+de operaciones antes de lanzar `@blendverse-back` o `@blendverse-front`:
+
+- Flujo Speckit: `specs/{feature}/contracts/operations.json`.
+- Flujo crudo: crear o registrar el contrato en `memory/{task_id}/operations.json`
+  antes de iniciar los coders.
+- Si falta el contrato y las operaciones no están definidas de forma inequívoca,
+  detenerse por duda material y pedir aclaración; no permitir que backend y
+  frontend infieran contratos diferentes.
 
 ### Paso 2.5 — Todo list de la cadena
 
@@ -182,7 +200,7 @@ todowrite([
 
 ### Paso 2.6 — Checkpoint file (fuente de verdad para reanudar)
 
-Después de cada sub-agente que completa exitosamente, guardar un archivo de checkpoint en `memory/{task_id}/.checkpoint.json`:
+Después de cada sub-agente que completa exitosamente, guardar un archivo de checkpoint en `memory/{task_id}/.checkpoint.json` y actualizar la entrada exacta de `{task_id}` en `memory/history_log.json` con el agente, estado, attempts y timestamp:
 
 ```json
 {
@@ -193,6 +211,7 @@ Después de cada sub-agente que completa exitosamente, guardar un archivo de che
   "last_completed_step": "tester",
   "completed_steps": ["back", "front", "tester"],
   "pending_steps": ["qa", "reviewer", "close", "pr"],
+  "current_agent": "QA_Agent",
   "context_source": "specs/employee-daily-reminders/spec.md",
   "timestamp": "2026-08-08T15:30:00Z"
 }
@@ -214,6 +233,7 @@ Después de cada sub-agente que completa exitosamente, guardar un archivo de che
 - Si el checkpoint file existe pero el espejo de Engram no → confiar en el checkpoint file.
 - Si ambos existen y se contradicen → confiar en el checkpoint file (es más reciente).
 - El checkpoint file se actualiza (overwrite) después de cada sub-agente, no se acumulan versiones.
+- Si se crea `memory/{task_id}/BLOCKED.md`, escribir también `status: BLOCKED`, `blocked_agent`, `failure_class` y `resume_point` en `history_log.json` y en el espejo `task/{task_id}/status`.
 
 ### Paso 2.7 — Auto-awareness de steps restantes
 
@@ -278,7 +298,7 @@ Aplicar `resume_point` del Paso 1.5: **solo ejecutar los eslabones que aún falt
 ```
 
 1. `task` → `@blendverse-back` con el prompt:
-   > Leer `{context_source}` como contexto inicial y proceder con la implementación del dominio servidor siguiendo la skill `back-ddd-generator`. **No generes tests**; solo escribe el código fuente y `memory/{task_id}/02_dev_log.md`.
+   > Leer `{context_source}` como contexto inicial y proceder con la implementación del dominio servidor siguiendo la skill `back-ddd-generator`. Si `tasks.md` define un dominio nuevo, leer el contrato de operaciones resuelto en el Paso 2 y ejecutar `generate-back` con `--operations-file`; si el dominio ya existe, no ejecutar el generator completo. El scaffold no es la lógica de negocio: implementar después todas las reglas de la feature indicadas en `spec.md`, `plan.md` y `tasks.md`. **No generes tests**; solo escribe el código fuente y `memory/{task_id}/02_dev_log.md`.
 
 **Al completar:** marcar "Implementar backend" como `completed`. Guardar checkpoint file (`last_completed_step: "back"`). Mostrar banner de transición:
 
@@ -303,7 +323,7 @@ Aplicar `resume_point` del Paso 1.5: **solo ejecutar los eslabones que aún falt
 ```
 
 2. `task` → `@blendverse-tester` con el prompt:
-   > Leer `memory/{task_id}/02_dev_log.md` para identificar el dominio y los archivos con lógica de negocio implementados en `packages/server/src/domains/`. Generar y ejecutar los tests `.spec.ts` para todas las capas con lógica (entity, use cases, service, controller) usando datos concretos, no stubs ni `it.todo`; incluir al menos un test multi-tenant de `ownerId`. Ejecutar `cd packages/server && npx vitest run 2>&1` y asegurar 0 failed. Al finalizar, escribir `memory/{task_id}/05_test_log.md`.
+   > Leer `memory/{task_id}/00_baseline.json`, `memory/{task_id}/02_dev_log.md` y el contrato aprobado. Generar o actualizar únicamente los specs afectados para todas las capas con lógica (entity, use cases, service, controller), usando datos concretos, no stubs ni `it.todo`; incluir al menos un test multi-tenant de `ownerId`. Ejecutar primero los specs afectados y luego la suite del paquete. Si un test falla, clasificarlo como `implementation_regression`, `stale_test`, `baseline`, `test_infrastructure` o `timeout`; solo actualizar un spec obsoleto cuando el contrato aprobado haya cambiado y dejar la evidencia en `05_test_log.md`. No modificar código productivo. Los fallos baseline y los timeouts no consumen attempts funcionales.
 
 **Al completar:** marcar "Generar tests" como `completed`. Guardar checkpoint file (`last_completed_step: "tester"`). Mostrar banner de transición:
 
@@ -355,7 +375,7 @@ Aplicar `resume_point` del Paso 1.5: **solo ejecutar los eslabones que aún falt
 ```
 
 1. `task` → `@blendverse-front` con el prompt:
-   > Leer `{context_source}` como contexto inicial y proceder con la implementación del dominio frontend siguiendo la skill `front-ddd-generator`. **No generes tests**; solo escribe el código fuente y actualiza `memory/{task_id}/02_dev_log.md`.
+   > Leer `{context_source}` como contexto inicial y proceder con la implementación del dominio frontend siguiendo la skill `front-ddd-generator`. Si `tasks.md` define un dominio nuevo, leer el mismo contrato de operaciones resuelto en el Paso 2 que backend y ejecutar `generate-front` con `--operations-file`; si el dominio ya existe, no ejecutar el generator completo. El scaffold no es la lógica de negocio: implementar después formularios, estados, acciones, permisos y UI definidos en la feature. **No generes tests**; solo escribe el código fuente y actualiza `memory/{task_id}/02_dev_log.md`.
 
 **Al completar:** marcar "Implementar frontend" como `completed`. Guardar checkpoint file (`last_completed_step: "front"`). Mostrar banner de transición:
 
@@ -380,7 +400,7 @@ Aplicar `resume_point` del Paso 1.5: **solo ejecutar los eslabones que aún falt
 ```
 
 2. `task` → `@blendverse-tester` con el prompt:
-   > Leer `memory/{task_id}/02_dev_log.md` para identificar el dominio y los archivos con lógica de negocio implementados en `packages/app/src/Domains/`. Generar y ejecutar los tests `.spec.ts` para hooks y componentes con lógica usando datos concretos, no stubs ni `it.todo`. Ejecutar `cd packages/app && npx vitest run 2>&1` y asegurar 0 failed. Al finalizar, escribir `memory/{task_id}/05_test_log.md`.
+   > Leer `memory/{task_id}/00_baseline.json`, `memory/{task_id}/02_dev_log.md` y el contrato aprobado. Generar o actualizar únicamente los specs afectados para hooks y componentes con lógica usando datos concretos, no stubs ni `it.todo`. Ejecutar primero los specs afectados y luego la suite del paquete. Si un test falla, clasificarlo como `implementation_regression`, `stale_test`, `baseline`, `test_infrastructure` o `timeout`; solo actualizar un spec obsoleto cuando el contrato aprobado haya cambiado y dejar la evidencia en `05_test_log.md`. No modificar código productivo. Los fallos baseline y los timeouts no consumen attempts funcionales.
 
 **Al completar:** marcar "Generar tests" como `completed`. Guardar checkpoint file (`last_completed_step: "tester"`). Mostrar banner de transición:
 
@@ -432,7 +452,7 @@ Aplicar `resume_point` del Paso 1.5: **solo ejecutar los eslabones que aún falt
 ```
 
 1. `task` → `@blendverse-back` con el prompt:
-   > Leer `{context_source}` como contexto inicial y proceder con la implementación del dominio servidor siguiendo la skill `back-ddd-generator`. **No generes tests**; solo escribe el código fuente y `memory/{task_id}/02_dev_log.md`.
+   > Leer `{context_source}` como contexto inicial y proceder con la implementación del dominio servidor siguiendo la skill `back-ddd-generator`. Si `tasks.md` define un dominio nuevo, leer el contrato de operaciones resuelto en el Paso 2 y ejecutar `generate-back` con `--operations-file`; si el dominio ya existe, no ejecutar el generator completo. El scaffold no es la lógica de negocio: implementar todas las reglas específicas de la feature. **No generes tests**; solo escribe el código fuente y `memory/{task_id}/02_dev_log.md`.
 
 **Al completar:** marcar "Implementar backend" como `completed`. Guardar checkpoint file (`last_completed_step: "back"`). Mostrar banner de transición:
 
@@ -457,7 +477,7 @@ Aplicar `resume_point` del Paso 1.5: **solo ejecutar los eslabones que aún falt
 ```
 
 2. `task` → `@blendverse-front` con el prompt:
-   > El backend ya está implementado. Leer `{context_source}` y `memory/{task_id}/02_dev_log.md` para entender qué expone el servidor. Proceder con la implementación del dominio frontend siguiendo la skill `front-ddd-generator`. **No generes tests**; solo escribe el código fuente y actualiza `memory/{task_id}/02_dev_log.md`.
+   > El backend ya está implementado. Leer `{context_source}` y `memory/{task_id}/02_dev_log.md` para entender qué expone el servidor. Si `tasks.md` define un dominio frontend nuevo, leer el mismo contrato de operaciones resuelto en el Paso 2 y ejecutar `generate-front` con `--operations-file`; si el dominio ya existe, no ejecutar el generator completo. El scaffold no es la lógica de negocio: implementar la UI y reglas específicas de la feature. **No generes tests**; solo escribe el código fuente y actualiza `memory/{task_id}/02_dev_log.md`.
 
 **Al completar:** marcar "Implementar frontend" como `completed`. Guardar checkpoint file (`last_completed_step: "front"`). Mostrar banner de transición:
 
@@ -482,7 +502,7 @@ Aplicar `resume_point` del Paso 1.5: **solo ejecutar los eslabones que aún falt
 ```
 
 3. `task` → `@blendverse-tester` con el prompt:
-   > Leer `memory/{task_id}/02_dev_log.md` para identificar el dominio y los archivos con lógica de negocio implementados en `packages/server/src/domains/` y `packages/app/src/Domains/`. Generar los tests `.spec.ts` para todas las capas con lógica (entity, use cases, service, controller, hooks y componentes no triviales) usando datos concretos, no stubs ni `it.todo`; incluir al menos un test multi-tenant de `ownerId` en el backend. Ejecutar `cd packages/server && npx vitest run 2>&1` y `cd packages/app && npx vitest run 2>&1` **en paralelo** (son independientes entre sí), esperar a que ambos terminen y asegurar 0 failed en los dos. Al finalizar, escribir `memory/{task_id}/05_test_log.md`.
+   > Leer `memory/{task_id}/00_baseline.json`, `memory/{task_id}/02_dev_log.md` y el contrato aprobado. Generar o actualizar únicamente los specs afectados para entity, use cases, service, controller, hooks y componentes no triviales, usando datos concretos, no stubs ni `it.todo`; incluir al menos un test multi-tenant de `ownerId` en el backend. Ejecutar primero los specs afectados y después las suites de server/app en paralelo. Comparar los fallos con el baseline y clasificar cada uno como `implementation_regression`, `stale_test`, `baseline`, `test_infrastructure` o `timeout`; solo actualizar specs obsoletos con evidencia del contrato aprobado y registrar el razonamiento. No modificar código productivo. Los fallos baseline y los timeouts no consumen attempts funcionales.
 
 **Al completar:** marcar "Generar tests" como `completed`. Guardar checkpoint file (`last_completed_step: "tester"`). Mostrar banner de transición:
 
@@ -558,7 +578,7 @@ Aplicar `resume_point` del Paso 1.5: **solo ejecutar los eslabones que aún falt
    ```
 
 4. Si `status: REJECTED` → `task` → el/los Coder correspondientes con el feedback de `04_review_log.md`, y repetir desde el punto 1 (tester → qa → reviewer) hasta `APPROVED` o hasta que `@blendverse-reviewer` active su propio Protocolo Break-Loop (`attempts >= 3`).
-5. Si se activa el Protocolo Break-Loop en cualquier agente (`BLOCKED.md`) → espejar en Engram `task/{task_id}/status` con `status: BLOCKED` y detener toda ejecución.
+5. Si se activa el Protocolo Break-Loop en cualquier agente (`memory/{task_id}/BLOCKED.md`) → actualizar la entrada exacta en `history_log.json`, espejar en Engram `task/{task_id}/status` con `status: BLOCKED`, conservar el checkpoint y detener toda ejecución.
 
 ### Paso 5 — PR de la feature (solo si todas las validaciones pasaron)
 

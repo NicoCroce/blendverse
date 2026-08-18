@@ -12,7 +12,7 @@
     "prepare": "husky",
     "app:dev": "pnpm --filter app dev",
     "server:dev": "pnpm --filter server dev",
-    "tsc": "tsc --noEmit ./**/src/**/*.ts",
+    "tsc": "tsc --noEmit -p tsconfig.json",
     "server:build": "cd packages/server pnpm build",
     "app:build": "cd packages/app pnpm build",
     "build": "pnpm server:build && pnpm app:build",

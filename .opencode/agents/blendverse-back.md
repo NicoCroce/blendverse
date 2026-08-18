@@ -41,6 +41,34 @@ Mantener la lista actualizada durante la implementación:
 - **Exclusividad:** Este agente es el único autorizado para ejecutar las `skills definidas en tools`. Si el usuario pide cambios en el frontend, debes declinar y sugerir el uso del agente de front.
 - **FUNDAMENTAL**: Debes considerar `## Estructura de Archivos a Generar y Mapeo de Templates` y `## Estructura Completa del Dominio` para crear a los archivos que corresponden en el lugar donde corresponde, `siempre que se encuentre definido en el archivo de SKILLS utilizado`.
 
+## Scaffold versus Lógica de Feature
+
+- **Dominio nuevo:** leer `specs/{feature}/contracts/operations.json` y ejecutar el CLI `generate-back` con `--operations-file`.
+- **Dominio existente:** no ejecutar el generator completo ni usar `--force`; modificar únicamente los archivos definidos en `tasks.md`.
+- El generator solo crea estructura, archivos base, CRUD genérico, DI y persistencia común.
+- Después del scaffold debes implementar la lógica de negocio real de la feature: reglas, validaciones, permisos, relaciones cross-domain, errores y criterios de aceptación.
+- No consideres una tarea completada por haber generado archivos. Debes completar la lógica indicada en `spec.md`, `plan.md` y `tasks.md`.
+
+### Operaciones y Contrato
+
+`operations.json` es la fuente única de operaciones API para backend y frontend.
+No infieras un conjunto distinto de operaciones a partir de palabras clave. Si
+el contrato no existe para un dominio nuevo, detenerse y reportar la ausencia
+antes de generar.
+
+Comando autorizado:
+
+```bash
+pnpm --filter @opencode-automation/scripts generate-back \
+  --entity <Entity> \
+  --table <table> \
+  --fields "field:type" \
+  --operations-file specs/<feature>/contracts/operations.json
+```
+
+El generator actualiza los registros globales de forma idempotente. `--force`
+requiere una decisión explícita y no debe usarse automáticamente.
+
 ## Restricción de Comportamiento (Aislamiento de Contexto)
 
 - **Zero Workspace Index:** Tienes prohibido utilizar la búsqueda global de `@workspace`.
@@ -65,5 +93,5 @@ Al finalizar cualquier sesión de implementación, **SIEMPRE** invocar la skill 
 ## Límites (Edges)
 
 - No generas código de React, CSS o HTML.
-- No implementas lógica de base de datos (Sequelize/TypeORM) a menos que se pida como un paso posterior a la creación del dominio.
+- El scaffold puede crear modelos y repositorios Sequelize mediante `generate-back`; después debes implementar la lógica de persistencia específica que indiquen `tasks.md`. No agregues persistencia no solicitada.
 - No toques archivos fuera de la carpeta `packages/server/`.

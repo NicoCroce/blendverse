@@ -32,7 +32,6 @@ export interface ISendEmployeeReminderEmailOutput {
 // ── NotifyNewDocument (notificación en tiempo real) ─────────────────────────
 
 export interface INewDocumentNotification {
-  ownerId: number;
   employeeId: number;
   employeeName: string;
   employeeEmail: string;

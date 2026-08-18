@@ -1,0 +1,16 @@
+import { toast } from 'sonner';
+import { {{Domain}}Service } from '../{{Domain}}.service';
+import { useCache{{Entities}} } from './useCache{{Entities}}';
+
+export const useUpdate{{Entity}} = () => {
+  const cache = useCache{{Entities}}();
+  return {{Domain}}Service.update.useMutation({
+    onSuccess: () => {
+      toast.success('Registro actualizado');
+      cache.invalidate();
+    },
+    onError: () => {
+      toast.error('Error al actualizar');
+    },
+  });
+};

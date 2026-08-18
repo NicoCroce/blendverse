@@ -137,7 +137,7 @@ At Paso 2.5, create a todo list with `todowrite` containing all chain steps acco
 todowrite([
   { content: "Resolver task_id y contexto", status: "completed", priority: "high" },
   { content: "Implementar backend (@blendverse-back)", status: "in_progress", priority: "high" },
-  { content: "Generar tests (@blendverse-tester)", status: "pending", priority: "high" },
+  { content: "Generar, clasificar y ejecutar tests (@blendverse-tester)", status: "pending", priority: "high" },
   { content: "Validación estática (@blendverse-qa)", status: "pending", priority: "high" },
   { content: "Revisión de estándares (@blendverse-reviewer)", status: "pending", priority: "high" },
   { content: "Cerrar tarea y abrir PR a main", status: "pending", priority: "high" }
@@ -150,7 +150,7 @@ todowrite([
 todowrite([
   { content: "Resolver task_id y contexto", status: "completed", priority: "high" },
   { content: "Implementar frontend (@blendverse-front)", status: "in_progress", priority: "high" },
-  { content: "Generar tests (@blendverse-tester)", status: "pending", priority: "high" },
+  { content: "Generar, clasificar y ejecutar tests (@blendverse-tester)", status: "pending", priority: "high" },
   { content: "Validación estática (@blendverse-qa)", status: "pending", priority: "high" },
   { content: "Revisión de estándares (@blendverse-reviewer)", status: "pending", priority: "high" },
   { content: "Cerrar tarea y abrir PR a main", status: "pending", priority: "high" }
@@ -164,7 +164,7 @@ todowrite([
   { content: "Resolver task_id y contexto", status: "completed", priority: "high" },
   { content: "Implementar backend (@blendverse-back)", status: "in_progress", priority: "high" },
   { content: "Implementar frontend (@blendverse-front)", status: "pending", priority: "high" },
-  { content: "Generar tests (@blendverse-tester)", status: "pending", priority: "high" },
+  { content: "Generar, clasificar y ejecutar tests (@blendverse-tester)", status: "pending", priority: "high" },
   { content: "Validación estática (@blendverse-qa)", status: "pending", priority: "high" },
   { content: "Revisión de estándares (@blendverse-reviewer)", status: "pending", priority: "high" },
   { content: "Cerrar tarea y abrir PR a main", status: "pending", priority: "high" }

@@ -14,6 +14,7 @@ import { DisclaimerRoutes } from '@server/domains/Disclaimer';
 import { SegmentsRoutes } from '@server/domains/Segments';
 import { DailyReportRoutes } from '@server/domains/DailyReport';
 import { EmployeeRemindersRoutes } from '@server/domains/EmployeeReminders';
+import { CompanyEmailSettingsRoutes } from '@server/domains/CompanyEmailSettings';
 
 const MainRouter = () => {
   const AllRouters = {
@@ -30,6 +31,7 @@ const MainRouter = () => {
     ...SegmentsRoutes(),
     ...DailyReportRoutes(),
     ...EmployeeRemindersRoutes(),
+    ...CompanyEmailSettingsRoutes(),
   };
   return router(AllRouters);
 };

@@ -1,7 +1,5 @@
 import { executeUseCase, IUseCase } from '@server/Application';
-import { emailTemplates } from '@server/Infrastructure';
-import { logger } from '@server/Infrastructure/utils/pino';
-import { GetAdmins } from '@server/domains/Permissions/Application';
+import { ResolveEmailDeliveryPolicy } from '@server/domains/CompanyEmailSettings/Application';
 import { IDailyReportEmailSender } from '../../Domain/DailyReportEmailSender.port';
 import {
   ISendReportEmail,
@@ -20,35 +18,29 @@ export class SendReportEmail implements IUseCase<
   ISendReportEmailInput
 > {
   constructor(
-    private readonly _getAdmins: GetAdmins,
     private readonly dailyReportEmailSender: IDailyReportEmailSender,
+    private readonly _resolveEmailDeliveryPolicy: ResolveEmailDeliveryPolicy,
   ) {}
 
   async execute({
     input,
     requestContext,
   }: ISendReportEmail): Promise<ISendReportEmailOutput> {
-    const ownerId = requestContext.values.ownerId;
-
-    const admins = await executeUseCase({
-      useCase: this._getAdmins,
+    const policy = await executeUseCase({
+      useCase: this._resolveEmailDeliveryPolicy,
+      input: { code: 'admin_daily_report' },
       requestContext,
     });
 
-    if (!admins || admins.length === 0) {
-      logger.warn(
-        { ownerId },
-        'No admins found for owner, skipping daily report email',
-      );
+    if (!policy.enabled || policy.recipients.length === 0) {
       return { success: false };
     }
 
-    const { subject, body } = emailTemplates.dailyReport(input.report.values);
-
     await this.dailyReportEmailSender.send({
-      to: admins,
-      subject,
-      html: body,
+      to: policy.recipients,
+      report: input.report,
+      welcomeMessage: policy.welcomeMessage,
+      requestContext,
     });
 
     return { success: true };
